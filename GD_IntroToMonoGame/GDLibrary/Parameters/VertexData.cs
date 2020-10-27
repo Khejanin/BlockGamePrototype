@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace GDLibrary
 {
@@ -33,7 +34,6 @@ namespace GDLibrary
             return this;
         }
 
-
         public void Draw(GameTime gameTime, BasicEffect effect, GraphicsDevice graphicsDevice)
         {
             //serialising the vertices from RAM to VRAM
@@ -46,6 +46,20 @@ namespace GDLibrary
         public int GetPrimitiveCount()
         {
             return this.primitiveCount;
+        }
+
+        public Vector3[] GetPrimitivePositions()
+        {
+            Vector3[] result = new Vector3[primitiveCount];
+            
+            for (int i = 0; i < primitiveCount; i++)
+            {
+                T copy = vertices[i];
+                VertexPosition c = (VertexPosition) (object) copy;
+                result[i] = c.Position;
+            }
+
+            return result;
         }
 
         public PrimitiveType GetPrimitiveType()

@@ -24,6 +24,11 @@ namespace GDLibrary
             this.rotationSpeed = rotationSpeed;
         }
 
+        public void Initialize(IActor actor)
+        {
+            
+        }
+
         public void Update(GameTime gameTime, IActor actor)
         {
             Actor3D parent = actor as Actor3D;

@@ -15,6 +15,8 @@ namespace GDLibrary
         PrimitiveType GetPrimitiveType();
         int GetPrimitiveCount();
 
+        Vector3[] GetPrimitivePositions();
+
         //setters
 
         //public int PrimitiveCount

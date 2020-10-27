@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using SharpDX.Direct3D11;
+using RasterizerState = Microsoft.Xna.Framework.Graphics.RasterizerState;
 
 namespace GDLibrary
 {
@@ -26,6 +28,13 @@ namespace GDLibrary
                 this.opaqueList.Add(actor);
         }
 
+        public List<DrawnActor3D> FindAll(Predicate<DrawnActor3D> predicate)
+        {
+            List<DrawnActor3D> result = opaqueList.FindAll(predicate);
+            result.AddRange(transparentList.FindAll(predicate));
+            return result;
+        }
+        
         public bool RemoveIf(Predicate<DrawnActor3D> predicate)
         {
 
@@ -65,12 +74,16 @@ namespace GDLibrary
 
         public override void Draw(GameTime gameTime)
         {
+            RasterizerState defaultRasterizerState = GraphicsDevice.RasterizerState;
             foreach (DrawnActor3D actor in this.opaqueList)
             {
                 if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
                     actor.Draw(gameTime, 
                        this.cameraManager.ActiveCamera,
                         this.GraphicsDevice);
+                
+                if (GraphicsDevice.RasterizerState != defaultRasterizerState)
+                    GraphicsDevice.RasterizerState = defaultRasterizerState;
             }
 
             foreach (DrawnActor3D actor in this.transparentList)
@@ -79,6 +92,9 @@ namespace GDLibrary
                     actor.Draw(gameTime,
                        this.cameraManager.ActiveCamera,
                         this.GraphicsDevice);
+                
+                if (GraphicsDevice.RasterizerState != defaultRasterizerState)
+                    GraphicsDevice.RasterizerState = defaultRasterizerState;
             }
         }
 

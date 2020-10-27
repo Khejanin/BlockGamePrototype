@@ -12,6 +12,7 @@ namespace GDLibrary
         private ActorType actorType;
         private StatusType statusType;
         private List<IController> controllerList = new List<IController>();
+        private bool initialized = false;
         #endregion
 
         #region Properties
@@ -86,16 +87,22 @@ namespace GDLibrary
         }
         #endregion
 
-        public virtual void Update(GameTime gameTime)
+        public virtual void Initialize()
         {
-            //calls update on any attached controllers
+            initialized = true;
             foreach (IController controller in this.controllerList)
-                controller.Update(gameTime, this);
+                controller.Initialize(this);
         }
 
-        public virtual void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
+        public virtual void Update(GameTime gameTime)
         {
-             //do nothing - see child implementation
+            if (!initialized) Initialize();
+            //calls update on any attached controllers
+            else
+            {
+                foreach (IController controller in this.controllerList)
+                    controller.Update(gameTime, this);
+            }
         }
 
         public override bool Equals(object obj)

@@ -13,6 +13,7 @@ namespace GDLibrary
     {
         private Vector3 rotationAxis;
         private float maxAmplitude, angularSpeed, phaseAngle;
+        private Actor3D parent;
 
         public PanController(Vector3 rotationAxis, 
             float maxAmplitude, float angularSpeed, float phaseAngle)
@@ -23,6 +24,11 @@ namespace GDLibrary
             this.phaseAngle = phaseAngle;
         }
 
+        public void Initialize(IActor actor)
+        {
+            parent = actor as Actor3D;
+        }
+
         public void Update(GameTime gameTime, IActor actor)
         {
             float time = (float)gameTime.TotalGameTime.TotalSeconds%360;
@@ -30,8 +36,7 @@ namespace GDLibrary
             // y = A * Sin(wT + phaseAngle)
             float rotAngle = this.maxAmplitude * (float)Math.Sin(
                 MathHelper.ToRadians(this.angularSpeed * time + this.phaseAngle));
-
-            Actor3D parent = actor as Actor3D;
+            
             if(parent != null)
                 parent.Transform3D.RotateBy(this.rotationAxis * rotAngle);
 

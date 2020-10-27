@@ -5,6 +5,7 @@ namespace GDLibrary
 {
     public interface IController : ICloneable
     {
+        void Initialize(IActor actor);
         void Update(GameTime gameTime, IActor actor); //update the actor controller by this controller
         
         //add more methods here over time...

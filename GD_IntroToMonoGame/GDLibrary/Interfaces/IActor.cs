@@ -6,8 +6,8 @@ namespace GDLibrary
 {
     public interface IActor : ICloneable
     {
+        void Initialize();
         void Update(GameTime gameTime);
-        void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice);
 
      //   string GetID();
      //   float GetAlpha();

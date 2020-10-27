@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GDLibrary
 {
@@ -24,6 +26,9 @@ namespace GDLibrary
         Vector2 screenCentre = Vector2.Zero;
         private BasicEffect modelEffect;
         private SpriteFont debugFont;
+        private ModelObject archetypalBoxWireframe;
+        private BasicEffect wireframeModelEffect;
+        private RasterizerState wireframeRasterizerState;
 
         public Main()
         {
@@ -63,10 +68,12 @@ namespace GDLibrary
             base.Initialize();
         }
 
+        
+
         private void InitDebug()
         {
-            Components.Add(new DebugDrawer(this, _spriteBatch, this.debugFont,
-                this.cameraManager, this.objectManager));
+            /*Components.Add(new DebugDrawer(this, _spriteBatch, this.debugFont,
+                this.cameraManager, this.objectManager));*/
 
         }
 
@@ -163,6 +170,13 @@ namespace GDLibrary
             this.modelEffect.TextureEnabled = true;
             //this.modelEffect.LightingEnabled = true;
             //this.modelEffect.EnableDefaultLighting();
+
+            this.wireframeModelEffect = new BasicEffect(this._graphics.GraphicsDevice);
+            this.wireframeModelEffect.TextureEnabled = false;
+            this.wireframeModelEffect.VertexColorEnabled = true;
+
+            this.wireframeRasterizerState = new RasterizerState();
+            this.wireframeRasterizerState.FillMode = FillMode.WireFrame;
         }
 
         private void InitTextures()
@@ -203,13 +217,14 @@ namespace GDLibrary
             InitStaticModels();
 
         }
+        
 
         private void InitStaticModels()
         {
             //transform
-            Transform3D transform3D = new Transform3D(new Vector3(0, 5, 0),
-                                new Vector3(0, 0, 45),       //rotation
-                                new Vector3(1, 1, 1),        //scale
+            Transform3D transform3D = new Transform3D(Vector3.Up,
+                                Vector3.Zero,       //rotation
+                                Vector3.One,        //scale
                                     -Vector3.UnitZ,         //look
                                     Vector3.UnitY);         //up
 
@@ -222,11 +237,19 @@ namespace GDLibrary
             Model model = Content.Load<Model>("Assets/Models/box2");
 
             //model object
-            ModelObject archetypalBoxObject = new ModelObject("car", ActorType.Player,
+            /*ModelObject archetypalBoxObject = new ModelObject("car", ActorType.Player,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, model);
-            this.objectManager.Add(archetypalBoxObject);
+            this.objectManager.Add(archetypalBoxObject);*/
+            
+            EffectParameters wireframeEffectParameters =
+                new EffectParameters(modelEffect, null, Color.White, 1);
+            
+            
+            this.archetypalBoxWireframe = new ModelObject("original wireframe box mesh",
+            ActorType.Helper, StatusType.Update | StatusType.Drawn , transform3D, wireframeEffectParameters,model,wireframeRasterizerState);
 
+            this.objectManager.Add(archetypalBoxWireframe);
         }
 
         private void InitVertices()
@@ -409,10 +432,56 @@ namespace GDLibrary
                 Exit();
 
             if (this.keyboardManager.IsFirstKeyPress(Keys.C))
+            {
                 this.cameraManager.CycleActiveCamera();
-               // this.cameraManager.ActiveCameraIndex++;
+                // this.cameraManager.ActiveCameraIndex++;
+            }
 
-                base.Update(gameTime);
+            RaycastTests();
+               
+            base.Update(gameTime);
+        }
+
+        private void RaycastTests()
+        {
+            if (this.keyboardManager.IsFirstKeyPress(Keys.G))
+            {
+                ModelObject o = (ModelObject)this.archetypalBoxWireframe.Clone();
+                o.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube,1));
+                o.Transform3D = new Transform3D(Vector3.Up * 5, -Vector3.Forward, Vector3.Up);
+                objectManager.Add(o);
+
+                o = (ModelObject)o.Clone();
+                o.Transform3D.Translation = new Vector3(5, 5, 0);
+                objectManager.Add(o);
+            }
+
+            if (this.keyboardManager.IsFirstKeyPress(Keys.Space))
+            {
+                List<Actor3D> hit = Raycaster.Raycast(new Vector3(0, 5, -5), new Vector3(0, 0, 1),
+                    objectManager.FindAll(a => a != null));
+                   
+                Debug.WriteLine("NEW HIT");
+                   
+                Debug.WriteLine("List size : " + hit.Count);
+                   
+                foreach (Actor3D actor3D in hit)
+                {
+                    Debug.WriteLine(actor3D);
+                }
+                   
+                hit = Raycaster.Raycast(new Vector3(-5, 5, 0), new Vector3(1, 0, 0),
+                    objectManager.FindAll(a => a != null));
+                   
+                Debug.WriteLine("NEW HIT");
+                   
+                Debug.WriteLine("List size : " + hit.Count);
+                   
+                foreach (Actor3D actor3D in hit)
+                {
+                    Debug.WriteLine(actor3D);
+                }
+            }
         }
 
     

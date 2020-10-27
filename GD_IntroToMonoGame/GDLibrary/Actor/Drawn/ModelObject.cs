@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GDLibrary
 {
@@ -40,11 +42,10 @@ namespace GDLibrary
         #endregion
 
         public ModelObject(string id, ActorType actorType, StatusType statusType,
-            Transform3D transform, EffectParameters effectParameters, Model model)
-            : base(id, actorType, statusType, transform, effectParameters)
+            Transform3D transform, EffectParameters effectParameters, Model model, RasterizerState rasterizerState = null)
+            : base(id, actorType, statusType, transform, effectParameters,rasterizerState)
         {
             this.model = model;
-
             InitializeBoneTransforms();
         }
 
@@ -66,8 +67,21 @@ namespace GDLibrary
             }
         }
 
+        public List<BoundingSphere> GetBounds()
+        {
+            List<BoundingSphere> result = new List<BoundingSphere>();
+            
+            foreach (ModelMesh mesh in model.Meshes)
+            {
+                result.Add(mesh.BoundingSphere);
+            }
+
+            return result;
+        }
+
         public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
         {
+            base.Draw(gameTime,camera,graphicsDevice);
             this.EffectParameters.Effect.View = camera.View;
             this.EffectParameters.Effect.Projection = camera.Projection;
             this.EffectParameters.Effect.DiffuseColor = this.EffectParameters.DiffuseColor.ToVector3();
@@ -97,7 +111,8 @@ namespace GDLibrary
                this.StatusType,
                this.Transform3D.Clone() as Transform3D,  //deep
                this.EffectParameters.Clone() as EffectParameters, //hybrid - shallow (texture and effect) and deep (all other fields) 
-               this.model); //shallow i.e. a reference
+               this.model,
+               this.RasterizerState); //shallow i.e. a reference
 
             //remember if we clone a model then we need to clone any attached controllers
             if (this.ControllerList != null)

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 //triangle = PrimitiveObject(vertex data) => DrawnActor3D(EffectParameters)
 namespace GDLibrary
@@ -8,6 +10,7 @@ namespace GDLibrary
     {
         #region Fields
         private EffectParameters effectParameters;
+        private RasterizerState rasterizerState; 
         #endregion
 
         #region Properties
@@ -18,12 +21,20 @@ namespace GDLibrary
                 return this.effectParameters;
             }
         }
+
+        public RasterizerState RasterizerState
+        {
+            get => rasterizerState;
+            set => rasterizerState = value;
+        }
+
         #endregion
 
         #region Constructors
         public DrawnActor3D(string id, ActorType actorType, StatusType statusType, Transform3D transform3D,
-            EffectParameters effectParameters) : base(id, actorType, statusType, transform3D)
+            EffectParameters effectParameters, RasterizerState rasterizerState = null) : base(id, actorType, statusType, transform3D)
         {
+            this.rasterizerState = rasterizerState;
             this.effectParameters = effectParameters;
         }
         #endregion
@@ -44,6 +55,11 @@ namespace GDLibrary
         {
             return new DrawnActor3D(this.ID, this.ActorType, this.StatusType, this.Transform3D.Clone() as Transform3D,
                 this.effectParameters.Clone() as EffectParameters);
+        }
+
+        public virtual void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
+        {
+            if (rasterizerState != null) graphicsDevice.RasterizerState = rasterizerState;
         }
     }
 }
