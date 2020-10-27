@@ -11,6 +11,18 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="GDLibrary\Grid\LevelFiles\Leveltest1.json" />
+    <None Remove="GDLibrary\Grid\LevelFiles\LevelTest2.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="GDLibrary\Grid\LevelFiles\Leveltest1.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="GDLibrary\Grid\LevelFiles\LevelTest2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
   </ItemGroup>
   <ItemGroup>
