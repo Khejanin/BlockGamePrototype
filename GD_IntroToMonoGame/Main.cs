@@ -423,6 +423,7 @@ namespace GDLibrary
         {
             base.UnloadContent();
         }
+        
         #endregion
 
         #region Update & Draw
@@ -458,29 +459,40 @@ namespace GDLibrary
 
             if (this.keyboardManager.IsFirstKeyPress(Keys.Space))
             {
-                List<Actor3D> hit = Raycaster.Raycast(new Vector3(0, 5, -5), new Vector3(0, 0, 1),
+                List<Raycaster.HitResult> hit = Raycaster.RaycastAll(new Vector3(0, 5, -5), new Vector3(0, 0, 1),
                     objectManager.FindAll(a => a != null));
                    
-                Debug.WriteLine("NEW HIT");
+                Debug.WriteLine("NEW HIT : MULTI");
                    
                 Debug.WriteLine("List size : " + hit.Count);
                    
-                foreach (Actor3D actor3D in hit)
+                foreach (Raycaster.HitResult result in hit)
                 {
-                    Debug.WriteLine(actor3D);
+                    Debug.WriteLine("DISTANCE : " + result.distance + " ,ACTOR:" + result.actor);
                 }
+                
+                hit.Sort((result, hitResult) => (int)(result.distance - hitResult.distance));
                    
-                hit = Raycaster.Raycast(new Vector3(-5, 5, 0), new Vector3(1, 0, 0),
+                hit = Raycaster.RaycastAll(new Vector3(-5, 5, 0), new Vector3(1, 0, 0),
                     objectManager.FindAll(a => a != null));
                    
-                Debug.WriteLine("NEW HIT");
+                Debug.WriteLine("NEW HIT : MULTI");
                    
                 Debug.WriteLine("List size : " + hit.Count);
-                   
-                foreach (Actor3D actor3D in hit)
+                
+                hit.Sort((result, hitResult) => (int)(result.distance - hitResult.distance));
+                
+                foreach (Raycaster.HitResult result in hit)
                 {
-                    Debug.WriteLine(actor3D);
+                    Debug.WriteLine("DISTANCE : " + result.distance + " ,ACTOR:" + result.actor);
                 }
+                
+                Debug.WriteLine("NEW HIT : SINGLE");
+                
+                Raycaster.HitResult hitSingle = Raycaster.Raycast(new Vector3(-5, 5, 0), new Vector3(1, 0, 0),
+                    objectManager.FindAll(a => a != null));
+                
+                Debug.WriteLine("DISTANCE : " + hitSingle.distance + " ,ACTOR:" + hitSingle.actor);
             }
         }
 
