@@ -9,23 +9,31 @@ namespace GDLibrary
     public class ObjectManager : DrawableGameComponent
     {
         private CameraManager cameraManager;
-        private List<DrawnActor3D> opaqueList, transparentList;
+        private static List<DrawnActor3D> opaqueList, transparentList;
 
         public ObjectManager(Game game, 
             int initialOpaqueDrawSize, int initialTransparentDrawSize,
             CameraManager cameraManager) : base(game)
         {
             this.cameraManager = cameraManager;
-            this.opaqueList = new List<DrawnActor3D>(initialOpaqueDrawSize);
-            this.transparentList = new List<DrawnActor3D>(initialTransparentDrawSize);
+            opaqueList = new List<DrawnActor3D>(initialOpaqueDrawSize);
+            transparentList = new List<DrawnActor3D>(initialTransparentDrawSize);
+        }
+
+        public static List<DrawnActor3D> GetAllObjects()
+        {
+            List<DrawnActor3D> result = new List<DrawnActor3D>();
+            result.AddRange(opaqueList);
+            result.AddRange(transparentList);
+            return result;
         }
 
         public void Add(DrawnActor3D actor)
         {
             if (actor.EffectParameters.Alpha < 1)
-                this.transparentList.Add(actor);
+                transparentList.Add(actor);
             else
-                this.opaqueList.Add(actor);
+                opaqueList.Add(actor);
         }
 
         public List<DrawnActor3D> FindAll(Predicate<DrawnActor3D> predicate)
@@ -40,11 +48,11 @@ namespace GDLibrary
 
          //   RemoveIf(actor => actor.ID.Equals("dungeon powerup key"));
 
-            int position = this.opaqueList.FindIndex(predicate);
+            int position = opaqueList.FindIndex(predicate);
 
             if (position != -1)
             {
-                this.opaqueList.RemoveAt(position);
+                opaqueList.RemoveAt(position);
                 return true;
             }
 
@@ -59,13 +67,13 @@ namespace GDLibrary
 
         public override void Update(GameTime gameTime)
         {
-            foreach (DrawnActor3D actor in this.opaqueList)
+            foreach (DrawnActor3D actor in opaqueList)
             {
                 if((actor.StatusType & StatusType.Update) == StatusType.Update)
                     actor.Update(gameTime);
             }
 
-            foreach (DrawnActor3D actor in this.transparentList)
+            foreach (DrawnActor3D actor in transparentList)
             {
                 if ((actor.StatusType & StatusType.Update) == StatusType.Update)
                     actor.Update(gameTime);
@@ -75,7 +83,7 @@ namespace GDLibrary
         public override void Draw(GameTime gameTime)
         {
             RasterizerState defaultRasterizerState = GraphicsDevice.RasterizerState;
-            foreach (DrawnActor3D actor in this.opaqueList)
+            foreach (DrawnActor3D actor in opaqueList)
             {
                 if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
                     actor.Draw(gameTime, 
@@ -86,7 +94,7 @@ namespace GDLibrary
                     GraphicsDevice.RasterizerState = defaultRasterizerState;
             }
 
-            foreach (DrawnActor3D actor in this.transparentList)
+            foreach (DrawnActor3D actor in transparentList)
             {
                 if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
                     actor.Draw(gameTime,

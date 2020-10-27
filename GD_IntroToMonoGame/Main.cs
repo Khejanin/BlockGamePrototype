@@ -438,6 +438,7 @@ namespace GDLibrary
                 // this.cameraManager.ActiveCameraIndex++;
             }
 
+            //use g and space
             RaycastTests();
                
             base.Update(gameTime);
