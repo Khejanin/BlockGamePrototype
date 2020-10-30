@@ -6,7 +6,7 @@ namespace GDLibrary
     public class Actor3D : Actor
     {
         #region Fields
-        private Transform3D transform3D;
+        protected Transform3D transform3D;
         #endregion
 
         #region Properties

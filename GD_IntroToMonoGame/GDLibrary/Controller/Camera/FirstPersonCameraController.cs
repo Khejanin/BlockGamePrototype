@@ -64,7 +64,7 @@ namespace GDLibrary
             mouseDelta *= this.rotationSpeed * gameTime.ElapsedGameTime.Milliseconds;
 
             if (mouseDelta.Length() != 0)
-                parent.Transform3D.RotateBy(new Vector3(-1 * mouseDelta, 0));
+                parent.Transform3D.RotateBy(new Vector3(-1 * mouseDelta.Y, -1 * mouseDelta.X, 0));
 
         }
 
