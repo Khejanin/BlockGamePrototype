@@ -69,7 +69,9 @@ namespace GDLibrary
                 contentManager.Load<Texture2D>("Assets/Textures/Props/Crates/crate1"),
                 Color.White, 1);
             Model model = contentManager.Load<Model>("Assets/Models/box2");
+            Transform3D parentTransform = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
             Transform3D transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
+            //transform3D.SetParent(ref parentTransform);
             CubePlayer player = new CubePlayer("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, model);
             player.ControllerList.Add(controller);
             objectManager.Add(player);
