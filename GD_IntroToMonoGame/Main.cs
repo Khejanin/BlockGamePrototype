@@ -208,7 +208,7 @@ namespace GDLibrary
             InitHelpers();
 
             //add skybox
-            InitSkybox();
+            //InitSkybox();
 
             //add grass plane
             InitGround();
