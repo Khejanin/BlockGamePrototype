@@ -51,12 +51,17 @@ namespace GDLibrary
                 Vector3 dest = player.Transform3D.Translation + moveDir;
 
                 if (moveDir != Vector3.Zero)
-                    if (Grid.CanMove(dest))
+                {
+                    Grid.GridPositionResult gridPositionResult = Grid.QueryMove(dest);
+                    if (gridPositionResult.validMovePos
+                    )
                     {
+                        if(gridPositionResult.floorTile.TileType == ETileType.Win) Debug.WriteLine("YOU WON THE GAME! WOO");
                         player.Move(moveDir);
                         Grid.MoveTo(start, dest);
                         Debug.WriteLine("PLAYER MOVED FROM : " + start + " TO : " + dest);
                     }
+                }
             }
         }
 

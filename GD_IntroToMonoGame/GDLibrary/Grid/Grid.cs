@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.Win32.SafeHandles;
 using SharpDX;
+using SharpDX.Direct2D1;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace GDLibrary
@@ -87,6 +88,49 @@ namespace GDLibrary
         {
             grid[(int)dest.X,(int)dest.Y,(int)dest.Z] = grid[(int)start.X,(int)start.Y,(int)start.Z];
             grid[(int)start.X,(int)start.Y,(int)start.Z] = null;
+        }
+
+        public struct GridPositionResult
+        {
+            public Vector3 pos;
+            public GridTile floorTile;
+            public GridTile positionTile;
+            public bool validMovePos;
+        }
+
+        public static GridPositionResult QueryMove(Vector3 pos)
+        {
+            try
+            {
+                int x = (int) pos.X;
+                int y = (int) pos.Y;
+                int z = (int) pos.Z;
+                
+                GridTile floorTile = grid[x, y - 1, z];
+                GridTile destinationTile = grid[x, y , z];
+                
+                GridPositionResult gpr = new GridPositionResult();
+                gpr.pos = pos;
+                gpr.floorTile = floorTile;
+                gpr.positionTile = destinationTile;
+                
+                bool hasFloor = floorTile != null;
+                bool validDest = destinationTile == null || destinationTile.CanMoveInto;
+                if (hasFloor && validDest)
+                {
+                    gpr.validMovePos = true;
+                    return gpr;
+                }
+                else
+                {
+                    gpr.validMovePos = false;
+                    return gpr;
+                }
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                return new GridPositionResult(){validMovePos = false, pos = pos};
+            }
         }
 
         public static bool CanMove(Vector3 pos)
