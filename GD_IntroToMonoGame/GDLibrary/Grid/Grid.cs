@@ -1,19 +1,23 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace GDLibrary
 {
     public class Grid
     {
-        Transform3D transform;
-        TileFactory tileFactory;
-        GridTile[,,] grid;
+        private Transform3D transform;
+        private TileFactory tileFactory;
+        private GridTile[,,] grid;
+        private static Dictionary<int, Shape> shapes;
 
         public Grid(Transform3D transform, TileFactory tileFactory)
         {
             this.transform = transform;
             this.tileFactory = tileFactory;
+            shapes = new Dictionary<int, Shape>();
         }
 
         public void GenerateGrid(string levelFilePath)
@@ -60,17 +64,32 @@ namespace GDLibrary
                 pos.X += data.tileSize.X;
             }
 
-            //CreateShapes(data);
+            CreateShapes(data, this.grid);
         }
 
-        //private void CreateShapes(LevelData data)
-        //{
-        //    foreach (var shapesKey in data.shapes.Keys)
-        //    {
-        //        Transform newParent = new GameObject("Shape" + shapesKey + "Parent").transform;
-        //        foreach (var shape in data.shapes[shapesKey])
-        //            grid[(int)shape.x, (int)shape.y, (int)shape.z].transform.SetParent(newParent);
-        //    }
-        //}
+        private void CreateShapes(LevelData data, GridTile[,,] grid)
+        {
+            foreach (var shapesKey in data.shapes.Keys)
+            {
+                //Transform newParent = new GameObject("Shape" + shapesKey + "Parent").transform;
+                Shape newShape = this.tileFactory.CreateShape();
+                foreach (var shape in data.shapes[shapesKey])
+                {
+                    //grid[(int)shape.x, (int)shape.y, (int)shape.z].transform.SetParent(newParent);
+                    newShape.AddTile(grid[(int)shape.X, (int)shape.Y, (int)shape.Z]);
+                }
+                shapes.Add((int)shapesKey, newShape);
+            }
+        }
+
+        public static Shape GetShapeById(int id)
+        {
+            if(shapes.ContainsKey(id)) 
+            {
+                return shapes[id];
+            }
+
+            return null;
+        }
     }
 }

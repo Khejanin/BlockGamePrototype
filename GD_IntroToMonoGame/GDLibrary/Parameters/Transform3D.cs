@@ -13,7 +13,6 @@ namespace GDLibrary
         private Vector3 look, up; //right = look x up
         private Vector3 originalLook;
         private Vector3 originalUp;
-        private Matrix rotMatrix;
         private Quaternion rotation;
 
         public Transform3D parent;
@@ -68,10 +67,6 @@ namespace GDLibrary
         {
             get
             {
-              //  Vector3 right = Vector3.Cross(this.look, this.up);
-              //  right.Normalize();
-              //  return right;
-
                 return Vector3.Normalize(Vector3.Cross(this.look, this.up));
             }
         }
@@ -105,60 +100,42 @@ namespace GDLibrary
 
         public Quaternion Rotation
         {
-            get; set;
-        }
-
-        public Vector3 RotationInDegrees
-        {
             get
             {
-                return this.rotationInDegrees;
+                return this.rotation;
             }
             set
             {
-                this.rotationInDegrees = value;
-
-                ////explain: yaw, pitch, roll
-                ////create a new "XYZ" axis to rotate around using the (x,y,0) values from mouse and any current rotation
-                //Matrix rotMatrix = Matrix.CreateFromYawPitchRoll(
-                //    MathHelper.ToRadians(value.Y), //Yaw
-                //    MathHelper.ToRadians(value.X), //Pitch
-                //    MathHelper.ToRadians(value.Z)); //Roll
-
-                ////update the look and up vector (i.e. rotate them both around this new "XYZ" axis)
-                //this.look = Vector3.Transform(this.originalLook, rotMatrix);
-                //this.up = Vector3.Transform(this.originalUp, rotMatrix);
-                ////rotationInDegrees.X = (value.X % 360 < 0) ? value.X % 360 + 360 : value.X % 360;
-                ////rotationInDegrees.Y = (value.Y % 360 < 0) ? value.Y % 360 + 360 : value.Y % 360;
-                ////rotationInDegrees.Z = (value.Z % 360 < 0) ? value.Z % 360 + 360 : value.Z % 360;
-                UpdateChildren(Vector3.Zero, value, Vector3.Zero);
+                this.rotation = value;
+                this.rotation.Normalize();
             }
         }
 
-        public Matrix RotationAsMatrix
-        {
-            get
-            {
-                return this.rotMatrix;
-            }
-            set
-            {
-                this.rotMatrix = value;
-            }
-        }
+        //public Vector3 RotationInDegrees
+        //{
+        //    get
+        //    {
+        //        return this.rotationInDegrees;
+        //    }
+        //    set
+        //    {
+        //        this.rotationInDegrees = value;
+        //        UpdateChildren(Vector3.Zero, value, Vector3.Zero);
+        //    }
+        //}
 
-        public Vector3 LocalRotationInDegrees
-        {
-            get
-            {
-                return this.localRotationInDegrees;
-            }
-            set
-            {
-                RotationInDegrees = (parent != null) ? RotationInDegrees + value : value;
-                this.localRotationInDegrees = value;
-            }
-        }
+        //public Vector3 LocalRotationInDegrees
+        //{
+        //    get
+        //    {
+        //        return this.localRotationInDegrees;
+        //    }
+        //    set
+        //    {
+        //        RotationInDegrees = (parent != null) ? RotationInDegrees + value : value;
+        //        this.localRotationInDegrees = value;
+        //    }
+        //}
 
         public Vector3 Scale
         {
@@ -199,11 +176,11 @@ namespace GDLibrary
         {
             this.children = new List<Transform3D>();
             this.Translation = translation;
-            this.originalRotationInDegrees = this.RotationInDegrees = rotationInDegrees;
+            //this.originalRotationInDegrees = this.RotationInDegrees = rotationInDegrees;
             this.Scale = scale;
             this.originalLook = this.Look = look;
             this.originalUp = this.Up = up;
-            rotMatrix = Matrix.Identity * Matrix.CreateFromYawPitchRoll(rotationInDegrees.Y, rotationInDegrees.X, rotationInDegrees.Z);
+            //rotMatrix = Matrix.Identity * Matrix.CreateFromYawPitchRoll(rotationInDegrees.Y, rotationInDegrees.X, rotationInDegrees.Z);
             Rotation = Quaternion.Identity * Quaternion.CreateFromYawPitchRoll(MathHelper.ToRadians(rotationInDegrees.Y), MathHelper.ToRadians(rotationInDegrees.X), MathHelper.ToRadians(rotationInDegrees.Z));
         }
 

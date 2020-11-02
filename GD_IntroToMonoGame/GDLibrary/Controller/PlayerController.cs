@@ -11,7 +11,6 @@ namespace GDLibrary
         public PlayerController(KeyboardManager keyboardManager)
         {
             this.keyboardManager = keyboardManager;
-            //this.grid = grid;
         }
 
         public void Initialize(IActor actor)
@@ -26,14 +25,14 @@ namespace GDLibrary
 
         private void HandleKeyboardInput(GameTime gameTime)
         {
-            if (this.keyboardManager.IsFirstKeyPress(Keys.Up))
+            if (this.keyboardManager.IsKeyDown(Keys.Up))
                 this.player.Move(-Vector3.UnitZ);
-            else if (this.keyboardManager.IsFirstKeyPress(Keys.Down))
+            else if (this.keyboardManager.IsKeyDown(Keys.Down))
                 this.player.Move(Vector3.UnitZ);
 
-            if (this.keyboardManager.IsFirstKeyPress(Keys.Left))
+            if (this.keyboardManager.IsKeyDown(Keys.Left))
                 this.player.Move(-Vector3.UnitX);
-            else if (this.keyboardManager.IsFirstKeyPress(Keys.Right))
+            else if (this.keyboardManager.IsKeyDown(Keys.Right))
                 this.player.Move(Vector3.UnitX);
 
             //parent.Transform3D.TranslateBy(moveVector * gameTime.ElapsedGameTime.Milliseconds);

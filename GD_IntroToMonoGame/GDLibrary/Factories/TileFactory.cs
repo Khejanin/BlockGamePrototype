@@ -36,7 +36,13 @@ namespace GDLibrary
                     break;
             }
 
+            if (tile != null) tile.TileType = type;
             return tile;
+        }
+
+        public Shape CreateShape()
+        {
+            return new Shape("Shape", ActorType.NonPlayer, StatusType.Update, new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY));
         }
 
         private GridTile CreateStatic()
