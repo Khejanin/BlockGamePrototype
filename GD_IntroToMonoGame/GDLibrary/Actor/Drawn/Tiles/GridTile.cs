@@ -5,7 +5,11 @@ namespace GDLibrary
 {
     public class GridTile : ModelObject
     {
-        public ETileType tileType;
+        private ETileType tileType;
+        private Shape shape;
+
+        public Shape Shape { get; set; }
+        public ETileType TileType { get; set; }
 
         public GridTile(string id, ActorType actorType, StatusType statusType,
             Transform3D transform, EffectParameters effectParameters, Model model)
@@ -14,12 +18,7 @@ namespace GDLibrary
 
         }
 
-        public virtual void Initialize()
-        {
-
-        }
-
-        public void SetPosition(Vector3 position)
+        public virtual void SetPosition(Vector3 position)
         {
             transform3D.Translation = position;
         }
