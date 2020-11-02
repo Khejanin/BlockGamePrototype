@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -38,10 +40,12 @@ namespace GDLibrary
         public BasicEffect WireframeModelEffect => wireframeModelEffect;
         public RasterizerState WireframeRasterizerState => wireframeRasterizerState;
         public Vector2 ScreenCentre => screenCentre;
+        private SoundManager soundManager;
 
         //eventually we will remove this content
         private VertexPositionColorTexture[] vertices;
         private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass;
+        private SoundEffect track01, track02, track03, track04, track05;
         private PrimitiveObject archetypalTexturedQuad;
         private float worldScale = 3000;
         PrimitiveObject primitiveObject = null;
@@ -54,7 +58,7 @@ namespace GDLibrary
             IsMouseVisible = true;
         }
 
-        #region Initialization - Managers, Cameras, Effects, Textures
+        #region Initialization - Managers, Cameras, Effects, Textures, Audio
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
@@ -72,6 +76,11 @@ namespace GDLibrary
             mouseManager = new MouseManager(this, false);
             Components.Add(this.mouseManager);
 
+            //Sound
+            this.soundManager = new SoundManager(this);
+            Components.Add(this.soundManager);
+
+            InitCameras3D();
             InitManagers();
             InitFonts();
             InitEffect();
@@ -156,9 +165,26 @@ namespace GDLibrary
         
         #endregion
 
-        #region Load and Unload Content
+        private void InitSound()
+        {
+            //step 1 - load songs
+            this.track01 = Content.Load<SoundEffect>("Assets/Sound/GameTrack01");
+            this.track02 = Content.Load<SoundEffect>("Assets/Sound/Ambiance02");
+            this.track03 = Content.Load<SoundEffect>("Assets/Sound/Knock03");
+            this.track04 = Content.Load<SoundEffect>("Assets/Sound/Chains01");
+            this.track05 = Content.Load<SoundEffect>("Assets/Sound/Click01");
 
-        protected void LoadContent()
+            //Step 2- Make into sounds
+            this.soundManager.Add(new Sounds(null, track01, "main", ActorType.MusicTrack, StatusType.Update));
+            this.soundManager.Add(new Sounds(null, track02, "ambiance", ActorType.MusicTrack, StatusType.Update));
+            this.soundManager.Add(new Sounds(null, track03, "playerMove", ActorType.SoundEffect, StatusType.Update));
+            this.soundManager.Add(new Sounds(null, track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
+            this.soundManager.Add(new Sounds(null, track05, "Attach", ActorType.SoundEffect, StatusType.Update));
+
+            this.soundManager.playSoundEffect("main");
+        }
+
+        protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             InitDebug();
@@ -177,6 +203,13 @@ namespace GDLibrary
         {
             if (this.keyboardManager.IsFirstKeyPress(Keys.Escape))
                 Exit();
+
+           
+            //Cycle Through Audio
+            if (this.keyboardManager.IsFirstKeyPress(Keys.M))
+            {
+                this.soundManager.nextSong();
+            }
 
             base.Update(gameTime);
             currentScene.Update(gameTime);
