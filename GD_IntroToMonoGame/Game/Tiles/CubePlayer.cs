@@ -28,11 +28,19 @@ namespace GDLibrary
             rightRotatePoint = transform.Translation /*+ Vector3.UnitX*/;
         }
 
+        public bool IsMoving => isMoving;
+
         public override void Initialize()
         {
             base.Initialize();
         }
-
+        
+        
+        /// <summary>
+        /// This method will change the Player's state to moving if he's not already moving and calculates how the player will move.
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <exception cref="ArgumentException"></exception>
         public void Move(Vector3 direction)
         {
             if (!isMoving)
@@ -61,6 +69,10 @@ namespace GDLibrary
             }
         }
 
+        /// <summary>
+        /// Is in charge of the Animation for when the Player Moves
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);

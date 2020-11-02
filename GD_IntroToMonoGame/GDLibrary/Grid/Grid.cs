@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
+using Microsoft.Win32.SafeHandles;
+using SharpDX;
+using Vector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace GDLibrary
 {
@@ -10,7 +11,7 @@ namespace GDLibrary
     {
         private Transform3D transform;
         private TileFactory tileFactory;
-        private GridTile[,,] grid;
+        private static GridTile[,,] grid;
         private static Dictionary<int, Shape> shapes;
 
         public Grid(Transform3D transform, TileFactory tileFactory)
@@ -64,7 +65,7 @@ namespace GDLibrary
                 pos.X += data.tileSize.X;
             }
 
-            CreateShapes(data, this.grid);
+            CreateShapes(data, grid);
         }
 
         private void CreateShapes(LevelData data, GridTile[,,] grid)
@@ -82,6 +83,32 @@ namespace GDLibrary
             }
         }
 
+        public static void MoveTo(Vector3 start, Vector3 dest)
+        {
+            grid[(int)dest.X,(int)dest.Y,(int)dest.Z] = grid[(int)start.X,(int)start.Y,(int)start.Z];
+            grid[(int)start.X,(int)start.Y,(int)start.Z] = null;
+        }
+
+        public static bool CanMove(Vector3 pos)
+        {
+            return CanMove((int) pos.X, (int) pos.Y, (int) pos.Z);
+        }
+
+        public static bool CanMove(int x, int y, int z)
+        {
+            try
+            {
+                bool hasFloor = grid[x, y - 1, z] != null;
+                bool isFree = grid[x, y, z] == null;
+
+                return hasFloor && isFree;
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                return false;
+            }
+        }
+
         public static Shape GetShapeById(int id)
         {
             if(shapes.ContainsKey(id)) 
@@ -90,6 +117,11 @@ namespace GDLibrary
             }
 
             return null;
+        }
+
+        public GridTile[,,] GetGrid()
+        {
+            return grid;
         }
     }
 }

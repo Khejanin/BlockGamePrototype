@@ -223,7 +223,7 @@ namespace GDLibrary
 
         private void InitGrid()
         {
-            Grid grid = new Grid(new Transform3D(new Vector3(0, 5, 0), -Vector3.UnitZ, Vector3.UnitY), new TileFactory(keyboardManager, objectManager, Content, modelEffect));
+            Grid grid = new Grid(new Transform3D(new Vector3(0, 0, 0), -Vector3.UnitZ, Vector3.UnitY), new TileFactory(keyboardManager, objectManager, Content, modelEffect));
             grid.GenerateGrid(@"GDLibrary\Grid\LevelFiles\LevelTest2.json");
         }
 
