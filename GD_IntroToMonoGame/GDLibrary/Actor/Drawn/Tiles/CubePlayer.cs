@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace GDLibrary
 {
@@ -12,7 +13,6 @@ namespace GDLibrary
         private Quaternion startRotQ;
         private Quaternion endRotQ;
         private bool isMoving;
-        private Vector3 rotPoint;
         private Vector3 offset;
 
         private Vector3 leftRotatePoint;
@@ -20,12 +20,17 @@ namespace GDLibrary
         private Vector3 forwardRotatePoint;
         private Vector3 backwardRotatePoint;
 
+        struct PlayerSurroundCheck
+        {
+            public EDirection dir;
+            public List<Raycaster.HitResult> hit;
+        }
+
         public CubePlayer(string id, ActorType actorType, StatusType statusType,
             Transform3D transform, EffectParameters effectParameters, Model model)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
             leftRotatePoint = rightRotatePoint = forwardRotatePoint = backwardRotatePoint = transform.Translation;
-            rightRotatePoint = transform.Translation /*+ Vector3.UnitX*/;
         }
 
         public override void Initialize()
@@ -90,6 +95,53 @@ namespace GDLibrary
             forwardRotatePoint += difference;
             backwardRotatePoint += difference;
             base.SetPosition(position);
+        }
+
+        private void UpdateRotatePoints()
+        {
+            foreach (PlayerSurroundCheck check in CheckSurroundings())
+            {
+                foreach (Raycaster.HitResult hit in check.hit)
+                {
+                    
+                }
+
+                switch(check.dir)
+                {
+                    case EDirection.Right:
+                        break;
+                    case EDirection.Left:
+                        break;
+                    case EDirection.Forward:
+                        break;
+                    case EDirection.Back:
+                        break;
+                }
+            }
+        }
+
+        private List<PlayerSurroundCheck> CheckSurroundings()
+        {
+            List<PlayerSurroundCheck> result = new List<PlayerSurroundCheck>();
+
+            PlayerSurroundCheck surroundCheck = new PlayerSurroundCheck();
+            surroundCheck.hit = this.RaycastAll(Transform3D.Translation, Vector3.Right, true);
+            surroundCheck.dir = EDirection.Right;
+            result.Add(surroundCheck);
+
+            surroundCheck.hit = this.RaycastAll(Transform3D.Translation, -Vector3.Right, true);
+            surroundCheck.dir = EDirection.Left;
+            result.Add(surroundCheck);
+
+            surroundCheck.hit = this.RaycastAll(Transform3D.Translation, Vector3.Forward, true);
+            surroundCheck.dir = EDirection.Forward;
+            result.Add(surroundCheck);
+
+            surroundCheck.hit = this.RaycastAll(Transform3D.Translation, -Vector3.Forward, true);
+            surroundCheck.dir = EDirection.Back;
+            result.Add(surroundCheck);
+
+            return result;
         }
     }
 }

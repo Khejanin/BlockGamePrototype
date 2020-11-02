@@ -9,6 +9,6 @@ namespace GDLibrary
         Up,
         Down,
         Forward,
-        Backward
+        Back
     }
 }
