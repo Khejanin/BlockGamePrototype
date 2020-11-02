@@ -8,6 +8,9 @@
         Primitive, //make this type using IVertexData
         Pickups,
 
+        SoundEffect,
+        MusicTrack,
+
         Camera2D,
         Camera3D,
 

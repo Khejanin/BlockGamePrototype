@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,10 +18,12 @@ namespace GDLibrary
         private ObjectManager objectManager;
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
+        private SoundManager soundManager;
 
         //eventually we will remove this content
         private VertexPositionColorTexture[] vertices;
         private Texture2D backSky, leftSky, rightSky, frontSky, topSky, grass;
+        private SoundEffect track01, track02, track03, track04, track05;
         private PrimitiveObject archetypalTexturedQuad;
         private float worldScale = 3000;
         PrimitiveObject primitiveObject = null;
@@ -37,7 +41,7 @@ namespace GDLibrary
             IsMouseVisible = true;
         }
 
-        #region Initialization - Managers, Cameras, Effects, Textures
+        #region Initialization - Managers, Cameras, Effects, Textures, Audio
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
@@ -54,6 +58,10 @@ namespace GDLibrary
             //mouse
             this.mouseManager = new MouseManager(this, false);
             Components.Add(this.mouseManager);
+
+            //Sound
+            this.soundManager = new SoundManager(this);
+            Components.Add(this.soundManager);
 
             InitCameras3D();
             InitManagers();
@@ -198,7 +206,7 @@ namespace GDLibrary
         }
         #endregion
 
-        #region Initialization - Vertices, Archetypes, Helpers, Drawn Content(e.g. Skybox)
+        #region Initialization - Vertices, Archetypes, Helpers, Drawn Content(e.g. Skybox), Audio
         private void InitDrawnContent() //formerly InitPrimitives
         {
             //add archetypes that can be cloned
@@ -218,6 +226,9 @@ namespace GDLibrary
 
             //grid
             InitGrid();
+
+            //Audio
+            InitSound();
 
         }
 
@@ -421,6 +432,25 @@ namespace GDLibrary
             this._graphics.GraphicsDevice.SamplerStates[0] = samplerState;
         }
 
+        private void InitSound()
+        {
+            //step 1 - load songs
+            this.track01 = Content.Load<SoundEffect>("Assets/Sound/GameTrack01");
+            this.track02 = Content.Load<SoundEffect>("Assets/Sound/Ambiance02");
+            this.track03 = Content.Load<SoundEffect>("Assets/Sound/Knock03");
+            this.track04 = Content.Load<SoundEffect>("Assets/Sound/Chains01");
+            this.track05 = Content.Load<SoundEffect>("Assets/Sound/Click01");
+
+            //Step 2- Make into sounds
+            this.soundManager.Add(new Sounds(null, track01, "main", ActorType.MusicTrack, StatusType.Update));
+            this.soundManager.Add(new Sounds(null, track02, "ambiance", ActorType.MusicTrack, StatusType.Update));
+            this.soundManager.Add(new Sounds(null, track03, "playerMove", ActorType.SoundEffect, StatusType.Update));
+            this.soundManager.Add(new Sounds(null, track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
+            this.soundManager.Add(new Sounds(null, track05, "Attach", ActorType.SoundEffect, StatusType.Update));
+
+            this.soundManager.playSoundEffect("main");
+        }
+
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -448,7 +478,13 @@ namespace GDLibrary
 
             //use g and space
             RaycastTests();
-               
+
+            //Cycle Through Audio
+            if (this.keyboardManager.IsFirstKeyPress(Keys.M))
+            {
+                this.soundManager.nextSong();
+            }
+
             base.Update(gameTime);
         }
 
@@ -504,7 +540,6 @@ namespace GDLibrary
                 Debug.WriteLine("DISTANCE : " + hitSingle.distance + " ,ACTOR:" + hitSingle.actor);
             }
         }
-
     
         protected override void Draw(GameTime gameTime)
         {
