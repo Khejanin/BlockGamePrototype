@@ -24,15 +24,18 @@ namespace GDLibrary
             get
             {
                 return Matrix.Identity
-                        * Matrix.CreateScale(this.scale)
-                        //* Matrix.CreateRotationY(MathHelper.ToRadians(this.rotationInDegrees.Y))
-                        //    * Matrix.CreateRotationX(MathHelper.ToRadians(this.rotationInDegrees.X))
-                        //        * Matrix.CreateRotationZ(MathHelper.ToRadians(this.rotationInDegrees.Z))
-                        //* Matrix.CreateFromAxisAngle(Vector3.Right, MathHelper.ToRadians(this.rotationInDegrees.X))
-                        //* Matrix.CreateFromAxisAngle(Vector3.Up, MathHelper.ToRadians(this.rotationInDegrees.Y))
-                        //* Matrix.CreateFromAxisAngle(Vector3.Forward, MathHelper.ToRadians(this.rotationInDegrees.Z))
-                        * Matrix.CreateFromQuaternion(Rotation)
-                        * Matrix.CreateTranslation(this.translation);
+                    * Matrix.CreateScale(this.scale)
+                    //* Matrix.CreateRotationY(MathHelper.ToRadians(this.rotationInDegrees.Y))
+                    //    * Matrix.CreateRotationX(MathHelper.ToRadians(this.rotationInDegrees.X))
+                    //        * Matrix.CreateRotationZ(MathHelper.ToRadians(this.rotationInDegrees.Z))
+                    //* Matrix.CreateFromAxisAngle(Vector3.Right, MathHelper.ToRadians(this.rotationInDegrees.X))
+                    //* Matrix.CreateFromAxisAngle(Vector3.Up, MathHelper.ToRadians(this.rotationInDegrees.Y))
+                    //* Matrix.CreateFromAxisAngle(Vector3.Forward, MathHelper.ToRadians(this.rotationInDegrees.Z))
+                    * Matrix.CreateFromQuaternion(Rotation)
+                    * Matrix.CreateTranslation(this.translation)
+                    * (parent != null
+                        ? parent.World
+                        : Matrix.Identity);
             }
         }
 

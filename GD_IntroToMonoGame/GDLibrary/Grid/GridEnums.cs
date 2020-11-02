@@ -5,5 +5,6 @@ public enum ETileType
     Static,
     Attachable,
     Trigger,
-    PlayerStart
+    PlayerStart,
+    Win
 }
