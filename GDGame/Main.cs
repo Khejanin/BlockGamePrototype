@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using GDGame.Game.Controllers;
+using GDGame.Game.Controllers.CameraControllers;
 using GDGame.Game.Factory;
 using GDGame.Game.Utilities;
 using GDLibrary;
@@ -144,10 +145,7 @@ namespace GDGame
                 ProjectionParameters.StandardDeepSixteenTen);
 
             //attach a controller
-            camera3D.ControllerList.Add(new FirstPersonController(
-                "1st person controller A", ControllerType.FirstPerson,
-                keyboardManager, mouseManager,
-                GameConstants.moveSpeed, GameConstants.strafeSpeed, GameConstants.rotateSpeed));
+            camera3D.ControllerList.Add(new RotationAroundActor("ROTATION_AROUND_ACTOR", ControllerType.FirstPerson, keyboardManager, GameConstants.rotateSpeed));
             cameraManager.Add(camera3D);
 
             #endregion Camera - First Person
@@ -462,6 +460,13 @@ namespace GDGame
         {
             Grid grid = new Grid(new Transform3D(new Vector3(0, 0, 0), -Vector3.UnitZ, Vector3.UnitY), new TileFactory(keyboardManager, objectManager, Content, modelEffect));
             grid.GenerateGrid(@"Game\LevelFiles\LevelTest2.json");
+
+            List<DrawnActor3D> playerAll = objectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
+            if (playerAll.Count > 0)
+            {
+                RotationAroundActor rotationAroundActor = (RotationAroundActor) cameraManager.ActiveCamera.ControllerList[0];
+                rotationAroundActor.Target = playerAll[0];
+            }
         }
         
         private void RaycastTests()

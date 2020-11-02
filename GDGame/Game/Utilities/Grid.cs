@@ -39,7 +39,7 @@ namespace GDLibrary
                 throw new FileNotFoundException("The level file with the path: " + levelFilePath + " was not found!");
 
             LevelData data = LevelDataConverter.ConvertJsonToLevelData(jsonString);
-            grid = new GridTile[(int)data.gridSize.X, (int)data.gridSize.Y, (int)data.gridSize.Z];
+            grid = new GridTile[(int) data.gridSize.X, (int) data.gridSize.Y, (int) data.gridSize.Z];
             Vector3 pos = Vector3.Zero;
 
             for (int x = 0; x < data.gridSize.X; x++)
@@ -48,10 +48,10 @@ namespace GDLibrary
                 {
                     for (int z = 0; z < data.gridSize.Z; z++)
                     {
-                        if (data.gridValues[x, y, z] != ETileType.None) 
+                        if (data.gridValues[x, y, z] != ETileType.None)
                         {
                             GridTile tile = tileFactory.CreateTile(data.gridValues[x, y, z]);
-                            if(tile != null) tile.SetPosition(pos + transform.Translation);
+                            tile?.SetPosition(pos + transform.Translation);
                             grid[x, y, z] = tile;
                         }
                         else
@@ -77,19 +77,20 @@ namespace GDLibrary
             {
                 //Transform newParent = new GameObject("Shape" + shapesKey + "Parent").transform;
                 Shape newShape = this.tileFactory.CreateShape();
-                foreach (var shape in data.shapes[shapesKey])
+                foreach ((float x, float y, float z) in data.shapes[shapesKey])
                 {
                     //grid[(int)shape.x, (int)shape.y, (int)shape.z].transform.SetParent(newParent);
-                    newShape.AddTile(grid[(int)shape.X, (int)shape.Y, (int)shape.Z]);
+                    newShape.AddTile(grid[(int) x, (int) y, (int) z]);
                 }
-                shapes.Add((int)shapesKey, newShape);
+
+                shapes.Add((int) shapesKey, newShape);
             }
         }
 
         public static void MoveTo(Vector3 start, Vector3 dest)
         {
-            grid[(int)dest.X,(int)dest.Y,(int)dest.Z] = grid[(int)start.X,(int)start.Y,(int)start.Z];
-            grid[(int)start.X,(int)start.Y,(int)start.Z] = null;
+            grid[(int) dest.X, (int) dest.Y, (int) dest.Z] = grid[(int) start.X, (int) start.Y, (int) start.Z];
+            grid[(int) start.X, (int) start.Y, (int) start.Z] = null;
         }
 
         public struct GridPositionResult
@@ -107,15 +108,15 @@ namespace GDLibrary
                 int x = (int) pos.X;
                 int y = (int) pos.Y;
                 int z = (int) pos.Z;
-                
+
                 GridTile floorTile = grid[x, y - 1, z];
-                GridTile destinationTile = grid[x, y , z];
-                
+                GridTile destinationTile = grid[x, y, z];
+
                 GridPositionResult gpr = new GridPositionResult();
                 gpr.pos = pos;
                 gpr.floorTile = floorTile;
                 gpr.positionTile = destinationTile;
-                
+
                 bool hasFloor = floorTile != null;
                 bool validDest = destinationTile == null || destinationTile.CanMoveInto;
                 if (hasFloor && validDest)
@@ -131,7 +132,7 @@ namespace GDLibrary
             }
             catch (IndexOutOfRangeException e)
             {
-                return new GridPositionResult(){validMovePos = false, pos = pos};
+                return new GridPositionResult() {validMovePos = false, pos = pos};
             }
         }
 
@@ -157,7 +158,7 @@ namespace GDLibrary
 
         public static Shape GetShapeById(int id)
         {
-            if(shapes.ContainsKey(id)) 
+            if (shapes.ContainsKey(id))
             {
                 return shapes[id];
             }

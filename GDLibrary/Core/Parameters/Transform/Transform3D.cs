@@ -30,22 +30,21 @@ namespace GDLibrary.Parameters
             get => Quaternion.Normalize(rotation);
             set => rotation = value;
         }
-        
+
         public Matrix World
         {
             get
             {
                 return Matrix.Identity
-                    * Matrix.CreateScale(scale)
-                   /* * Matrix.CreateRotationX(MathHelper.ToRadians(rotationInDegrees.X))
-                      * Matrix.CreateRotationY(MathHelper.ToRadians(rotationInDegrees.Y))
-                        * Matrix.CreateRotationZ(MathHelper.ToRadians(rotationInDegrees.Z))
-                        * Matrix.CreateTranslation(translation)*/
-                    * Matrix.CreateFromQuaternion(Rotation)
-                    * Matrix.CreateTranslation(this.translation)
-                    * (parent != null
-                        ? parent.World
-                        : Matrix.Identity);;
+                       * Matrix.CreateScale(scale)
+                       /* * Matrix.CreateRotationX(MathHelper.ToRadians(rotationInDegrees.X))
+                          * Matrix.CreateRotationY(MathHelper.ToRadians(rotationInDegrees.Y))
+                            * Matrix.CreateRotationZ(MathHelper.ToRadians(rotationInDegrees.Z))
+                            * Matrix.CreateTranslation(translation)*/
+                       * Matrix.CreateFromQuaternion(Rotation)
+                       * Matrix.CreateTranslation(this.translation)
+                       * (parent?.World ?? Matrix.Identity);
+                ;
             }
         }
 
@@ -56,10 +55,7 @@ namespace GDLibrary.Parameters
                 look.Normalize(); //less-cpu intensive than Vector3.Normalize()
                 return look;
             }
-            set
-            {
-                look = value;
-            }
+            set { look = value; }
         }
 
         public Vector3 Up
@@ -69,54 +65,30 @@ namespace GDLibrary.Parameters
                 up.Normalize(); //less-cpu intensive than Vector3.Normalize()
                 return up;
             }
-            set
-            {
-                up = value;
-            }
+            set { up = value; }
         }
 
         public Vector3 Right
         {
-            get
-            {
-                return Vector3.Normalize(Vector3.Cross(look, up));
-            }
+            get { return Vector3.Normalize(Vector3.Cross(look, up)); }
         }
 
         public Vector3 Translation
         {
-            get
-            {
-                return translation;
-            }
-            set
-            {
-                translation = value;
-            }
+            get { return translation; }
+            set { translation = value; }
         }
 
         public Vector3 RotationInDegrees
         {
-            get
-            {
-                return rotationInDegrees;
-            }
-            set
-            {
-                rotationInDegrees = value;
-            }
+            get { return rotationInDegrees; }
+            set { rotationInDegrees = value; }
         }
 
         public Vector3 Scale
         {
-            get
-            {
-                return scale;
-            }
-            set
-            {
-                scale = value;
-            }
+            get { return scale; }
+            set { scale = value; }
         }
 
         #endregion Properties
@@ -125,7 +97,7 @@ namespace GDLibrary.Parameters
 
         //constructor suitable for Camera3D (i.e. no rotation or scale)
         public Transform3D(Vector3 translation, Vector3 look, Vector3 up) : this(translation, Vector3.Zero, Vector3.One,
-               look, up)
+            look, up)
         {
         }
 
@@ -138,7 +110,7 @@ namespace GDLibrary.Parameters
             Scale = scale;
             originalLook = Look = look;
             originalUp = Up = up;
-            
+
             Rotation = Quaternion.Identity * Quaternion.CreateFromYawPitchRoll(
                 MathHelper.ToRadians(rotationInDegrees.Y), MathHelper.ToRadians(rotationInDegrees.X),
                 MathHelper.ToRadians(rotationInDegrees.Z));

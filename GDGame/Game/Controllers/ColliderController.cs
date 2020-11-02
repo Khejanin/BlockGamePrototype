@@ -20,7 +20,7 @@ namespace GDGame.Game.Controllers
         protected bool drawDebug;
         protected Transform3D parentTransform;
 
-        public ColliderController(ColliderType colliderType)
+        protected ColliderController(ColliderType colliderType)
         {
             this.colliderType = colliderType;
         }
