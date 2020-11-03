@@ -78,9 +78,9 @@ namespace GDGame.Game.Factory
         private GridTile CreatePlayer(PlayerController controller)
         {
             EffectParameters effectParameters = new EffectParameters(modelEffect,
-                contentManager.Load<Texture2D>("Assets/Textures/Props/Crates/crate1"),
+                contentManager.Load<Texture2D>("Assets/Textures/Props/GameTextures/TextureCube"),
                 Color.White, 1);
-            Model model = contentManager.Load<Model>("Assets/Models/box2");
+            Model model = contentManager.Load<Model>("Assets/Models/RedCube");
             Transform3D parentTransform = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
             Transform3D transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
             //transform3D.SetParent(ref parentTransform);
