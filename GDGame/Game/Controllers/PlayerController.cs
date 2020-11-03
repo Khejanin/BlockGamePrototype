@@ -41,9 +41,9 @@ namespace GDLibrary
 
         private void HandlePlayerMovement()
         {
-            if (this.keyboardManager.IsFirstKeyPress(Keys.Space))
+            if (this.keyboardManager.IsFirstKeyPress(Keys.Space) && !player.IsAttached)
                 player.Attach();
-            else if (this.keyboardManager.IsFirstKeyRelease(Keys.Space))
+            else if (this.keyboardManager.IsKeyUp(Keys.Space) && player.IsAttached)
                 player.Detach();
 
             if (!player.IsMoving)

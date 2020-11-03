@@ -19,17 +19,21 @@ namespace GDGame.Game.Tiles
         {
         }
 
-        public void Move(Vector3 direction, Vector3 rotatePoint/*, Vector3 playerPos*/)
+        public void Move(Vector3 direction, Vector3 rotatePoint)
         {
-            //Vector3 trans = direction * (Transform3D.Translation - rotatePoint).Length();
-            rotatePoint -= Transform3D.Translation;
+            Vector3 offset = Transform3D.Translation - rotatePoint; //offset between the player and the point to rotate around
+            Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, Vector3.Up), MathHelper.ToRadians(-90));   //The rotation to apply
+            Vector3 translation = Vector3.Transform(offset, rot);   //Rotate around the offset point
+
+            //Start and End Rotation --> Will be lerped between
             startRotQ = Transform3D.Rotation;
-            endRotQ = Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, -Vector3.Up), MathHelper.ToRadians(90)) * startRotQ;
+            endRotQ = rot * startRotQ;
 
-            rotatePoint = Vector3.Transform(-rotatePoint, endRotQ * Quaternion.Inverse(startRotQ));
+            //Start and End Position --> Will be lerped between
             startPos = Transform3D.Translation;
-            endPos = Transform3D.Translation /*+ trans*/ + direction + rotatePoint;
+            endPos = Transform3D.Translation + translation - offset;
 
+            //Set animation time and movement flag
             currentMovementTime = movementTime;
             isMoving = true;
         }
@@ -44,14 +48,13 @@ namespace GDGame.Game.Tiles
                 {
                     isMoving = false;
                     currentMovementTime = 0;
-                    //UpdateAttachCandidates(); //remove this later
                 }
 
                 Quaternion rot = Quaternion.Lerp(startRotQ, endRotQ, 1 - currentMovementTime / movementTime);
                 Vector3 trans = Vector3.Lerp(startPos, endPos, 1 - currentMovementTime / movementTime);
 
                 Transform3D.Rotation = rot;
-                SetPosition(trans);
+                Transform3D.Translation = trans;
                 currentMovementTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
