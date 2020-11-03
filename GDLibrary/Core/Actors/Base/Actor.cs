@@ -1,0 +1,150 @@
+﻿using GDLibrary.Containers;
+using GDLibrary.Enums;
+using GDLibrary.Interfaces;
+using Microsoft.Xna.Framework;
+using System;
+
+namespace GDLibrary.Actors
+{
+    /// <summary>
+    /// Base class for all actors used in the engine. This class contains fields to uniquely identify
+    /// an actor, its ActorType and its StatusType.
+    /// </summary>
+    public class Actor : IActor
+    {
+        #region Fields
+
+        private string id, description;
+        private ActorType actorType;
+        private StatusType statusType;
+        private ControllerList controllerList = new ControllerList();
+        private bool initialized;
+
+        #endregion Fields
+
+        #region Properties
+
+        public ControllerList ControllerList
+        {
+            get
+            {
+                //    if (controllerList == null)
+                //       controllerList = new ControllerList();
+
+                return controllerList;
+            }
+            //no reason to allow this list to be directly set externally
+            protected set
+            {
+                controllerList = value;
+            }
+        }
+
+        public string ID
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                //remove whitespace on LHS or RHS of a user-defined string
+                id = value.Trim();
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                return description;
+            }
+            set
+            {
+                description = value;
+            }
+        }
+
+        public ActorType ActorType
+        {
+            get
+            {
+                return actorType;
+            }
+            set
+            {
+                actorType = value;
+            }
+        }
+
+        public StatusType StatusType
+        {
+            get
+            {
+                return statusType;
+            }
+            set
+            {
+                statusType = value;
+            }
+        }
+
+        #endregion Properties
+
+        #region Constructors
+
+        public Actor(string id, ActorType actorType, StatusType statusType)
+        {
+            this.id = id;
+            this.actorType = actorType;
+            this.statusType = statusType;
+        }
+
+        #endregion Constructors
+
+        public virtual void Update(GameTime gameTime)
+        {
+            if (!initialized) Initialize();
+            //calls update on any attached controllers
+            else
+            {
+                controllerList.Update(gameTime, this);
+            }
+            //calls update on any attached controllers
+            
+
+            //line above replaces for() below
+            //foreach (IController controller in controllerList)
+            //{
+            //    controller.Update(gameTime, this);
+            //}
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Actor actor &&
+                   id == actor.id &&
+                   description == actor.description &&
+                   actorType == actor.actorType &&
+                   statusType == actor.statusType;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(id, description, actorType, statusType);
+        }
+
+        public object Clone()
+        {
+            //deep-copy
+            return new Actor(id, actorType, statusType);
+        }
+        
+        public virtual void Initialize()
+        {
+            initialized = true;
+            foreach (IController controller in this.controllerList)
+                controller.Initialize(this);
+        }
+    }
+}
