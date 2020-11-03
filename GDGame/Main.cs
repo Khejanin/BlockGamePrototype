@@ -60,19 +60,19 @@ namespace GDGame
 
             //camera
             CameraManager = new CameraManager<Camera3D>(this);
-            Components.Add(this.CameraManager);
+            Components.Add(CameraManager);
 
             //keyboard
             KeyboardManager = new KeyboardManager(this);
-            Components.Add(this.KeyboardManager);
+            Components.Add(KeyboardManager);
 
             //mouse
             MouseManager = new MouseManager(this, false);
-            Components.Add(this.MouseManager);
+            Components.Add(MouseManager);
 
             //Sound
-            this.SoundManager = new SoundManager(this);
-            Components.Add(this.SoundManager);
+            SoundManager = new SoundManager(this);
+            Components.Add(SoundManager);
 
             InitManagers();
             InitFonts();
@@ -94,39 +94,39 @@ namespace GDGame
 
         private void InitFonts()
         {
-            this.DebugFont = Content.Load<SpriteFont>("Assets/Fonts/debug");
+            DebugFont = Content.Load<SpriteFont>("Assets/Fonts/debug");
         }
 
         private void InitManagers()
         {
-            this.ObjectManager = new ObjectManager(this, 6, 10, this.CameraManager);
-            Components.Add(this.ObjectManager);
+            ObjectManager = new ObjectManager(this, 6, 10, CameraManager);
+            Components.Add(ObjectManager);
         }
 
         private void InitEffect()
         {
             //to do...
-            this.UnlitTexturedEffect = new BasicEffect(this.Graphics.GraphicsDevice);
-            this.UnlitTexturedEffect.VertexColorEnabled = true; //otherwise we wont see RGB
-            this.UnlitTexturedEffect.TextureEnabled = true;
+            UnlitTexturedEffect = new BasicEffect(Graphics.GraphicsDevice);
+            UnlitTexturedEffect.VertexColorEnabled = true; //otherwise we wont see RGB
+            UnlitTexturedEffect.TextureEnabled = true;
 
             //wireframe primitives with no lighting and no texture
-            this.UnlitWireframeEffect = new BasicEffect(this.Graphics.GraphicsDevice);
-            this.UnlitWireframeEffect.VertexColorEnabled = true;
+            UnlitWireframeEffect = new BasicEffect(Graphics.GraphicsDevice);
+            UnlitWireframeEffect.VertexColorEnabled = true;
 
             //model effect
             //add a ModelObject
-            this.ModelEffect = new BasicEffect(this.Graphics.GraphicsDevice);
-            this.ModelEffect.TextureEnabled = true;
+            ModelEffect = new BasicEffect(Graphics.GraphicsDevice);
+            ModelEffect.TextureEnabled = true;
             //this.modelEffect.LightingEnabled = true;
             //this.modelEffect.EnableDefaultLighting();
 
-            this.WireframeModelEffect = new BasicEffect(this.Graphics.GraphicsDevice);
-            this.WireframeModelEffect.TextureEnabled = false;
-            this.WireframeModelEffect.VertexColorEnabled = true;
+            WireframeModelEffect = new BasicEffect(Graphics.GraphicsDevice);
+            WireframeModelEffect.TextureEnabled = false;
+            WireframeModelEffect.VertexColorEnabled = true;
 
-            this.WireframeRasterizerState = new RasterizerState();
-            this.WireframeRasterizerState.FillMode = FillMode.WireFrame;
+            WireframeRasterizerState = new RasterizerState();
+            WireframeRasterizerState.FillMode = FillMode.WireFrame;
         }
 
         #endregion
@@ -149,25 +149,25 @@ namespace GDGame
         private void InitGraphics(int width, int height)
         {
             //set resolution
-            this.Graphics.PreferredBackBufferWidth = width;
-            this.Graphics.PreferredBackBufferHeight = height;
+            Graphics.PreferredBackBufferWidth = width;
+            Graphics.PreferredBackBufferHeight = height;
 
             //dont forget to apply resolution changes otherwise we wont see the new WxH
-            this.Graphics.ApplyChanges();
+            Graphics.ApplyChanges();
 
             //set screen centre based on resolution
-            this.ScreenCentre = new Vector2(width / 2, height / 2);
+            ScreenCentre = new Vector2(width / 2, height / 2);
 
             //set cull mode to show front and back faces - inefficient but we will change later
             RasterizerState rs = new RasterizerState();
             rs.CullMode = CullMode.None;
-            this.Graphics.GraphicsDevice.RasterizerState = rs;
+            Graphics.GraphicsDevice.RasterizerState = rs;
 
             //we use a sampler state to set the texture address mode to solve the aliasing problem between skybox planes
             SamplerState samplerState = new SamplerState();
             samplerState.AddressU = TextureAddressMode.Clamp;
             samplerState.AddressV = TextureAddressMode.Clamp;
-            this.Graphics.GraphicsDevice.SamplerStates[0] = samplerState;
+            Graphics.GraphicsDevice.SamplerStates[0] = samplerState;
         }
 
 
@@ -175,7 +175,7 @@ namespace GDGame
 
         protected override void Update(GameTime gameTime)
         {
-            if (this.KeyboardManager.IsFirstKeyPress(Keys.Escape))
+            if (KeyboardManager.IsFirstKeyPress(Keys.Escape))
                 Exit();
 
             base.Update(gameTime);

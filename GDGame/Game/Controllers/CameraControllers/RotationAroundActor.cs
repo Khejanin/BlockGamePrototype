@@ -1,4 +1,6 @@
-﻿using GDLibrary.Actors;
+﻿using System;
+using System.Diagnostics;
+using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
@@ -18,7 +20,6 @@ namespace GDGame.Game.Controllers.CameraControllers
 
         public Actor3D Target
         {
-            get => target;
             set => target = value;
         }
 
@@ -42,28 +43,36 @@ namespace GDGame.Game.Controllers.CameraControllers
 
         private void HandleKeyboardInput(GameTime gameTime, Actor3D parent)
         {
+            if (target == null) return;
             if (keyboardManager.IsKeyDown(Keys.Q))
             {
                 parent.Transform3D.Translation =
                     Vector3.Transform(parent.Transform3D.Translation - target.Transform3D.Translation,
-                        Matrix.CreateFromAxisAngle(Vector3.Up, angle)) + target.Transform3D.Translation;
+                        Matrix.CreateFromAxisAngle(Vector3.Up, MathHelper.ToRadians(-angle))) +
+                    target.Transform3D.Translation;
             }
 
-            if (keyboardManager.IsKeyDown(Keys.E))
+            else if (keyboardManager.IsKeyDown(Keys.E))
             {
                 parent.Transform3D.Translation =
                     Vector3.Transform(parent.Transform3D.Translation - target.Transform3D.Translation,
-                        Matrix.CreateFromAxisAngle(Vector3.Up, -angle)) + target.Transform3D.Translation;
+                        Matrix.CreateFromAxisAngle(Vector3.Up, MathHelper.ToRadians(angle))) +
+                    target.Transform3D.Translation;
             }
 
-            if(target == null) return;
             Vector3 view = target.Transform3D.Translation - parent.Transform3D.Translation;
-            
-            Vector3 rotationAxis = Vector3.Cross(parent.Transform3D.Look, view);
-            
-            parent.Transform3D.RotateBy(rotationAxis);
-            
-            parent.Transform3D.Up = Vector3.Up;
+            parent.Transform3D.Look = view;
+
+            /*double distance = 10;
+            float lenght = view.Length();
+            if (lenght >= distance)
+            {
+                parent.Transform3D.Translation += parent.Transform3D.Look * gameTime.ElapsedGameTime.Milliseconds / 10;
+            }
+            /*else if (lenght >= distance + 2)
+            {
+                parent.Transform3D.Translation += parent.Transform3D.Look * gameTime.ElapsedGameTime.Milliseconds;
+            }*/
         }
     }
 }
