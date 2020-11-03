@@ -1,17 +1,17 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GDGame.Game.Scenes;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using GDGame.Scenes;
 using GDLibrary;
 using GDLibrary.Managers;
 using GDLibrary.Actors;
+using GDLibrary.Parameters;
 
 namespace GDGame
 {
     public class Main : Microsoft.Xna.Framework.Game
     {
-        private Scene currentScene;
-
         public GraphicsDeviceManager Graphics { get; }
 
         public SpriteBatch SpriteBatch { get; set; }
@@ -39,9 +39,14 @@ namespace GDGame
         public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
 
         public SoundManager SoundManager { get; private set; }
+        
+        public SceneManager SceneManager { get; private set; }
+        
+        public ProjectionParameters GlobalProjectionParameters => ProjectionParameters.StandardDeepSixteenTen;
 
         private float worldScale = 3000;
         private PrimitiveObject primitiveObject = null;
+        private MainScene MainScene;
 
 
         public Main()
@@ -74,6 +79,7 @@ namespace GDGame
             SoundManager = new SoundManager(this);
             Components.Add(SoundManager);
 
+            CreateScenes();
             InitManagers();
             InitFonts();
             InitEffect();
@@ -81,10 +87,11 @@ namespace GDGame
             InitGraphics(1024, 768);
 
             base.Initialize();
-
-            currentScene = new MainScene(this);
-            currentScene.Initialize();
+            
+            SceneManager.Initialize();
         }
+
+        
 
         private void InitDebug()
         {
@@ -97,10 +104,16 @@ namespace GDGame
             DebugFont = Content.Load<SpriteFont>("Assets/Fonts/debug");
         }
 
+        private void CreateScenes()
+        {
+            MainScene = new MainScene(this);
+        }
+
         private void InitManagers()
         {
             ObjectManager = new ObjectManager(this, 6, 10, CameraManager);
             Components.Add(ObjectManager);
+            SceneManager = new SceneManager(MainScene);
         }
 
         private void InitEffect()
@@ -179,7 +192,7 @@ namespace GDGame
                 Exit();
 
             base.Update(gameTime);
-            currentScene.Update(gameTime);
+            SceneManager.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -187,7 +200,7 @@ namespace GDGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             base.Draw(gameTime);
-            currentScene.Draw(gameTime);
+            SceneManager.Draw(gameTime);
         }
 
         #endregion

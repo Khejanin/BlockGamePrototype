@@ -6,16 +6,19 @@ namespace GDGame
     {
         #region Common
 
-        private static readonly float strafeSpeedMultiplier = 0.75f;
+        private static readonly float StrafeSpeedMultiplier = 0.75f;
         public static readonly Keys[] KeysOne = { Keys.W, Keys.S, Keys.A, Keys.D };
         public static readonly Keys[] KeysTwo = { Keys.U, Keys.J, Keys.H, Keys.K };
+       
+        public static readonly int screenWidth = 1024;
+        public static readonly int screenHeight = 768;
 
         #endregion Common
 
         #region First Person Camera
 
         public static readonly float moveSpeed = 0.1f;
-        public static readonly float strafeSpeed = strafeSpeedMultiplier * moveSpeed;
+        public static readonly float strafeSpeed = StrafeSpeedMultiplier * moveSpeed;
         public static readonly float rotateSpeed = 0.01f;
 
         #endregion First Person Camera
@@ -23,7 +26,7 @@ namespace GDGame
         #region Flight Camera
 
         public static readonly float flightMoveSpeed = 0.8f;
-        public static readonly float flightStrafeSpeed = strafeSpeedMultiplier * flightMoveSpeed;
+        public static readonly float flightStrafeSpeed = StrafeSpeedMultiplier * flightMoveSpeed;
         public static readonly float flightRotateSpeed = 0.01f;
 
         #endregion Flight Camera
@@ -36,5 +39,7 @@ namespace GDGame
         public static readonly float hiAngularSpeed = mediumAngularSpeed * angularSpeedMultiplier;
 
         #endregion Security Camera
+        
+        
     }
 }

@@ -13,6 +13,13 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Assets/Fonts/Arial.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Assets/Fonts/Arial.spritefont
+
 #begin Assets/Fonts/File.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -72,7 +79,7 @@
 /processorParam:RotationX=0
 /processorParam:RotationY=0
 /processorParam:RotationZ=0
-/processorParam:Scale=0.01
+/processorParam:Scale=0.005
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:Assets/Models/RedCube.fbx
@@ -298,6 +305,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Architecture/Walls/wall.jpg
+
+#begin Assets/Textures/Base/WhiteSquare.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Base/WhiteSquare.png
 
 #begin Assets/Textures/Foliage/Ground/grass_midlevel.jpg
 /importer:TextureImporter
