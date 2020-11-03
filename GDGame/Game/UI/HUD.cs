@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 using GDLibrary.Actors;
 using Microsoft.Xna.Framework;
@@ -84,14 +85,18 @@ namespace GDGame.Game.UI
 
         private float GetAngle(Vector3 u, Vector3 v)
         {
-            Vector3 cross = Vector3.Cross(u, v);
-            double dot = Vector3.Dot(u, v);
-
+            Vector3 noY = v * (Vector3.Forward + Vector3.Right);
+            noY.Normalize();
+            
+            Vector3 cross = Vector3.Cross(u, noY);
+            double dot = Vector3.Dot(u, noY);
+            
             double angle = Math.Atan2(cross.Length(), dot);
 
             double test = Vector3.Dot(Vector3.Up, cross);
             if (test < 0.0f) angle = -angle;
-            return (float) angle;
+           // Debug.WriteLine(angle);
+            return (float) (angle + Math.PI);
         }
 
         private void DrawTexture(Texture2D texture2D, Point location, Point size)

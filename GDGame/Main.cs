@@ -97,28 +97,30 @@ namespace GDGame
 
         private void InitManagers()
         {
-            ObjectManager = new ObjectManager(this, 6, 10, CameraManager);
-            Components.Add(ObjectManager);
+            //Camera
+            CameraManager = new CameraManager<Camera3D>(this);
+            Components.Add(CameraManager);
             
             //Scene
             SceneManager = new SceneManager(this,MainScene);
             Components.Add(SceneManager);
-            
-            //camera
-            CameraManager = new CameraManager<Camera3D>(this);
-            Components.Add(CameraManager);
 
-            //keyboard
+            //Keyboard
             KeyboardManager = new KeyboardManager(this);
             Components.Add(KeyboardManager);
 
-            //mouse
+            //Mouse
             MouseManager = new MouseManager(this, false);
             Components.Add(MouseManager);
 
             //Sound
             SoundManager = new SoundManager(this);
             Components.Add(SoundManager);
+            
+            //Object
+            ObjectManager = new ObjectManager(this, 6, 10, CameraManager);
+            Components.Add(ObjectManager);
+
         }
 
         private void InitEffect()

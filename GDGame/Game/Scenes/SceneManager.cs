@@ -7,7 +7,7 @@ namespace GDGame.Game.Scenes
         private Scene current;
 
         //The Game needs a SceneManager, and the SceneManager needs a Scene.
-        public SceneManager(Game game,Scene s) : base(game)
+        public SceneManager(Microsoft.Xna.Framework.Game game,Scene s) : base(game)
         {
             current = s;
         }
