@@ -1,12 +1,12 @@
-﻿using GDGame.Game.Enums;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 using GDGame.Game.Tiles;
 using GDLibrary;
-using GDLibrary.Enums;
 using GDLibrary.Managers;
+using GDGame.Game.Enums;
+using GDLibrary.Enums;
 using GDLibrary.Parameters;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Game.Factory
 {
@@ -70,7 +70,7 @@ namespace GDGame.Game.Factory
                 Color.White, 1);
             Model model = contentManager.Load<Model>("Assets/Models/box2");
             Transform3D transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
-            GridTile attachableTile = new GridTile("AttachableTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, model);
+            AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, model);
             objectManager.Add(attachableTile);
             return attachableTile;
         }

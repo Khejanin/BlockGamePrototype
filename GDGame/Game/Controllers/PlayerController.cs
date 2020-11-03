@@ -1,8 +1,8 @@
 ﻿using GDGame.Game.Tiles;
- using GDLibrary.Enums;
- using GDLibrary.Interfaces;
- using GDLibrary.Managers;
- using Microsoft.Xna.Framework;
+using GDLibrary.Enums;
+using GDLibrary.Interfaces;
+using GDLibrary.Managers;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace GDLibrary
@@ -24,7 +24,7 @@ namespace GDLibrary
 
         public void Update(GameTime gameTime, IActor actor)
         {
-            if(this.keyboardManager.IsStateChanged())
+            if(this.keyboardManager.IsKeyPressed())
                 HandleKeyboardInput(gameTime);
         }
 
@@ -42,6 +42,11 @@ namespace GDLibrary
 
         private void HandlePlayerMovement()
         {
+            if (this.keyboardManager.IsFirstKeyPress(Keys.Space))
+                player.Attach();
+            else if (this.keyboardManager.IsFirstKeyRelease(Keys.Space))
+                player.Detach();
+
             if (!player.IsMoving)
             {
                 Vector3 moveDir = Vector3.Zero;

@@ -9,7 +9,7 @@ namespace GDGame.Game.Utilities
 {
     public static class Raycaster
     {
-        public struct HitResult : IComparable<HitResult>
+        public class HitResult : IComparable<HitResult>
         {
             public float distance;
             public Vector3 hitPosition;
@@ -27,6 +27,10 @@ namespace GDGame.Game.Utilities
         {
             List<HitResult> all = RaycastAll(callingDrawnActor3D,position, direction,ignoreSelf);
             all.Sort();
+
+            if (all.Count == 0)
+                return null;
+
             return all[0];
         }
 
@@ -103,6 +107,10 @@ namespace GDGame.Game.Utilities
         {
             List<HitResult> all = RaycastAll(position, direction, AllObjects);
             all.Sort();
+
+            if (all.Count == 0)
+                return null;
+
             return all[0];
         }
         

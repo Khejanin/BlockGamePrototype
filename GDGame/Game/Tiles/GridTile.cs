@@ -1,4 +1,5 @@
-﻿using GDGame.Game.Enums;
+﻿using GDGame.Game.Controllers;
+using GDGame.Game.Enums;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
@@ -23,7 +24,7 @@ namespace GDGame.Game.Tiles
             Transform3D transform, EffectParameters effectParameters, Model model)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
-
+            ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
         }
 
         public virtual void SetPosition(Vector3 position)

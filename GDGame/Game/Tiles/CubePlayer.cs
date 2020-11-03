@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using GDGame.Game.Enums;
+﻿using GDGame.Game.Enums;
 using GDGame.Game.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace GDGame.Game.Tiles
 {
@@ -25,16 +24,21 @@ namespace GDGame.Game.Tiles
         private Vector3 forwardRotatePoint;
         private Vector3 backwardRotatePoint;
 
+        List<AttachableTile> attachedTiles;
+        List<Shape> attachCandidates;
+
         struct PlayerSurroundCheck
         {
             public EDirection dir;
-            public List<Raycaster.HitResult> hit;
+            public Raycaster.HitResult hit;
         }
 
         public CubePlayer(string id, ActorType actorType, StatusType statusType,
             Transform3D transform, EffectParameters effectParameters, Model model)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
+            attachedTiles = new List<AttachableTile>();
+            attachCandidates = new List<Shape>();
             leftRotatePoint = rightRotatePoint = forwardRotatePoint = backwardRotatePoint = transform.Translation;
         }
 
@@ -44,8 +48,20 @@ namespace GDGame.Game.Tiles
         {
             base.Initialize();
         }
-        
-        
+
+        public void Attach()
+        {
+            foreach (Shape shape in attachCandidates)
+                foreach (AttachableTile tile in shape.AttachableTiles)
+                    attachedTiles.Add(tile);
+
+        }
+
+        public void Detach()
+        {
+            attachedTiles.Clear();
+        }
+
         /// <summary>
         /// This method will change the Player's state to moving if he's not already moving and calculates how the player will move.
         /// </summary>
@@ -55,6 +71,8 @@ namespace GDGame.Game.Tiles
         {
             if (!isMoving)
             {
+                UpdateRotatePoints();
+
                 //transform3D.parent.Translation += direction;
                 if (direction == Vector3.UnitX)
                     offset = rightRotatePoint - Transform3D.Translation;
@@ -79,6 +97,11 @@ namespace GDGame.Game.Tiles
             }
         }
 
+        public void OnMove()
+        {
+            UpdateAttachCandidates();
+        }
+
         /// <summary>
         /// Is in charge of the Animation for when the Player Moves
         /// </summary>
@@ -93,10 +116,11 @@ namespace GDGame.Game.Tiles
                 {
                     isMoving = false;
                     currentMovementTime = 0;
+                    UpdateAttachCandidates(); //remove this later
                 }
 
-                Quaternion rot = Quaternion.Lerp(this.startRotQ, this.endRotQ, 1 - currentMovementTime / movementTime);
-                Vector3 trans = Vector3.Lerp(this.startPos, this.endPos, 1 - currentMovementTime / movementTime);
+                Quaternion rot = Quaternion.Lerp(startRotQ, endRotQ, 1 - currentMovementTime / movementTime);
+                Vector3 trans = Vector3.Lerp(startPos, endPos, 1 - currentMovementTime / movementTime);
 
                 Transform3D.Rotation = rot;
                 SetPosition(trans);
@@ -106,34 +130,45 @@ namespace GDGame.Game.Tiles
 
         public override void SetPosition(Vector3 position)
         {
-            Vector3 difference = position - Transform3D.Translation;
-            leftRotatePoint += difference;
-            rightRotatePoint += difference;
-            forwardRotatePoint += difference;
-            backwardRotatePoint += difference;
             base.SetPosition(position);
         }
 
         private void UpdateRotatePoints()
         {
+            leftRotatePoint = rightRotatePoint = forwardRotatePoint = backwardRotatePoint = Transform3D.Translation;
+
+            foreach (AttachableTile tile in attachedTiles)
+            {
+                Vector3 playerPos = Transform3D.Translation;
+                Vector3 tilePos = tile.Transform3D.Translation;
+
+                //Update right rotate point
+                if (tilePos.Y <= playerPos.Y && tilePos.X > rightRotatePoint.X || tilePos.Y < rightRotatePoint.Y)
+                    rightRotatePoint = tilePos;
+
+                //Update left rotate point
+                if (tilePos.Y <= playerPos.Y && tilePos.X < leftRotatePoint.X || tilePos.Y < leftRotatePoint.Y)
+                    leftRotatePoint = tilePos;
+
+                //Update forward rotate point
+                if (tilePos.Y <= playerPos.Y && tilePos.Z < forwardRotatePoint.Z || tilePos.Y < forwardRotatePoint.Y)
+                    forwardRotatePoint = tilePos;
+
+                //Update back rotate point
+                if (tilePos.Y <= playerPos.Y && tilePos.Z > forwardRotatePoint.Z || tilePos.Y < backwardRotatePoint.Y)
+                    backwardRotatePoint = tilePos;
+            }
+        }
+
+        private void UpdateAttachCandidates()
+        {
+            attachCandidates.Clear();
+
             foreach (PlayerSurroundCheck check in CheckSurroundings())
             {
-                foreach (Raycaster.HitResult hit in check.hit)
-                {
-                    
-                }
-
-                switch(check.dir)
-                {
-                    case EDirection.Right:
-                        break;
-                    case EDirection.Left:
-                        break;
-                    case EDirection.Forward:
-                        break;
-                    case EDirection.Back:
-                        break;
-                }
+                if (check.hit == null) continue;
+                if (check.hit.actor is AttachableTile)
+                    attachCandidates.Add((check.hit.actor as AttachableTile).Shape);
             }
         }
 
@@ -142,19 +177,19 @@ namespace GDGame.Game.Tiles
             List<PlayerSurroundCheck> result = new List<PlayerSurroundCheck>();
 
             PlayerSurroundCheck surroundCheck = new PlayerSurroundCheck();
-            surroundCheck.hit = this.RaycastAll(Transform3D.Translation, Vector3.Right, true);
+            surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Right, true);
             surroundCheck.dir = EDirection.Right;
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.RaycastAll(Transform3D.Translation, -Vector3.Right, true);
+            surroundCheck.hit = this.Raycast(Transform3D.Translation, -Vector3.Right, true);
             surroundCheck.dir = EDirection.Left;
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.RaycastAll(Transform3D.Translation, Vector3.Forward, true);
+            surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Forward, true);
             surroundCheck.dir = EDirection.Forward;
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.RaycastAll(Transform3D.Translation, -Vector3.Forward, true);
+            surroundCheck.hit = this.Raycast(Transform3D.Translation, -Vector3.Forward, true);
             surroundCheck.dir = EDirection.Back;
             result.Add(surroundCheck);
 
