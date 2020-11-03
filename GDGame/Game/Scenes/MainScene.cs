@@ -320,7 +320,7 @@ namespace GDGame.Scenes
             }
 
             //use g and space
-            RaycastTests();
+            //RaycastTests();
 
             //Cycle Through Audio
             if (KeyboardManager.IsFirstKeyPress(Keys.M))

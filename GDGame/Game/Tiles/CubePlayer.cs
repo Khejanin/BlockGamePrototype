@@ -80,22 +80,26 @@ namespace GDGame.Game.Tiles
 
                 //transform3D.parent.Translation += direction;
                 if (direction == Vector3.UnitX)
-                    offset = RightRotatePoint - Transform3D.Translation;
+                    offset = RightRotatePoint;
                 else if (direction == -Vector3.UnitX)
-                    offset = LeftRotatePoint - Transform3D.Translation;
+                    offset = LeftRotatePoint;
                 else if (direction == -Vector3.UnitZ)
-                    offset = ForwardRotatePoint - Transform3D.Translation;
+                    offset = ForwardRotatePoint;
                 else if (direction == Vector3.UnitZ)
-                    offset = BackwardRotatePoint - Transform3D.Translation;
+                    offset = BackwardRotatePoint;
                 else
                     throw new System.ArgumentException("Invalid direction!");
 
+                foreach(AttachableTile tile in attachedTiles)
+                    tile.Move(direction, offset/*, Transform3D.Translation*/);
+
+                //offset -= Transform3D.Translation;
                 startRotQ = Transform3D.Rotation;
                 endRotQ = Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, -Vector3.Up), MathHelper.ToRadians(90)) * startRotQ;
 
-                offset = Vector3.Transform(-offset, endRotQ * Quaternion.Inverse(startRotQ));
+                offset = Vector3.Transform(offset, endRotQ * Quaternion.Inverse(startRotQ));
                 startPos = Transform3D.Translation;
-                endPos = Transform3D.Translation + direction + offset;
+                endPos = Transform3D.Translation /*+ direction*/ + offset;
 
                 currentMovementTime = movementTime;
                 isMoving = true;
@@ -124,10 +128,10 @@ namespace GDGame.Game.Tiles
                     UpdateAttachCandidates(); //remove this later
                 }
 
-                Quaternion rot = Quaternion.Lerp(startRotQ, endRotQ, 1 - currentMovementTime / movementTime);
+                //Quaternion rot = Quaternion.Lerp(startRotQ, endRotQ, 1 - currentMovementTime / movementTime);
                 Vector3 trans = Vector3.Lerp(startPos, endPos, 1 - currentMovementTime / movementTime);
 
-                Transform3D.Rotation = rot;
+                //Transform3D.Rotation = rot;
                 SetPosition(trans);
                 currentMovementTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
@@ -140,7 +144,10 @@ namespace GDGame.Game.Tiles
 
         public void UpdateRotatePoints()
         {
-            LeftRotatePoint = RightRotatePoint = ForwardRotatePoint = BackwardRotatePoint = Transform3D.Translation;
+            RightRotatePoint = Transform3D.Translation + new Vector3(.5f, -.5f, 0);
+            LeftRotatePoint = Transform3D.Translation + new Vector3(-.5f, -.5f, 0);
+            ForwardRotatePoint = Transform3D.Translation + new Vector3(0, -.5f, -.5f);
+            BackwardRotatePoint = Transform3D.Translation + new Vector3(0, -.5f, .5f);
 
             foreach (AttachableTile tile in AttachedTiles)
             {
@@ -149,23 +156,23 @@ namespace GDGame.Game.Tiles
 
                 //Update right rotate point
                 if (tilePos.Y <= playerPos.Y && tilePos.X > RightRotatePoint.X || tilePos.Y < RightRotatePoint.Y)
-                    RightRotatePoint = tilePos;
+                    RightRotatePoint = tilePos + new Vector3(.5f, -.5f, 0);
 
                 //Update left rotate point
                 if (tilePos.Y <= playerPos.Y && tilePos.X < LeftRotatePoint.X || tilePos.Y < LeftRotatePoint.Y)
-                    LeftRotatePoint = tilePos;
+                    LeftRotatePoint = tilePos + new Vector3(-.5f, -.5f, 0);
 
                 //Update forward rotate point
                 if (tilePos.Y <= playerPos.Y && tilePos.Z < ForwardRotatePoint.Z || tilePos.Y < ForwardRotatePoint.Y)
-                    ForwardRotatePoint = tilePos;
+                    ForwardRotatePoint = tilePos + new Vector3(0, -.5f, -.5f);
 
                 //Update back rotate point
                 if (tilePos.Y <= playerPos.Y && tilePos.Z > ForwardRotatePoint.Z || tilePos.Y < BackwardRotatePoint.Y)
-                    BackwardRotatePoint = tilePos;
+                    BackwardRotatePoint = tilePos + new Vector3(0, -.5f, .5f);
             }
         }
 
-        private void UpdateAttachCandidates()
+        public void UpdateAttachCandidates()
         {
             attachCandidates.Clear();
 
