@@ -1,8 +1,8 @@
 ﻿using GDGame.Game.Tiles;
- using GDLibrary.Enums;
- using GDLibrary.Interfaces;
- using GDLibrary.Managers;
- using Microsoft.Xna.Framework;
+using GDLibrary.Enums;
+using GDLibrary.Interfaces;
+using GDLibrary.Managers;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace GDLibrary
@@ -24,7 +24,7 @@ namespace GDLibrary
 
         public void Update(GameTime gameTime, IActor actor)
         {
-            if(this.keyboardManager.IsAnyKeyPressed())
+            if(this.keyboardManager.IsKeyPressed())
                 HandleKeyboardInput(gameTime);
         }
 

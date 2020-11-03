@@ -101,8 +101,8 @@ namespace GDGame.Scenes
 
         private void InitGrid()
         {
-            Grid grid = new Grid(new Transform3D(new Vector3(0, 0, 0), -Vector3.UnitZ, Vector3.UnitY), new TileFactory(game.KeyboardManager, game.ObjectManager, game.Content, game.ModelEffect));
-            grid.GenerateGrid(@"Game\LevelFiles\LevelTest2.json");
+            Grid grid = new Grid(new TileFactory(game.KeyboardManager, game.ObjectManager, game.Content, game.ModelEffect));
+            grid.GenerateGrid(@"Game\LevelFiles\AttachTest.json");
         }
 
         private void InitStaticModels()

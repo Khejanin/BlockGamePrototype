@@ -11,18 +11,17 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="GDLibrary\Grid\LevelFiles\AttachTest.json" />
-    <None Remove="GDLibrary\Grid\LevelFiles\Leveltest1.json" />
-    <None Remove="GDLibrary\Grid\LevelFiles\LevelTest2.json" />
+    <Compile Remove="GDLibrary\**" />
+    <EmbeddedResource Remove="GDLibrary\**" />
+    <None Remove="GDLibrary\**" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="GDLibrary\Grid\LevelFiles\AttachTest.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GDLibrary\Grid\LevelFiles\Leveltest1.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="GDLibrary\Grid\LevelFiles\LevelTest2.json">
+    <None Remove="Game\LevelFiles\AttachTest.json" />
+    <None Remove="Game\LevelFiles\Leveltest1.json" />
+    <None Remove="Game\LevelFiles\LevelTest2.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Game\LevelFiles\AttachTest.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -36,4 +35,5 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
+  <Import Project="..\GDLibrary\GDLibrary.projitems" Label="Shared" />
 </Project>

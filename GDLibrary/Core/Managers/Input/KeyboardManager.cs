@@ -76,6 +76,11 @@ namespace GDLibrary.Managers
             return newState.IsKeyDown(key) && oldState.IsKeyUp(key);
         }
 
+        public bool IsFirstKeyRelease(Keys key)
+        {
+            return newState.IsKeyUp(key) && oldState.IsKeyDown(key);
+        }
+
         /// <summary>
         /// Checks if any keys have been pressed, or released, since the last update
         /// </summary>

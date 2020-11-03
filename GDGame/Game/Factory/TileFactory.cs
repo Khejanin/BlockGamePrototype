@@ -1,9 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using GD_Library;
+using GDGame.Game.Tiles;
+using GDLibrary;
+using GDLibrary.Managers;
+using GDGame.Game.Enums;
+using GDLibrary.Enums;
+using GDLibrary.Parameters;
 
-namespace GDLibrary
+namespace GDGame.Game.Factory
 {
     public class TileFactory
     {

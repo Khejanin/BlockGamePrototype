@@ -1,7 +1,9 @@
-﻿using GD_Library;
+﻿using GDLibrary.Actors;
+using GDLibrary.Enums;
+using GDLibrary.Parameters;
 using System.Collections.Generic;
 
-namespace GDLibrary
+namespace GDGame.Game.Tiles
 {
     public class Shape : Actor3D
     {
@@ -11,12 +13,12 @@ namespace GDLibrary
 
         public Shape(string id, ActorType actorType, StatusType statusType, Transform3D transform3D) : base(id, actorType, statusType, transform3D)
         {
-            this.AttachableTiles = new List<AttachableTile>();
+            AttachableTiles = new List<AttachableTile>();
         }
 
         public void AddTile(AttachableTile tile)
         {
-            this.AttachableTiles.Add(tile);
+            AttachableTiles.Add(tile);
         }
     }
 }

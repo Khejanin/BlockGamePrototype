@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using GD_Library;
+using GDGame.Game.Enums;
+using GDGame.Game.Factory;
+using GDGame.Game.Tiles;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace GDLibrary

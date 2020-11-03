@@ -1,11 +1,12 @@
-﻿using GD_Library;
+﻿using GDGame.Game.Enums;
+using GDGame.Game.Utilities;
+using GDLibrary.Enums;
+using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SharpDX.Direct3D11;
 using System.Collections.Generic;
-using System.Windows.Forms.VisualStyles;
 
-namespace GDLibrary
+namespace GDGame.Game.Tiles
 {
     public class CubePlayer : GridTile
     {
@@ -50,17 +51,17 @@ namespace GDLibrary
 
         public void Attach()
         {
-            foreach(Shape shape in attachCandidates)
-                foreach(AttachableTile tile in shape.AttachableTiles)
+            foreach (Shape shape in attachCandidates)
+                foreach (AttachableTile tile in shape.AttachableTiles)
                     attachedTiles.Add(tile);
 
         }
-        
+
         public void Detach()
         {
             attachedTiles.Clear();
         }
-        
+
         /// <summary>
         /// This method will change the Player's state to moving if he's not already moving and calculates how the player will move.
         /// </summary>
@@ -74,22 +75,22 @@ namespace GDLibrary
 
                 //transform3D.parent.Translation += direction;
                 if (direction == Vector3.UnitX)
-                    offset = rightRotatePoint - transform3D.Translation;
+                    offset = rightRotatePoint - Transform3D.Translation;
                 else if (direction == -Vector3.UnitX)
-                    offset = leftRotatePoint - transform3D.Translation;
+                    offset = leftRotatePoint - Transform3D.Translation;
                 else if (direction == -Vector3.UnitZ)
-                    offset = forwardRotatePoint - transform3D.Translation;
+                    offset = forwardRotatePoint - Transform3D.Translation;
                 else if (direction == Vector3.UnitZ)
-                    offset = backwardRotatePoint - transform3D.Translation;
+                    offset = backwardRotatePoint - Transform3D.Translation;
                 else
                     throw new System.ArgumentException("Invalid direction!");
 
-                startRotQ = transform3D.Rotation;
+                startRotQ = Transform3D.Rotation;
                 endRotQ = Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, -Vector3.Up), MathHelper.ToRadians(90)) * startRotQ;
 
                 offset = Vector3.Transform(-offset, endRotQ * Quaternion.Inverse(startRotQ));
-                startPos = transform3D.Translation;
-                endPos = transform3D.Translation + direction + offset;
+                startPos = Transform3D.Translation;
+                endPos = Transform3D.Translation + direction + offset;
 
                 currentMovementTime = movementTime;
                 isMoving = true;
@@ -118,10 +119,10 @@ namespace GDLibrary
                     UpdateAttachCandidates(); //remove this later
                 }
 
-                Quaternion rot = Quaternion.Lerp(this.startRotQ, this.endRotQ, 1 - currentMovementTime / movementTime);
-                Vector3 trans = Vector3.Lerp(this.startPos, this.endPos, 1 - currentMovementTime / movementTime);
+                Quaternion rot = Quaternion.Lerp(startRotQ, endRotQ, 1 - currentMovementTime / movementTime);
+                Vector3 trans = Vector3.Lerp(startPos, endPos, 1 - currentMovementTime / movementTime);
 
-                transform3D.Rotation = rot;
+                Transform3D.Rotation = rot;
                 SetPosition(trans);
                 currentMovementTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
@@ -134,11 +135,11 @@ namespace GDLibrary
 
         private void UpdateRotatePoints()
         {
-            this.leftRotatePoint = this.rightRotatePoint = this.forwardRotatePoint = this.backwardRotatePoint = transform3D.Translation;
+            leftRotatePoint = rightRotatePoint = forwardRotatePoint = backwardRotatePoint = Transform3D.Translation;
 
-            foreach(AttachableTile tile in attachedTiles)
+            foreach (AttachableTile tile in attachedTiles)
             {
-                Vector3 playerPos = transform3D.Translation;
+                Vector3 playerPos = Transform3D.Translation;
                 Vector3 tilePos = tile.Transform3D.Translation;
 
                 //Update right rotate point

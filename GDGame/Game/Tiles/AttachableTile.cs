@@ -1,8 +1,9 @@
-﻿using GDLibrary;
+﻿using GDLibrary.Enums;
+using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GD_Library
+namespace GDGame.Game.Tiles
 {
     public class AttachableTile : GridTile
     {
