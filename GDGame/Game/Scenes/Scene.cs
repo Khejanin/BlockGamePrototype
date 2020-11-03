@@ -40,7 +40,7 @@ namespace GDGame.Scenes
             if (unloadsContent) 
                 Content.Unload();
             
-            CameraManager
+            CameraManager.Clear();
             
             Terminate();
         }

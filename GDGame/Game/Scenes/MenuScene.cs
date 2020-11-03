@@ -14,7 +14,8 @@ namespace GDGame.Game.Scenes
 
         public override void Initialize()
         {
-            
+            InitializeCamera();
+            InitializeTextures();
         }
 
         protected void InitializeCamera()
