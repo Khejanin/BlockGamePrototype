@@ -342,7 +342,6 @@ namespace GDGame.Scenes
         }
         public override void Terminate()
         {
-            
         }
         private void RaycastTests()
         {
@@ -400,7 +399,9 @@ namespace GDGame.Scenes
         private void InitHud()
         {
             Hud hud = new Hud(game, Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare"),
-                Content.Load<SpriteFont>("Assets/Fonts/Arial"), new SpriteBatch(GraphicsDevice));
+                Content.Load<SpriteFont>("Assets/Fonts/Arial"), new SpriteBatch(GraphicsDevice),
+                Content.Load<Texture2D>("Assets/Textures/Base/BasicCompass"),
+                CameraManager.ActiveCamera);
             game.Components.Add(hud);
         }
     }

@@ -2,12 +2,12 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Game.Scenes
 {
-    public class SceneManager
+    public class SceneManager : DrawableGameComponent
     {
         private Scene current;
 
         //The Game needs a SceneManager, and the SceneManager needs a Scene.
-        public SceneManager(Scene s)
+        public SceneManager(Microsoft.Xna.Framework.Game game,Scene s) : base(game)
         {
             current = s;
         }
@@ -26,15 +26,16 @@ namespace GDGame.Game.Scenes
             newScene.Initialize();
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             current.Update(gameTime);
         }
         
-        public void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
+            base.Draw(gameTime);
             current.Draw(gameTime);
         }
-        
     }
 }

@@ -63,21 +63,7 @@ namespace GDGame
             // TODO: Add your initialization logic here
             Window.Title = "My Amazing Game";
 
-            //camera
-            CameraManager = new CameraManager<Camera3D>(this);
-            Components.Add(CameraManager);
-
-            //keyboard
-            KeyboardManager = new KeyboardManager(this);
-            Components.Add(KeyboardManager);
-
-            //mouse
-            MouseManager = new MouseManager(this, false);
-            Components.Add(MouseManager);
-
-            //Sound
-            SoundManager = new SoundManager(this);
-            Components.Add(SoundManager);
+            
 
             CreateScenes();
             InitManagers();
@@ -111,9 +97,30 @@ namespace GDGame
 
         private void InitManagers()
         {
+            //Camera
+            CameraManager = new CameraManager<Camera3D>(this);
+            Components.Add(CameraManager);
+            
+            //Scene
+            SceneManager = new SceneManager(this,MainScene);
+            Components.Add(SceneManager);
+
+            //Keyboard
+            KeyboardManager = new KeyboardManager(this);
+            Components.Add(KeyboardManager);
+
+            //Mouse
+            MouseManager = new MouseManager(this, false);
+            Components.Add(MouseManager);
+
+            //Sound
+            SoundManager = new SoundManager(this);
+            Components.Add(SoundManager);
+            
+            //Object
             ObjectManager = new ObjectManager(this, 6, 10, CameraManager);
             Components.Add(ObjectManager);
-            SceneManager = new SceneManager(MainScene);
+
         }
 
         private void InitEffect()
@@ -181,6 +188,8 @@ namespace GDGame
             samplerState.AddressU = TextureAddressMode.Clamp;
             samplerState.AddressV = TextureAddressMode.Clamp;
             Graphics.GraphicsDevice.SamplerStates[0] = samplerState;
+            
+            
         }
 
 
@@ -192,7 +201,6 @@ namespace GDGame
                 Exit();
 
             base.Update(gameTime);
-            SceneManager.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -200,7 +208,6 @@ namespace GDGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             base.Draw(gameTime);
-            SceneManager.Draw(gameTime);
         }
 
         #endregion
