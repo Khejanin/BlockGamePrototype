@@ -9,6 +9,7 @@
     <Import_RootNamespace>GDLibrary</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Audio\Sound.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Base\Actor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Base\Actor3D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Actors\Camera\Camera3D.cs" />
@@ -33,6 +34,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\Interfaces\IActor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Interfaces\IController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Managers\Input\GamepadManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Managers\SoundManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Parameters\Curve\Curve1D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Parameters\Curve\Curve2D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Parameters\Curve\Curve3D.cs" />

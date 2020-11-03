@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using GDLibrary.Enums;
 using Microsoft.Xna.Framework.Media;
 
 namespace GDLibrary

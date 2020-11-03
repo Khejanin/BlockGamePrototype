@@ -1,11 +1,22 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using GDGame.Game.Controllers;
+using GDGame.Game.Controllers.CameraControllers;
+using GDGame.Game.Factory;
+using GDGame.Game.Utilities;
 using GDLibrary;
+using GDLibrary.Actors;
+using GDLibrary.Controllers;
+using GDLibrary.Enums;
+using GDLibrary.Factories;
+using GDLibrary.Interfaces;
+using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace BlockGame.Scenes
+namespace GDGame.Scenes
 {
     public class MainScene : Scene
     {
@@ -13,6 +24,8 @@ namespace BlockGame.Scenes
         private VertexPositionColorTexture[] vertices;
         private Texture2D grass;
         private PrimitiveObject archetypalTexturedQuad;
+        
+        private SoundEffect track01, track02, track03, track04, track05;
         
         private Texture2D backSky;
         private Texture2D leftSky;
@@ -57,18 +70,18 @@ namespace BlockGame.Scenes
         private void InitTextures()
         {
             //step 1 - texture
-            this.backSky
+            backSky
                 = Content.Load<Texture2D>("Assets/Textures/Skybox/back");
-            this.leftSky
+            leftSky
                 = Content.Load<Texture2D>("Assets/Textures/Skybox/left");
-            this.rightSky
+            rightSky
                 = Content.Load<Texture2D>("Assets/Textures/Skybox/right");
-            this.frontSky
+            frontSky
                 = Content.Load<Texture2D>("Assets/Textures/Skybox/front");
-            this.topSky
+            topSky
                 = Content.Load<Texture2D>("Assets/Textures/Skybox/sky");
 
-            this.grass
+            grass
                 = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/grass1");
         }
         
@@ -76,78 +89,20 @@ namespace BlockGame.Scenes
         {
             Transform3D transform3D = null;
             Camera3D camera3D = null;
+            
+            camera3D = new Camera3D("camcam",ActorType.Camera3D,StatusType.Update,new Transform3D(Vector3.Zero, -Vector3.Forward,Vector3.Up),ProjectionParameters.StandardDeepSixteenTen);
 
-            #region Camera - First Person
-
-            transform3D = new Transform3D(new Vector3(10, 10, 20),
-                new Vector3(0, 0, -1), Vector3.UnitY);
-
-            camera3D = new Camera3D("1st person",
-                ActorType.Camera3D, StatusType.Update, transform3D,
-                ProjectionParameters.StandardDeepSixteenTen);
-
-            //attach a controller
-            camera3D.ControllerList.Add(new FirstPersonCameraController(
-                KeyboardManager, MouseManager,
-                GDConstants.moveSpeed, GDConstants.strafeSpeed, GDConstants.rotateSpeed));
+            camera3D.ControllerList.Add(new RotationAroundActor("main cam",ControllerType.FlightCamera, KeyboardManager,45));
+            
             CameraManager.Add(camera3D);
-
-            #endregion
-
-            #region Camera - Flight
-
-            transform3D = new Transform3D(new Vector3(0, 10, 10),
-                new Vector3(0, 0, -1),
-                Vector3.UnitY);
-
-            camera3D = new Camera3D("flight person",
-                ActorType.Camera3D, StatusType.Update, transform3D,
-                ProjectionParameters.StandardDeepSixteenTen);
-
-            //attach a controller
-            camera3D.ControllerList.Add(new FlightCameraController(
-                KeyboardManager, MouseManager,
-                GDConstants.moveSpeed, GDConstants.strafeSpeed, GDConstants.rotateSpeed));
-            CameraManager.Add(camera3D);
-
-            #endregion
-
-            #region Camera - Security
-
-            transform3D = new Transform3D(new Vector3(10, 10, 50),
-                new Vector3(0, 0, -1),
-                Vector3.UnitY);
-
-            camera3D = new Camera3D("security",
-                ActorType.Camera3D, StatusType.Update, transform3D,
-                ProjectionParameters.StandardDeepSixteenTen);
-
-            camera3D.ControllerList.Add(new PanController(new Vector3(1, 1, 0),
-                30, GDConstants.mediumAngularSpeed, 0));
-            CameraManager.Add(camera3D);
-
-            #endregion
-
-            #region Camera - Giant
-
-            transform3D = new Transform3D(new Vector3(0, 250, 100),
-                new Vector3(0, -1, -1), //look
-                new Vector3(0, 1, -1)); //up
-
-            CameraManager.Add(new Camera3D("giant looking down 1st person",
-                ActorType.Camera3D, StatusType.Update, transform3D,
-                ProjectionParameters.StandardDeepSixteenTen));
-            CameraManager.Add(camera3D);
-
-            #endregion
-
+            
             CameraManager.ActiveCameraIndex = 0; //0, 1, 2, 3
         }
 
         private void InitGrid()
         {
             Grid grid = new Grid(new Transform3D(new Vector3(0, 0, 0), -Vector3.UnitZ, Vector3.UnitY), new TileFactory(game.KeyboardManager, game.ObjectManager, game.Content, game.ModelEffect));
-            grid.GenerateGrid(@"GDLibrary\Grid\LevelFiles\LevelTest2.json");
+            grid.GenerateGrid(@"Game\LevelFiles\LevelTest2.json");
         }
 
         private void InitStaticModels()
@@ -185,7 +140,7 @@ namespace BlockGame.Scenes
 
         private void InitVertices()
         {
-            this.vertices
+            vertices
                 = new VertexPositionColorTexture[4];
 
             float halfLength = 0.5f;
@@ -216,12 +171,12 @@ namespace BlockGame.Scenes
                Vector3.One, Vector3.UnitZ, Vector3.UnitY);
 
             EffectParameters effectParameters = new EffectParameters(game.UnlitTexturedEffect,
-                this.grass, /*bug*/ Color.White, 1);
+                grass, /*bug*/ Color.White, 1);
 
             IVertexData vertexData = new VertexData<VertexPositionColorTexture>(
-                this.vertices, PrimitiveType.TriangleStrip, 2);
+                vertices, PrimitiveType.TriangleStrip, 2);
 
-            this.archetypalTexturedQuad = new PrimitiveObject("original texture quad",
+            archetypalTexturedQuad = new PrimitiveObject("original texture quad",
                 ActorType.Decorator,
                 StatusType.Update | StatusType.Drawn,
                 transform3D, effectParameters, vertexData);
@@ -321,6 +276,26 @@ namespace BlockGame.Scenes
         //}
 
         
+        private void InitSound()
+        {
+            //step 1 - load songs
+            track01 = Content.Load<SoundEffect>("Assets/Sound/GameTrack01");
+            track02 = Content.Load<SoundEffect>("Assets/Sound/Ambiance02");
+            track03 = Content.Load<SoundEffect>("Assets/Sound/Knock03");
+            track04 = Content.Load<SoundEffect>("Assets/Sound/Chains01");
+            track05 = Content.Load<SoundEffect>("Assets/Sound/Click01");
+
+            //Step 2- Make into sounds
+            SoundManager.Add(new Sounds(null, track01, "main", ActorType.MusicTrack, StatusType.Update));
+            SoundManager.Add(new Sounds(null, track02, "ambiance", ActorType.MusicTrack, StatusType.Update));
+            SoundManager.Add(new Sounds(null, track03, "playerMove", ActorType.SoundEffect, StatusType.Update));
+            SoundManager.Add(new Sounds(null, track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
+            SoundManager.Add(new Sounds(null, track05, "Attach", ActorType.SoundEffect, StatusType.Update));
+
+            SoundManager.playSoundEffect("main");
+        }
+        
+        
         #endregion
 
         public override void Update(GameTime gameTime)
@@ -330,9 +305,21 @@ namespace BlockGame.Scenes
                 CameraManager.CycleActiveCamera();
                 // this.cameraManager.ActiveCameraIndex++;
             }
+            
+            if (KeyboardManager.IsFirstKeyPress(Keys.C))
+            {
+                CameraManager.CycleActiveCamera();
+                // this.cameraManager.ActiveCameraIndex++;
+            }
 
             //use g and space
             RaycastTests();
+
+            //Cycle Through Audio
+            if (KeyboardManager.IsFirstKeyPress(Keys.M))
+            {
+                SoundManager.nextSong();
+            }
         }
 
         public override void Draw(GameTime gameTime)
@@ -343,7 +330,7 @@ namespace BlockGame.Scenes
         {
             if (KeyboardManager.IsFirstKeyPress(Keys.G))
             {
-                ModelObject o = (ModelObject)this.archetypalBoxWireframe.Clone();
+                ModelObject o = (ModelObject)archetypalBoxWireframe.Clone();
                 o.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube,1));
                 o.Transform3D = new Transform3D(Vector3.Up * 5, -Vector3.Forward, Vector3.Up);
                 ObjectManager.Add(o);

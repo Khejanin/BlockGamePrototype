@@ -13,6 +13,9 @@
 
         Camera2D,
         Camera3D,
+        
+        MusicTrack,
+        SoundEffect,
 
         Helper
     }

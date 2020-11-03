@@ -50,7 +50,7 @@ namespace GDLibrary.Actors
         #endregion Properties
 
         public ModelObject(string id, ActorType actorType, StatusType statusType,
-            Transform3D transform, EffectParameters effectParameters, Model model)
+            Transform3D transform, EffectParameters effectParameters, Model model,RasterizerState rasterizerState = null)
             : base(id, actorType, statusType, transform, effectParameters)
         {
             this.model = model;

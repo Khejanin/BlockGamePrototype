@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GDLibrary.Actors;
+using GDLibrary.Enums;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 

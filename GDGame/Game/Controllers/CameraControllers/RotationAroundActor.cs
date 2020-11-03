@@ -57,6 +57,7 @@ namespace GDGame.Game.Controllers.CameraControllers
                         Matrix.CreateFromAxisAngle(Vector3.Up, -angle)) + target.Transform3D.Translation;
             }
 
+            if(target == null) return;
             Vector3 view = target.Transform3D.Translation - parent.Transform3D.Translation;
             
             Vector3 rotationAxis = Vector3.Cross(parent.Transform3D.Look, view);
