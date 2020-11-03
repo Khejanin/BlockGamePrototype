@@ -43,6 +43,7 @@ namespace GDGame.Scenes
             InitCameras3D();
             InitTextures();
             InitDrawnContent();
+            InitSound();
         }
         
          #region Initialization - Vertices, Archetypes, Helpers, Drawn Content(e.g. Skybox)
