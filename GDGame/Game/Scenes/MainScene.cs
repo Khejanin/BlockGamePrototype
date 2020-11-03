@@ -154,6 +154,33 @@ namespace GDGame.Scenes
             ObjectManager.Add(archetypalBoxWireframe);
         }
 
+        private void InitVertices()
+        {
+            vertices
+                = new VertexPositionColorTexture[4];
+
+            float halfLength = 0.5f;
+            //TL
+            vertices[0] = new VertexPositionColorTexture(
+                new Vector3(-halfLength, halfLength, 0),
+                new Color(255, 255, 255, 255), new Vector2(0, 0));
+
+            //BL
+            vertices[1] = new VertexPositionColorTexture(
+                new Vector3(-halfLength, -halfLength, 0),
+                Color.White, new Vector2(0, 1));
+
+            //TR
+            vertices[2] = new VertexPositionColorTexture(
+                new Vector3(halfLength, halfLength, 0),
+                Color.White, new Vector2(1, 0));
+
+            //BR
+            vertices[3] = new VertexPositionColorTexture(
+                new Vector3(halfLength, -halfLength, 0),
+                Color.White, new Vector2(1, 1));
+        }
+
         private void InitPrimitiveArchetypes() //formerly InitTexturedQuad
         {
             Transform3D transform3D = new Transform3D(Vector3.Zero, Vector3.Zero,
@@ -202,6 +229,68 @@ namespace GDGame.Scenes
             ObjectManager.Add(primitiveObject);
         }
 
+        //private void InitSkybox()
+        //{ 
+        //    //back
+        //    primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
+        //  //  primitiveObject.StatusType = StatusType.Off; //Experiment of the effect of StatusType
+        //    primitiveObject.ID = "sky back";
+        //    primitiveObject.EffectParameters.Texture = this.backSky;
+        //    primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+        //    primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
+        //    this.objectManager.Add(primitiveObject);
+
+        //    //left
+        //    primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
+        //    primitiveObject.ID = "left back";
+        //    primitiveObject.EffectParameters.Texture = this.leftSky;
+        //    primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+        //    primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 90, 0);
+        //    primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
+        //    this.objectManager.Add(primitiveObject);
+
+        //    //right
+        //    primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
+        //    primitiveObject.ID = "sky right";
+        //    primitiveObject.EffectParameters.Texture = this.rightSky;
+        //    primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 20);
+        //    primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, -90, 0);
+        //    primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
+        //    this.objectManager.Add(primitiveObject);
+
+             
+        //    //top
+        //    primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
+        //    primitiveObject.ID = "sky top";
+        //    primitiveObject.EffectParameters.Texture = this.topSky;
+        //    primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+        //    primitiveObject.Transform3D.RotationInDegrees = new Vector3(90, -90, 0);
+        //    primitiveObject.Transform3D.Translation = new Vector3(0 ,worldScale / 2.0f, 0);
+        //    this.objectManager.Add(primitiveObject);
+
+        //    //to do...front
+        //    primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
+        //    primitiveObject.ID = "sky front";
+        //    primitiveObject.EffectParameters.Texture = this.frontSky;
+        //    primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+        //    primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
+        //    primitiveObject.Transform3D.Translation = new Vector3(0, 0, worldScale / 2.0f);
+        //    this.objectManager.Add(primitiveObject);
+
+        //}
+
+        //private void InitGround()
+        //{
+        //    //grass
+        //    primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
+        //    primitiveObject.ID = "grass";
+        //    primitiveObject.EffectParameters.Texture = this.grass;
+        //    primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+        //    primitiveObject.Transform3D.RotationInDegrees = new Vector3(90, 90, 0);
+        //    this.objectManager.Add(primitiveObject);
+        //}
+
+        
         private void InitSound()
         {
             //step 1 - load songs
@@ -250,7 +339,10 @@ namespace GDGame.Scenes
         public override void Draw(GameTime gameTime)
         {
         }
-
+        public override void Terminate()
+        {
+            
+        }
         private void RaycastTests()
         {
             if (KeyboardManager.IsFirstKeyPress(Keys.G))
