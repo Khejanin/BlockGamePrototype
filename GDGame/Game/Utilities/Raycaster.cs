@@ -25,7 +25,7 @@ namespace GDGame.Game.Utilities
 
         public static HitResult Raycast(this DrawnActor3D callingDrawnActor3D, Vector3 position, Vector3 direction, bool ignoreSelf)
         {
-            List<HitResult> all = RaycastAll(callingDrawnActor3D,position, direction,ignoreSelf);
+            List<HitResult> all = RaycastAll(callingDrawnActor3D,position, direction,ignoreSelf, 1);
             all.Sort();
 
             if (all.Count == 0)
@@ -36,7 +36,7 @@ namespace GDGame.Game.Utilities
 
         
         
-        public static List<HitResult> RaycastAll(this DrawnActor3D callingDrawnActor3D,Vector3 position, Vector3 direction, bool ignoreSelf)
+        public static List<HitResult> RaycastAll(this DrawnActor3D callingDrawnActor3D,Vector3 position, Vector3 direction, bool ignoreSelf, float distance = 1000)
         {
             List<HitResult> hit = new List<HitResult>();
             Ray ray = new Ray(position, direction);
@@ -58,8 +58,11 @@ namespace GDGame.Game.Utilities
                         result.actor = currentDrawnActor3D;
                         result.distance = (float)dist;
                         result.hitPosition = position + direction * result.distance;
-                        hit.Add(result);
-                        found = true;
+                        if (dist < distance)
+                        {
+                            hit.Add(result);
+                            found = true;
+                        }
                     }
                 }
                 //Models don't work yet and aren't imporant, use the custom ones.
@@ -91,7 +94,10 @@ namespace GDGame.Game.Utilities
                         result.actor = currentDrawnActor3D;
                         result.distance = (float)dist;
                         result.hitPosition = position + direction * result.distance;
-                        hit.Add(result);
+                        if (dist < distance)
+                        {
+                            hit.Add(result);
+                        }
                     }
                 }
             }

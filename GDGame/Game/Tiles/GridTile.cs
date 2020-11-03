@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Game.Tiles
 {
-    
     public class GridTile : ModelObject
     {
         private ETileType tileType;

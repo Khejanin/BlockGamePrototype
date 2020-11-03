@@ -1,10 +1,14 @@
-﻿using GDGame.Game.Enums;
+﻿using System;
+using GDGame.Game.Enums;
 using GDGame.Game.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Linq;
+using GDGame.Game.UI;
+using GDLibrary.Actors;
 
 namespace GDGame.Game.Tiles
 {
@@ -23,6 +27,9 @@ namespace GDGame.Game.Tiles
         private Vector3 rightRotatePoint;
         private Vector3 forwardRotatePoint;
         private Vector3 backwardRotatePoint;
+        
+        private Text2D text2D;
+        private SpriteFont font;
 
         List<AttachableTile> attachedTiles;
         List<Shape> attachCandidates;
@@ -34,9 +41,10 @@ namespace GDGame.Game.Tiles
         }
 
         public CubePlayer(string id, ActorType actorType, StatusType statusType,
-            Transform3D transform, EffectParameters effectParameters, Model model)
+            Transform3D transform, EffectParameters effectParameters, Model model, SpriteFont font)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
+            this.font = font;
             attachedTiles = new List<AttachableTile>();
             attachCandidates = new List<Shape>();
             leftRotatePoint = rightRotatePoint = forwardRotatePoint = backwardRotatePoint = transform.Translation;
@@ -54,15 +62,21 @@ namespace GDGame.Game.Tiles
         {
             if (attachCandidates.Count == 0) return;
 
-            foreach (Shape shape in attachCandidates)
-                foreach (AttachableTile tile in shape.AttachableTiles)
-                    attachedTiles.Add(tile);
+            foreach (AttachableTile tile in attachCandidates.SelectMany(shape => shape.AttachableTiles))
+            {
+                attachedTiles.Add(tile);
+                tile.EffectParameters.DiffuseColor = Color.Green;
+            }
 
             isAttached = true;
         }
 
         public void Detach()
         {
+            foreach (AttachableTile tile in attachedTiles)
+            {
+                tile.EffectParameters.DiffuseColor = Color.White;
+            }
             attachedTiles.Clear();
             isAttached = false;
         }
@@ -142,6 +156,13 @@ namespace GDGame.Game.Tiles
 
                 currentMovementTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
+            text2D = attachCandidates.Count > 0 ? new Text2D("Hold Space to attach", font) : null;
+        }
+
+        public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
+        {
+            base.Draw(gameTime, camera, graphicsDevice);
+            text2D?.Draw(gameTime, graphicsDevice);
         }
 
         public void UpdateRotatePoints()
@@ -182,9 +203,8 @@ namespace GDGame.Game.Tiles
 
             foreach (PlayerSurroundCheck check in CheckSurroundings())
             {
-                if (check.hit == null) continue;
-                if (check.hit.actor is AttachableTile)
-                    attachCandidates.Add((check.hit.actor as AttachableTile).Shape);
+                if (check.hit?.actor is AttachableTile tile)
+                    attachCandidates.Add(tile.Shape);
             }
         }
 

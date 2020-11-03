@@ -15,15 +15,21 @@ namespace GDGame.Game.Tiles
         private Quaternion endRotQ;
         private bool isMoving;
 
-        public AttachableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform, effectParameters, model)
+        public AttachableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
+            EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform,
+            effectParameters, model)
         {
         }
 
         public void Move(Vector3 direction, Vector3 rotatePoint)
         {
-            Vector3 offset = Transform3D.Translation - rotatePoint; //offset between the player and the point to rotate around
-            Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, Vector3.Up), MathHelper.ToRadians(-90));   //The rotation to apply
-            Vector3 translation = Vector3.Transform(offset, rot);   //Rotate around the offset point
+            Vector3
+                offset = Transform3D.Translation -
+                         rotatePoint; //offset between the player and the point to rotate around
+            Quaternion rot =
+                Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, Vector3.Up),
+                    MathHelper.ToRadians(-90)); //The rotation to apply
+            Vector3 translation = Vector3.Transform(offset, rot); //Rotate around the offset point
 
             //Start and End Rotation --> Will be lerped between
             startRotQ = Transform3D.Rotation;
@@ -55,7 +61,7 @@ namespace GDGame.Game.Tiles
 
                 Transform3D.Rotation = rot;
                 Transform3D.Translation = trans;
-                currentMovementTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                currentMovementTime -= (float) gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
     }

@@ -10,8 +10,8 @@ namespace GDLibrary
 {
     public class PlayerController : IController
     {
-        KeyboardManager keyboardManager;
-        CubePlayer player;
+        private KeyboardManager keyboardManager;
+        private CubePlayer player;
 
         public PlayerController(KeyboardManager keyboardManager)
         {
