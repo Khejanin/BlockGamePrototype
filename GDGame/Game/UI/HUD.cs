@@ -1,31 +1,28 @@
-﻿using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Game.UI
 {
-    public class HUD : DrawableGameComponent
+    public class Hud : DrawableGameComponent
     {
         private SpriteBatch spriteBatch;
         private Texture2D texture2D;
-        private SpriteFont spriteFont;
-        private BlendState blendState;
 
-        public HUD(Microsoft.Xna.Framework.Game game, Texture2D texture2D, SpriteFont spriteFont,
+        private SpriteFont spriteFont;
+
+        public Hud(Microsoft.Xna.Framework.Game game, Texture2D texture2D, SpriteFont spriteFont,
             SpriteBatch spriteBatch) : base(game)
         {
             this.texture2D = texture2D;
             this.spriteFont = spriteFont;
             this.spriteBatch = spriteBatch;
-
-            blendState = new BlendState();
         }
 
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin(SpriteSortMode.BackToFront, blendState);
+            spriteBatch.Begin();
 
-            int height = 40;
+            int height = 50;
             Point location = new Point(0, GameConstants.screenHeight - height);
             Point size = new Point(GameConstants.screenWidth, height);
 
@@ -39,21 +36,31 @@ namespace GDGame.Game.UI
 
             DrawTexture(location, size);
 
-            //spriteBatch.DrawString(spriteFont, "Test Level", Vector2.Zero, Color.Black);
+            float halfWidth = GraphicsDevice.Viewport.Width / 2f;
+            float screenHeight = GraphicsDevice.Viewport.Height;
 
-            StringBuilder stringBuilder = new StringBuilder("Moves");
-            Vector2 position = new Vector2(screenWidth, GameConstants.screenHeight - height);
-            spriteBatch.DrawString(spriteFont, stringBuilder, position, Color.Red);
+            float heightFromBottom = 45;
 
-            stringBuilder = new StringBuilder("5");
-            position = new Vector2(screenWidth + 45, GameConstants.screenHeight - height + 26);
-            spriteBatch.DrawString(spriteFont, stringBuilder, position, Color.Red);
-            
-            stringBuilder = new StringBuilder("Current Level");
-            position = new Vector2(x: screenWidth / 4f, GameConstants.screenHeight - height / 2);
-            spriteBatch.DrawString(spriteFont, stringBuilder, position, Color.Red);
+            string text = "moves";
+            Vector2 position = new Vector2(halfWidth - (text.Length - 1) * 12, screenHeight - heightFromBottom * 2);
+            spriteBatch.DrawString(spriteFont, text, position, Color.Black);
+
+            text = "5";
+            position = new Vector2(halfWidth - text.Length * 12, screenHeight - heightFromBottom);
+            spriteBatch.DrawString(spriteFont, text, position, Color.Black);
+
+            text = "Current Level";
+            position = new Vector2(x: halfWidth / 4f, screenHeight - heightFromBottom);
+            spriteBatch.DrawString(spriteFont, text, position, Color.Black);
+
+            text = "Time : 00:00:00";
+            position = new Vector2(x: halfWidth + halfWidth / 4f, screenHeight - heightFromBottom);
+            spriteBatch.DrawString(spriteFont, text, position, Color.Black);
+
             spriteBatch.End();
 
+            GraphicsDevice.BlendState = BlendState.Opaque;
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             base.Draw(gameTime);
         }
 

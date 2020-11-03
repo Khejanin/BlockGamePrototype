@@ -3,6 +3,7 @@ using System.Diagnostics;
 using GDGame.Game.Controllers;
 using GDGame.Game.Controllers.CameraControllers;
 using GDGame.Game.Factory;
+using GDGame.Game.Scenes;
 using GDGame.Game.UI;
 using GDGame.Game.Utilities;
 using GDLibrary;
@@ -398,7 +399,7 @@ namespace GDGame.Scenes
 
         private void InitHud()
         {
-            HUD hud = new HUD(game, Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare"),
+            Hud hud = new Hud(game, Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare"),
                 Content.Load<SpriteFont>("Assets/Fonts/Arial"), new SpriteBatch(GraphicsDevice));
             game.Components.Add(hud);
         }
