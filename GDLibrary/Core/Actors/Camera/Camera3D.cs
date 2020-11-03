@@ -35,7 +35,7 @@ namespace GDLibrary.Actors
             {
                 return Matrix.CreateLookAt(Transform3D.Translation,
                     //to do...add Transform3D::Target
-                     Transform3D.Look,
+                    Transform3D.Translation + Transform3D.Look,
                     Transform3D.Up);
             }
         }

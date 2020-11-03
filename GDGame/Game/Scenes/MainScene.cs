@@ -87,12 +87,12 @@ namespace GDGame.Scenes
         
         private void InitCameras3D()
         {
-            Transform3D transform3D = null;
+            Transform3D transform3D = new Transform3D(new Vector3(10,10,20), -Vector3.Forward,Vector3.Up);
             Camera3D camera3D = null;
             
-            camera3D = new Camera3D("camcam",ActorType.Camera3D,StatusType.Update,new Transform3D(Vector3.Zero, -Vector3.Forward,Vector3.Up),ProjectionParameters.StandardDeepSixteenTen);
+            camera3D = new Camera3D("camcam",ActorType.Camera3D,StatusType.Update,transform3D,ProjectionParameters.StandardDeepSixteenTen);
 
-            camera3D.ControllerList.Add(new RotationAroundActor("main cam",ControllerType.FlightCamera, KeyboardManager,45));
+            camera3D.ControllerList.Add(new RotationAroundActor("main cam",ControllerType.FlightCamera, KeyboardManager,1));
             
             CameraManager.Add(camera3D);
             
@@ -103,6 +103,13 @@ namespace GDGame.Scenes
         {
             Grid grid = new Grid(new TileFactory(game.KeyboardManager, game.ObjectManager, game.Content, game.ModelEffect));
             grid.GenerateGrid(@"Game\LevelFiles\AttachTest.json");
+
+            List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
+            if (players.Count > 0)
+            {
+                RotationAroundActor rotationAroundActor = (RotationAroundActor) CameraManager.ActiveCamera.ControllerList[0];
+                rotationAroundActor.Target = players[0];
+            }
         }
 
         private void InitStaticModels()
