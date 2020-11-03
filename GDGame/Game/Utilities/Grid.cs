@@ -5,9 +5,6 @@ using GDGame.Game.Enums;
 using GDGame.Game.Factory;
 using GDGame.Game.Tiles;
 using GDLibrary.Parameters;
-using Microsoft.Win32.SafeHandles;
-using SharpDX;
-using SharpDX.Direct2D1;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace GDLibrary
