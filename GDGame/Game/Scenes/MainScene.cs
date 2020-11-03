@@ -341,7 +341,6 @@ namespace GDGame.Scenes
         }
         public override void Terminate()
         {
-            
         }
         private void RaycastTests()
         {
