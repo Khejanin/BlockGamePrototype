@@ -332,8 +332,13 @@ namespace GDGame.Scenes
         public override void Draw(GameTime gameTime)
         {
         }
-        
-         private void RaycastTests()
+
+        public override void Terminate()
+        {
+            
+        }
+
+        private void RaycastTests()
         {
             if (KeyboardManager.IsFirstKeyPress(Keys.G))
             {
