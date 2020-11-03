@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GDGame.Scenes
+namespace GDGame.Game.Scenes
 {
     public abstract class Scene
     {

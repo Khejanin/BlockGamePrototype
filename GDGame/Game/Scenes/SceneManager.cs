@@ -1,7 +1,6 @@
-using GDGame.Scenes;
 using Microsoft.Xna.Framework;
 
-namespace BlockGame.Scenes
+namespace GDGame.Game.Scenes
 {
     public class SceneManager : DrawableGameComponent
     {

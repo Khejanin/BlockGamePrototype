@@ -1,4 +1,4 @@
-﻿using BlockGame.Scenes;
+﻿using GDGame.Game.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using GDGame.Game.Controllers;
 using GDGame.Game.Controllers.CameraControllers;
 using GDGame.Game.Factory;
+using GDGame.Game.Scenes;
 using GDGame.Game.UI;
 using GDGame.Game.Utilities;
 using GDLibrary;
@@ -327,7 +328,7 @@ namespace GDGame.Scenes
             }
 
             //use g and space
-            RaycastTests();
+            //RaycastTests();
 
             //Cycle Through Audio
             if (KeyboardManager.IsFirstKeyPress(Keys.M))
@@ -397,8 +398,10 @@ namespace GDGame.Scenes
 
         private void InitHud()
         {
-            HUD hud = new HUD(game, Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare"),
-                Content.Load<SpriteFont>("Assets/Fonts/Arial"), new SpriteBatch(GraphicsDevice));
+            Hud hud = new Hud(game, Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare"),
+                Content.Load<SpriteFont>("Assets/Fonts/Arial"), new SpriteBatch(GraphicsDevice),
+                Content.Load<Texture2D>("Assets/Textures/Base/BasicCompass"),
+                CameraManager.ActiveCamera);
             game.Components.Add(hud);
         }
     }

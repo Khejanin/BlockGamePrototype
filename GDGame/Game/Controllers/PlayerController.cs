@@ -2,6 +2,7 @@
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
+using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -36,8 +37,6 @@ namespace GDLibrary
         private void HandleKeyboardInput(GameTime gameTime)
         {
             HandlePlayerMovement();
-
-            //parent.Transform3D.TranslateBy(moveVector * gameTime.ElapsedGameTime.Milliseconds);
         }
 
         private void HandlePlayerMovement()
@@ -70,6 +69,7 @@ namespace GDLibrary
                     )
                     {
                         //if(gridPositionResult.floorTile.TileType == ETileType.Win) Debug.WriteLine("YOU WON THE GAME! WOO");
+                        //player.Move(moveDir);
                         player.Move(moveDir);
                         Grid.MoveTo(start, dest);
                        // Debug.WriteLine("PLAYER MOVED FROM : " + start + " TO : " + dest);
