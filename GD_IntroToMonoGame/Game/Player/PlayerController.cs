@@ -21,7 +21,7 @@ namespace GDLibrary
 
         public void Update(GameTime gameTime, IActor actor)
         {
-            if(this.keyboardManager.IsStateChanged())
+            if(this.keyboardManager.IsAnyKeyPressed())
                 HandleKeyboardInput(gameTime);
         }
 
@@ -34,6 +34,11 @@ namespace GDLibrary
 
         private void HandlePlayerMovement()
         {
+            if (this.keyboardManager.IsFirstKeyPress(Keys.Space))
+                player.Attach();
+            else if (this.keyboardManager.IsFirstKeyRelease(Keys.Space))
+                player.Detach();
+
             if (!player.IsMoving)
             {
                 Vector3 moveDir = Vector3.Zero;

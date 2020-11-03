@@ -1,23 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.Win32.SafeHandles;
-using SharpDX;
-using SharpDX.Direct2D1;
+using GD_Library;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace GDLibrary
 {
     public class Grid
     {
-        private Transform3D transform;
         private TileFactory tileFactory;
         private static GridTile[,,] grid;
         private static Dictionary<int, Shape> shapes;
 
-        public Grid(Transform3D transform, TileFactory tileFactory)
+        public Grid(TileFactory tileFactory)
         {
-            this.transform = transform;
             this.tileFactory = tileFactory;
             shapes = new Dictionary<int, Shape>();
         }
@@ -40,6 +36,8 @@ namespace GDLibrary
             grid = new GridTile[(int)data.gridSize.X, (int)data.gridSize.Y, (int)data.gridSize.Z];
             Vector3 pos = Vector3.Zero;
 
+
+
             for (int x = 0; x < data.gridSize.X; x++)
             {
                 for (int y = 0; y < data.gridSize.Y; y++)
@@ -49,13 +47,13 @@ namespace GDLibrary
                         if (data.gridValues[x, y, z] != ETileType.None) 
                         {
                             GridTile tile = tileFactory.CreateTile(data.gridValues[x, y, z]);
-                            if(tile != null) tile.SetPosition(pos + transform.Translation);
-                            grid[x, y, z] = tile;
+                            if(tile != null) tile.SetPosition(pos + new Vector3(0, 0, data.gridSize.Z - 1));
+                            grid[x, y, (int)data.gridSize.Z - 1 - z] = tile;
                         }
                         else
-                            grid[x, y, z] = null;
+                            grid[x, y, (int)data.gridSize.Z - 1 - z] = null;
 
-                        pos.Z += data.tileSize.Z;
+                        pos.Z -= data.tileSize.Z; //MonoGames Forward is -UnitZ
                     }
 
                     pos.Z = 0;
@@ -73,12 +71,12 @@ namespace GDLibrary
         {
             foreach (var shapesKey in data.shapes.Keys)
             {
-                //Transform newParent = new GameObject("Shape" + shapesKey + "Parent").transform;
                 Shape newShape = this.tileFactory.CreateShape();
                 foreach (var shape in data.shapes[shapesKey])
                 {
-                    //grid[(int)shape.x, (int)shape.y, (int)shape.z].transform.SetParent(newParent);
-                    newShape.AddTile(grid[(int)shape.X, (int)shape.Y, (int)shape.Z]);
+                    AttachableTile tile = grid[(int)shape.X, (int)shape.Y, (int)data.gridSize.Z - 1 - (int)shape.Z] as AttachableTile;
+                    newShape.AddTile(tile);
+                    tile.Shape = newShape;
                 }
                 shapes.Add((int)shapesKey, newShape);
             }

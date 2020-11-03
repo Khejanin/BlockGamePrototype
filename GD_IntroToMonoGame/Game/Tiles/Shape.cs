@@ -1,20 +1,22 @@
-﻿using GDLibrary;
+﻿using GD_Library;
 using System.Collections.Generic;
 
 namespace GDLibrary
 {
     public class Shape : Actor3D
     {
-        List<GridTile> tiles;
+        private List<AttachableTile> attachableTiles;
+
+        public List<AttachableTile> AttachableTiles { get => attachableTiles; set => attachableTiles = value; }
 
         public Shape(string id, ActorType actorType, StatusType statusType, Transform3D transform3D) : base(id, actorType, statusType, transform3D)
         {
-            this.tiles = new List<GridTile>();
+            this.AttachableTiles = new List<AttachableTile>();
         }
 
-        public void AddTile(GridTile tile)
+        public void AddTile(AttachableTile tile)
         {
-            this.tiles.Add(tile);
+            this.AttachableTiles.Add(tile);
         }
     }
 }

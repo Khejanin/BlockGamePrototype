@@ -223,8 +223,8 @@ namespace GDLibrary
 
         private void InitGrid()
         {
-            Grid grid = new Grid(new Transform3D(new Vector3(0, 0, 0), -Vector3.UnitZ, Vector3.UnitY), new TileFactory(keyboardManager, objectManager, Content, modelEffect));
-            grid.GenerateGrid(@"GDLibrary\Grid\LevelFiles\LevelTest2.json");
+            Grid grid = new Grid(new TileFactory(keyboardManager, objectManager, Content, modelEffect));
+            grid.GenerateGrid(@"GDLibrary\Grid\LevelFiles\AttachTest.json");
         }
 
         private void InitStaticModels()
@@ -447,7 +447,7 @@ namespace GDLibrary
             }
 
             //use g and space
-            RaycastTests();
+            //RaycastTests();
                
             base.Update(gameTime);
         }

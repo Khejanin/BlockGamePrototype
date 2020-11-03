@@ -50,6 +50,7 @@ namespace GDLibrary
             return (this.newState.GetPressedKeys().Length != 0);
         }
 
+
         //is a key pressed?
         public bool IsKeyDown(Keys key)
         {
@@ -60,6 +61,12 @@ namespace GDLibrary
         public bool IsFirstKeyPress(Keys key)
         {
             return this.newState.IsKeyDown(key) && this.oldState.IsKeyUp(key);
+        }
+
+        //is a key released now that was pressed in the last update?
+        public bool IsFirstKeyRelease(Keys key)
+        {
+            return this.newState.IsKeyUp(key) && this.oldState.IsKeyDown(key);
         }
 
         //has the keyboard state changed since the last update?

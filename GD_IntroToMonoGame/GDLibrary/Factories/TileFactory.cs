@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using GD_Library;
 
 namespace GDLibrary
 {
@@ -64,7 +65,7 @@ namespace GDLibrary
                 Color.White, 1);
             Model model = contentManager.Load<Model>("Assets/Models/box2");
             Transform3D transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
-            GridTile attachableTile = new GridTile("AttachableTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, model);
+            AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, model);
             objectManager.Add(attachableTile);
             return attachableTile;
         }

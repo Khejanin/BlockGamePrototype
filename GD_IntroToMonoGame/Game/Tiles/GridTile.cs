@@ -18,7 +18,7 @@ namespace GDLibrary
             Transform3D transform, EffectParameters effectParameters, Model model)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
-
+            ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
         }
 
         public virtual void SetPosition(Vector3 position)

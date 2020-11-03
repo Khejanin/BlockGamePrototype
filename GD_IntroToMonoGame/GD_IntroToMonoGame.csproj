@@ -11,10 +11,14 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="GDLibrary\Grid\LevelFiles\AttachTest.json" />
     <None Remove="GDLibrary\Grid\LevelFiles\Leveltest1.json" />
     <None Remove="GDLibrary\Grid\LevelFiles\LevelTest2.json" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="GDLibrary\Grid\LevelFiles\AttachTest.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="GDLibrary\Grid\LevelFiles\Leveltest1.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
