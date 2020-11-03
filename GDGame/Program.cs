@@ -7,8 +7,8 @@ namespace GDGame
         [STAThread]
         private static void Main()
         {
-            using (var game = new Main())
-                game.Run();
+            using Main game = new Main();
+            game.Run();
         }
     }
 }

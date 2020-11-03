@@ -21,7 +21,6 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\Assets\Textures\Props\Cubes" />
     <Folder Include="Game\Controllers\" />
     <Folder Include="Game\Actors\" />
   </ItemGroup>

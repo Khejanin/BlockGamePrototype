@@ -1,5 +1,4 @@
-﻿using GDGame.Game.Enums;
- using GDGame.Game.Tiles;
+﻿using GDGame.Game.Tiles;
  using GDLibrary.Enums;
  using GDLibrary.Interfaces;
  using GDLibrary.Managers;
