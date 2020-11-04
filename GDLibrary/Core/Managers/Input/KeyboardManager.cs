@@ -66,6 +66,11 @@ namespace GDLibrary.Managers
             return newState.IsKeyDown(key);
         }
 
+        public bool IsKeyUp(Keys key)
+        {
+            return newState.IsKeyUp(key);
+        }
+
         /// <summary>
         /// Checks if a user-defined key is currently pressed that was not pressed in the last update
         /// </summary>

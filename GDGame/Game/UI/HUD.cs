@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Numerics;
 using GDLibrary.Actors;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -54,8 +52,7 @@ namespace GDGame.Game.UI
             float angle = GetAngle(Vector3.Forward, camera3D.Transform3D.Look);
             Rectangle rectangle = new Rectangle(new Point((int) (screenWidth - 60) + border, border + 50),
                 new Point(100, 100));
-            spriteBatch.Draw(compass, rectangle, null, Color.White, angle, origin,
-                SpriteEffects.None, 0);
+            spriteBatch.Draw(compass, rectangle, null, Color.White, angle, origin, SpriteEffects.None, 0);
 
 
             float heightFromBottom = 45;
@@ -95,8 +92,7 @@ namespace GDGame.Game.UI
 
             double test = Vector3.Dot(Vector3.Up, cross);
             if (test < 0.0f) angle = -angle;
-           // Debug.WriteLine(angle);
-            return (float) (angle + Math.PI);
+            return (float) -(angle + Math.PI);
         }
 
         private void DrawTexture(Texture2D texture2D, Point location, Point size)

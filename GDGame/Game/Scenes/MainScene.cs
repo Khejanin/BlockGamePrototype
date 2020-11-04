@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using GDGame.Game.Controllers;
 using GDGame.Game.Controllers.CameraControllers;
 using GDGame.Game.Factory;
@@ -16,6 +17,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace GDGame.Scenes
 {
@@ -33,6 +35,21 @@ namespace GDGame.Scenes
         private Texture2D rightSky;
         private Texture2D frontSky;
         private Texture2D topSky;
+        private Texture2D cubeTexture;
+        private Texture2D createTexture;
+
+
+        private SpriteFont uiFont;
+
+        private Model playerModel;
+        private Model attachableModel;
+        private Model boxModel;
+
+        public SpriteFont UiFont
+        {
+            get => uiFont;
+            set => uiFont = value;
+        }
 
 
         public MainScene(Main game) : base(game)
@@ -43,8 +60,14 @@ namespace GDGame.Scenes
         {
             InitCameras3D();
             InitTextures();
+            InitFonts();
             InitDrawnContent();
             InitSound();
+        }
+
+        private void InitFonts()
+        {
+            UiFont = Content.Load<SpriteFont>("Assets/Fonts/Arial");
         }
 
         #region Initialization - Vertices, Archetypes, Helpers, Drawn Content(e.g. Skybox)
@@ -72,44 +95,38 @@ namespace GDGame.Scenes
             InitHud();
         }
 
-
         private void InitTextures()
         {
             //step 1 - texture
-            backSky
-                = Content.Load<Texture2D>("Assets/Textures/Skybox/back");
-            leftSky
-                = Content.Load<Texture2D>("Assets/Textures/Skybox/left");
-            rightSky
-                = Content.Load<Texture2D>("Assets/Textures/Skybox/right");
-            frontSky
-                = Content.Load<Texture2D>("Assets/Textures/Skybox/front");
-            topSky
-                = Content.Load<Texture2D>("Assets/Textures/Skybox/sky");
-            grass
-                = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/grass1");
+            backSky = Content.Load<Texture2D>("Assets/Textures/Skybox/back");
+            leftSky = Content.Load<Texture2D>("Assets/Textures/Skybox/left");
+            rightSky = Content.Load<Texture2D>("Assets/Textures/Skybox/right");
+            frontSky = Content.Load<Texture2D>("Assets/Textures/Skybox/front");
+            topSky = Content.Load<Texture2D>("Assets/Textures/Skybox/sky");
+            grass = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/grass1");
+
+            cubeTexture = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/TextureCube");
+            createTexture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
         }
 
         private void InitCameras3D()
         {
             Transform3D transform3D = new Transform3D(new Vector3(10, 10, 20), -Vector3.Forward, Vector3.Up);
-            Camera3D camera3D = null;
-
-            camera3D = new Camera3D("camcam", ActorType.Camera3D, StatusType.Update, transform3D,
-                ProjectionParameters.StandardDeepSixteenTen);
-
-            camera3D.ControllerList.Add(new RotationAroundActor("main cam", ControllerType.FlightCamera,
+            Camera3D camera3D = new Camera3D("cam", ActorType.Camera3D, StatusType.Update, transform3D,
+                ProjectionParameters.StandardDeepFourThree);
+            camera3D.ControllerList.Add(new RotationAroundActor("main_cam", ControllerType.FlightCamera,
                 KeyboardManager, 1));
 
             CameraManager.Add(camera3D);
-
             CameraManager.ActiveCameraIndex = 0; //0, 1, 2, 3
         }
 
         private void InitGrid()
         {
-            Grid grid = new Grid(new TileFactory(game.KeyboardManager, game.ObjectManager, game.Content,
-                game.ModelEffect));
+            List<Model> models = new List<Model> {boxModel, attachableModel, playerModel};
+            List<Texture2D> textures = new List<Texture2D> {createTexture, cubeTexture};
+            Grid grid = new Grid(new TileFactory(KeyboardManager, ObjectManager, game.ModelEffect, UiFont, models,
+                textures));
             grid.GenerateGrid(@"Game\LevelFiles\AttachTest.json");
 
             List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
@@ -124,35 +141,27 @@ namespace GDGame.Scenes
         private void InitStaticModels()
         {
             //transform
-            Transform3D transform3D = new Transform3D(Vector3.Up,
-                Vector3.Zero, //rotation
-                Vector3.One, //scale
-                -Vector3.UnitZ, //look
-                Vector3.UnitY); //up
+            Transform3D transform3D =
+                new Transform3D(Vector3.Up, Vector3.Zero, Vector3.One, -Vector3.UnitZ, Vector3.UnitY);
 
-            //effectparameters
             EffectParameters effectParameters = new EffectParameters(game.ModelEffect,
-                Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1"),
-                Color.White, 1);
+                Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1"), Color.White, 1);
 
             //model
             Model model = Content.Load<Model>("Assets/Models/box2");
 
-            //model object
-            /*ModelObject archetypalBoxObject = new ModelObject("car", ActorType.Player,
-                StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, model);
-            this.objectManager.Add(archetypalBoxObject);*/
-
             EffectParameters wireframeEffectParameters =
                 new EffectParameters(game.ModelEffect, null, Color.White, 1);
-
 
             archetypalBoxWireframe = new ModelObject("original wireframe box mesh",
                 ActorType.Helper, StatusType.Update | StatusType.Drawn, transform3D, wireframeEffectParameters, model,
                 game.WireframeRasterizerState);
 
             ObjectManager.Add(archetypalBoxWireframe);
+
+            attachableModel = Content.Load<Model>("Assets/Models/BlueCube");
+            playerModel = Content.Load<Model>("Assets/Models/RedCube");
+            boxModel = Content.Load<Model>("Assets/Models/box2");
         }
 
         private void InitVertices()
@@ -230,68 +239,6 @@ namespace GDGame.Scenes
             ObjectManager.Add(primitiveObject);
         }
 
-        //private void InitSkybox()
-        //{ 
-        //    //back
-        //    primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
-        //  //  primitiveObject.StatusType = StatusType.Off; //Experiment of the effect of StatusType
-        //    primitiveObject.ID = "sky back";
-        //    primitiveObject.EffectParameters.Texture = this.backSky;
-        //    primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-        //    primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
-        //    this.objectManager.Add(primitiveObject);
-
-        //    //left
-        //    primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
-        //    primitiveObject.ID = "left back";
-        //    primitiveObject.EffectParameters.Texture = this.leftSky;
-        //    primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-        //    primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 90, 0);
-        //    primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
-        //    this.objectManager.Add(primitiveObject);
-
-        //    //right
-        //    primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
-        //    primitiveObject.ID = "sky right";
-        //    primitiveObject.EffectParameters.Texture = this.rightSky;
-        //    primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 20);
-        //    primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, -90, 0);
-        //    primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
-        //    this.objectManager.Add(primitiveObject);
-
-             
-        //    //top
-        //    primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
-        //    primitiveObject.ID = "sky top";
-        //    primitiveObject.EffectParameters.Texture = this.topSky;
-        //    primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-        //    primitiveObject.Transform3D.RotationInDegrees = new Vector3(90, -90, 0);
-        //    primitiveObject.Transform3D.Translation = new Vector3(0 ,worldScale / 2.0f, 0);
-        //    this.objectManager.Add(primitiveObject);
-
-        //    //to do...front
-        //    primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
-        //    primitiveObject.ID = "sky front";
-        //    primitiveObject.EffectParameters.Texture = this.frontSky;
-        //    primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-        //    primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
-        //    primitiveObject.Transform3D.Translation = new Vector3(0, 0, worldScale / 2.0f);
-        //    this.objectManager.Add(primitiveObject);
-
-        //}
-
-        //private void InitGround()
-        //{
-        //    //grass
-        //    primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
-        //    primitiveObject.ID = "grass";
-        //    primitiveObject.EffectParameters.Texture = this.grass;
-        //    primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-        //    primitiveObject.Transform3D.RotationInDegrees = new Vector3(90, 90, 0);
-        //    this.objectManager.Add(primitiveObject);
-        //}
-
-        
         private void InitSound()
         {
             //step 1 - load songs
@@ -302,13 +249,13 @@ namespace GDGame.Scenes
             track05 = Content.Load<SoundEffect>("Assets/Sound/Click01");
 
             //Step 2- Make into sounds
-            SoundManager.Add(new Sounds(null, track01, "main", ActorType.MusicTrack, StatusType.Update));
-            SoundManager.Add(new Sounds(null, track02, "ambiance", ActorType.MusicTrack, StatusType.Update));
-            SoundManager.Add(new Sounds(null, track03, "playerMove", ActorType.SoundEffect, StatusType.Update));
-            SoundManager.Add(new Sounds(null, track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
-            SoundManager.Add(new Sounds(null, track05, "Attach", ActorType.SoundEffect, StatusType.Update));
+            SoundManager.Add(new Sounds(track01, "gameTrack", ActorType.MusicTrack, StatusType.Update));
+            SoundManager.Add(new Sounds(track02, "ambiance", ActorType.SoundEffect, StatusType.Update));
+            SoundManager.Add(new Sounds(track03, "playerMove", ActorType.SoundEffect, StatusType.Update));
+            SoundManager.Add(new Sounds(track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
+            SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
 
-            SoundManager.playSoundEffect("main");
+            SoundManager.playSoundEffect("gameTrack");
         }
 
         #endregion
@@ -330,19 +277,29 @@ namespace GDGame.Scenes
             //use g and space
             //RaycastTests();
 
-            //Cycle Through Audio
-            if (KeyboardManager.IsFirstKeyPress(Keys.M))
+            //Cycle Through Audio. Buggy. Will layer over song repeatedly
+            //if (KeyboardManager.IsFirstKeyPress(Keys.M))
+            //{
+            //    SoundManager.nextSong();
+            //}
+            if (KeyboardManager.IsFirstKeyPress(Keys.Space))
             {
-                SoundManager.nextSong();
+                SoundManager.playSoundEffect("playerAttach");
+            }
+            else if (KeyboardManager.IsFirstKeyPress(Keys.Right) || KeyboardManager.IsFirstKeyPress(Keys.Left) || KeyboardManager.IsFirstKeyPress(Keys.Up) || KeyboardManager.IsFirstKeyPress(Keys.Down))
+            {
+                SoundManager.playSoundEffect("playerMove");
             }
         }
 
         public override void Draw(GameTime gameTime)
         {
         }
+
         public override void Terminate()
         {
         }
+
         private void RaycastTests()
         {
             if (KeyboardManager.IsFirstKeyPress(Keys.G))
@@ -396,7 +353,7 @@ namespace GDGame.Scenes
         private void InitHud()
         {
             Hud hud = new Hud(game, Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare"),
-                Content.Load<SpriteFont>("Assets/Fonts/Arial"), new SpriteBatch(GraphicsDevice),
+                UiFont, new SpriteBatch(GraphicsDevice),
                 Content.Load<Texture2D>("Assets/Textures/Base/BasicCompass"),
                 CameraManager.ActiveCamera);
             game.Components.Add(hud);

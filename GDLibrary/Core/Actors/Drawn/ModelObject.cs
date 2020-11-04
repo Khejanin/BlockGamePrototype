@@ -16,24 +16,13 @@ namespace GDLibrary.Actors
     {
         #region Fields
 
-        private Model model;
         private Matrix[] boneTransforms;
 
         #endregion Fields
 
         #region Properties
 
-        public Model Model
-        {
-            get
-            {
-                return model;
-            }
-            set
-            {
-                model = value;
-            }
-        }
+        public Model Model { get; set; }
 
         public Matrix[] BoneTransforms
         {
@@ -53,7 +42,7 @@ namespace GDLibrary.Actors
             Transform3D transform, EffectParameters effectParameters, Model model,RasterizerState rasterizerState = null)
             : base(id, actorType, statusType, transform, effectParameters)
         {
-            this.model = model;
+            this.Model = model;
 
             InitializeBoneTransforms();
         }
@@ -69,10 +58,10 @@ namespace GDLibrary.Actors
         private void InitializeBoneTransforms()
         {
             //load bone transforms and copy transfroms to transform array (transforms)
-            if (model != null)
+            if (Model != null)
             {
-                boneTransforms = new Matrix[model.Bones.Count];
-                model.CopyAbsoluteBoneTransformsTo(boneTransforms);
+                boneTransforms = new Matrix[Model.Bones.Count];
+                Model.CopyAbsoluteBoneTransformsTo(boneTransforms);
             }
         }
 
@@ -90,7 +79,7 @@ namespace GDLibrary.Actors
                 EffectParameters.Effect.Texture = EffectParameters.Texture;
             }
 
-            foreach (ModelMesh mesh in model.Meshes)
+            foreach (ModelMesh mesh in Model.Meshes)
             {
                 foreach (ModelMeshPart part in mesh.MeshParts)
                 {
@@ -108,7 +97,7 @@ namespace GDLibrary.Actors
                StatusType,
                Transform3D.Clone() as Transform3D,  //deep
                EffectParameters.Clone() as EffectParameters, //hybrid - shallow (texture and effect) and deep (all other fields)
-               model); //shallow i.e. a reference
+               Model); //shallow i.e. a reference
 
             //remember if we clone a model then we need to clone any attached controllers
             if (ControllerList != null)
@@ -129,7 +118,7 @@ namespace GDLibrary.Actors
         {
             List<BoundingSphere> result = new List<BoundingSphere>();
             
-            foreach (ModelMesh mesh in model.Meshes)
+            foreach (ModelMesh mesh in Model.Meshes)
             {
                 result.Add(mesh.BoundingSphere);
             }
