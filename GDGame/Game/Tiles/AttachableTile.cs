@@ -1,11 +1,13 @@
-﻿using GDLibrary.Enums;
+﻿using System;
+using GDLibrary.Enums;
+using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Game.Tiles
 {
-    public class AttachableTile : GridTile
+    public class AttachableTile : GridTile, ICloneable
     {
         private float movementTime = .3f;
         private float currentMovementTime;
@@ -63,6 +65,22 @@ namespace GDGame.Game.Tiles
                 Transform3D.Translation = trans;
                 currentMovementTime -= (float) gameTime.ElapsedGameTime.TotalSeconds;
             }
+        }
+
+        public new object Clone()
+        {
+            AttachableTile attachableTile = new AttachableTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D,
+                EffectParameters.Clone() as EffectParameters, Model);
+            
+            if (ControllerList != null)
+            {
+                foreach (IController controller in ControllerList)
+                {
+                    attachableTile.ControllerList.Add(controller.Clone() as IController);
+                }
+            }
+
+            return attachableTile;
         }
     }
 }

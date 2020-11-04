@@ -9,24 +9,32 @@ namespace GDGame.Game.Scenes
 {
     public abstract class Scene
     {
-        protected Main game;
-        protected bool unloadsContent;
+        private Main game;
+        private bool unloadsContent;
 
-        public Scene(Main game, bool unloadsContent = true)
+        protected Scene(Main game, bool unloadsContent = true)
         {
             this.game = game;
             this.unloadsContent = unloadsContent;
         }
         
         #region Parameters
+
         protected GraphicsDevice GraphicsDevice => game.GraphicsDevice;
-        protected GraphicsDeviceManager _graphics => game.Graphics;
+        protected GraphicsDeviceManager Graphics => game.Graphics;
         protected ContentManager Content => game.Content;
         protected ObjectManager ObjectManager => game.ObjectManager;
         protected KeyboardManager KeyboardManager => game.KeyboardManager;
         protected CameraManager<Camera3D> CameraManager => game.CameraManager;
         protected MouseManager MouseManager => game.MouseManager;
         protected SoundManager SoundManager => game.SoundManager;
+        protected BasicEffect ModelEffect => game.ModelEffect;
+        protected BasicEffect UnlitWireframeEffect => game.UnlitWireframeEffect;
+        protected BasicEffect UnlitTexturedEffect => game.UnlitTexturedEffect;
+        protected RasterizerState WireframeRasterizerState => game.WireframeRasterizerState;
+        protected GameComponentCollection Components => game.Components;
+
+        protected Main Game => game;
         
         #endregion
         

@@ -1,9 +1,9 @@
-﻿using GDLibrary.Enums;
+﻿using System;
+using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 
 namespace GDLibrary.Actors

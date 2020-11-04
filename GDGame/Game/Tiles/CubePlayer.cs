@@ -9,10 +9,11 @@ using System.Collections.Generic;
 using System.Linq;
 using GDGame.Game.UI;
 using GDLibrary.Actors;
+using GDLibrary.Interfaces;
 
 namespace GDGame.Game.Tiles
 {
-    public class CubePlayer : GridTile
+    public class CubePlayer : GridTile, ICloneable
     {
         private float movementTime = .3f;
         private float currentMovementTime;
@@ -52,11 +53,6 @@ namespace GDGame.Game.Tiles
 
         public bool IsMoving => isMoving;
         public bool IsAttached { get => isAttached; set => isAttached = value; }
-
-        public override void Initialize()
-        {
-            base.Initialize();
-        }
 
         public void Attach()
         {
@@ -230,6 +226,21 @@ namespace GDGame.Game.Tiles
             result.Add(surroundCheck);
 
             return result;
+        }
+
+        public new object Clone()
+        {
+            CubePlayer cubePlayer = new CubePlayer("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D,
+                EffectParameters.Clone() as EffectParameters, Model, font);
+            if (ControllerList != null)
+            {
+                foreach (IController controller in ControllerList)
+                {
+                    cubePlayer.ControllerList.Add(controller.Clone() as IController);
+                }
+            }
+
+            return cubePlayer;
         }
     }
 }
