@@ -1,12 +1,9 @@
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using GDGame.Game.Controllers;
 using GDGame.Game.Controllers.CameraControllers;
 using GDGame.Game.Factory;
-using GDGame.Game.Scenes;
+using GDGame.Game.Tiles;
 using GDGame.Game.UI;
-using GDGame.Game.Utilities;
 using GDLibrary;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
@@ -19,37 +16,16 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Color = Microsoft.Xna.Framework.Color;
 
-namespace GDGame.Scenes
+namespace GDGame.Game.Scenes
 {
     public class MainScene : Scene
     {
         private ModelObject archetypalBoxWireframe;
-        private VertexPositionColorTexture[] vertices;
-        private Texture2D grass;
-        private PrimitiveObject archetypalTexturedQuad;
 
-        private SoundEffect track01, track02, track03, track04, track05;
-
-        private Texture2D backSky;
-        private Texture2D leftSky;
-        private Texture2D rightSky;
-        private Texture2D frontSky;
-        private Texture2D topSky;
-        private Texture2D cubeTexture;
-        private Texture2D createTexture;
-
-
-        private SpriteFont uiFont;
-
-        private Model playerModel;
-        private Model attachableModel;
-        private Model boxModel;
-
-        public SpriteFont UiFont
-        {
-            get => uiFont;
-            set => uiFont = value;
-        }
+        private Dictionary<string, Model> models;
+        private Dictionary<string, Texture2D> textures;
+        private Dictionary<string, SpriteFont> fonts;
+        private Dictionary<string, DrawnActor3D> drawnActors;
 
 
         public MainScene(Main game) : base(game)
@@ -59,32 +35,25 @@ namespace GDGame.Scenes
         public override void Initialize()
         {
             InitCameras3D();
-            InitTextures();
-            InitFonts();
+            InitLoadContent();
             InitDrawnContent();
-            InitSound();
-        }
-
-        private void InitFonts()
-        {
-            UiFont = Content.Load<SpriteFont>("Assets/Fonts/Arial");
         }
 
         #region Initialization - Vertices, Archetypes, Helpers, Drawn Content(e.g. Skybox)
 
+        private void InitLoadContent()
+        {
+            LoadTextures();
+            LoadFonts();
+            LoadSounds();
+            LoadModels();
+        }
+
+
         private void InitDrawnContent() //formerly InitPrimitives
         {
-            //add archetypes that can be cloned
-            InitPrimitiveArchetypes();
-
             //adds origin helper etc
             InitHelpers();
-
-            //add skybox
-            //InitSkybox();
-
-            //add grass plane
-            //InitGround();
 
             //models
             InitStaticModels();
@@ -95,19 +64,6 @@ namespace GDGame.Scenes
             InitHud();
         }
 
-        private void InitTextures()
-        {
-            //step 1 - texture
-            backSky = Content.Load<Texture2D>("Assets/Textures/Skybox/back");
-            leftSky = Content.Load<Texture2D>("Assets/Textures/Skybox/left");
-            rightSky = Content.Load<Texture2D>("Assets/Textures/Skybox/right");
-            frontSky = Content.Load<Texture2D>("Assets/Textures/Skybox/front");
-            topSky = Content.Load<Texture2D>("Assets/Textures/Skybox/sky");
-            grass = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/grass1");
-
-            cubeTexture = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/TextureCube");
-            createTexture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
-        }
 
         private void InitCameras3D()
         {
@@ -123,10 +79,7 @@ namespace GDGame.Scenes
 
         private void InitGrid()
         {
-            List<Model> models = new List<Model> {boxModel, attachableModel, playerModel};
-            List<Texture2D> textures = new List<Texture2D> {createTexture, cubeTexture};
-            Grid grid = new Grid(new TileFactory(KeyboardManager, ObjectManager, game.ModelEffect, UiFont, models,
-                textures));
+            Grid grid = new Grid(new TileFactory(ObjectManager, drawnActors));
             grid.GenerateGrid(@"Game\LevelFiles\AttachTest.json");
 
             List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
@@ -144,81 +97,41 @@ namespace GDGame.Scenes
             Transform3D transform3D =
                 new Transform3D(Vector3.Up, Vector3.Zero, Vector3.One, -Vector3.UnitZ, Vector3.UnitY);
 
-            EffectParameters effectParameters = new EffectParameters(game.ModelEffect,
-                Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1"), Color.White, 1);
+            EffectParameters wireframeEffectParameters = new EffectParameters(ModelEffect, null, Color.White, 1);
 
-            //model
-            Model model = Content.Load<Model>("Assets/Models/box2");
+            archetypalBoxWireframe = new ModelObject("original wireframe box mesh", ActorType.Helper,
+                StatusType.Update | StatusType.Drawn, transform3D, wireframeEffectParameters, models["Box"],
+                WireframeRasterizerState);
 
-            EffectParameters wireframeEffectParameters =
-                new EffectParameters(game.ModelEffect, null, Color.White, 1);
+            EffectParameters effectParameters = new EffectParameters(ModelEffect, textures["Box"], Color.White, 1);
+            transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
+            StaticTile staticTile = new StaticTile("StaticTile", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"]);
+            staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
+            
+            effectParameters = new EffectParameters(ModelEffect, textures["Cube"], Color.White, 1);
+            AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["BlueCube"]);
+            attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
 
-            archetypalBoxWireframe = new ModelObject("original wireframe box mesh",
-                ActorType.Helper, StatusType.Update | StatusType.Drawn, transform3D, wireframeEffectParameters, model,
-                game.WireframeRasterizerState);
+            CubePlayer player = new CubePlayer("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, models["RedCube"], fonts["UI"]);
+            player.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
+            player.ControllerList.Add(new PlayerController(KeyboardManager));
+
 
             ObjectManager.Add(archetypalBoxWireframe);
-
-            attachableModel = Content.Load<Model>("Assets/Models/BlueCube");
-            playerModel = Content.Load<Model>("Assets/Models/RedCube");
-            boxModel = Content.Load<Model>("Assets/Models/box2");
+            drawnActors = new Dictionary<string, DrawnActor3D>
+            {
+                {"StaticTile", staticTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", player}
+            };
         }
 
-        private void InitVertices()
-        {
-            vertices
-                = new VertexPositionColorTexture[4];
-
-            float halfLength = 0.5f;
-            //TL
-            vertices[0] = new VertexPositionColorTexture(
-                new Vector3(-halfLength, halfLength, 0),
-                new Color(255, 255, 255, 255), new Vector2(0, 0));
-
-            //BL
-            vertices[1] = new VertexPositionColorTexture(
-                new Vector3(-halfLength, -halfLength, 0),
-                Color.White, new Vector2(0, 1));
-
-            //TR
-            vertices[2] = new VertexPositionColorTexture(
-                new Vector3(halfLength, halfLength, 0),
-                Color.White, new Vector2(1, 0));
-
-            //BR
-            vertices[3] = new VertexPositionColorTexture(
-                new Vector3(halfLength, -halfLength, 0),
-                Color.White, new Vector2(1, 1));
-        }
-
-        private void InitPrimitiveArchetypes() //formerly InitTexturedQuad
-        {
-            Transform3D transform3D = new Transform3D(Vector3.Zero, Vector3.Zero,
-                Vector3.One, Vector3.UnitZ, Vector3.UnitY);
-
-            EffectParameters effectParameters = new EffectParameters(game.UnlitTexturedEffect,
-                grass, /*bug*/ Color.White, 1);
-
-            IVertexData vertexData = new VertexData<VertexPositionColorTexture>(
-                vertices, PrimitiveType.TriangleStrip, 2);
-
-            archetypalTexturedQuad = new PrimitiveObject("original texture quad",
-                ActorType.Decorator,
-                StatusType.Update | StatusType.Drawn,
-                transform3D, effectParameters, vertexData);
-        }
-
-        //VertexPositionColorTexture - 4 bytes x 3 (x,y,z) + 4 bytes x 3 (r,g,b) + 4bytes x 2 = 26 bytes
-        //VertexPositionColor -  4 bytes x 3 (x,y,z) + 4 bytes x 3 (r,g,b) = 24 bytes
         private void InitHelpers()
         {
-            //to do...add wireframe origin
-            PrimitiveType primitiveType;
-            int primitiveCount;
-
             //step 1 - vertices
             VertexPositionColor[] vertices = VertexFactory.GetVerticesPositionColorOriginHelper(
-                out primitiveType, out primitiveCount);
+                out var primitiveType, out int primitiveCount);
 
             //step 2 - make vertex data that provides Draw()
             IVertexData vertexData = new VertexData<VertexPositionColor>(vertices,
@@ -229,7 +142,7 @@ namespace GDGame.Scenes
                 Vector3.Zero, new Vector3(10, 10, 10),
                 Vector3.UnitZ, Vector3.UnitY);
 
-            EffectParameters effectParameters = new EffectParameters(game.UnlitWireframeEffect,
+            EffectParameters effectParameters = new EffectParameters(UnlitWireframeEffect,
                 null, Color.White, 1);
 
             //at this point, we're ready!
@@ -239,14 +152,35 @@ namespace GDGame.Scenes
             ObjectManager.Add(primitiveObject);
         }
 
-        private void InitSound()
+
+        private void InitHud()
+        {
+            Hud hud = new Hud(Game, textures["WhiteSquare"], fonts["UI"], new SpriteBatch(GraphicsDevice),
+                textures["Compass"],
+                CameraManager.ActiveCamera);
+            Components.Add(hud);
+        }
+
+        #endregion
+
+
+        #region LoadContent
+
+        private void LoadFonts()
+        {
+            SpriteFont uiFont = Content.Load<SpriteFont>("Assets/Fonts/Arial");
+
+            fonts = new Dictionary<string, SpriteFont> {{"UI", uiFont}};
+        }
+
+        private void LoadSounds()
         {
             //step 1 - load songs
-            track01 = Content.Load<SoundEffect>("Assets/Sound/GameTrack01");
-            track02 = Content.Load<SoundEffect>("Assets/Sound/Ambiance02");
-            track03 = Content.Load<SoundEffect>("Assets/Sound/Knock03");
-            track04 = Content.Load<SoundEffect>("Assets/Sound/Chains01");
-            track05 = Content.Load<SoundEffect>("Assets/Sound/Click01");
+            SoundEffect track01 = Content.Load<SoundEffect>("Assets/Sound/GameTrack01");
+            SoundEffect track02 = Content.Load<SoundEffect>("Assets/Sound/Ambiance02");
+            SoundEffect track03 = Content.Load<SoundEffect>("Assets/Sound/Knock03");
+            SoundEffect track04 = Content.Load<SoundEffect>("Assets/Sound/Chains01");
+            SoundEffect track05 = Content.Load<SoundEffect>("Assets/Sound/Click01");
 
             //Step 2- Make into sounds
             SoundManager.Add(new Sounds(track01, "gameTrack", ActorType.MusicTrack, StatusType.Update));
@@ -258,7 +192,35 @@ namespace GDGame.Scenes
             SoundManager.playSoundEffect("gameTrack");
         }
 
+        private void LoadTextures()
+        {
+            Texture2D cubeTexture = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/TextureCube");
+            Texture2D createTexture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
+            Texture2D whiteSquareTexture = Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare");
+            Texture2D compassTexture = Content.Load<Texture2D>("Assets/Textures/Base/BasicCompass");
+
+            textures = new Dictionary<string, Texture2D>
+            {
+                {"Cube", cubeTexture}, {"Box", createTexture}, {"WhiteSquare", whiteSquareTexture},
+                {"Compass", compassTexture}
+            };
+        }
+
+        private void LoadModels()
+        {
+            Model attachableModel = Content.Load<Model>("Assets/Models/BlueCube");
+            Model playerModel = Content.Load<Model>("Assets/Models/RedCube");
+            Model boxModel = Content.Load<Model>("Assets/Models/box2");
+
+            models = new Dictionary<string, Model>
+            {
+                {"BlueCube", attachableModel}, {"RedCube", playerModel}, {"Box", boxModel}
+            };
+        }
+
         #endregion
+
+        #region Override Methodes
 
         public override void Update(GameTime gameTime)
         {
@@ -274,15 +236,8 @@ namespace GDGame.Scenes
                 // this.cameraManager.ActiveCameraIndex++;
             }
 
-            //use g and space
-            //RaycastTests();
-
-            //Cycle Through Audio. Buggy. Will layer over song repeatedly
-            //if (KeyboardManager.IsFirstKeyPress(Keys.M))
-            //{
-            //    SoundManager.nextSong();
-            //}
-            if (KeyboardManager.IsFirstKeyPress(Keys.Space))
+            //Cycle Through Audio
+            if (KeyboardManager.IsFirstKeyPress(Keys.M))
             {
                 SoundManager.playSoundEffect("playerAttach");
             }
@@ -300,63 +255,6 @@ namespace GDGame.Scenes
         {
         }
 
-        private void RaycastTests()
-        {
-            if (KeyboardManager.IsFirstKeyPress(Keys.G))
-            {
-                ModelObject o = (ModelObject) archetypalBoxWireframe.Clone();
-                o.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1));
-                o.Transform3D = new Transform3D(Vector3.Up * 5, -Vector3.Forward, Vector3.Up);
-                ObjectManager.Add(o);
-
-                o = (ModelObject) o.Clone();
-                o.Transform3D.Translation = new Vector3(5, 5, 0);
-                ObjectManager.Add(o);
-            }
-
-            if (KeyboardManager.IsFirstKeyPress(Keys.Space))
-            {
-                List<Raycaster.HitResult> hit = Raycaster.RaycastAll(new Vector3(0, 5, -5), new Vector3(0, 0, 1));
-
-                Debug.WriteLine("NEW HIT : MULTI");
-
-                Debug.WriteLine("List size : " + hit.Count);
-
-                foreach (Raycaster.HitResult result in hit)
-                {
-                    Debug.WriteLine("DISTANCE : " + result.distance + " ,ACTOR:" + result.actor);
-                }
-
-                hit.Sort((result, hitResult) => (int) (result.distance - hitResult.distance));
-
-                hit = Raycaster.RaycastAll(new Vector3(-5, 5, 0), new Vector3(1, 0, 0));
-
-                Debug.WriteLine("NEW HIT : MULTI");
-
-                Debug.WriteLine("List size : " + hit.Count);
-
-                hit.Sort((result, hitResult) => (int) (result.distance - hitResult.distance));
-
-                foreach (Raycaster.HitResult result in hit)
-                {
-                    Debug.WriteLine("DISTANCE : " + result.distance + " ,ACTOR:" + result.actor);
-                }
-
-                Debug.WriteLine("NEW HIT : SINGLE");
-
-                Raycaster.HitResult hitSingle = Raycaster.Raycast(new Vector3(-5, 5, 0), new Vector3(1, 0, 0));
-
-                Debug.WriteLine("DISTANCE : " + hitSingle.distance + " ,ACTOR:" + hitSingle.actor);
-            }
-        }
-
-        private void InitHud()
-        {
-            Hud hud = new Hud(game, Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare"),
-                UiFont, new SpriteBatch(GraphicsDevice),
-                Content.Load<Texture2D>("Assets/Textures/Base/BasicCompass"),
-                CameraManager.ActiveCamera);
-            game.Components.Add(hud);
-        }
+        #endregion
     }
 }

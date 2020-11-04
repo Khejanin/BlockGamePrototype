@@ -17,10 +17,10 @@ namespace GDGame.Game.Scenes
             InitializeTextures();
         }
 
-        protected void InitializeCamera()
+        private void InitializeCamera()
         {
             Camera3D camera3D = new Camera3D("Menu_Camera", ActorType.Camera3D, StatusType.Update,
-                new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up), game.GlobalProjectionParameters);
+                new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up), Game.GlobalProjectionParameters);
             CameraManager.Add(camera3D);
         }
 

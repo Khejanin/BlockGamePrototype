@@ -1,16 +1,18 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 using GDGame.Game.Controllers;
 using GDGame.Game.Enums;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
+using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Game.Tiles
 {
-    public class GridTile : ModelObject
+    public class GridTile : ModelObject, ICloneable
     {
         private ETileType tileType;
         private Shape shape;
@@ -41,12 +43,26 @@ namespace GDGame.Game.Tiles
             Transform3D transform, EffectParameters effectParameters, Model model)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
-            ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
         }
 
         public virtual void SetPosition(Vector3 position)
         {
             Transform3D.Translation = position;
+        }
+
+        public new object Clone()
+        {
+            GridTile gridTile = new GridTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D,
+                EffectParameters.Clone() as EffectParameters, Model);
+            if (ControllerList != null)
+            {
+                foreach (IController controller in ControllerList)
+                {
+                    gridTile.ControllerList.Add(controller.Clone() as IController);
+                }
+            }
+
+            return gridTile;
         }
     }
 }

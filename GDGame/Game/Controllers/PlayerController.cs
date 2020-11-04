@@ -2,7 +2,6 @@
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
-using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -81,7 +80,7 @@ namespace GDLibrary
 
         public object Clone()
         {
-            throw new System.NotImplementedException();
+            return new PlayerController(keyboardManager);
         }
     }
 }

@@ -49,7 +49,7 @@ namespace GDLibrary
                         if (data.gridValues[x, y, z] != ETileType.None) 
                         {
                             GridTile tile = tileFactory.CreateTile(data.gridValues[x, y, z]);
-                            if(tile != null) tile.SetPosition(pos + new Vector3(0, 0, data.gridSize.Z - 1));
+                            tile?.SetPosition(pos + new Vector3(0, 0, data.gridSize.Z - 1));
                             grid[x, y, (int)data.gridSize.Z - 1 - z] = tile;
                         }
                         else

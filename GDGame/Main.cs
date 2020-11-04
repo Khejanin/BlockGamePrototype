@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using GDGame.Scenes;
 using GDLibrary;
 using GDLibrary.Managers;
 using GDLibrary.Actors;
