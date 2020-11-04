@@ -359,8 +359,7 @@ namespace GDGame.Scenes
 
             if (KeyboardManager.IsFirstKeyPress(Keys.Space))
             {
-                List<Raycaster.HitResult> hit = Raycaster.RaycastAll(new Vector3(0, 5, -5), new Vector3(0, 0, 1),
-                    ObjectManager.FindAll(a => a != null));
+                List<Raycaster.HitResult> hit = Raycaster.RaycastAll(new Vector3(0, 5, -5), new Vector3(0, 0, 1));
 
                 Debug.WriteLine("NEW HIT : MULTI");
 
@@ -373,8 +372,7 @@ namespace GDGame.Scenes
 
                 hit.Sort((result, hitResult) => (int) (result.distance - hitResult.distance));
 
-                hit = Raycaster.RaycastAll(new Vector3(-5, 5, 0), new Vector3(1, 0, 0),
-                    ObjectManager.FindAll(a => a != null));
+                hit = Raycaster.RaycastAll(new Vector3(-5, 5, 0), new Vector3(1, 0, 0));
 
                 Debug.WriteLine("NEW HIT : MULTI");
 
@@ -389,8 +387,7 @@ namespace GDGame.Scenes
 
                 Debug.WriteLine("NEW HIT : SINGLE");
 
-                Raycaster.HitResult hitSingle = Raycaster.Raycast(new Vector3(-5, 5, 0), new Vector3(1, 0, 0),
-                    ObjectManager.FindAll(a => a != null));
+                Raycaster.HitResult hitSingle = Raycaster.Raycast(new Vector3(-5, 5, 0), new Vector3(1, 0, 0));
 
                 Debug.WriteLine("DISTANCE : " + hitSingle.distance + " ,ACTOR:" + hitSingle.actor);
             }
