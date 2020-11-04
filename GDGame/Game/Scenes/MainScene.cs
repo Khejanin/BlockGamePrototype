@@ -249,13 +249,13 @@ namespace GDGame.Scenes
             track05 = Content.Load<SoundEffect>("Assets/Sound/Click01");
 
             //Step 2- Make into sounds
-            SoundManager.Add(new Sounds(track01, "main", ActorType.MusicTrack, StatusType.Update));
-            SoundManager.Add(new Sounds(track02, "ambiance", ActorType.MusicTrack, StatusType.Update));
+            SoundManager.Add(new Sounds(track01, "gameTrack", ActorType.MusicTrack, StatusType.Update));
+            SoundManager.Add(new Sounds(track02, "ambiance", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track03, "playerMove", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
 
-            SoundManager.playSoundEffect("main");
+            SoundManager.playSoundEffect("gameTrack");
         }
 
         #endregion
@@ -277,10 +277,18 @@ namespace GDGame.Scenes
             //use g and space
             //RaycastTests();
 
-            //Cycle Through Audio
-            if (KeyboardManager.IsFirstKeyPress(Keys.M))
+            //Cycle Through Audio. Buggy. Will layer over song repeatedly
+            //if (KeyboardManager.IsFirstKeyPress(Keys.M))
+            //{
+            //    SoundManager.nextSong();
+            //}
+            if (KeyboardManager.IsFirstKeyPress(Keys.Space))
             {
-                SoundManager.nextSong();
+                SoundManager.playSoundEffect("playerAttach");
+            }
+            else if (KeyboardManager.IsFirstKeyPress(Keys.Right) || KeyboardManager.IsFirstKeyPress(Keys.Left) || KeyboardManager.IsFirstKeyPress(Keys.Up) || KeyboardManager.IsFirstKeyPress(Keys.Down))
+            {
+                SoundManager.playSoundEffect("playerMove");
             }
         }
 

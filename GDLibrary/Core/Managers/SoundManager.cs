@@ -3,14 +3,18 @@ using System;
 using System.Collections.Generic;
 using GDLibrary.Enums;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Input;
+using System.Security.Permissions;
 
 namespace GDLibrary
 {
     public class SoundManager : GameComponent
     {
         private List<Sounds> list;
-        private List<Sounds> music;
         private int activeSongIndex = 0;
+        private Sounds currentSong;
+        private SoundEffectInstance mySoundInstance;
 
         /// <summary>
         /// Indexer for the camera manager
@@ -53,17 +57,11 @@ namespace GDLibrary
         public SoundManager(Game game) : base(game)
         {
             this.list = new List<Sounds>();
-            this.music = new List<Sounds>();
         }
 
         public void Add(Sounds newSong)
         {
             this.list.Add(newSong);
-            if(newSong.ActorType == ActorType.MusicTrack)
-            {
-                this.music.Add(newSong);
-            }
-
         }
 
         public bool RemoveIf(Predicate<Sounds> predicate)
@@ -93,17 +91,40 @@ namespace GDLibrary
         public void playSoundEffect(string id)
         {
             Sounds s = findSound(id);
+            currentSong = s;
             if (s != null)
             {
                 var instance = s.getSFX().CreateInstance();
                 if (s.ActorType == ActorType.MusicTrack)
                 {
-                    instance.IsLooped = true;
+                    if(this.currentSong != null)
+                    {
+                        if (s.ID != currentSong.ID)
+                        {
+                            instance = s.getSFX().CreateInstance();
+                        }
+                        else
+                        {
+                            //mySoundInstance.Stop();
+                        }
+                        instance.IsLooped = true;
+                        instance.Play();
+                        mySoundInstance = instance;
+                    }
                 }
                 else if (s.ActorType == ActorType.SoundEffect)
                 {
-                    instance.IsLooped = false;
+                    playSFX(s);
                 }
+            }
+        }
+
+        public void playSFX(Sounds s)
+        {
+            if (s.ActorType == ActorType.SoundEffect)
+            {
+                var instance = s.getSFX().CreateInstance();
+                instance.IsLooped = false;
                 instance.Play();
             }
         }
@@ -111,21 +132,22 @@ namespace GDLibrary
         public void nextSong()
         {
             int next = activeSongIndex + 1;
-            if (next >= this.music.Count)
+            if (next >= this.list.Count)
             {
                 next = 0;
             }
-            playSoundEffect(music[next].ID);
+            while(list[next].ActorType != ActorType.MusicTrack)
+            {
+                next = (next + 1) % list.Count;
+            }
             this.activeSongIndex = next;
+            this.currentSong = list[next];
+            this.mySoundInstance = currentSong.getSFX().CreateInstance();
+            playSoundEffect(list[next].ID);
         }
 
         public override void Update(GameTime gameTime)
         {
-            //foreach (Song s in this.list)
-            //{
-            //    if ((s.StatusType & StatusType.Update) == StatusType.Update)
-            //        s.Update(gameTime);
-            //}
             base.Update(gameTime);
         }
     }
