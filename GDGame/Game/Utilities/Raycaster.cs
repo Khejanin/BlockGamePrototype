@@ -25,7 +25,7 @@ namespace GDGame.Game.Utilities
         
         #region Pass by Reference Definitions
 
-        public static void Raycast(Vector3 position, Vector3 direction, ref List<HitResult> hit, List<Actor3D> ignoreList = null, float maxDist = float.MaxValue)
+        public static void Raycast(Vector3 position, Vector3 direction, ref List<HitResult> hit, float maxDist = float.MaxValue, List<Actor3D> ignoreList = null)
         {
             if(maxDist <= 0) throw new ArgumentException("You can't set a max cast distance to zero or negative!");
             
@@ -46,7 +46,7 @@ namespace GDGame.Game.Utilities
                             as CustomBoxColliderController;
 
                     bool pccCheck = pcc != null && (dist = ray.Intersects(pcc.GetBounds())) != null;
-                    bool cbccCheck = cbcc != null && (dist = ray.Intersects(pcc.GetBounds())) != null;
+                    bool cbccCheck = cbcc != null && (dist = ray.Intersects(cbcc.GetBounds())) != null;
                     
                     if ((pccCheck || cbccCheck) && dist < maxDist)
                     {
@@ -64,9 +64,9 @@ namespace GDGame.Game.Utilities
         
         #region Normal Definitions
 
-        public static HitResult Raycast(Vector3 position, Vector3 direction,List<Actor3D> ignoreList = null,float maxDist = float.MaxValue)
+        public static HitResult Raycast(Vector3 position, Vector3 direction,float maxDist = float.MaxValue,List<Actor3D> ignoreList = null)
         {
-            List<HitResult> all = RaycastAll(position, direction, ignoreList,maxDist);
+            List<HitResult> all = RaycastAll(position, direction, maxDist,ignoreList);
             all.Sort();
 
             if (all.Count == 0)
@@ -75,10 +75,10 @@ namespace GDGame.Game.Utilities
             return all[0];
         }
         
-        public static List<HitResult> RaycastAll(Vector3 position, Vector3 direction, List<Actor3D> ignoreList = null,float maxDist = float.MaxValue)
+        public static List<HitResult> RaycastAll(Vector3 position, Vector3 direction,float maxDist = float.MaxValue,List<Actor3D> ignoreList = null)
         {
             List<HitResult> result = new List<HitResult>();
-            Raycast(position, direction, ref result, ignoreList,maxDist);
+            Raycast(position, direction, ref result,maxDist,ignoreList);
             return result;
         }
 
@@ -98,15 +98,15 @@ namespace GDGame.Game.Utilities
             {
                 Vector3 maxDist = endPositions[i] - initialPositions[i];
                 Vector3 dir = Vector3.Normalize(maxDist);
-                hit.AddRange(RaycastAll(initialPositions[i],dir,ignore,maxDist.Length()));
+                hit.AddRange(RaycastAll(initialPositions[i],dir,maxDist.Length(),ignore));
             }
             
             return hit;
         }
 
-        public static HitResult Raycast(this DrawnActor3D callingDrawnActor3D, Vector3 position, Vector3 direction, bool ignoreSelf)
+        public static HitResult Raycast(this DrawnActor3D callingDrawnActor3D, Vector3 position, Vector3 direction, bool ignoreSelf,float maxDist = Single.MaxValue)
         {
-            List<HitResult> all = RaycastAll(callingDrawnActor3D,position, direction,ignoreSelf);
+            List<HitResult> all = RaycastAll(callingDrawnActor3D,position, direction,ignoreSelf,maxDist);
             all.Sort();
 
             if (all.Count == 0)
@@ -117,12 +117,12 @@ namespace GDGame.Game.Utilities
 
         
         
-        public static List<HitResult> RaycastAll(this DrawnActor3D callingDrawnActor3D,Vector3 position, Vector3 direction, bool ignoreSelf)
+        public static List<HitResult> RaycastAll(this DrawnActor3D callingDrawnActor3D,Vector3 position, Vector3 direction, bool ignoreSelf,float maxDist = Single.MaxValue)
         {
             List<Actor3D> ignoreList = new List<Actor3D>();
             if(ignoreSelf) ignoreList.Add(callingDrawnActor3D);
 
-            return RaycastAll(position, direction, ignoreList);
+            return RaycastAll(position, direction, maxDist,ignoreList);
         }
 
         #endregion
