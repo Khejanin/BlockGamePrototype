@@ -1,4 +1,7 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using GDGame.Game.Controllers;
 using GDGame.Game.Enums;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
@@ -19,6 +22,22 @@ namespace GDGame.Game.Tiles
 
         public Shape Shape { get; set; }
         public ETileType TileType { get; set; }
+
+        public List<Vector3> GetBoundsPoints()
+        {
+            List<Vector3> result = new List<Vector3>();
+            result.Add(Transform3D.Translation + Transform3D.Scale);
+            result.Add(Transform3D.Translation - Transform3D.Scale);
+            return result;
+        }
+        
+        public List<Vector3> GetBoundsPointsWithRotation()
+        {
+            List<Vector3> result = new List<Vector3>();
+            result.Add(Transform3D.Translation + Vector3.Transform(Transform3D.Scale,Transform3D.Rotation));
+            result.Add(Transform3D.Translation - Vector3.Transform(Transform3D.Scale,Transform3D.Rotation));
+            return result;
+        } 
 
         public GridTile(string id, ActorType actorType, StatusType statusType,
             Transform3D transform, EffectParameters effectParameters, Model model)
