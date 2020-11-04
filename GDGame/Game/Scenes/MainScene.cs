@@ -249,11 +249,11 @@ namespace GDGame.Scenes
             track05 = Content.Load<SoundEffect>("Assets/Sound/Click01");
 
             //Step 2- Make into sounds
-            SoundManager.Add(new Sounds(null, track01, "main", ActorType.MusicTrack, StatusType.Update));
-            SoundManager.Add(new Sounds(null, track02, "ambiance", ActorType.MusicTrack, StatusType.Update));
-            SoundManager.Add(new Sounds(null, track03, "playerMove", ActorType.SoundEffect, StatusType.Update));
-            SoundManager.Add(new Sounds(null, track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
-            SoundManager.Add(new Sounds(null, track05, "Attach", ActorType.SoundEffect, StatusType.Update));
+            SoundManager.Add(new Sounds(track01, "main", ActorType.MusicTrack, StatusType.Update));
+            SoundManager.Add(new Sounds(track02, "ambiance", ActorType.MusicTrack, StatusType.Update));
+            SoundManager.Add(new Sounds(track03, "playerMove", ActorType.SoundEffect, StatusType.Update));
+            SoundManager.Add(new Sounds(track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
+            SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
 
             SoundManager.playSoundEffect("main");
         }

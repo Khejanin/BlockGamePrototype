@@ -9,6 +9,7 @@ namespace GDLibrary
     public class SoundManager : GameComponent
     {
         private List<Sounds> list;
+        private List<Sounds> music;
         private int activeSongIndex = 0;
 
         /// <summary>
@@ -49,15 +50,20 @@ namespace GDLibrary
             }
         }
 
-
         public SoundManager(Game game) : base(game)
         {
             this.list = new List<Sounds>();
+            this.music = new List<Sounds>();
         }
 
         public void Add(Sounds newSong)
         {
             this.list.Add(newSong);
+            if(newSong.ActorType == ActorType.MusicTrack)
+            {
+                this.music.Add(newSong);
+            }
+
         }
 
         public bool RemoveIf(Predicate<Sounds> predicate)
@@ -69,17 +75,7 @@ namespace GDLibrary
                 this.list.RemoveAt(position);
                 return true;
             }
-
             return false;
-        }
-
-        //If we are cycling though a song we need to: Set old song to not playing. New one to playing and play new song.
-        public void CycleActiveSong()
-        {
-            list[activeSongIndex].setPlaying(false);
-            this.activeSongIndex++;
-            list[activeSongIndex].setPlaying(true);
-            this.activeSongIndex %= this.list.Count;
         }
 
         public Sounds findSound(string id)
@@ -99,27 +95,27 @@ namespace GDLibrary
             Sounds s = findSound(id);
             if (s != null)
             {
+                var instance = s.getSFX().CreateInstance();
                 if (s.ActorType == ActorType.MusicTrack)
                 {
-                    MediaPlayer.Play(s.getSong());
+                    instance.IsLooped = true;
                 }
                 else if (s.ActorType == ActorType.SoundEffect)
                 {
-                    var instance = s.getSFX().CreateInstance();
                     instance.IsLooped = false;
-                    instance.Play();
                 }
+                instance.Play();
             }
         }
 
         public void nextSong()
         {
             int next = activeSongIndex + 1;
-            if (next >= this.list.Count)
+            if (next >= this.music.Count)
             {
                 next = 0;
             }
-            playSoundEffect(list[next].ID);
+            playSoundEffect(music[next].ID);
             this.activeSongIndex = next;
         }
 
