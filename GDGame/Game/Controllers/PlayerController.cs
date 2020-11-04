@@ -63,17 +63,17 @@ namespace GDLibrary
 
                 if (moveDir != Vector3.Zero)
                 {
-                    
-                    
-                    Grid.GridPositionResult gridPositionResult = Grid.QueryMove(dest);
-                    if (gridPositionResult.validMovePos)
-                    {
-                        //if(gridPositionResult.floorTile.TileType == ETileType.Win) Debug.WriteLine("YOU WON THE GAME! WOO");
-                        //player.Move(moveDir);
-                        player.Move(moveDir);
-                        Grid.MoveTo(start, dest);
-                       // Debug.WriteLine("PLAYER MOVED FROM : " + start + " TO : " + dest);
-                    }
+                    player.Move(moveDir);
+
+                    //Grid.GridPositionResult gridPositionResult = Grid.QueryMove(dest);
+                    //if (gridPositionResult.validMovePos)
+                    //{
+                    //    //if(gridPositionResult.floorTile.TileType == ETileType.Win) Debug.WriteLine("YOU WON THE GAME! WOO");
+                    //    //player.Move(moveDir);
+                    //    player.Move(moveDir);
+                    //    Grid.MoveTo(start, dest);
+                    //   // Debug.WriteLine("PLAYER MOVED FROM : " + start + " TO : " + dest);
+                    //}
                 }
             }
         }
