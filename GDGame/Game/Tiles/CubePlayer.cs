@@ -36,6 +36,8 @@ namespace GDGame.Game.Tiles
         List<Shape> attachCandidates;
 
         public List<AttachableTile> AttachedTiles => attachedTiles;
+        public bool IsMoving => isMoving;
+        public bool IsAttached => isAttached;
 
         struct PlayerSurroundCheck
         {
@@ -52,9 +54,6 @@ namespace GDGame.Game.Tiles
             attachCandidates = new List<Shape>();
             leftRotatePoint = rightRotatePoint = forwardRotatePoint = backwardRotatePoint = transform.Translation;
         }
-
-        public bool IsMoving => isMoving;
-        public bool IsAttached { get => isAttached; set => isAttached = value; }
 
         public void Attach()
         {
@@ -103,9 +102,6 @@ namespace GDGame.Game.Tiles
                 else
                     throw new System.ArgumentException("Invalid direction!");
 
-                //Calculate movement for each attached tile
-                foreach(AttachableTile tile in attachedTiles)
-                    tile.Move(direction, rotatePoint);
 
                 Vector3 offset = Transform3D.Translation - rotatePoint; //offset between the player and the point to rotate around
                 Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, Vector3.Up), MathHelper.ToRadians(-90));   //The rotation to apply
@@ -119,15 +115,32 @@ namespace GDGame.Game.Tiles
                 startPos = Transform3D.Translation;
                 endPos = Transform3D.Translation + translation - offset;
 
-                //Set animation time and movement flag
-                currentMovementTime = movementTime;
-                isMoving = true;
+                if (IsMoveValid(direction, rotatePoint, translation))
+                {
+                    //Calculate movement for each attached tile
+                    foreach (AttachableTile tile in attachedTiles)
+                        tile.Move(direction, rotatePoint);
+
+                    //Set animation time and movement flag
+                    currentMovementTime = movementTime;
+                    isMoving = true;
+                }
             }
         }
 
-        public void OnMove()
+        private bool IsMoveValid(Vector3 direction, Vector3 rotatePoint, Vector3 endPos)
         {
-            UpdateAttachCandidates();
+            List<Vector3> initials = attachedTiles.Select(i => i.Transform3D.Translation).ToList();
+            initials.Insert(0, Transform3D.Translation);
+
+            List<Vector3> ends = new List<Vector3> { endPos };
+            foreach (AttachableTile tile in attachedTiles)
+            {
+                tile.QueryMove(direction, rotatePoint, out Vector3 targetPos, out var rot);
+                ends.Add(targetPos);
+            }
+
+            return Raycaster.PlayerCastAll(this, initials, ends).Count == 0;
         }
 
         /// <summary>
@@ -200,10 +213,8 @@ namespace GDGame.Game.Tiles
             attachCandidates.Clear();
 
             foreach (PlayerSurroundCheck check in CheckSurroundings())
-            {
                 if (check.hit?.actor is AttachableTile tile)
                     attachCandidates.Add(tile.Shape);
-            }
         }
 
         private List<PlayerSurroundCheck> CheckSurroundings()
@@ -212,19 +223,21 @@ namespace GDGame.Game.Tiles
 
             PlayerSurroundCheck surroundCheck = new PlayerSurroundCheck();
             surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Right, true);
-            surroundCheck.dir = EDirection.Right;
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(Transform3D.Translation, -Vector3.Right, true);
-            surroundCheck.dir = EDirection.Left;
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Forward, true);
-            surroundCheck.dir = EDirection.Forward;
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(Transform3D.Translation, -Vector3.Forward, true);
-            surroundCheck.dir = EDirection.Back;
+            result.Add(surroundCheck);
+
+            surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Up, true);
+            result.Add(surroundCheck);
+
+            surroundCheck.hit = this.Raycast(Transform3D.Translation, -Vector3.Up, true);
             result.Add(surroundCheck);
 
             return result;

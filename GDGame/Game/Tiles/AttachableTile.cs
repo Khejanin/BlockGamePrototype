@@ -11,6 +11,7 @@ namespace GDGame.Game.Tiles
     {
         private float movementTime = .3f;
         private float currentMovementTime;
+        private Vector3 offset;
         private Vector3 startPos;
         private Vector3 endPos;
         private Quaternion startRotQ;
@@ -25,25 +26,30 @@ namespace GDGame.Game.Tiles
 
         public void Move(Vector3 direction, Vector3 rotatePoint)
         {
-            Vector3
-                offset = Transform3D.Translation -
-                         rotatePoint; //offset between the player and the point to rotate around
-            Quaternion rot =
-                Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, Vector3.Up),
-                    MathHelper.ToRadians(-90)); //The rotation to apply
-            Vector3 translation = Vector3.Transform(offset, rot); //Rotate around the offset point
+            //Get the end position and end rotation to apply
+            QueryMove(direction, rotatePoint, out Vector3 translation, out Quaternion rotation);
 
             //Start and End Rotation --> Will be lerped between
             startRotQ = Transform3D.Rotation;
-            endRotQ = rot * startRotQ;
+            endRotQ = rotation * startRotQ;
 
             //Start and End Position --> Will be lerped between
             startPos = Transform3D.Translation;
-            endPos = Transform3D.Translation + translation - offset;
+            endPos = Transform3D.Translation + translation;
 
             //Set animation time and movement flag
             currentMovementTime = movementTime;
             isMoving = true;
+        }
+
+        public void QueryMove(Vector3 direction, Vector3 rotatePoint, out Vector3 endPos, out Quaternion rotation)
+        {
+            Vector3 offset = Transform3D.Translation - rotatePoint; //offset between the player and the point to rotate around
+            rotation =
+                Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, Vector3.Up),
+                    MathHelper.ToRadians(-90)); //The rotation to apply
+            endPos = Vector3.Transform(offset, rotation); //Rotate around the offset point
+            endPos -= offset;
         }
 
         public override void Update(GameTime gameTime)
