@@ -35,6 +35,8 @@ namespace GDGame.Game.Tiles
         List<AttachableTile> attachedTiles;
         List<Shape> attachCandidates;
 
+        public List<AttachableTile> AttachedTiles => attachedTiles;
+
         struct PlayerSurroundCheck
         {
             public EDirection dir;
