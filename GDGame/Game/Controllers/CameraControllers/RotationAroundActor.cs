@@ -14,63 +14,48 @@ namespace GDGame.Game.Controllers.CameraControllers
 
         private KeyboardManager keyboardManager;
         private float angle;
-        private Actor3D target;
+        private IActor target;
+        private float elevationAngle;
+        private float distance;
 
-        public Actor3D Target
+        #endregion
+
+        
+        public RotationAroundActor(string id, ControllerType controllerType, KeyboardManager keyboardManager, float elevationAngle, float distance) : base(id, controllerType)
+        {
+            this.keyboardManager = keyboardManager;
+            this.elevationAngle = elevationAngle;
+            this.distance = distance;
+        }
+
+        public IActor Target
         {
             set => target = value;
         }
 
-        #endregion
-
-        public RotationAroundActor(string id, ControllerType controllerType, KeyboardManager keyboardManager,
-            float angle, Actor3D target = null) : base(id, controllerType)
-        {
-            this.keyboardManager = keyboardManager;
-            this.angle = angle;
-            this.target = target;
-        }
-
         public override void Update(GameTime gameTime, IActor actor)
         {
-            if (actor is Actor3D parent)
+            HandelInput();
+            if (actor is Actor3D parent && target is Actor3D target3D)
             {
-                HandleKeyboardInput(gameTime, parent);
+                Vector3 targetToCamera = Vector3.Transform(target3D.Transform3D.Look,
+                    Matrix.CreateFromAxisAngle(target3D.Transform3D.Right, MathHelper.ToRadians(elevationAngle)));
+                targetToCamera = Vector3.Transform(targetToCamera,
+                    Matrix.CreateFromAxisAngle(Vector3.Up, MathHelper.ToRadians(angle)));
+
+                targetToCamera.Normalize();
+
+                parent.Transform3D.Translation = target3D.Transform3D.Translation + targetToCamera * distance;
+                parent.Transform3D.Look = -targetToCamera;
             }
         }
 
-        private void HandleKeyboardInput(GameTime gameTime, Actor3D parent)
+        private void HandelInput()
         {
-            if (target == null) return;
             if (keyboardManager.IsKeyDown(Keys.Q))
-            {
-                parent.Transform3D.Translation =
-                    Vector3.Transform(parent.Transform3D.Translation - target.Transform3D.Translation,
-                        Matrix.CreateFromAxisAngle(Vector3.Up, MathHelper.ToRadians(-angle))) +
-                    target.Transform3D.Translation;
-            }
-
+                angle -= 1;
             else if (keyboardManager.IsKeyDown(Keys.E))
-            {
-                parent.Transform3D.Translation =
-                    Vector3.Transform(parent.Transform3D.Translation - target.Transform3D.Translation,
-                        Matrix.CreateFromAxisAngle(Vector3.Up, MathHelper.ToRadians(angle))) +
-                    target.Transform3D.Translation;
-            }
-
-            Vector3 view = target.Transform3D.Translation - parent.Transform3D.Translation;
-            parent.Transform3D.Look = view;
-
-            /*double distance = 10;
-            float lenght = view.Length();
-            if (lenght >= distance)
-            {
-                parent.Transform3D.Translation += parent.Transform3D.Look * gameTime.ElapsedGameTime.Milliseconds / 10;
-            }
-            /*else if (lenght >= distance + 2)
-            {
-                parent.Transform3D.Translation += parent.Transform3D.Look * gameTime.ElapsedGameTime.Milliseconds;
-            }*/
+                angle += 1;
         }
     }
 }

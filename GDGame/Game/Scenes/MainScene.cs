@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using GDGame.Game.Controllers;
 using GDGame.Game.Controllers.CameraControllers;
@@ -37,6 +38,18 @@ namespace GDGame.Game.Scenes
             InitCameras3D();
             InitLoadContent();
             InitDrawnContent();
+
+            SetTargetToCamera();
+        }
+
+        private void SetTargetToCamera()
+        {
+            List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
+            if (players.Count > 0)
+            {
+                RotationAroundActor cam = (RotationAroundActor) CameraManager.ActiveCamera.ControllerList[0];
+                cam.Target = players[0];
+            }
         }
 
         #region Initialization - Vertices, Archetypes, Helpers, Drawn Content(e.g. Skybox)
@@ -67,11 +80,12 @@ namespace GDGame.Game.Scenes
 
         private void InitCameras3D()
         {
+            
+            
             Transform3D transform3D = new Transform3D(new Vector3(10, 10, 20), -Vector3.Forward, Vector3.Up);
             Camera3D camera3D = new Camera3D("cam", ActorType.Camera3D, StatusType.Update, transform3D,
                 ProjectionParameters.StandardDeepFourThree);
-            camera3D.ControllerList.Add(new RotationAroundActor("main_cam", ControllerType.FlightCamera,
-                KeyboardManager, 1));
+            camera3D.ControllerList.Add(new RotationAroundActor("main_cam", ControllerType.FlightCamera, KeyboardManager, 35, 20));
 
             CameraManager.Add(camera3D);
             CameraManager.ActiveCameraIndex = 0; //0, 1, 2, 3
@@ -81,14 +95,6 @@ namespace GDGame.Game.Scenes
         {
             Grid grid = new Grid(new TileFactory(ObjectManager, drawnActors));
             grid.GenerateGrid(@"Game\LevelFiles\AttachTest.json");
-
-            List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
-            if (players.Count > 0)
-            {
-                RotationAroundActor rotationAroundActor =
-                    (RotationAroundActor) CameraManager.ActiveCamera.ControllerList[0];
-                rotationAroundActor.Target = players[0];
-            }
         }
 
         private void InitStaticModels()
@@ -108,7 +114,7 @@ namespace GDGame.Game.Scenes
             StaticTile staticTile = new StaticTile("StaticTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"]);
             staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
-            
+
             effectParameters = new EffectParameters(ModelEffect, textures["Cube"], Color.White, 1);
             AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["BlueCube"]);
@@ -241,7 +247,8 @@ namespace GDGame.Game.Scenes
             {
                 SoundManager.playSoundEffect("playerAttach");
             }
-            else if (KeyboardManager.IsFirstKeyPress(Keys.Right) || KeyboardManager.IsFirstKeyPress(Keys.Left) || KeyboardManager.IsFirstKeyPress(Keys.Up) || KeyboardManager.IsFirstKeyPress(Keys.Down))
+            else if (KeyboardManager.IsFirstKeyPress(Keys.Right) || KeyboardManager.IsFirstKeyPress(Keys.Left) ||
+                     KeyboardManager.IsFirstKeyPress(Keys.Up) || KeyboardManager.IsFirstKeyPress(Keys.Down))
             {
                 SoundManager.playSoundEffect("playerMove");
             }
