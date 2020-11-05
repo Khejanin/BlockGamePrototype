@@ -16,13 +16,19 @@ namespace GDGame.Game.Tiles
         private Quaternion startRotQ;
         private Quaternion endRotQ;
         private bool isMoving;
+        private Curve1D curve1D;
 
         public AttachableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
             EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform,
             effectParameters, model)
         {
+            curve1D = new Curve1D(CurveLoopType.Cycle);
+            curve1D.Add(1,0);
+            curve1D.Add(0,movementTime);
         }
-
+        
+        private Vector3 diff;
+        
         public void Move(Vector3 direction, Vector3 rotatePoint)
         {
             Quaternion rotation = Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, Vector3.Up),
@@ -35,6 +41,7 @@ namespace GDGame.Game.Tiles
             //Start and End Position --> Will be lerped between
             startPos = Transform3D.Translation;
             endPos = CalculateTargetPosition(rotatePoint, rotation);
+            diff = endPos - startPos;
 
             //Set animation time and movement flag
             currentMovementTime = movementTime;
@@ -61,8 +68,9 @@ namespace GDGame.Game.Tiles
                     currentMovementTime = 0;
                 }
 
-                Quaternion rot = Quaternion.Lerp(startRotQ, endRotQ, 1 - currentMovementTime / movementTime);
-                Vector3 trans = Vector3.Lerp(startPos, endPos, 1 - currentMovementTime / movementTime);
+                Quaternion rot = Quaternion.Slerp(startRotQ, endRotQ, 1 - currentMovementTime / movementTime);
+                float currentStep = curve1D.Evaluate(currentMovementTime*1000, 5);
+                Vector3 trans = startPos + diff * currentStep;
 
                 Transform3D.Rotation = rot;
                 Transform3D.Translation = trans;

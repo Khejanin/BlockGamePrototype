@@ -6,6 +6,7 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using GDGame.Game.UI;
 using GDLibrary.Actors;
@@ -34,6 +35,8 @@ namespace GDGame.Game.Tiles
 
         List<AttachableTile> attachedTiles;
         List<Shape> attachCandidates;
+        
+        private Curve1D curve1D;
 
         public List<AttachableTile> AttachedTiles => attachedTiles;
         public bool IsMoving => isMoving;
@@ -53,6 +56,10 @@ namespace GDGame.Game.Tiles
             attachedTiles = new List<AttachableTile>();
             attachCandidates = new List<Shape>();
             leftRotatePoint = rightRotatePoint = forwardRotatePoint = backwardRotatePoint = transform.Translation;
+            
+            curve1D = new Curve1D(CurveLoopType.Cycle);
+            curve1D.Add(1,0);
+            curve1D.Add(0,movementTime);
         }
 
         public void Attach()
@@ -77,6 +84,8 @@ namespace GDGame.Game.Tiles
             attachedTiles.Clear();
             isAttached = false;
         }
+        
+        private Vector3 diff;
 
         /// <summary>
         /// This method will change the Player's state to moving if he's not already moving and calculates how the player will move.
@@ -114,6 +123,7 @@ namespace GDGame.Game.Tiles
                 //Start and End Position --> Will be lerped between
                 startPos = Transform3D.Translation;
                 endPos = Transform3D.Translation + translation - offset;
+                diff = endPos - startPos;
 
                 if (IsMoveValid(rot, rotatePoint, endPos))
                 {
@@ -138,6 +148,7 @@ namespace GDGame.Game.Tiles
             List<Raycaster.HitResult> results = Raycaster.PlayerCastAll(this, initials, ends);
             return results.Count == 0;
         }
+        
 
         /// <summary>
         /// Is in charge of the Animation for when the Player Moves
@@ -156,8 +167,10 @@ namespace GDGame.Game.Tiles
                     UpdateAttachCandidates(); //remove this later
                 }
 
-                Quaternion rot = Quaternion.Lerp(startRotQ, endRotQ, 1 - currentMovementTime / movementTime);
-                Vector3 trans = Vector3.Lerp(startPos, endPos, 1 - currentMovementTime / movementTime);
+                Quaternion rot = Quaternion.Slerp(startRotQ, endRotQ, 1 - currentMovementTime / movementTime);
+                float currentStep = curve1D.Evaluate(currentMovementTime*1000, 5);
+                Vector3 trans = startPos + diff * currentStep;
+                //Vector3 trans2 = Vector3.Lerp(startPos, endPos, 1 - currentMovementTime / movementTime);
                 Transform3D.Rotation = rot;
                 Transform3D.Translation = trans;
 
