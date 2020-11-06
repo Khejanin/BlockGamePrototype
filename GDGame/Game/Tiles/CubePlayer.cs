@@ -7,8 +7,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
-using GDGame.Game.UI;
-using GDLibrary.Actors;
 using GDLibrary.Interfaces;
 using static GDGame.Game.Utilities.Raycaster;
 
@@ -16,10 +14,11 @@ namespace GDGame.Game.Tiles
 {
     public class CubePlayer : GridTile, ICloneable
     {
-        private Text2D text2D;
         private SpriteFont font;
 
         private List<Shape> attachCandidates;
+
+        public List<Shape> AttachCandidates => attachCandidates;
 
         public List<AttachableTile> AttachedTiles { get; }
 
@@ -87,13 +86,6 @@ namespace GDGame.Game.Tiles
                     CheckWinCondition(); //remove this later
                  }
              }
-            text2D = attachCandidates.Count > 0 ? new Text2D("Hold Space to attach", font,Vector2.Zero) : null;
-        }
-
-        public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
-        {
-            base.Draw(gameTime, camera, graphicsDevice);
-            text2D?.Draw(gameTime, graphicsDevice);
         }
 
 

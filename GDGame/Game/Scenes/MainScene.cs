@@ -79,12 +79,11 @@ namespace GDGame.Game.Scenes
 
         private void InitCameras3D()
         {
-            
-            
             Transform3D transform3D = new Transform3D(new Vector3(10, 10, 20), -Vector3.Forward, Vector3.Up);
             Camera3D camera3D = new Camera3D("cam", ActorType.Camera3D, StatusType.Update, transform3D,
                 ProjectionParameters.StandardDeepFourThree);
-            camera3D.ControllerList.Add(new RotationAroundActor("main_cam", ControllerType.FlightCamera, KeyboardManager, 35, 20));
+            camera3D.ControllerList.Add(new RotationAroundActor("main_cam", ControllerType.FlightCamera,
+                KeyboardManager, 35, 20));
 
             CameraManager.Add(camera3D);
             CameraManager.ActiveCameraIndex = 0; //0, 1, 2, 3
@@ -118,7 +117,7 @@ namespace GDGame.Game.Scenes
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["BlueCube"]);
             attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
             attachableTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
-            
+
             CubePlayer player = new CubePlayer("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, models["RedCube"], Game.Fonts["UI"]);
             player.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
@@ -166,10 +165,74 @@ namespace GDGame.Game.Scenes
 
         private void InitHud()
         {
-            Hud hud = new Hud(Game, textures["WhiteSquare"], Game.Fonts["UI"], new SpriteBatch(GraphicsDevice),
-                textures["Compass"],
-                CameraManager.ActiveCamera);
-            Components.Add(hud);
+            float halfWidth = GraphicsDevice.Viewport.Width / 2f;
+            float screenHeight = GraphicsDevice.Viewport.Height;
+            float screenWidth = GraphicsDevice.Viewport.Width;
+            float heightFromBottom = 45;
+            int height = 50;
+
+
+            Point location = new Point(0, GameConstants.screenHeight - height);
+            Point size = new Point(GameConstants.screenWidth, height);
+            Rectangle pos = new Rectangle(location, size);
+            UiSprite uiSprite = new UiSprite(StatusType.Drawn, textures["WhiteSquare"], pos, Color.White);
+            UiManager.AddUiElement("WhiteBarBottom", uiSprite);
+
+            height = 90;
+            int width = 120;
+            int screenWidthCostume = (int) ((screenWidth - width) / 2f);
+            location = new Point(screenWidthCostume, GameConstants.screenHeight - height);
+            size = new Point(width, height);
+            pos = new Rectangle(location, size);
+            uiSprite = new UiSprite(StatusType.Drawn, textures["WhiteSquare"], pos, Color.White);
+            UiManager.AddUiElement("WhiteBarBottomMiddle", uiSprite);
+
+            int border = 10;
+            Texture2D compass = textures["Compass"];
+            Vector2 origin = new Vector2(compass.Width / 2f, compass.Height / 2f);
+            pos = new Rectangle(new Point((int) (screenWidth - 60) + border, border + 50), new Point(100, 100));
+            uiSprite = new UiSprite(StatusType.Drawn, compass, pos, null, Color.White, 0, origin, SpriteEffects.None,
+                0);
+            UiManager.AddUiElement("Compass", uiSprite);
+
+            string text = "moves";
+            Vector2 position = new Vector2(halfWidth - (text.Length - 1) * 12, screenHeight - heightFromBottom * 2);
+            Text2D text2D = new Text2D(StatusType.Drawn, text, fonts["UI"], position, Color.Black);
+            UiManager.AddUiElement("Moves", text2D);
+
+            text = "Current Level";
+            position = new Vector2(x: halfWidth / 4f, screenHeight - heightFromBottom);
+            text2D = new Text2D(StatusType.Drawn, text, fonts["UI"], position, Color.Black);
+            UiManager.AddUiElement("Current Level", text2D);
+
+            text = "Time : 00:00:00";
+            position = new Vector2(x: halfWidth + halfWidth / 4f, screenHeight - heightFromBottom);
+            text2D = new Text2D(StatusType.Drawn, text, fonts["UI"], position, Color.Black);
+            UiManager.AddUiElement("Time", text2D);
+
+            text = "5";
+            position = new Vector2(halfWidth - text.Length * 12, screenHeight - heightFromBottom);
+            text2D = new Text2D(StatusType.Drawn, text, fonts["UI"], position, Color.Black);
+            UiManager.AddUiElement("MovesNumeric", text2D);
+            
+            text = "Hold Space To Attach";
+            text2D = new Text2D(StatusType.Off, text, fonts["UI"], Vector2.Zero, Color.Black);
+            UiManager.AddUiElement("ToolTip", text2D);
+        }
+
+        private float GetAngle(Vector3 forward, Vector3 look)
+        {
+            Vector3 noY = look * (Vector3.Forward + Vector3.Right);
+            noY.Normalize();
+
+            Vector3 cross = Vector3.Cross(forward, noY);
+            double dot = Vector3.Dot(forward, noY);
+
+            double angle = Math.Atan2(cross.Length(), dot);
+
+            double test = Vector3.Dot(Vector3.Up, cross);
+            if (test < 0.0f) angle = -angle;
+            return (float) -(angle + Math.PI);
         }
 
         #endregion
@@ -219,10 +282,11 @@ namespace GDGame.Game.Scenes
             Model attachableModel = Content.Load<Model>("Assets/Models/BlueCube");
             Model playerModel = Content.Load<Model>("Assets/Models/RedCube");
             Model boxModel = Content.Load<Model>("Assets/Models/box2");
+            Model enemyModel = Content.Load<Model>("Assets/Models/Pyramid");
 
             models = new Dictionary<string, Model>
             {
-                {"BlueCube", attachableModel}, {"RedCube", playerModel}, {"Box", boxModel}
+                {"BlueCube", attachableModel}, {"RedCube", playerModel}, {"Box", boxModel}, {"Pyramid", enemyModel}
             };
         }
 
@@ -232,6 +296,17 @@ namespace GDGame.Game.Scenes
 
         public override void Update(GameTime gameTime)
         {
+            float angle = GetAngle(Vector3.Forward, CameraManager.ActiveCamera.Transform3D.Look);
+            UiSprite uiSprite = UiManager.Get("Compass") as UiSprite;
+            uiSprite?.SetRotation(angle);
+
+            List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
+            if (players.Count > 0)
+            {
+                CubePlayer player = players[0] as CubePlayer;
+                UiManager.Get("ToolTip").StatusType = player?.AttachCandidates.Count > 0 ? StatusType.Drawn : StatusType.Off;
+            }
+
             if (KeyboardManager.IsFirstKeyPress(Keys.C))
             {
                 CameraManager.CycleActiveCamera();
