@@ -17,7 +17,7 @@ namespace GDGame.Game.Controllers
         private SoundManager soundManager;
         private string moveSFX, attachSFX;
 
-        private SoundEffect playerMove, playerAttach;
+        private SoundEffectInstance playerMove, playerAttach;
 
         public SoundController(KeyboardManager keyboardManager, SoundManager soundManager, string moveSFX, string attachSFX)
         {
@@ -29,12 +29,13 @@ namespace GDGame.Game.Controllers
             SoundEffect temp = soundManager.FindSound(moveSFX).GetSfx();
             if (temp != null)
             {
-                this.playerMove = temp;
+                this.playerMove = temp.CreateInstance();
+                this.playerMove.Volume = (float)0.25;
             }
             SoundEffect temp2 = soundManager.FindSound(attachSFX).GetSfx();
             if (temp2 != null)
             {
-                this.playerAttach = temp2;
+                this.playerAttach = temp2.CreateInstance();
             }
         }
 
