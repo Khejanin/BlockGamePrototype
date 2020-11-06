@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using GDGame.Game.Tiles;
 using GDGame.Game.Utilities;
@@ -79,7 +80,6 @@ namespace GDGame.Game.Controllers
             player.PlayerCastAll(initials, ends,ref results,ref floorHitResults);
             return results.Count == 0 && floorHitResults.Count > 0;
         }
-        
 
         public object Clone()
         {
