@@ -96,7 +96,7 @@ namespace GDGame.Game.Controllers
                         (PlayerController) parent.ControllerList.Find(controller =>
                             controller.GetType() == typeof(PlayerController));
                     if (playerController != null &&
-                        playerController.IsMoveValid(rot, parent.RotatePoint, endPos))
+                        playerController.IsMoveValid(rot, parent.RotatePoint, endPos,offset))
                     {
                         //Calculate movement for each attached tile
                         if (parent is CubePlayer player)

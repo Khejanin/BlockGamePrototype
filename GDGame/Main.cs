@@ -1,9 +1,9 @@
-﻿using GDGame.Game.Managers;
+﻿using System.Collections.Generic;
+using GDGame.Game.Managers;
 using GDGame.Game.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using GDLibrary;
 using GDLibrary.Managers;
 using GDLibrary.Actors;
 using GDLibrary.Parameters;
@@ -41,7 +41,9 @@ namespace GDGame
         public SoundManager SoundManager { get; private set; }
         
         public SceneManager SceneManager { get; private set; }
-        
+
+        public Dictionary<string, SpriteFont> Fonts { get; private set; }
+
         public ProjectionParameters GlobalProjectionParameters => ProjectionParameters.StandardDeepSixteenTen;
 
         private float worldScale = 3000;
@@ -62,13 +64,11 @@ namespace GDGame
         {
             // TODO: Add your initialization logic here
             Window.Title = "My Amazing Game";
-
             
-
-            CreateScenes();
             InitManagers();
-            InitFonts();
+            CreateScenes();
             InitEffect();
+            LoadFonts();
 
             InitGraphics(1024, 768);
 
@@ -77,7 +77,7 @@ namespace GDGame
             SceneManager.Initialize();
         }
 
-        
+
 
         private void InitDebug()
         {
@@ -92,7 +92,8 @@ namespace GDGame
 
         private void CreateScenes()
         {
-            MainScene = new MainScene(this);
+            SceneManager.AddScene("Menu", new MenuScene(this));
+            SceneManager.AddScene("Game", new MainScene(this));
         }
 
         private void InitManagers()
@@ -102,7 +103,7 @@ namespace GDGame
             Components.Add(CameraManager);
             
             //Scene
-            SceneManager = new SceneManager(this,MainScene);
+            SceneManager = new SceneManager(this);
             Components.Add(SceneManager);
 
             //Keyboard
@@ -148,7 +149,14 @@ namespace GDGame
             WireframeRasterizerState = new RasterizerState();
             WireframeRasterizerState.FillMode = FillMode.WireFrame;
         }
+        
+        private void LoadFonts()
+        {
+            SpriteFont uiFont = Content.Load<SpriteFont>("Assets/Fonts/Arial");
 
+            Fonts = new Dictionary<string, SpriteFont> {{"UI", uiFont}};
+        }
+        
         #endregion
 
         #region Load and Unload Content
@@ -205,8 +213,6 @@ namespace GDGame
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
             base.Draw(gameTime);
         }
 
