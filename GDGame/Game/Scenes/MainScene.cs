@@ -26,7 +26,6 @@ namespace GDGame.Game.Scenes
 
         private Dictionary<string, Model> models;
         private Dictionary<string, Texture2D> textures;
-        private Dictionary<string, SpriteFont> fonts;
         private Dictionary<string, DrawnActor3D> drawnActors;
 
 
@@ -58,7 +57,6 @@ namespace GDGame.Game.Scenes
         private void InitLoadContent()
         {
             LoadTextures();
-            LoadFonts();
             LoadSounds();
             LoadModels();
         }
@@ -121,7 +119,7 @@ namespace GDGame.Game.Scenes
             attachableTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
             CubePlayer player = new CubePlayer("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["RedCube"], fonts["UI"]);
+                transform3D, effectParameters, models["RedCube"], Game.Fonts["UI"]);
             player.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
             player.ControllerList.Add(new PlayerController(KeyboardManager));
             player.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
@@ -239,12 +237,7 @@ namespace GDGame.Game.Scenes
 
         #region LoadContent
 
-        private void LoadFonts()
-        {
-            SpriteFont uiFont = Content.Load<SpriteFont>("Assets/Fonts/Arial");
-
-            fonts = new Dictionary<string, SpriteFont> {{"UI", uiFont}};
-        }
+       
 
         private void LoadSounds()
         {
@@ -329,10 +322,6 @@ namespace GDGame.Game.Scenes
 
             //if(KeyboardManager.IsFirstKeyPress(Keys.L)) { SoundManager.volumeUp(); }
             //else if(KeyboardManager.IsFirstKeyPress(Keys.K)) { SoundManager.volumeDown(); }
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
         }
 
         public override void Terminate()
