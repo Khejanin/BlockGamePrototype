@@ -124,6 +124,7 @@ namespace GDGame.Game.Scenes
                 transform3D, effectParameters, models["RedCube"], fonts["UI"]);
             player.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
             player.ControllerList.Add(new PlayerController(KeyboardManager));
+            player.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
 
 
             ObjectManager.Add(archetypalBoxWireframe);
@@ -195,7 +196,7 @@ namespace GDGame.Game.Scenes
             SoundManager.Add(new Sounds(track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
 
-            SoundManager.PlaySoundEffect("gameTrack");
+            //SoundManager.PlaySoundEffect("gameTrack");
         }
 
         private void LoadTextures()
@@ -242,16 +243,14 @@ namespace GDGame.Game.Scenes
                 // this.cameraManager.ActiveCameraIndex++;
             }
 
-            //Cycle Through Audio
-            if (KeyboardManager.IsFirstKeyPress(Keys.M))
-            {
-                SoundManager.PlaySoundEffect("playerAttach");
-            }
-            else if (KeyboardManager.IsFirstKeyPress(Keys.Right) || KeyboardManager.IsFirstKeyPress(Keys.Left) ||
-                     KeyboardManager.IsFirstKeyPress(Keys.Up) || KeyboardManager.IsFirstKeyPress(Keys.Down))
-            {
-                SoundManager.PlaySoundEffect("playerMove");
-            }
+            ////Cycle Through Audio
+            //if (KeyboardManager.IsFirstKeyPress(Keys.M))
+            //{
+            //    SoundManager.nextSong();
+            //}
+
+            //if(KeyboardManager.IsFirstKeyPress(Keys.L)) { SoundManager.volumeUp(); }
+            //else if(KeyboardManager.IsFirstKeyPress(Keys.K)) { SoundManager.volumeDown(); }
         }
 
         public override void Draw(GameTime gameTime)

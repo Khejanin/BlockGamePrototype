@@ -86,38 +86,32 @@ namespace GDGame.Game.Managers
             return null;
         }
 
-        public void PlaySoundEffect(string id)
+        public void playSoundEffect(string id)
         {
             Sounds s = FindSound(id);
             currentSong = s;
             if (s != null)
             {
-                var instance = s.GetSfx().CreateInstance();
                 if (s.ActorType == ActorType.MusicTrack)
                 {
-                    if(this.currentSong != null)
+                    if (this.currentSong != null)
                     {
                         if (s.ID != currentSong.ID)
                         {
-                            instance = s.GetSfx().CreateInstance();
+                            this.mySoundInstance = s.GetSfx().CreateInstance();
+                            this.mySoundInstance.IsLooped = true;
+                            this.mySoundInstance.Play();
                         }
-                        else
-                        {
-                            //mySoundInstance.Stop();
-                        }
-                        instance.IsLooped = true;
-                        instance.Play();
-                        mySoundInstance = instance;
                     }
                 }
                 else if (s.ActorType == ActorType.SoundEffect)
                 {
-                    PlaySfx(s);
+                    playSFX(s);
                 }
             }
         }
 
-        public void PlaySfx(Sounds s)
+        public void playSFX(Sounds s)
         {
             if (s.ActorType == ActorType.SoundEffect)
             {
@@ -141,7 +135,23 @@ namespace GDGame.Game.Managers
             this.activeSongIndex = next;
             this.currentSong = list[next];
             this.mySoundInstance = currentSong.GetSfx().CreateInstance();
-            PlaySoundEffect(list[next].ID);
+            playSoundEffect(list[next].ID);
+        }
+
+        public void volumeUp()
+        {
+            if (this.currentSong != null && this.mySoundInstance != null)
+            {
+                this.mySoundInstance.Volume = (float)((this.mySoundInstance.Volume - 0.1) % 1.0);
+            }
+        }
+
+        public void volumeDown()
+        {
+            if (this.currentSong != null && this.mySoundInstance != null)
+            {
+                this.mySoundInstance.Volume = (float)((this.mySoundInstance.Volume + 0.1) % 1.0);
+            }
         }
 
         public override void Update(GameTime gameTime)
