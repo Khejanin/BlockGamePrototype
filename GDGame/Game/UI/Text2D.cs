@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace GDGame.Game.UI
 {
@@ -8,19 +9,22 @@ namespace GDGame.Game.UI
         private string text;
         private SpriteBatch spriteBatch;
         private SpriteFont spriteFont;
+        private Vector2 position;
+        private Color color;
 
-        public Text2D(string text, SpriteFont spriteFont)
+        public Text2D(string text, SpriteFont spriteFont, Vector2 position,Color color = default)
         {
             this.text = text;
             this.spriteFont = spriteFont;
+            this.position = position;
+            this.color = color;
         }
 
         public void Draw(GameTime gameTime, GraphicsDevice graphicsDevice)
         {
             spriteBatch ??= new SpriteBatch(graphicsDevice);
             spriteBatch.Begin();
-            Vector2 position = new Vector2(0, 0);
-            spriteBatch.DrawString(spriteFont, text, position, Color.Black);
+            spriteBatch.DrawString(spriteFont, text, position, color);
             spriteBatch.End();
             
             graphicsDevice.BlendState = BlendState.Opaque;

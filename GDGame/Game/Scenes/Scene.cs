@@ -13,6 +13,8 @@ namespace GDGame.Game.Scenes
         private Main game;
         private bool unloadsContent;
 
+        protected Color BackgroundColor = Color.CornflowerBlue;
+
         protected Scene(Main game, bool unloadsContent = true)
         {
             this.game = game;
@@ -20,7 +22,6 @@ namespace GDGame.Game.Scenes
         }
         
         #region Parameters
-
         protected GraphicsDevice GraphicsDevice => game.GraphicsDevice;
         protected GraphicsDeviceManager Graphics => game.Graphics;
         protected ContentManager Content => game.Content;
@@ -41,7 +42,12 @@ namespace GDGame.Game.Scenes
         
         public abstract void Initialize();
         public abstract void Update(GameTime gameTime);
-        public abstract void Draw(GameTime gameTime);
+        
+        public virtual void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(BackgroundColor);
+        }
+        
         public abstract void Terminate();
         
         public virtual void UnloadScene()

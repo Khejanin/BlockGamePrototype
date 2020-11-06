@@ -1,41 +1,69 @@
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Game.Scenes
 {
     public class SceneManager : DrawableGameComponent
     {
-        private Scene current;
+        private Scene CurrentScene
+        {
+            get { return SceneList[currentSceneIndex];}
+        }
+        
+        //So you can access by key and then request Scene at index to be switched to
+        public Dictionary<string, int> SceneIndexDictionary { get; private set; }
+        
+        private List<Scene> SceneList;
+        private int currentSceneIndex;
 
         //The Game needs a SceneManager, and the SceneManager needs a Scene.
-        public SceneManager(Microsoft.Xna.Framework.Game game,Scene s) : base(game)
+        public SceneManager(Microsoft.Xna.Framework.Game game) : base(game)
         {
-            current = s;
+            SceneList = new List<Scene>();
+            SceneIndexDictionary = new Dictionary<string, int>();
+            currentSceneIndex = 0;
+        }
+
+        public void AddScene(string key, Scene s)
+        {
+            SceneIndexDictionary.Add(key,SceneList.Count);
+            SceneList.Add(s);
         }
 
         public void Initialize()
         {
-            current.Initialize();
+            SceneList[currentSceneIndex].Initialize();
+        }
+
+        public void NextScene()
+        {
+            SwitchScene(currentSceneIndex+1);
+        }
+
+        public void PreviousScene()
+        {
+            SwitchScene(currentSceneIndex-1);
         }
 
         //A loading screen would be nice but I don't have time to test and implement async operations, we just gotta live with the unresponsiveness for now.
-        public void SwitchScene(Scene newScene)
+        public void SwitchScene(int sceneIndex)
         {
-            current.UnloadScene();
+            SceneList[currentSceneIndex].UnloadScene();
 
-            current = newScene;
-            newScene.Initialize();
+            currentSceneIndex = sceneIndex;
+            CurrentScene.Initialize();
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            current.Update(gameTime);
+            CurrentScene.Update(gameTime);
         }
         
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            current.Draw(gameTime);
+            CurrentScene.Draw(gameTime);
         }
     }
 }

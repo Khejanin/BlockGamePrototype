@@ -87,7 +87,7 @@ namespace GDGame.Game.Tiles
                     CheckWinCondition(); //remove this later
                  }
              }
-            text2D = attachCandidates.Count > 0 ? new Text2D("Hold Space to attach", font) : null;
+            text2D = attachCandidates.Count > 0 ? new Text2D("Hold Space to attach", font,Vector2.Zero) : null;
         }
 
         public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)

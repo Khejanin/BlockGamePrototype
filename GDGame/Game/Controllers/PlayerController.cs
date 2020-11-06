@@ -69,7 +69,7 @@ namespace GDGame.Game.Controllers
             }
         }
 
-        public bool IsMoveValid(Quaternion rotationToApply, Vector3 rotatePoint, Vector3 playerTargetPos)
+        public bool IsMoveValid(Quaternion rotationToApply, Vector3 rotatePoint, Vector3 playerTargetPos, Vector3 offset)
         {
             List<Vector3> initials = player.AttachedTiles.Select(i => i.Transform3D.Translation).ToList();
             initials.Insert(0, player.Transform3D.Translation);
@@ -77,7 +77,7 @@ namespace GDGame.Game.Controllers
             ends.Insert(0, playerTargetPos);
             List<Raycaster.HitResult> results = new List<Raycaster.HitResult>();
             List<Raycaster.FloorHitResult> floorHitResults = new List<Raycaster.FloorHitResult>();
-            player.PlayerCastAll(initials, ends,ref results,ref floorHitResults);
+            player.PlayerCastAll(offset,initials, ends,ref results,ref floorHitResults);
             return results.Count == 0 && floorHitResults.Count > 0;
         }
 
