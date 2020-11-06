@@ -110,17 +110,17 @@ namespace GDGame.Game.Scenes
             transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
             StaticTile staticTile = new StaticTile("StaticTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"]);
-            staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
+            staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Cube"], Color.White, 1);
             AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["BlueCube"]);
-            attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
+            attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             attachableTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
             CubePlayer player = new CubePlayer("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, models["RedCube"], Game.Fonts["UI"]);
-            player.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
+            player.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             player.ControllerList.Add(new PlayerController(KeyboardManager));
             player.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
             player.ControllerList.Add(new RotationComponent());
@@ -128,7 +128,7 @@ namespace GDGame.Game.Scenes
 
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["Box"]);
-            goal.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
+            goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
             ObjectManager.Add(archetypalBoxWireframe);
             drawnActors = new Dictionary<string, DrawnActor3D>
@@ -195,7 +195,7 @@ namespace GDGame.Game.Scenes
             UiManager.AddUiElement("Compass", uiSprite);
 
             string text = "moves";
-            Vector2 position = Game.ScreenCentre;
+            Vector2 position = Game.ScreenCentre + Vector2.UnitY*screenHeight/2;
             Text2D text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("Moves", text2D);
 
