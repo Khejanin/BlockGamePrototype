@@ -44,7 +44,7 @@ namespace GDGame.Game.Tiles
         {
             if (attachCandidates.Count == 0) return;
 
-            foreach (AttachableTile tile in attachCandidates.SelectMany(shape => shape.AttachableTiles))
+            foreach (AttachableTile tile in attachCandidates.SelectMany(shape =>  shape.AttachableTiles))
             {
                 AttachedTiles.Add(tile);
                 tile.EffectParameters.DiffuseColor = Color.Green;
