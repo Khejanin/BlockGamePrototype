@@ -247,15 +247,17 @@ namespace GDGame.Game.Scenes
             SoundEffect track03 = Content.Load<SoundEffect>("Assets/Sound/Knock03");
             SoundEffect track04 = Content.Load<SoundEffect>("Assets/Sound/Chains01");
             SoundEffect track05 = Content.Load<SoundEffect>("Assets/Sound/Click01");
+            SoundEffect track06 = Content.Load<SoundEffect>("Assets/Sound/GameTrack02");
+            SoundEffect track07 = Content.Load<SoundEffect>("Assets/Sound/GameTrack03");
 
             //Step 2- Make into sounds
-            SoundManager.Add(new Sounds(track01, "gameTrack", ActorType.MusicTrack, StatusType.Update));
+            SoundManager.Add(new Sounds(track01, "gameTrack01", ActorType.MusicTrack, StatusType.Update));
             SoundManager.Add(new Sounds(track02, "ambiance", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track03, "playerMove", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
-
-            SoundManager.playSoundEffect("gameTrack");
+            SoundManager.Add(new Sounds(track06, "gameTrack02", ActorType.MusicTrack, StatusType.Update));
+            SoundManager.Add(new Sounds(track07, "gameTrack03", ActorType.MusicTrack, StatusType.Update));
         }
 
         private void LoadTextures()
@@ -315,11 +317,11 @@ namespace GDGame.Game.Scenes
                 // this.cameraManager.ActiveCameraIndex++;
             }
 
-            ////Cycle Through Audio
-            //if (KeyboardManager.IsFirstKeyPress(Keys.M))
-            //{
-            //    SoundManager.nextSong();
-            //}
+            //Cycle Through Audio
+            if (KeyboardManager.IsFirstKeyPress(Keys.M))
+            {
+                SoundManager.NextSong();
+            }
 
             //if(KeyboardManager.IsFirstKeyPress(Keys.L)) { SoundManager.volumeUp(); }
             //else if(KeyboardManager.IsFirstKeyPress(Keys.K)) { SoundManager.volumeDown(); }
