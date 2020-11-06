@@ -128,7 +128,7 @@ namespace GDGame.Game.Scenes
 
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["Box"]);
-            goal.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
+            goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
             ObjectManager.Add(archetypalBoxWireframe);
             drawnActors = new Dictionary<string, DrawnActor3D>
@@ -197,26 +197,26 @@ namespace GDGame.Game.Scenes
 
             string text = "moves";
             Vector2 position = new Vector2(halfWidth - (text.Length - 1) * 12, screenHeight - heightFromBottom * 2);
-            Text2D text2D = new Text2D(StatusType.Drawn, text, fonts["UI"], position, Color.Black);
+            Text2D text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("Moves", text2D);
 
             text = "Current Level";
             position = new Vector2(x: halfWidth / 4f, screenHeight - heightFromBottom);
-            text2D = new Text2D(StatusType.Drawn, text, fonts["UI"], position, Color.Black);
+            text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("Current Level", text2D);
 
             text = "Time : 00:00:00";
             position = new Vector2(x: halfWidth + halfWidth / 4f, screenHeight - heightFromBottom);
-            text2D = new Text2D(StatusType.Drawn, text, fonts["UI"], position, Color.Black);
+            text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("Time", text2D);
 
             text = "5";
             position = new Vector2(halfWidth - text.Length * 12, screenHeight - heightFromBottom);
-            text2D = new Text2D(StatusType.Drawn, text, fonts["UI"], position, Color.Black);
+            text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("MovesNumeric", text2D);
             
             text = "Hold Space To Attach";
-            text2D = new Text2D(StatusType.Off, text, fonts["UI"], Vector2.Zero, Color.Black);
+            text2D = new Text2D(StatusType.Off, text, Game.Fonts["UI"], Vector2.Zero, Color.Black);
             UiManager.AddUiElement("ToolTip", text2D);
         }
 

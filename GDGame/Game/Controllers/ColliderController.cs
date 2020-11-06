@@ -52,14 +52,14 @@ namespace GDGame.Game.Controllers
 
         private float scale;
 
-        public CustomBoxColliderController(ColliderShape colliderShape, float scale) : base(colliderShape)
+        public CustomBoxColliderController(ColliderShape colliderShape, float scale,ColliderType colliderType = ColliderType.Blocking) : base(colliderShape,colliderType)
         {
             this.scale = scale;
         }
 
         public override object Clone()
         {
-            return new CustomBoxColliderController(colliderShape, scale);
+            return new CustomBoxColliderController(colliderShape,scale,ColliderType);
         }
 
         public BoundingBox GetBounds()
@@ -111,7 +111,7 @@ namespace GDGame.Game.Controllers
         {
         }
     }
-
+/*
     public class ModelColliderController : ColliderController
     {
         private ModelObject parent;
@@ -139,4 +139,5 @@ namespace GDGame.Game.Controllers
         {
         }
     }
+    */
 }

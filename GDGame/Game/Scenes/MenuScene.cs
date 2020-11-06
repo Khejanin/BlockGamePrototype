@@ -34,7 +34,8 @@ namespace GDGame.Game.Scenes
         private void InitializeText()
         {
             Vector2 menuTextOffset = new Vector2(-Game.ScreenCentre.X/2,0);
-            menuText = new Text2D("Press SPACEBAR to start the Game!",Game.Fonts["UI"], Game.ScreenCentre + menuTextOffset,Color.Wheat);
+            menuText = new Text2D(StatusType.Drawn,"Press SPACEBAR to start the Game!",Game.Fonts["UI"], Game.ScreenCentre + menuTextOffset,Color.Wheat);
+            UiManager.AddUiElement("Menu Text",menuText);
         }
         
         protected void InitializeTextures()
@@ -44,7 +45,6 @@ namespace GDGame.Game.Scenes
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            menuText.Draw(gameTime,GraphicsDevice);
         }
 
         public override void Update(GameTime gameTime)
