@@ -68,7 +68,7 @@ namespace GDGame.Game.Tiles
         {
             Raycaster.HitResult hit = Raycaster.Raycast(this, Transform3D.Translation, Vector3.Up, true, 0.5f);
             System.Diagnostics.Debug.WriteLine("YOU WIN!!!");
-            return hit.actor is GoalTile;
+            return hit != null && hit.actor is GoalTile;
         }
 
         /// <summary>
