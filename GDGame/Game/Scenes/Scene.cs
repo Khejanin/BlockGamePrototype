@@ -1,5 +1,4 @@
 using GDGame.Game.Managers;
-using GDLibrary;
 using GDLibrary.Actors;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
@@ -33,7 +32,7 @@ namespace GDGame.Game.Scenes
         protected BasicEffect UnlitWireframeEffect => game.UnlitWireframeEffect;
         protected BasicEffect UnlitTexturedEffect => game.UnlitTexturedEffect;
         protected RasterizerState WireframeRasterizerState => game.WireframeRasterizerState;
-        protected GameComponentCollection Components => game.Components;
+        protected UiManager UiManager => game.UiManager;
 
         protected Main Game => game;
         

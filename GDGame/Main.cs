@@ -14,8 +14,6 @@ namespace GDGame
     {
         public GraphicsDeviceManager Graphics { get; }
 
-        public SpriteBatch SpriteBatch { get; set; }
-
         public BasicEffect ModelEffect { get; private set; }
 
         public BasicEffect UnlitTexturedEffect { get; private set; }
@@ -41,12 +39,13 @@ namespace GDGame
         public SoundManager SoundManager { get; private set; }
         
         public SceneManager SceneManager { get; private set; }
-        
+        public UiManager UiManager { get; private set; }
+
         public ProjectionParameters GlobalProjectionParameters => ProjectionParameters.StandardDeepSixteenTen;
 
         private float worldScale = 3000;
         private PrimitiveObject primitiveObject = null;
-        private MainScene MainScene;
+        private MainScene mainScene;
 
 
         public Main()
@@ -92,7 +91,7 @@ namespace GDGame
 
         private void CreateScenes()
         {
-            MainScene = new MainScene(this);
+            mainScene = new MainScene(this);
         }
 
         private void InitManagers()
@@ -102,7 +101,7 @@ namespace GDGame
             Components.Add(CameraManager);
             
             //Scene
-            SceneManager = new SceneManager(this,MainScene);
+            SceneManager = new SceneManager(this,mainScene);
             Components.Add(SceneManager);
 
             //Keyboard
@@ -120,6 +119,9 @@ namespace GDGame
             //Object
             ObjectManager = new ObjectManager(this, 6, 10, CameraManager);
             Components.Add(ObjectManager);
+            
+            UiManager = new UiManager(this);
+            Components.Add(UiManager);
 
         }
 
@@ -155,7 +157,6 @@ namespace GDGame
 
         protected override void LoadContent()
         {
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
             InitDebug();
         }
 

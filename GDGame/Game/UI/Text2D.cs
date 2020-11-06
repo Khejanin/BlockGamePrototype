@@ -1,30 +1,27 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GDLibrary.Enums;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Game.UI
 {
-    public class Text2D
+    public class Text2D : UiElement
     {
         private string text;
-        private SpriteBatch spriteBatch;
         private SpriteFont spriteFont;
+        private Vector2 position;
+        private Color color;
 
-        public Text2D(string text, SpriteFont spriteFont)
+        public Text2D(StatusType statusType, string text, SpriteFont spriteFont, Vector2 position, Color color) : base(statusType)
         {
             this.text = text;
             this.spriteFont = spriteFont;
+            this.position = position;
+            this.color = color;
         }
 
-        public void Draw(GameTime gameTime, GraphicsDevice graphicsDevice)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch ??= new SpriteBatch(graphicsDevice);
-            spriteBatch.Begin();
-            Vector2 position = new Vector2(0, 0);
-            spriteBatch.DrawString(spriteFont, text, position, Color.Black);
-            spriteBatch.End();
-            
-            graphicsDevice.BlendState = BlendState.Opaque;
-            graphicsDevice.DepthStencilState = DepthStencilState.Default;
+            spriteBatch.DrawString(spriteFont, text, position, color);
         }
     }
 }
