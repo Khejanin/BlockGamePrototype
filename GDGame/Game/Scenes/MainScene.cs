@@ -192,7 +192,7 @@ namespace GDGame.Game.Scenes
             SoundManager.Add(new Sounds(track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
 
-            //SoundManager.PlaySoundEffect("gameTrack");
+            SoundManager.playSoundEffect("gameTrack");
         }
 
         private void LoadTextures()
