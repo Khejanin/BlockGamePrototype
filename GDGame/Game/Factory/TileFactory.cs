@@ -28,6 +28,7 @@ namespace GDGame.Game.Factory
                 ETileType.PlayerStart => CreatePlayer(),
                 ETileType.Static => CreateStatic(),
                 ETileType.Attachable => CreateAttachable(),
+                ETileType.Win => CreateGoal(),
                 _ => null
             };
 
@@ -63,6 +64,14 @@ namespace GDGame.Game.Factory
             player = player.Clone() as CubePlayer;
             objectManager.Add(player);
             return player;
+        }
+
+        private GridTile CreateGoal()
+        {
+            GoalTile goal = (GoalTile)drawnActors["GoalTile"];
+            goal = goal.Clone() as GoalTile;
+            objectManager.Add(goal);
+            return goal;
         }
     }
 }

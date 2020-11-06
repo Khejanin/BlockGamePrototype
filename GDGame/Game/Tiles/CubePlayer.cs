@@ -63,6 +63,12 @@ namespace GDGame.Game.Tiles
             IsAttached = false;
         }
 
+        public bool CheckWinCondition()
+        {
+            Raycaster.HitResult hit = Raycaster.Raycast(this, Transform3D.Translation, Vector3.Up, true, 0.5f);
+            System.Diagnostics.Debug.WriteLine("YOU WIN!!!");
+            return hit != null && hit.actor is GoalTile;
+        }
 
         /// <summary>
         /// Is in charge of the Animation for when the Player Moves
@@ -76,7 +82,8 @@ namespace GDGame.Game.Tiles
              {
                  if (CurrentMovementTime <= 0)
                  {
-                     UpdateAttachCandidates(); //remove this later
+                    UpdateAttachCandidates(); //remove this later
+                    CheckWinCondition(); //remove this later
                  }
              }
         }

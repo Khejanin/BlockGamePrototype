@@ -126,11 +126,14 @@ namespace GDGame.Game.Scenes
             player.ControllerList.Add(new RotationComponent());
             player.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
+            GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, models["Box"]);
+            goal.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
 
             ObjectManager.Add(archetypalBoxWireframe);
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
-                {"StaticTile", staticTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", player}
+                {"StaticTile", staticTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", player}, {"GoalTile", goal}
             };
         }
 
@@ -255,7 +258,7 @@ namespace GDGame.Game.Scenes
             SoundManager.Add(new Sounds(track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
 
-            //SoundManager.PlaySoundEffect("gameTrack");
+            SoundManager.playSoundEffect("gameTrack");
         }
 
         private void LoadTextures()
