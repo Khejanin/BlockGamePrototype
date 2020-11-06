@@ -22,6 +22,9 @@ namespace GDGame.Game.Tiles
 
         public Shape Shape { get; set; }
         public ETileType TileType { get; set; }
+        public bool IsMoving { get; set; }
+        public Vector3 RotatePoint { get; set; }
+        public int CurrentMovementTime { get; set; }
 
         public List<Vector3> GetBoundsPoints()
         {

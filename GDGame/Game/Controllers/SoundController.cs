@@ -48,13 +48,9 @@ namespace GDGame.Game.Controllers
             throw new System.NotImplementedException();
         }
 
-        public void Initialize(IActor actor)
-        {
-            this.player = actor as CubePlayer;
-        }
-
         public void Update(GameTime gameTime, IActor actor)
         {
+            player ??= actor as CubePlayer;
             if (this.keyboardManager.IsKeyPressed())
             {
                 HandleKeyboardInput(gameTime);

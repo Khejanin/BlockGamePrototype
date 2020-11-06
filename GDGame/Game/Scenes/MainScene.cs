@@ -119,12 +119,15 @@ namespace GDGame.Game.Scenes
             AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["BlueCube"]);
             attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
-
+            attachableTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
+            
             CubePlayer player = new CubePlayer("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, models["RedCube"], fonts["UI"]);
             player.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
             player.ControllerList.Add(new PlayerController(KeyboardManager));
             player.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
+            player.ControllerList.Add(new RotationComponent());
+            player.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
 
             ObjectManager.Add(archetypalBoxWireframe);

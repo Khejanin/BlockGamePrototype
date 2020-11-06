@@ -1,4 +1,8 @@
-﻿using GDGame.Game.Tiles;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using GDGame.Game.Tiles;
+using GDGame.Game.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
@@ -20,13 +24,13 @@ namespace GDGame.Game.Controllers
         public void Update(GameTime gameTime, IActor actor)
         {
             player ??= (CubePlayer) actor;
-            if (this.keyboardManager.IsKeyPressed())
+            if (keyboardManager.IsKeyPressed())
                 HandleKeyboardInput(gameTime);
         }
 
         public ControllerType GetControllerType()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         private void HandleKeyboardInput(GameTime gameTime)
@@ -36,44 +40,46 @@ namespace GDGame.Game.Controllers
 
         private void HandlePlayerMovement()
         {
-            if (this.keyboardManager.IsFirstKeyPress(Keys.Space) && !player.IsAttached)
+            if (keyboardManager.IsFirstKeyPress(Keys.Space) && !player.IsAttached)
                 player.Attach();
-            else if (!this.keyboardManager.IsKeyDown(Keys.Space) && this.keyboardManager.IsStateChanged() &&
+            else if (!keyboardManager.IsKeyDown(Keys.Space) && keyboardManager.IsStateChanged() &&
                      player.IsAttached)
                 player.Detach();
 
             if (!player.IsMoving)
             {
                 Vector3 moveDir = Vector3.Zero;
-                if (this.keyboardManager.IsKeyDown(Keys.Up))
+                if (keyboardManager.IsKeyDown(Keys.Up))
                     moveDir = -Vector3.UnitZ;
-                else if (this.keyboardManager.IsKeyDown(Keys.Down))
+                else if (keyboardManager.IsKeyDown(Keys.Down))
                     moveDir = Vector3.UnitZ;
 
-                if (this.keyboardManager.IsKeyDown(Keys.Left))
+                if (keyboardManager.IsKeyDown(Keys.Left))
                     moveDir = -Vector3.UnitX;
-                else if (this.keyboardManager.IsKeyDown(Keys.Right))
+                else if (keyboardManager.IsKeyDown(Keys.Right))
                     moveDir = Vector3.UnitX;
-
-                Vector3 start = player.Transform3D.Translation;
-                Vector3 dest = player.Transform3D.Translation + moveDir;
 
                 if (moveDir != Vector3.Zero)
                 {
-                    player.Move(moveDir);
-
-                    //Grid.GridPositionResult gridPositionResult = Grid.QueryMove(dest);
-                    //if (gridPositionResult.validMovePos)
-                    //{
-                    //    //if(gridPositionResult.floorTile.TileType == ETileType.Win) Debug.WriteLine("YOU WON THE GAME! WOO");
-                    //    //player.Move(moveDir);
-                    //    player.Move(moveDir);
-                    //    Grid.MoveTo(start, dest);
-                    //   // Debug.WriteLine("PLAYER MOVED FROM : " + start + " TO : " + dest);
-                    //}
+                    MovementComponent movementComponent = (MovementComponent) player.ControllerList.Find(controller =>
+                        controller.GetType() == typeof(MovementComponent));
+                    movementComponent?.Move(moveDir);
                 }
             }
         }
+
+        public bool IsMoveValid(Quaternion rotationToApply, Vector3 rotatePoint, Vector3 playerTargetPos)
+        {
+            List<Vector3> initials = player.AttachedTiles.Select(i => i.Transform3D.Translation).ToList();
+            initials.Insert(0, player.Transform3D.Translation);
+            List<Vector3> ends = player.AttachedTiles.Select(i => i.CalculateTargetPosition(rotatePoint, rotationToApply)).ToList();
+            ends.Insert(0, playerTargetPos);
+            List<Raycaster.HitResult> results = new List<Raycaster.HitResult>();
+            List<Raycaster.FloorHitResult> floorHitResults = new List<Raycaster.FloorHitResult>();
+            player.PlayerCastAll(initials, ends,ref results,ref floorHitResults);
+            return results.Count == 0 && floorHitResults.Count > 0;
+        }
+        
 
         public object Clone()
         {
