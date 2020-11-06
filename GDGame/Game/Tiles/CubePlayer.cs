@@ -11,6 +11,7 @@ using System.Linq;
 using GDGame.Game.UI;
 using GDLibrary.Actors;
 using GDLibrary.Interfaces;
+using static GDGame.Game.Utilities.Raycaster;
 
 namespace GDGame.Game.Tiles
 {
@@ -45,7 +46,7 @@ namespace GDGame.Game.Tiles
         struct PlayerSurroundCheck
         {
             public EDirection dir;
-            public Raycaster.HitResult hit;
+            public HitResult hit;
         }
 
         public CubePlayer(string id, ActorType actorType, StatusType statusType,
@@ -144,9 +145,10 @@ namespace GDGame.Game.Tiles
             initials.Insert(0, Transform3D.Translation);
             List<Vector3> ends = attachedTiles.Select(i => i.CalculateTargetPosition(rotatePoint, rotationToApply)).ToList();
             ends.Insert(0, playerTargetPos);
-
-            List<Raycaster.HitResult> results = Raycaster.PlayerCastAll(this, initials, ends);
-            return results.Count == 0;
+            List<HitResult> results = new List<HitResult>();
+            List<FloorHitResult> floorHitResults = new List<FloorHitResult>();
+            Raycaster.PlayerCastAll(this, initials, ends,ref results,ref floorHitResults);
+            return results.Count == 0 && floorHitResults.Count > 0;
         }
         
 

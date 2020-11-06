@@ -11,24 +11,32 @@ namespace GDGame.Game.Utilities
 {
     public static class Raycaster
     {
+
+        public struct FloorHitResult
+        {
+            public HitResult hitResult;
+            public Actor3D actor3D;
+        }
         #region Public Methods
 
-        public static List<HitResult> PlayerCastAll(this CubePlayer player,List<Vector3> initialPositions, List<Vector3> endPositions)
+        public static void PlayerCastAll(this CubePlayer player,List<Vector3> initialPositions, List<Vector3> endPositions,ref List<HitResult> blockingObjectsResult,ref List<FloorHitResult> floorResult)
         {
-            List<HitResult> hit = new List<HitResult>();
-
             List<Actor3D> ignore = new List<Actor3D>();
             ignore.AddRange(player.AttachedTiles);
             ignore.Add(player);
 
             for (int i = 0; i < initialPositions.Count; i++)
             {
+                //Check if this block's trajectory is blocked by anything in its path
                 Vector3 maxDist = endPositions[i] - initialPositions[i];
                 Vector3 dir = Vector3.Normalize(maxDist);
-                hit.AddRange(RaycastAll(initialPositions[i],dir,maxDist.Length(),ignore));
+                blockingObjectsResult.AddRange(RaycastAll(initialPositions[i],dir,maxDist.Length(),ignore));
+                
+                //Check if this block will be on a floor tile after moving
+                HitResult hit = Raycast(initialPositions[i], Vector3.Down, 1f, ignore);
+                if(hit != null)
+                    floorResult.Add(new FloorHitResult(){hitResult = hit,actor3D = ignore[i]});
             }
-            
-            return hit;
         }
 
         public static void Raycast(Vector3 position, Vector3 direction, ref List<HitResult> hit, float maxDist = float.MaxValue, List<Actor3D> ignoreList = null)
