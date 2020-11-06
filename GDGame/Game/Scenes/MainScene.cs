@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Permissions;
 using GDGame.Game.Actors.Audio;
 using GDGame.Game.Controllers;
 using GDGame.Game.Controllers.CameraControllers;
@@ -242,22 +243,19 @@ namespace GDGame.Game.Scenes
         private void LoadSounds()
         {
             //step 1 - load songs
-            SoundEffect track01 = Content.Load<SoundEffect>("Assets/Sound/GameTrack01");
-            SoundEffect track02 = Content.Load<SoundEffect>("Assets/Sound/Ambiance02");
-            SoundEffect track03 = Content.Load<SoundEffect>("Assets/Sound/Knock03");
-            SoundEffect track04 = Content.Load<SoundEffect>("Assets/Sound/Chains01");
+            SoundEffect track01 = Content.Load<SoundEffect>("Assets/GameTracks/GameTrack01");
+            SoundEffect track02 = Content.Load<SoundEffect>("Assets/GameTracks/GameTrack02");
+            SoundEffect track03 = Content.Load<SoundEffect>("Assets/GameTracks/GameTrack03");
+            SoundEffect track04 = Content.Load<SoundEffect>("Assets/Sound/Knock03");
             SoundEffect track05 = Content.Load<SoundEffect>("Assets/Sound/Click01");
-            SoundEffect track06 = Content.Load<SoundEffect>("Assets/Sound/GameTrack02");
-            SoundEffect track07 = Content.Load<SoundEffect>("Assets/Sound/GameTrack03");
-
+            
             //Step 2- Make into sounds
             SoundManager.Add(new Sounds(track01, "gameTrack01", ActorType.MusicTrack, StatusType.Update));
-            SoundManager.Add(new Sounds(track02, "ambiance", ActorType.SoundEffect, StatusType.Update));
-            SoundManager.Add(new Sounds(track03, "playerMove", ActorType.SoundEffect, StatusType.Update));
-            SoundManager.Add(new Sounds(track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
+            SoundManager.Add(new Sounds(track02, "gameTrack02", ActorType.MusicTrack, StatusType.Update));
+            SoundManager.Add(new Sounds(track03, "gameTrack03", ActorType.MusicTrack, StatusType.Update));
+            SoundManager.Add(new Sounds(track04, "playerMove", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
-            SoundManager.Add(new Sounds(track06, "gameTrack02", ActorType.MusicTrack, StatusType.Update));
-            SoundManager.Add(new Sounds(track07, "gameTrack03", ActorType.MusicTrack, StatusType.Update));
+            
         }
 
         private void LoadTextures()
@@ -317,14 +315,14 @@ namespace GDGame.Game.Scenes
                 // this.cameraManager.ActiveCameraIndex++;
             }
 
-            //Cycle Through Audio
-            if (KeyboardManager.IsFirstKeyPress(Keys.M))
-            {
-                SoundManager.NextSong();
-            }
+            ////Cycle Through Audio
+            //if (KeyboardManager.IsFirstKeyPress(Keys.M))
+            //    SoundManager.NextSong();
+            //if (KeyboardManager.IsKeyDown(Keys.Enter))
+            //    SoundManager.StopSong();
 
-            //if(KeyboardManager.IsFirstKeyPress(Keys.L)) { SoundManager.volumeUp(); }
-            //else if(KeyboardManager.IsFirstKeyPress(Keys.K)) { SoundManager.volumeDown(); }
+            //if (KeyboardManager.IsKeyDown(Keys.L)) { SoundManager.volumeUp(); }
+            //else if (KeyboardManager.IsKeyDown(Keys.K)) { SoundManager.volumeDown(); }
         }
 
         public override void Terminate()

@@ -130,6 +130,7 @@ namespace GDGame.Game.Managers
             }
 
             SwitchSong(next);
+            this.mySoundInstance.Volume = (float)0.5;
             this.mySoundInstance.Play();
         }
 
@@ -144,16 +145,38 @@ namespace GDGame.Game.Managers
             this.mySoundInstance = currentSong.GetSfx().CreateInstance();
         }
 
+        public void StopSong()
+        {
+            this.mySoundInstance.Pause();
+        }
+
         public void volumeUp()
         {
-            if (this.currentSong != null && this.mySoundInstance != null)
-                this.mySoundInstance.Volume = (float)((this.mySoundInstance.Volume - 0.1) % 1.0);
+            if (this.mySoundInstance != null && this.mySoundInstance.State == SoundState.Playing)
+            {
+                this.mySoundInstance.Pause();
+                float newVol = (float)(this.mySoundInstance.Volume + 0.25);
+                if (newVol >= 1.0)
+                    newVol = 1;
+
+                this.mySoundInstance.Volume = newVol;
+                this.mySoundInstance.Play();
+            }
         }
 
         public void volumeDown()
         {
-            if (this.currentSong != null && this.mySoundInstance != null)
-                this.mySoundInstance.Volume = (float)((this.mySoundInstance.Volume + 0.1) % 1.0);
+            if (this.mySoundInstance != null && this.mySoundInstance.State == SoundState.Playing)
+            {
+                this.mySoundInstance.Pause();
+                float newVol = (float)(this.mySoundInstance.Volume - 0.25);
+                if(newVol <= 0)
+                    newVol = 0;
+
+                this.mySoundInstance.Volume = newVol;
+                this.mySoundInstance.Play();
+            }
+                
         }
 
         public override void Update(GameTime gameTime)
