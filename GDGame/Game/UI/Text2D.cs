@@ -11,7 +11,8 @@ namespace GDGame.Game.UI
         private Vector2 position;
         private Color color;
 
-        public Text2D(StatusType statusType, string text, SpriteFont spriteFont, Vector2 position, Color color) : base(statusType)
+        public Text2D(StatusType statusType, string text, SpriteFont spriteFont, Vector2 position, Color color) :
+            base(statusType)
         {
             this.text = text;
             this.spriteFont = spriteFont;
@@ -21,7 +22,8 @@ namespace GDGame.Game.UI
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(spriteFont, text, position, color);
+            Vector2 origin = spriteFont.MeasureString(text) / 2;
+            spriteBatch.DrawString(spriteFont, text, position, color, 0, origin, Vector2.One, SpriteEffects.None, 0);
         }
     }
 }

@@ -191,32 +191,31 @@ namespace GDGame.Game.Scenes
             Texture2D compass = textures["Compass"];
             Vector2 origin = new Vector2(compass.Width / 2f, compass.Height / 2f);
             pos = new Rectangle(new Point((int) (screenWidth - 60) + border, border + 50), new Point(100, 100));
-            uiSprite = new UiSprite(StatusType.Drawn, compass, pos, null, Color.White, 0, origin, SpriteEffects.None,
-                0);
+            uiSprite = new UiSprite(StatusType.Drawn, compass, pos, null, Color.White, 0, origin, SpriteEffects.None, 0);
             UiManager.AddUiElement("Compass", uiSprite);
 
             string text = "moves";
-            Vector2 position = new Vector2(halfWidth - (text.Length - 1) * 12, screenHeight - heightFromBottom * 2);
-            Text2D text2D = new Text2D(StatusType.Drawn, text, fonts["UI"], position, Color.Black);
+            Vector2 position = Game.ScreenCentre;
+            Text2D text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("Moves", text2D);
 
             text = "Current Level";
             position = new Vector2(x: halfWidth / 4f, screenHeight - heightFromBottom);
-            text2D = new Text2D(StatusType.Drawn, text, fonts["UI"], position, Color.Black);
+            text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("Current Level", text2D);
 
             text = "Time : 00:00:00";
             position = new Vector2(x: halfWidth + halfWidth / 4f, screenHeight - heightFromBottom);
-            text2D = new Text2D(StatusType.Drawn, text, fonts["UI"], position, Color.Black);
+            text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("Time", text2D);
 
             text = "5";
-            position = new Vector2(halfWidth - text.Length * 12, screenHeight - heightFromBottom);
-            text2D = new Text2D(StatusType.Drawn, text, fonts["UI"], position, Color.Black);
+            position = new Vector2(halfWidth, screenHeight - heightFromBottom);
+            text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("MovesNumeric", text2D);
-            
+
             text = "Hold Space To Attach";
-            text2D = new Text2D(StatusType.Off, text, fonts["UI"], Vector2.Zero, Color.Black);
+            text2D = new Text2D(StatusType.Off, text, Game.Fonts["UI"], Vector2.Zero, Color.Black);
             UiManager.AddUiElement("ToolTip", text2D);
         }
 
@@ -239,8 +238,6 @@ namespace GDGame.Game.Scenes
 
 
         #region LoadContent
-
-       
 
         private void LoadSounds()
         {
@@ -302,7 +299,8 @@ namespace GDGame.Game.Scenes
             if (players.Count > 0)
             {
                 CubePlayer player = players[0] as CubePlayer;
-                UiManager.Get("ToolTip").StatusType = player?.AttachCandidates.Count > 0 ? StatusType.Drawn : StatusType.Off;
+                UiManager.Get("ToolTip").StatusType =
+                    player?.AttachCandidates.Count > 0 ? StatusType.Drawn : StatusType.Off;
             }
 
             if (KeyboardManager.IsFirstKeyPress(Keys.C))

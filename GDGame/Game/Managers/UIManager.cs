@@ -26,8 +26,7 @@ namespace GDGame.Game.Managers
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            foreach (KeyValuePair<string, UiElement> keyValuePair in elements.Where(keyValuePair =>
-                keyValuePair.Value.StatusType == StatusType.Drawn))
+            foreach (KeyValuePair<string, UiElement> keyValuePair in elements.Where(keyValuePair => keyValuePair.Value.StatusType == StatusType.Drawn))
             {
                 keyValuePair.Value.Draw(gameTime, spriteBatch);
             }
@@ -42,6 +41,11 @@ namespace GDGame.Game.Managers
         public UiElement Get(string name)
         {
             return elements[name];
+        }
+
+        public void Clear()
+        {
+            elements.Clear();
         }
     }
 }
