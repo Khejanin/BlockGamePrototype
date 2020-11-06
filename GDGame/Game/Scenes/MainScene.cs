@@ -95,7 +95,7 @@ namespace GDGame.Game.Scenes
         private void InitGrid()
         {
             Grid grid = new Grid(new TileFactory(ObjectManager, drawnActors));
-            grid.GenerateGrid(@"Game\LevelFiles\LevelTest2.json");
+            grid.GenerateGrid(@"Game\LevelFiles\PrototypeLevel.json");
         }
 
         private void InitStaticModels()
