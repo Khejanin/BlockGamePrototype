@@ -24,7 +24,8 @@ namespace GDLibrary.Containers
             return false;
         }
 
-        public virtual int Transform(Predicate<IController> filter, Action<IController> transform)
+        public virtual int Transform(Predicate<IController> filter,
+                                            Action<IController> transform)
         {
             int count = 0;
             foreach (IController obj in this)

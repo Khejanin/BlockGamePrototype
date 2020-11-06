@@ -5,7 +5,7 @@ using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace GDLibrary
+namespace GDGame.Game.Controllers
 {
     public class PlayerController : IController
     {
@@ -17,14 +17,10 @@ namespace GDLibrary
             this.keyboardManager = keyboardManager;
         }
 
-        public void Initialize(IActor actor)
-        {
-            this.player = actor as CubePlayer;
-        }
-
         public void Update(GameTime gameTime, IActor actor)
         {
-            if(this.keyboardManager.IsKeyPressed())
+            player ??= (CubePlayer) actor;
+            if (this.keyboardManager.IsKeyPressed())
                 HandleKeyboardInput(gameTime);
         }
 
@@ -42,7 +38,8 @@ namespace GDLibrary
         {
             if (this.keyboardManager.IsFirstKeyPress(Keys.Space) && !player.IsAttached)
                 player.Attach();
-            else if (this.keyboardManager.IsKeyUp(Keys.Space) && player.IsAttached)
+            else if (!this.keyboardManager.IsKeyDown(Keys.Space) && this.keyboardManager.IsStateChanged() &&
+                     player.IsAttached)
                 player.Detach();
 
             if (!player.IsMoving)

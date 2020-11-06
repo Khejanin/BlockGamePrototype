@@ -10,8 +10,6 @@ namespace GDLibrary.Interfaces
     /// <see cref="GDLibrary.Actors.DrawnActor3D"/>
     public interface IActor : ICloneable
     {
-        
-        void Initialize();
         void Update(GameTime gameTime);
 
         //moved Draw() to IGDDrawable and DrawnActor3D

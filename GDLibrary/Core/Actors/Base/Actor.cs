@@ -18,7 +18,6 @@ namespace GDLibrary.Actors
         private ActorType actorType;
         private StatusType statusType;
         private ControllerList controllerList = new ControllerList();
-        private bool initialized;
 
         #endregion Fields
 
@@ -28,9 +27,6 @@ namespace GDLibrary.Actors
         {
             get
             {
-                //    if (controllerList == null)
-                //       controllerList = new ControllerList();
-
                 return controllerList;
             }
             //no reason to allow this list to be directly set externally
@@ -104,14 +100,8 @@ namespace GDLibrary.Actors
 
         public virtual void Update(GameTime gameTime)
         {
-            if (!initialized) Initialize();
             //calls update on any attached controllers
-            else
-            {
-                controllerList.Update(gameTime, this);
-            }
-            //calls update on any attached controllers
-            
+            controllerList.Update(gameTime, this);
 
             //line above replaces for() below
             //foreach (IController controller in controllerList)
@@ -138,13 +128,6 @@ namespace GDLibrary.Actors
         {
             //deep-copy
             return new Actor(id, actorType, statusType);
-        }
-        
-        public virtual void Initialize()
-        {
-            initialized = true;
-            foreach (IController controller in this.controllerList)
-                controller.Initialize(this);
         }
     }
 }

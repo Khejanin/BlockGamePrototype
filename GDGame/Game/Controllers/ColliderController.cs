@@ -28,10 +28,6 @@ namespace GDGame.Game.Controllers
 
         public abstract object Clone();
 
-        public void Initialize(IActor actor)
-        {
-        }
-
         public abstract void Update(GameTime gameTime, IActor actor);
 
         public ControllerType GetControllerType()

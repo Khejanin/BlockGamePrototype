@@ -63,7 +63,5 @@ namespace GDLibrary.Actors
         }
 
         #endregion Constructors & Core
-
-       
     }
 }

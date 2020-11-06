@@ -16,13 +16,24 @@ namespace GDLibrary.Actors
     {
         #region Fields
 
+        private Model model;
         private Matrix[] boneTransforms;
 
         #endregion Fields
 
         #region Properties
 
-        public Model Model { get; set; }
+        public Model Model
+        {
+            get
+            {
+                return model;
+            }
+            set
+            {
+                model = value;
+            }
+        }
 
         public Matrix[] BoneTransforms
         {
@@ -39,10 +50,10 @@ namespace GDLibrary.Actors
         #endregion Properties
 
         public ModelObject(string id, ActorType actorType, StatusType statusType,
-            Transform3D transform, EffectParameters effectParameters, Model model,RasterizerState rasterizerState = null)
+            Transform3D transform, EffectParameters effectParameters, Model model)
             : base(id, actorType, statusType, transform, effectParameters)
         {
-            this.Model = model;
+            this.model = model;
 
             InitializeBoneTransforms();
         }
@@ -58,10 +69,10 @@ namespace GDLibrary.Actors
         private void InitializeBoneTransforms()
         {
             //load bone transforms and copy transfroms to transform array (transforms)
-            if (Model != null)
+            if (model != null)
             {
-                boneTransforms = new Matrix[Model.Bones.Count];
-                Model.CopyAbsoluteBoneTransformsTo(boneTransforms);
+                boneTransforms = new Matrix[model.Bones.Count];
+                model.CopyAbsoluteBoneTransformsTo(boneTransforms);
             }
         }
 
@@ -79,7 +90,7 @@ namespace GDLibrary.Actors
                 EffectParameters.Effect.Texture = EffectParameters.Texture;
             }
 
-            foreach (ModelMesh mesh in Model.Meshes)
+            foreach (ModelMesh mesh in model.Meshes)
             {
                 foreach (ModelMeshPart part in mesh.MeshParts)
                 {
@@ -97,7 +108,7 @@ namespace GDLibrary.Actors
                StatusType,
                Transform3D.Clone() as Transform3D,  //deep
                EffectParameters.Clone() as EffectParameters, //hybrid - shallow (texture and effect) and deep (all other fields)
-               Model); //shallow i.e. a reference
+               model); //shallow i.e. a reference
 
             //remember if we clone a model then we need to clone any attached controllers
             if (ControllerList != null)

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace GDLibrary.Interfaces
 {
@@ -21,7 +22,6 @@ namespace GDLibrary.Interfaces
         void SetPrimitiveType(PrimitiveType primitiveType);
 
         void SetPrimitiveCount(int primitiveCount);
-        
         Vector3[] GetPrimitivePositions();
     }
 }

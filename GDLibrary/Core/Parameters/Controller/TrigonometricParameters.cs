@@ -15,11 +15,9 @@ namespace GDLibrary.Parameters
         #endregion Fields
 
         #region Properties
-
-        public float MaxAmplitude { get => maxAmplitude; set => maxAmplitude = value > 0 ? value : 1; }
-        public float AngularSpeed { get => angularSpeed; set => angularSpeed = value > 0 ? value : 1; }
+        public float MaxAmplitude { get => maxAmplitude; set => maxAmplitude = value; }
+        public float AngularSpeed { get => angularSpeed; set => angularSpeed = value; }
         public float PhaseAngle { get => phaseAngle; set => phaseAngle = value; }
-
         #endregion Properties
 
         #region Constructors & Core
@@ -33,7 +31,7 @@ namespace GDLibrary.Parameters
 
         public object Clone()
         {
-            return new TrigonometricParameters(maxAmplitude, angularSpeed, phaseAngle);
+            return new TrigonometricParameters(MaxAmplitude, AngularSpeed, PhaseAngle);
         }
 
         #endregion Constructors & Core

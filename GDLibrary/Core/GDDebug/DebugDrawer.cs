@@ -25,8 +25,7 @@ namespace GDLibrary.Debug
         #region Constructors & Core
 
         public DebugDrawer(Game game,
-            SpriteBatch spriteBatch, SpriteFont spriteFont,
-            CameraManager<Camera3D> cameraManager, ObjectManager objectManager) : base(game)
+            SpriteBatch spriteBatch, SpriteFont spriteFont, CameraManager<Camera3D> cameraManager, ObjectManager objectManager) : base(game)
         {
             this.spriteBatch = spriteBatch;
             this.spriteFont = spriteFont;

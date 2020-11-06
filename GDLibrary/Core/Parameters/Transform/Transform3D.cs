@@ -36,10 +36,10 @@ namespace GDLibrary.Parameters
             get
             {
                 return Matrix.Identity
-                       * Matrix.CreateScale(scale)
+                    * Matrix.CreateScale(scale)
                        /* * Matrix.CreateRotationX(MathHelper.ToRadians(rotationInDegrees.X))
-                          * Matrix.CreateRotationY(MathHelper.ToRadians(rotationInDegrees.Y))
-                            * Matrix.CreateRotationZ(MathHelper.ToRadians(rotationInDegrees.Z))
+                      * Matrix.CreateRotationY(MathHelper.ToRadians(rotationInDegrees.Y))
+                        * Matrix.CreateRotationZ(MathHelper.ToRadians(rotationInDegrees.Z))
                             * Matrix.CreateTranslation(translation)*/
                        * Matrix.CreateFromQuaternion(Rotation)
                        * Matrix.CreateTranslation(this.translation)
@@ -97,7 +97,7 @@ namespace GDLibrary.Parameters
 
         //constructor suitable for Camera3D (i.e. no rotation or scale)
         public Transform3D(Vector3 translation, Vector3 look, Vector3 up) : this(translation, Vector3.Zero, Vector3.One,
-            look, up)
+               look, up)
         {
         }
 

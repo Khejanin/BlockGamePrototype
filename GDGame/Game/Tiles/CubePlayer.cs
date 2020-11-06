@@ -17,8 +17,8 @@ namespace GDGame.Game.Tiles
 {
     public class CubePlayer : GridTile, ICloneable
     {
-        private float movementTime = .3f;
-        private float currentMovementTime;
+        private int movementTime = 300;
+        private int currentMovementTime;
         private Vector3 startPos;
         private Vector3 endPos;
         private Quaternion startRotQ;
@@ -169,14 +169,14 @@ namespace GDGame.Game.Tiles
                     UpdateAttachCandidates(); //remove this later
                 }
 
-                Quaternion rot = Quaternion.Slerp(startRotQ, endRotQ, 1 - currentMovementTime / movementTime);
-                float currentStep = curve1D.Evaluate(currentMovementTime*1000, 5);
+                Quaternion rot = Quaternion.Slerp(startRotQ, endRotQ, 1 - (float) currentMovementTime / movementTime);
+                float currentStep = curve1D.Evaluate(currentMovementTime, 3);
                 Vector3 trans = startPos + diff * currentStep;
                 //Vector3 trans2 = Vector3.Lerp(startPos, endPos, 1 - currentMovementTime / movementTime);
                 Transform3D.Rotation = rot;
                 Transform3D.Translation = trans;
 
-                currentMovementTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                currentMovementTime -= (int) gameTime.ElapsedGameTime.TotalMilliseconds;
             }
             text2D = attachCandidates.Count > 0 ? new Text2D("Hold Space to attach", font) : null;
         }

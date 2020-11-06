@@ -9,8 +9,8 @@ namespace GDGame.Game.Tiles
 {
     public class AttachableTile : GridTile, ICloneable
     {
-        private float movementTime = .3f;
-        private float currentMovementTime;
+        private int movementTime = 300;
+        private int currentMovementTime;
         private Vector3 startPos;
         private Vector3 endPos;
         private Quaternion startRotQ;
@@ -23,16 +23,16 @@ namespace GDGame.Game.Tiles
             effectParameters, model)
         {
             curve1D = new Curve1D(CurveLoopType.Cycle);
-            curve1D.Add(1,0);
-            curve1D.Add(0,movementTime);
+            curve1D.Add(1, 0);
+            curve1D.Add(0, movementTime);
         }
-        
+
         private Vector3 diff;
-        
+
         public void Move(Vector3 direction, Vector3 rotatePoint)
         {
             Quaternion rotation = Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, Vector3.Up),
-                    MathHelper.ToRadians(-90));
+                MathHelper.ToRadians(-90));
 
             //Start and End Rotation --> Will be lerped between
             startRotQ = Transform3D.Rotation;
@@ -50,10 +50,11 @@ namespace GDGame.Game.Tiles
 
         public Vector3 CalculateTargetPosition(Vector3 rotatePoint, Quaternion rotationToApply)
         {
-            Vector3 offset = Transform3D.Translation - rotatePoint; //offset between the player and the point to rotate around
-            Vector3 endPos = Vector3.Transform(offset, rotationToApply); //Rotate around the offset point
-            endPos += Transform3D.Translation - offset;
-            return endPos;
+            //offset between the player and the point to rotate around
+            Vector3 offset = Transform3D.Translation - rotatePoint;
+            Vector3 targetPosition = Vector3.Transform(offset, rotationToApply); //Rotate around the offset point
+            targetPosition += Transform3D.Translation - offset;
+            return targetPosition;
         }
 
         public override void Update(GameTime gameTime)
@@ -68,21 +69,22 @@ namespace GDGame.Game.Tiles
                     currentMovementTime = 0;
                 }
 
-                Quaternion rot = Quaternion.Slerp(startRotQ, endRotQ, 1 - currentMovementTime / movementTime);
-                float currentStep = curve1D.Evaluate(currentMovementTime*1000, 5);
+                Quaternion rot = Quaternion.Slerp(startRotQ, endRotQ, 1 - (float) currentMovementTime / movementTime);
+                float currentStep = curve1D.Evaluate(currentMovementTime, 5);
                 Vector3 trans = startPos + diff * currentStep;
 
                 Transform3D.Rotation = rot;
                 Transform3D.Translation = trans;
-                currentMovementTime -= (float) gameTime.ElapsedGameTime.TotalSeconds;
+                currentMovementTime -= (int) gameTime.ElapsedGameTime.TotalMilliseconds;
             }
         }
 
         public new object Clone()
         {
-            AttachableTile attachableTile = new AttachableTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D,
+            AttachableTile attachableTile = new AttachableTile("clone - " + ID, ActorType, StatusType,
+                Transform3D.Clone() as Transform3D,
                 EffectParameters.Clone() as EffectParameters, Model);
-            
+
             if (ControllerList != null)
             {
                 foreach (IController controller in ControllerList)

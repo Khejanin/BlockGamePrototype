@@ -35,11 +35,6 @@ namespace GDLibrary.Controllers
             ControllerType = controllerType;
         }
 
-        public void Initialize(IActor actor)
-        {
-            
-        }
-
         public virtual void Update(GameTime gameTime, IActor actor)
         {
             //does nothing - see child classes

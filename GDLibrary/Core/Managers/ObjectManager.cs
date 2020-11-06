@@ -19,8 +19,7 @@ namespace GDLibrary.Managers
         #region Constructors & Core
 
         public ObjectManager(Game game,
-          int initialOpaqueDrawSize, int initialTransparentDrawSize,
-          CameraManager<Camera3D> cameraManager) : base(game)
+          int initialOpaqueDrawSize, int initialTransparentDrawSize, CameraManager<Camera3D> cameraManager) : base(game)
         {
             this.cameraManager = cameraManager;
             opaqueList = new List<DrawnActor3D>(initialOpaqueDrawSize);
@@ -103,22 +102,18 @@ namespace GDLibrary.Managers
 
         #endregion Constructors & Core
 
-        #region OurCode
-
+        public List<DrawnActor3D> FindAll(Predicate<DrawnActor3D> predicate)
+        {
+            List<DrawnActor3D> result = opaqueList.FindAll(predicate);
+            result.AddRange(transparentList.FindAll(predicate));
+            return result;
+        }
+        
         public static List<DrawnActor3D> GetAllObjects()
         {
             List<DrawnActor3D> result = new List<DrawnActor3D>();
             result.AddRange(opaqueList);
             result.AddRange(transparentList);
-            return result;
-        }
-
-        #endregion
-
-        public List<DrawnActor3D> FindAll(Predicate<DrawnActor3D> predicate)
-        {
-            List<DrawnActor3D> result = opaqueList.FindAll(predicate);
-            result.AddRange(transparentList.FindAll(predicate));
             return result;
         }
     }

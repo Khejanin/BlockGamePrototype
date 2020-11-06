@@ -1,4 +1,5 @@
-﻿using GDGame.Game.Scenes;
+﻿using GDGame.Game.Managers;
+using GDGame.Game.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;

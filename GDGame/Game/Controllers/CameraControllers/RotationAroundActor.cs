@@ -56,6 +56,8 @@ namespace GDGame.Game.Controllers.CameraControllers
                 angle -= 1;
             else if (keyboardManager.IsKeyDown(Keys.E))
                 angle += 1;
+
+            angle %= 360;
         }
     }
 }

@@ -5,8 +5,10 @@ namespace GDLibrary.Parameters
 {
     /// <summary>
     /// Represents a bounded rail in 3D along which an object can translate.
-    /// Typically used by a rail controller attached to a camera which causes the camera to follow a moving object in a room.
+    /// Typically used by a rail controller attached to a camera which causes
+    /// the camera to follow a moving object in a room.
     /// </summary>
+    /// <see cref="GDLibrary.Controllers.RailController"/>
     public class RailParameters
     {
         #region Fields
@@ -46,6 +48,7 @@ namespace GDLibrary.Parameters
                 return midPoint;
             }
         }
+
         public Vector3 Start
         {
             get
@@ -58,6 +61,7 @@ namespace GDLibrary.Parameters
                 isDirty = true;
             }
         }
+
         public Vector3 End
         {
             get
@@ -70,6 +74,7 @@ namespace GDLibrary.Parameters
                 isDirty = true;
             }
         }
+
         public string ID
         {
             get
@@ -108,8 +113,8 @@ namespace GDLibrary.Parameters
         {
             if (isDirty)
             {
-                length = Math.Abs(Vector3.Distance(start, end));
-                look = Vector3.Normalize(end - start);
+                length = Math.Abs(Vector3.Distance(start, end));  //remove abs()
+                look = Vector3.Normalize(end - start); //L.C = |L|.|C|.Cos(x)
                 midPoint = (start + end) / 2;
                 isDirty = false;
             }

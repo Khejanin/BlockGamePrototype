@@ -66,11 +66,6 @@ namespace GDLibrary.Managers
             return newState.IsKeyDown(key);
         }
 
-        public bool IsKeyUp(Keys key)
-        {
-            return newState.IsKeyUp(key);
-        }
-
         /// <summary>
         /// Checks if a user-defined key is currently pressed that was not pressed in the last update
         /// </summary>
@@ -79,11 +74,6 @@ namespace GDLibrary.Managers
         public bool IsFirstKeyPress(Keys key)
         {
             return newState.IsKeyDown(key) && oldState.IsKeyUp(key);
-        }
-
-        public bool IsFirstKeyRelease(Keys key)
-        {
-            return newState.IsKeyUp(key) && oldState.IsKeyDown(key);
         }
 
         /// <summary>

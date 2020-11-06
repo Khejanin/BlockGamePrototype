@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GDGame.Game.Actors.Audio;
 using GDGame.Game.Controllers;
 using GDGame.Game.Controllers.CameraControllers;
 using GDGame.Game.Factory;
@@ -106,8 +107,7 @@ namespace GDGame.Game.Scenes
             EffectParameters wireframeEffectParameters = new EffectParameters(ModelEffect, null, Color.White, 1);
 
             archetypalBoxWireframe = new ModelObject("original wireframe box mesh", ActorType.Helper,
-                StatusType.Update | StatusType.Drawn, transform3D, wireframeEffectParameters, models["Box"],
-                WireframeRasterizerState);
+                StatusType.Update | StatusType.Drawn, transform3D, wireframeEffectParameters, models["Box"]);
 
             EffectParameters effectParameters = new EffectParameters(ModelEffect, textures["Box"], Color.White, 1);
             transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
@@ -195,7 +195,7 @@ namespace GDGame.Game.Scenes
             SoundManager.Add(new Sounds(track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
 
-            SoundManager.playSoundEffect("gameTrack");
+            SoundManager.PlaySoundEffect("gameTrack");
         }
 
         private void LoadTextures()
@@ -245,12 +245,12 @@ namespace GDGame.Game.Scenes
             //Cycle Through Audio
             if (KeyboardManager.IsFirstKeyPress(Keys.M))
             {
-                SoundManager.playSoundEffect("playerAttach");
+                SoundManager.PlaySoundEffect("playerAttach");
             }
             else if (KeyboardManager.IsFirstKeyPress(Keys.Right) || KeyboardManager.IsFirstKeyPress(Keys.Left) ||
                      KeyboardManager.IsFirstKeyPress(Keys.Up) || KeyboardManager.IsFirstKeyPress(Keys.Down))
             {
-                SoundManager.playSoundEffect("playerMove");
+                SoundManager.PlaySoundEffect("playerMove");
             }
         }
 

@@ -63,9 +63,10 @@ namespace GDLibrary.Controllers
                 moveVector += parent.Transform3D.Right * strafeSpeed;
             }
 
-            //constrain movement in Y-axis
+            //constrain movement in Y-axis to stop object moving up/down in space
             moveVector.Y = 0;
 
+            //apply the movement
             parent.Transform3D.TranslateBy(moveVector * gameTime.ElapsedGameTime.Milliseconds);
         }
 

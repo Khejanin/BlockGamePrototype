@@ -10,7 +10,7 @@ namespace GDLibrary.Managers
     /// <summary>
     /// Stores the Camera3D objects used within the game and provides methods to toggle/cycle/set active camera
     /// </summary>
-    public partial class CameraManager<T> : GameComponent where T : IActor
+    public class CameraManager<T> : GameComponent where T : IActor
     {
         #region Fields
 
@@ -129,5 +129,10 @@ namespace GDLibrary.Managers
         }
 
         #endregion Constructors & Core
+
+        public void Clear()
+        {
+            list.Clear();
+        }
     }
 }
