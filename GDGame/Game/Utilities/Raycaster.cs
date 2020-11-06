@@ -33,7 +33,7 @@ namespace GDGame.Game.Utilities
                 blockingObjectsResult.AddRange(RaycastAll(initialPositions[i],dir,maxDist.Length(),ignore));
                 
                 //Check if this block will be on a floor tile after moving
-                HitResult hit = Raycast(initialPositions[i], Vector3.Down, 1f, ignore);
+                HitResult hit = Raycast(endPositions[i], Vector3.Down, 1f, ignore);
                 if(hit != null)
                     floorResult.Add(new FloorHitResult(){hitResult = hit,actor3D = ignore[i]});
             }
