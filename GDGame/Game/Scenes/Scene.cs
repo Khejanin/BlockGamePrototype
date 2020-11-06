@@ -15,7 +15,7 @@ namespace GDGame.Game.Scenes
 
         protected Color BackgroundColor = Color.CornflowerBlue;
 
-        protected Scene(Main game, bool unloadsContent = true)
+        protected Scene(Main game, bool unloadsContent = false)
         {
             this.game = game;
             this.unloadsContent = unloadsContent;

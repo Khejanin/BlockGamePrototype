@@ -16,9 +16,6 @@ namespace GDGame.Game.Tiles
     {
         private ETileType tileType;
         private Shape shape;
-        private bool canMoveInto;
-
-        public bool CanMoveInto => canMoveInto;
 
         public Shape Shape { get; set; }
         public ETileType TileType { get; set; }

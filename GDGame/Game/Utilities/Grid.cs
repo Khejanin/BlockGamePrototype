@@ -115,7 +115,7 @@ namespace GDLibrary
                 gpr.positionTile = destinationTile;
                 
                 bool hasFloor = floorTile != null;
-                bool validDest = destinationTile == null || destinationTile.CanMoveInto;
+                bool validDest = destinationTile == null;
                 if (hasFloor && validDest)
                 {
                     gpr.validMovePos = true;

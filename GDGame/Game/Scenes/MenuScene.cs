@@ -11,7 +11,7 @@ namespace GDGame.Game.Scenes
     {
         private Text2D menuText;
 
-        public MenuScene(Main game) : base(game)
+        public MenuScene(Main game,bool unloadsContent = false) : base(game,unloadsContent)
         {
             BackgroundColor = Color.Black;
         }

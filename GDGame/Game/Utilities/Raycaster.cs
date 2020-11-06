@@ -46,7 +46,7 @@ namespace GDGame.Game.Utilities
             }
         }
 
-        public static void Raycast(Vector3 position, Vector3 direction, ref List<HitResult> hit, float maxDist = float.MaxValue, List<Actor3D> ignoreList = null)
+        public static void Raycast(Vector3 position, Vector3 direction, ref List<HitResult> hit, float maxDist = float.MaxValue,List<Actor3D> ignoreList = null, bool onlyCheckBlocking = true)
         {
             if(maxDist <= 0) throw new ArgumentException("You can't set a max cast distance to zero or negative!");
             
@@ -66,9 +66,11 @@ namespace GDGame.Game.Utilities
                         cbcc = drawnActor3D.ControllerList.Find(c => c is CustomBoxColliderController) 
                             as CustomBoxColliderController;
 
-                bool pccCheck = pcc != null && (dist = ray.Intersects(pcc.GetBounds())) != null; 
-                bool cbccCheck = cbcc != null && (dist = ray.Intersects(cbcc.GetBounds())) != null;
-                    
+                //@TODO Refactor this so it uses a bitmask corresponding to the ColliderType enum for checks
+
+                bool pccCheck = pcc != null && (dist = ray.Intersects(pcc.GetBounds())) != null && (pcc.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
+                bool cbccCheck = cbcc != null && (dist = ray.Intersects(cbcc.GetBounds())) != null && (cbcc.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
+
                 if ((pccCheck || cbccCheck) && dist < maxDist)
                 { 
                     HitResult result = new HitResult(); 
@@ -80,9 +82,9 @@ namespace GDGame.Game.Utilities
             }
         }
 
-        public static HitResult Raycast(Vector3 position, Vector3 direction,float maxDist = float.MaxValue,List<Actor3D> ignoreList = null)
+        public static HitResult Raycast(Vector3 position, Vector3 direction,float maxDist = float.MaxValue,List<Actor3D> ignoreList = null, bool onlyCheckBlocking = true)
         {
-            List<HitResult> all = RaycastAll(position, direction, maxDist,ignoreList);
+            List<HitResult> all = RaycastAll(position, direction, maxDist,ignoreList,onlyCheckBlocking);
             all.Sort();
 
             if (all.Count == 0)
@@ -91,9 +93,9 @@ namespace GDGame.Game.Utilities
             return all[0];
         }
 
-        public static HitResult Raycast(this DrawnActor3D callingDrawnActor3D, Vector3 position, Vector3 direction, bool ignoreSelf,float maxDist = Single.MaxValue)
+        public static HitResult Raycast(this DrawnActor3D callingDrawnActor3D, Vector3 position, Vector3 direction, bool ignoreSelf,float maxDist = Single.MaxValue, bool onlyCheckBlocking = true)
         {
-            List<HitResult> all = RaycastAll(callingDrawnActor3D,position, direction,ignoreSelf,maxDist);
+            List<HitResult> all = RaycastAll(callingDrawnActor3D,position, direction,ignoreSelf,maxDist,onlyCheckBlocking);
             all.Sort();
 
             if (all.Count == 0)
@@ -102,20 +104,20 @@ namespace GDGame.Game.Utilities
             return all[0];
         }
 
-        public static List<HitResult> RaycastAll(Vector3 position, Vector3 direction,float maxDist = float.MaxValue,List<Actor3D> ignoreList = null)
+        public static List<HitResult> RaycastAll(Vector3 position, Vector3 direction,float maxDist = float.MaxValue,List<Actor3D> ignoreList = null, bool onlyCheckBlocking = true)
         {
             List<HitResult> result = new List<HitResult>();
-            Raycast(position, direction, ref result,maxDist,ignoreList);
+            Raycast(position, direction, ref result,maxDist,ignoreList,onlyCheckBlocking);
             return result;
         }
 
 
-        public static List<HitResult> RaycastAll(this DrawnActor3D callingDrawnActor3D,Vector3 position, Vector3 direction, bool ignoreSelf,float maxDist = Single.MaxValue)
+        public static List<HitResult> RaycastAll(this DrawnActor3D callingDrawnActor3D,Vector3 position, Vector3 direction, bool ignoreSelf,float maxDist = Single.MaxValue, bool onlyCheckBlocking = true)
         {
             List<Actor3D> ignoreList = new List<Actor3D>();
             if(ignoreSelf) ignoreList.Add(callingDrawnActor3D);
 
-            return RaycastAll(position, direction, maxDist,ignoreList);
+            return RaycastAll(position, direction, maxDist,ignoreList,onlyCheckBlocking);
         }
 
         #endregion
@@ -125,6 +127,7 @@ namespace GDGame.Game.Utilities
             #region Public variables
 
             public Actor3D actor;
+            public ColliderController collider;
             public float distance;
             public Vector3 hitPosition;
 

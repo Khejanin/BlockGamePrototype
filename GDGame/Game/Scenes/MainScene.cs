@@ -111,17 +111,17 @@ namespace GDGame.Game.Scenes
             transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
             StaticTile staticTile = new StaticTile("StaticTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"]);
-            staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
+            staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Cube"], Color.White, 1);
             AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["BlueCube"]);
-            attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
+            attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             attachableTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
             
             CubePlayer player = new CubePlayer("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, models["RedCube"], Game.Fonts["UI"]);
-            player.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
+            player.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             player.ControllerList.Add(new PlayerController(KeyboardManager));
             player.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
             player.ControllerList.Add(new RotationComponent());

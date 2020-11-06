@@ -9,21 +9,29 @@ using SharpDX.Direct2D1.Effects;
 
 namespace GDGame.Game.Controllers
 {
-    public enum ColliderType
+    public enum ColliderShape
     {
         Cube,
         Sphere
     }
 
+    public enum ColliderType
+    {
+        CheckOnly,
+        Blocking
+    }
+
     public abstract class ColliderController : IDrawnController
     {
-        protected ColliderType colliderType;
+        public ColliderType ColliderType { get; private set;}
+        protected ColliderShape colliderShape;
         protected bool drawDebug;
         protected Transform3D parentTransform;
 
-        protected ColliderController(ColliderType colliderType)
+        protected ColliderController(ColliderShape colliderShape,ColliderType colliderType = ColliderType.Blocking)
         {
-            this.colliderType = colliderType;
+            this.colliderShape = colliderShape;
+            ColliderType = colliderType;
         }
 
         public abstract object Clone();
@@ -44,14 +52,14 @@ namespace GDGame.Game.Controllers
 
         private float scale;
 
-        public CustomBoxColliderController(ColliderType colliderType, float scale) : base(colliderType)
+        public CustomBoxColliderController(ColliderShape colliderShape, float scale) : base(colliderShape)
         {
             this.scale = scale;
         }
 
         public override object Clone()
         {
-            return new CustomBoxColliderController(colliderType, scale);
+            return new CustomBoxColliderController(colliderShape, scale);
         }
 
         public BoundingBox GetBounds()
@@ -80,13 +88,13 @@ namespace GDGame.Game.Controllers
     {
         private PrimitiveObject parent;
 
-        public PrimitiveColliderController(ColliderType colliderType) : base(colliderType)
+        public PrimitiveColliderController(ColliderShape colliderShape) : base(colliderShape)
         {
         }
 
         public override object Clone()
         {
-            return new PrimitiveColliderController(colliderType);
+            return new PrimitiveColliderController(colliderShape);
         }
 
         public BoundingBox GetBounds()
@@ -108,13 +116,13 @@ namespace GDGame.Game.Controllers
     {
         private ModelObject parent;
 
-        public ModelColliderController(ColliderType colliderType) : base(colliderType)
+        public ModelColliderController(ColliderShape colliderShape) : base(colliderShape)
         {
         }
 
         public override object Clone()
         {
-            return new ModelColliderController(colliderType);
+            return new ModelColliderController(colliderShape);
         }
 
         public List<BoundingSphere> GetBounds()

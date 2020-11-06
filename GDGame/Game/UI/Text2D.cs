@@ -12,7 +12,7 @@ namespace GDGame.Game.UI
         private Vector2 position;
         private Color color;
 
-        public Text2D(string text, SpriteFont spriteFont, Vector2 position,Color color = default)
+        public Text2D(string text, SpriteFont spriteFont, Vector2 position,Color color)
         {
             this.text = text;
             this.spriteFont = spriteFont;

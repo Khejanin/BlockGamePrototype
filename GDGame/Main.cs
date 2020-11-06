@@ -49,6 +49,7 @@ namespace GDGame
         private float worldScale = 3000;
         private PrimitiveObject primitiveObject = null;
         private MainScene MainScene;
+        public Effect testEffect;
 
 
         public Main()
@@ -67,6 +68,7 @@ namespace GDGame
             
             InitManagers();
             CreateScenes();
+            LoadEffects();
             InitEffect();
             LoadFonts();
 
@@ -77,6 +79,7 @@ namespace GDGame
             SceneManager.Initialize();
         }
 
+        
 
 
         private void InitDebug()
@@ -124,6 +127,11 @@ namespace GDGame
 
         }
 
+        private void LoadEffects()
+        {
+            testEffect = Content.Load<Effect>("Assets/Effects/test");
+        }
+        
         private void InitEffect()
         {
             //to do...
@@ -148,6 +156,9 @@ namespace GDGame
 
             WireframeRasterizerState = new RasterizerState();
             WireframeRasterizerState.FillMode = FillMode.WireFrame;
+            
+            
+            
         }
         
         private void LoadFonts()
