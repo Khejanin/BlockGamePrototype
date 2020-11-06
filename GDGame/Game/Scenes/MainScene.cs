@@ -110,17 +110,17 @@ namespace GDGame.Game.Scenes
             transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
             StaticTile staticTile = new StaticTile("StaticTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"]);
-            staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Cube"], Color.White, 1);
             AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["BlueCube"]);
-            attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
             attachableTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
             CubePlayer player = new CubePlayer("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, models["RedCube"], Game.Fonts["UI"]);
-            player.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            player.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
             player.ControllerList.Add(new PlayerController(KeyboardManager));
             player.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
             player.ControllerList.Add(new RotationComponent());
@@ -128,7 +128,7 @@ namespace GDGame.Game.Scenes
 
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["Box"]);
-            goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            goal.ControllerList.Add(new CustomBoxColliderController(ColliderType.Cube, 1f));
 
             ObjectManager.Add(archetypalBoxWireframe);
             drawnActors = new Dictionary<string, DrawnActor3D>
@@ -191,12 +191,11 @@ namespace GDGame.Game.Scenes
             Texture2D compass = textures["Compass"];
             Vector2 origin = new Vector2(compass.Width / 2f, compass.Height / 2f);
             pos = new Rectangle(new Point((int) (screenWidth - 60) + border, border + 50), new Point(100, 100));
-            uiSprite = new UiSprite(StatusType.Drawn, compass, pos, null, Color.White, 0, origin, SpriteEffects.None,
-                0);
+            uiSprite = new UiSprite(StatusType.Drawn, compass, pos, null, Color.White, 0, origin, SpriteEffects.None, 0);
             UiManager.AddUiElement("Compass", uiSprite);
 
             string text = "moves";
-            Vector2 position = new Vector2(halfWidth - (text.Length - 1) * 12, screenHeight - heightFromBottom * 2);
+            Vector2 position = Game.ScreenCentre;
             Text2D text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("Moves", text2D);
 
@@ -211,10 +210,10 @@ namespace GDGame.Game.Scenes
             UiManager.AddUiElement("Time", text2D);
 
             text = "5";
-            position = new Vector2(halfWidth - text.Length * 12, screenHeight - heightFromBottom);
+            position = new Vector2(halfWidth, screenHeight - heightFromBottom);
             text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("MovesNumeric", text2D);
-            
+
             text = "Hold Space To Attach";
             text2D = new Text2D(StatusType.Off, text, Game.Fonts["UI"], Vector2.Zero, Color.Black);
             UiManager.AddUiElement("ToolTip", text2D);
@@ -240,8 +239,6 @@ namespace GDGame.Game.Scenes
 
         #region LoadContent
 
-       
-
         private void LoadSounds()
         {
             //step 1 - load songs
@@ -250,15 +247,17 @@ namespace GDGame.Game.Scenes
             SoundEffect track03 = Content.Load<SoundEffect>("Assets/Sound/Knock03");
             SoundEffect track04 = Content.Load<SoundEffect>("Assets/Sound/Chains01");
             SoundEffect track05 = Content.Load<SoundEffect>("Assets/Sound/Click01");
+            SoundEffect track06 = Content.Load<SoundEffect>("Assets/Sound/GameTrack02");
+            SoundEffect track07 = Content.Load<SoundEffect>("Assets/Sound/GameTrack03");
 
             //Step 2- Make into sounds
-            SoundManager.Add(new Sounds(track01, "gameTrack", ActorType.MusicTrack, StatusType.Update));
+            SoundManager.Add(new Sounds(track01, "gameTrack01", ActorType.MusicTrack, StatusType.Update));
             SoundManager.Add(new Sounds(track02, "ambiance", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track03, "playerMove", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track04, "chainRattle", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
-
-            SoundManager.playSoundEffect("gameTrack");
+            SoundManager.Add(new Sounds(track06, "gameTrack02", ActorType.MusicTrack, StatusType.Update));
+            SoundManager.Add(new Sounds(track07, "gameTrack03", ActorType.MusicTrack, StatusType.Update));
         }
 
         private void LoadTextures()
@@ -302,7 +301,8 @@ namespace GDGame.Game.Scenes
             if (players.Count > 0)
             {
                 CubePlayer player = players[0] as CubePlayer;
-                UiManager.Get("ToolTip").StatusType = player?.AttachCandidates.Count > 0 ? StatusType.Drawn : StatusType.Off;
+                UiManager.Get("ToolTip").StatusType =
+                    player?.AttachCandidates.Count > 0 ? StatusType.Drawn : StatusType.Off;
             }
 
             if (KeyboardManager.IsFirstKeyPress(Keys.C))
@@ -317,11 +317,11 @@ namespace GDGame.Game.Scenes
                 // this.cameraManager.ActiveCameraIndex++;
             }
 
-            ////Cycle Through Audio
-            //if (KeyboardManager.IsFirstKeyPress(Keys.M))
-            //{
-            //    SoundManager.nextSong();
-            //}
+            //Cycle Through Audio
+            if (KeyboardManager.IsFirstKeyPress(Keys.M))
+            {
+                SoundManager.NextSong();
+            }
 
             //if(KeyboardManager.IsFirstKeyPress(Keys.L)) { SoundManager.volumeUp(); }
             //else if(KeyboardManager.IsFirstKeyPress(Keys.K)) { SoundManager.volumeDown(); }
