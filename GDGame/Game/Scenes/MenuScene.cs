@@ -9,7 +9,7 @@ namespace GDGame.Game.Scenes
 {
     public class MenuScene : Scene
     {
-        private Text2D menuText;
+        private UiText menuUiText;
 
         public MenuScene(Main game,bool unloadsContent = false) : base(game,unloadsContent)
         {
@@ -33,9 +33,9 @@ namespace GDGame.Game.Scenes
         
         protected void InitializeText()
         {
-            Text2D menuText = new Text2D(StatusType.Drawn, "Press SPACEBAR to start the Game!", Game.Fonts["UI"],
+            UiText menuUiText = new UiText(StatusType.Drawn, "Press SPACEBAR to start the Game!", Game.Fonts["UI"],
                 Game.ScreenCentre, Color.Wheat);
-            UiManager.AddUiElement("MenuText", menuText);
+            UiManager.AddUiElement("MenuText", menuUiText);
         }
 
         public override void Update(GameTime gameTime)

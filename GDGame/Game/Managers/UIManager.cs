@@ -38,10 +38,7 @@ namespace GDGame.Game.Managers
             base.Draw(gameTime);
         }
 
-        public UiElement Get(string name)
-        {
-            return elements[name];
-        }
+        public UiElement this[string key] => elements[key];
 
         public void Clear()
         {

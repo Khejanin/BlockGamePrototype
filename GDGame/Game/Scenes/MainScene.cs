@@ -74,7 +74,7 @@ namespace GDGame.Game.Scenes
             //grid
             InitGrid();
 
-            InitHud();
+            InitUi();
         }
 
 
@@ -134,7 +134,8 @@ namespace GDGame.Game.Scenes
             ObjectManager.Add(archetypalBoxWireframe);
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
-                {"StaticTile", staticTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", player}, {"GoalTile", goal}
+                {"StaticTile", staticTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", player},
+                {"GoalTile", goal}
             };
         }
 
@@ -164,60 +165,59 @@ namespace GDGame.Game.Scenes
         }
 
 
-        private void InitHud()
+        private void InitUi()
         {
-            float halfWidth = GraphicsDevice.Viewport.Width / 2f;
             float screenHeight = GraphicsDevice.Viewport.Height;
             float screenWidth = GraphicsDevice.Viewport.Width;
-            float heightFromBottom = 45;
-            int height = 50;
 
+            float halfWidth = screenWidth / 2f;
 
-            Point location = new Point(0, GameConstants.screenHeight - height);
-            Point size = new Point(GameConstants.screenWidth, height);
+            int heightFromBottom = 25;
+            Point location = new Point((int) halfWidth, (int) (screenHeight - heightFromBottom));
+            Point size = new Point((int) screenWidth, heightFromBottom * 2);
             Rectangle pos = new Rectangle(location, size);
             UiSprite uiSprite = new UiSprite(StatusType.Drawn, textures["WhiteSquare"], pos, Color.White);
             UiManager.AddUiElement("WhiteBarBottom", uiSprite);
 
-            height = 90;
-            int width = 120;
-            int screenWidthCostume = (int) ((screenWidth - width) / 2f);
-            location = new Point(screenWidthCostume, GameConstants.screenHeight - height);
-            size = new Point(width, height);
+            heightFromBottom = 50;
+            location = new Point((int) halfWidth, (int) (screenHeight - heightFromBottom));
+            size = new Point(120, heightFromBottom * 2);
             pos = new Rectangle(location, size);
             uiSprite = new UiSprite(StatusType.Drawn, textures["WhiteSquare"], pos, Color.White);
             UiManager.AddUiElement("WhiteBarBottomMiddle", uiSprite);
 
             int border = 10;
-            Texture2D compass = textures["Compass"];
-            Vector2 origin = new Vector2(compass.Width / 2f, compass.Height / 2f);
-            pos = new Rectangle(new Point((int) (screenWidth - 60) + border, border + 50), new Point(100, 100));
-            uiSprite = new UiSprite(StatusType.Drawn, compass, pos, null, Color.White, 0, origin, SpriteEffects.None, 0);
+            location = new Point((int) (screenWidth - 50) - border, border + 50);
+            size = new Point(100);
+            pos = new Rectangle(location, size);
+            uiSprite = new UiSprite(StatusType.Drawn, textures["Compass"], pos, Color.White);
             UiManager.AddUiElement("Compass", uiSprite);
 
-            string text = "moves";
-            Vector2 position = Game.ScreenCentre + Vector2.UnitY*screenHeight/2;
-            Text2D text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
-            UiManager.AddUiElement("Moves", text2D);
+            heightFromBottom = 75;
+            string text = "Moves";
+            Vector2 position = new Vector2(halfWidth, screenHeight - heightFromBottom);
+            UiText uiText = new UiText(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
+            UiManager.AddUiElement("Moves", uiText);
 
+            heightFromBottom = 25;
             text = "Current Level";
-            position = new Vector2(x: halfWidth / 4f, screenHeight - heightFromBottom);
-            text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
-            UiManager.AddUiElement("Current Level", text2D);
+            position = new Vector2(x: halfWidth / 2f, screenHeight - heightFromBottom);
+            uiText = new UiText(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
+            UiManager.AddUiElement("Current Level", uiText);
 
             text = "Time : 00:00:00";
-            position = new Vector2(x: halfWidth + halfWidth / 4f, screenHeight - heightFromBottom);
-            text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
-            UiManager.AddUiElement("Time", text2D);
+            position = new Vector2(x: 3 * halfWidth / 2f, screenHeight - heightFromBottom);
+            uiText = new UiText(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
+            UiManager.AddUiElement("Time", uiText);
 
             text = "5";
             position = new Vector2(halfWidth, screenHeight - heightFromBottom);
-            text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
-            UiManager.AddUiElement("MovesNumeric", text2D);
+            uiText = new UiText(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
+            UiManager.AddUiElement("MovesNumeric", uiText);
 
             text = "Hold Space To Attach";
-            text2D = new Text2D(StatusType.Off, text, Game.Fonts["UI"], Vector2.Zero, Color.Black);
-            UiManager.AddUiElement("ToolTip", text2D);
+            uiText = new UiText(StatusType.Off, text, Game.Fonts["UI"], Vector2.Zero, Color.Black, false);
+            UiManager.AddUiElement("ToolTip", uiText);
         }
 
         private float GetAngle(Vector3 forward, Vector3 look)
@@ -248,14 +248,13 @@ namespace GDGame.Game.Scenes
             SoundEffect track03 = Content.Load<SoundEffect>("Assets/GameTracks/GameTrack03");
             SoundEffect track04 = Content.Load<SoundEffect>("Assets/Sound/Knock03");
             SoundEffect track05 = Content.Load<SoundEffect>("Assets/Sound/Click01");
-            
+
             //Step 2- Make into sounds
             SoundManager.Add(new Sounds(track01, "gameTrack01", ActorType.MusicTrack, StatusType.Update));
             SoundManager.Add(new Sounds(track02, "gameTrack02", ActorType.MusicTrack, StatusType.Update));
             SoundManager.Add(new Sounds(track03, "gameTrack03", ActorType.MusicTrack, StatusType.Update));
             SoundManager.Add(new Sounds(track04, "playerMove", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
-            
         }
 
         private void LoadTextures()
@@ -292,14 +291,14 @@ namespace GDGame.Game.Scenes
         public override void Update(GameTime gameTime)
         {
             float angle = GetAngle(Vector3.Forward, CameraManager.ActiveCamera.Transform3D.Look);
-            UiSprite uiSprite = UiManager.Get("Compass") as UiSprite;
+            UiSprite uiSprite = UiManager["Compass"] as UiSprite;
             uiSprite?.SetRotation(angle);
 
             List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
             if (players.Count > 0)
             {
                 CubePlayer player = players[0] as CubePlayer;
-                UiManager.Get("ToolTip").StatusType =
+                UiManager["ToolTip"].StatusType =
                     player?.AttachCandidates.Count > 0 ? StatusType.Drawn : StatusType.Off;
             }
 

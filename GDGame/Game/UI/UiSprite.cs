@@ -15,7 +15,9 @@ namespace GDGame.Game.UI
         private SpriteEffects spriteEffects;
         private float layerDepth;
 
-        public UiSprite(StatusType statusType, Texture2D texture2D, Rectangle rectangle, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects spriteEffects, float layerDepth) : base(statusType)
+        public UiSprite(StatusType statusType, Texture2D texture2D, Rectangle rectangle, Rectangle? sourceRectangle,
+            Color color, float rotation, Vector2 origin, SpriteEffects spriteEffects, float layerDepth) : base(
+            statusType)
         {
             this.texture2D = texture2D;
             this.rectangle = rectangle;
@@ -27,18 +29,23 @@ namespace GDGame.Game.UI
             this.layerDepth = layerDepth;
         }
 
-        public UiSprite(StatusType statusType, Texture2D texture2D, Rectangle rectangle, Color color) : base(statusType)
+        public UiSprite(StatusType statusType, Texture2D texture2D, Rectangle rectangle, Color color,
+            bool originAtCenter = true) : base(statusType)
         {
             this.texture2D = texture2D;
             this.rectangle = rectangle;
             this.color = color;
+            if (originAtCenter)
+            {
+                origin = new Vector2(texture2D.Width / 2f, texture2D.Height / 2f);
+            }
         }
 
         public void SetRotation(float rotation)
         {
             this.rotation = rotation;
         }
-        
+
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture2D, rectangle, sourceRectangle, color, rotation, origin, spriteEffects, layerDepth);
