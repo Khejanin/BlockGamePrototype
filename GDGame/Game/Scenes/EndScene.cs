@@ -7,11 +7,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GDGame.Game.Scenes
 {
-    public class MenuScene : Scene
+    public class EndScene : Scene
     {
         private Text2D menuText;
 
-        public MenuScene(Main game,bool unloadsContent = false) : base(game,unloadsContent)
+        public EndScene(Main game,bool unloadsContent = false) : base(game,unloadsContent)
         {
             BackgroundColor = Color.Black;
         }
@@ -33,17 +33,13 @@ namespace GDGame.Game.Scenes
         
         protected void InitializeText()
         {
-            Text2D menuText = new Text2D(StatusType.Drawn, "Press SPACEBAR to start the Game!", Game.Fonts["UI"],
+            Text2D winText = new Text2D(StatusType.Drawn, "You won!!! Press ESC to close the Game!", Game.Fonts["UI"],
                 Game.ScreenCentre, Color.Wheat);
-            UiManager.AddUiElement("MenuText", menuText);
+            UiManager.AddUiElement("MenuText", winText);
         }
 
         protected override void UpdateScene(GameTime gameTime)
         {
-            if (KeyboardManager.IsFirstKeyPress(Keys.Space))
-            {
-                Game.SceneManager.NextScene();
-            }
         }
 
         protected override void DrawScene(GameTime gameTime)
@@ -54,7 +50,6 @@ namespace GDGame.Game.Scenes
         public override void Terminate()
         {
             UiManager.Clear();
-            CameraManager.Clear();
         }
     }
 }

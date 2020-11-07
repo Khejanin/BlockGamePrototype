@@ -11,6 +11,8 @@ namespace GDGame.Game.Scenes
     {
         private Main game;
         private bool unloadsContent;
+        private bool terminateOnNextTick;
+        private OnUnloaded onUnloadedCallback;
 
         protected Color BackgroundColor = Color.CornflowerBlue;
 
@@ -19,6 +21,9 @@ namespace GDGame.Game.Scenes
             this.game = game;
             this.unloadsContent = unloadsContent;
         }
+
+        public delegate void OnUnloaded();
+
         
         #region Parameters
         protected GraphicsDevice GraphicsDevice => game.GraphicsDevice;
@@ -40,23 +45,49 @@ namespace GDGame.Game.Scenes
         #endregion
         
         public abstract void Initialize();
-        public abstract void Update(GameTime gameTime);
+
+        private void PreUpdate()
+        {
+            if (terminateOnNextTick)
+            {
+                Terminate();
+                terminateOnNextTick = false;
+                onUnloadedCallback.Invoke();
+            }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            PreUpdate();
+            UpdateScene(gameTime);
+        }
         
-        public virtual void Draw(GameTime gameTime)
+        protected abstract void UpdateScene(GameTime gameTime);
+        
+        public void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(BackgroundColor);
+            DrawScene(gameTime);
+        }
+        
+        protected abstract void DrawScene(GameTime gameTime);
+
+        public virtual void PreTerminate()
+        {
         }
         
         public abstract void Terminate();
         
-        public virtual void UnloadScene()
+        public virtual void UnloadScene(OnUnloaded cb)
         {
+            onUnloadedCallback = cb;
             if (unloadsContent) 
                 Content.Unload();
             
             CameraManager.Clear();
-            
-            Terminate();
+
+            terminateOnNextTick = true;
+            PreTerminate();
         }
     }
 }

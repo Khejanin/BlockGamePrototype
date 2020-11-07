@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GDGame.Game.Actors.Audio;
 using GDGame.Game.Controllers;
 using GDGame.Game.Controllers.CameraControllers;
+using GDGame.Game.EventSystem;
 using GDGame.Game.Factory;
 using GDGame.Game.Tiles;
 using GDGame.Game.UI;
@@ -28,6 +29,8 @@ namespace GDGame.Game.Scenes
         private Dictionary<string, Texture2D> textures;
         private Dictionary<string, DrawnActor3D> drawnActors;
 
+        private bool nextScene = false;
+
 
         public MainScene(Main game) : base(game)
         {
@@ -40,6 +43,7 @@ namespace GDGame.Game.Scenes
             InitDrawnContent();
 
             SetTargetToCamera();
+            InitEvents();
         }
 
         private void SetTargetToCamera()
@@ -128,7 +132,7 @@ namespace GDGame.Game.Scenes
 
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["Box"]);
-            goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f,ColliderType.CheckOnly));
 
             ObjectManager.Add(archetypalBoxWireframe);
             drawnActors = new Dictionary<string, DrawnActor3D>
@@ -286,12 +290,32 @@ namespace GDGame.Game.Scenes
                 {"BlueCube", attachableModel}, {"RedCube", playerModel}, {"Box", boxModel}, {"Pyramid", enemyModel}
             };
         }
+        
+        private void InitEvents()
+        {
+            EventSystem.Base.EventSystem.RegisterListener<GameStateMessageEventInfo>(OnGameStateMessageReceived);
+        }
+
+        private void OnGameStateMessageReceived(GameStateMessageEventInfo eventInfo)
+        {
+            switch (eventInfo.gameState)
+            {
+                case GameState.WON:
+                    Game.SceneManager.NextScene();
+                    break;
+                case GameState.LOST:
+                    //You know how it is on this bitch of an earth
+                    break;
+            }
+        }
+        
+        
 
         #endregion
 
         #region Override Methodes
 
-        public override void Update(GameTime gameTime)
+        protected override void UpdateScene(GameTime gameTime)
         {
             float angle = GetAngle(Vector3.Forward, CameraManager.ActiveCamera.Transform3D.Look);
             UiSprite uiSprite = UiManager.Get("Compass") as UiSprite;
@@ -327,8 +351,25 @@ namespace GDGame.Game.Scenes
             //else if(KeyboardManager.IsFirstKeyPress(Keys.K)) { SoundManager.volumeDown(); }
         }
 
+        protected override void DrawScene(GameTime gameTime)
+        {
+        }
+
+        public override void PreTerminate()
+        {
+            base.PreTerminate();
+            ObjectManager.Enabled = false;
+        }
+
         public override void Terminate()
         {
+            //We will do this with a bitmask in Scene base class later
+            UiManager.Clear();
+            
+            ObjectManager.RemoveAll(actor3D => actor3D != null);
+            SoundManager.RemoveIf(s => s != null);
+            
+            ObjectManager.Enabled = true;
         }
 
         #endregion
