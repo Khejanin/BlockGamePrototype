@@ -296,16 +296,20 @@ namespace GDGame.Game.Scenes
 
         private void LoadTextures()
         {
-            Texture2D cubeTexture = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/TextureCube");
+            //Texture2D cubeTexture = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/TextureCube");
+            Texture2D cubeTexture = Content.Load<Texture2D>("Assets/Textures/Block/block_purple");
             Texture2D createTexture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
             Texture2D whiteSquareTexture = Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare");
             Texture2D compassTexture = Content.Load<Texture2D>("Assets/Textures/Base/BasicCompass");
+            Texture2D cubeFloor = Content.Load<Texture2D>("Assets/Textures/Block/block_green");
+            Texture2D cubeFloorUpper = Content.Load<Texture2D>("Assets/Textures/Block/block_yellow");
+
 
             Texture2D wall = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/grass1");
 
             textures = new Dictionary<string, Texture2D>
             {
-                {"Cube", cubeTexture}, {"Box", createTexture}, {"WhiteSquare", whiteSquareTexture},
+                {"Cube", cubeTexture}, {"Box", cubeFloor}, {"WhiteSquare", whiteSquareTexture},
                 {"Compass", compassTexture}, {"wall", wall }
             };
         }
