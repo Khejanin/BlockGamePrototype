@@ -158,8 +158,8 @@ namespace GDGame.Game.Scenes
                 primitiveType, primitiveCount);
 
             //step 3 - make the primitive object
-            Transform3D transform3D = new Transform3D(new Vector3(1, 2, 0),
-                Vector3.Zero, new Vector3(4,4,4),
+            Transform3D transform3D = new Transform3D(new Vector3(10, 10, 10),
+                Vector3.Zero, new Vector3(1, 1, 1),
                 Vector3.UnitZ, Vector3.UnitY);
 
             EffectParameters effectParameters = new EffectParameters(UnlitWireframeEffect,
@@ -255,15 +255,50 @@ namespace GDGame.Game.Scenes
 
         private void InitSkybox()
         { 
-            float worldScale = 1000;
-
-            //grass
+            float worldScale = 500;
+            //Back
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
-            primitiveObject.ID = "grass";
+            primitiveObject.ID = "back";
             primitiveObject.EffectParameters.Texture = textures["wall"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(180, 180, 0);
+            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, 180, 0), 0);
+            primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
+            ObjectManager.Add(primitiveObject);
+
+            //Floor
+            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            primitiveObject.ID = "Floor";
+            primitiveObject.EffectParameters.Texture = textures["wall"];
+            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, -90, 90), 0);
+            primitiveObject.Transform3D.Translation = new Vector3(0, -worldScale / 2.0f, 0);
+            ObjectManager.Add(primitiveObject);
+
+            //Front
+            primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
+            primitiveObject.ID = "front";
+            primitiveObject.EffectParameters.Texture = textures["wall"];
+            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, 0, 180), 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, worldScale / 2.0f);
+            ObjectManager.Add(primitiveObject);
+
+            //RWall
+            primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
+            primitiveObject.ID = "Right wall";
+            primitiveObject.EffectParameters.Texture = textures["wall"];
+            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(270, 0, 270), 0);
+            primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
+            ObjectManager.Add(primitiveObject);
+
+            //LWall
+            primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
+            primitiveObject.ID = "Left wall";
+            primitiveObject.EffectParameters.Texture = textures["wall"];
+            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(-270, 0, 270), 0);
+            primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
             ObjectManager.Add(primitiveObject);
         }
 
