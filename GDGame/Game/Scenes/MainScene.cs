@@ -246,7 +246,7 @@ namespace GDGame.Game.Scenes
 
             Transform3D transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, Vector3.One, Vector3.UnitZ, Vector3.UnitY);
 
-            EffectParameters effectParameters = new EffectParameters(unlitTexturedEffect, textures["wall"], /*bug*/ Color.White, 1);
+            EffectParameters effectParameters = new EffectParameters(unlitTexturedEffect, textures["Wall"], /*bug*/ Color.White, 1);
 
             IVertexData vertexData = new VertexData<VertexPositionColorTexture>(vertices, Microsoft.Xna.Framework.Graphics.PrimitiveType.TriangleStrip, 2);
 
@@ -259,7 +259,7 @@ namespace GDGame.Game.Scenes
             //Back
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "back";
-            primitiveObject.EffectParameters.Texture = textures["wall"];
+            primitiveObject.EffectParameters.Texture = textures["Wall"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
             primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, 180, 0), 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
@@ -268,7 +268,7 @@ namespace GDGame.Game.Scenes
             //Floor
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "Floor";
-            primitiveObject.EffectParameters.Texture = textures["wall"];
+            primitiveObject.EffectParameters.Texture = textures["Floor"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
             primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, -90, 90), 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, -worldScale / 2.0f, 0);
@@ -277,7 +277,7 @@ namespace GDGame.Game.Scenes
             //Front
             primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "front";
-            primitiveObject.EffectParameters.Texture = textures["wall"];
+            primitiveObject.EffectParameters.Texture = textures["Wall"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
             primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, 0, 180), 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, worldScale / 2.0f);
@@ -286,7 +286,7 @@ namespace GDGame.Game.Scenes
             //RWall
             primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "Right wall";
-            primitiveObject.EffectParameters.Texture = textures["wall"];
+            primitiveObject.EffectParameters.Texture = textures["Wall"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
             primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(270, 0, 270), 0);
             primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
@@ -295,7 +295,7 @@ namespace GDGame.Game.Scenes
             //LWall
             primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "Left wall";
-            primitiveObject.EffectParameters.Texture = textures["wall"];
+            primitiveObject.EffectParameters.Texture = textures["Wall"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
             primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(-270, 0, 270), 0);
             primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
@@ -347,16 +347,19 @@ namespace GDGame.Game.Scenes
             Texture2D createTexture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
             Texture2D whiteSquareTexture = Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare");
             Texture2D compassTexture = Content.Load<Texture2D>("Assets/Textures/Base/BasicCompass");
-            Texture2D cubeFloor = Content.Load<Texture2D>("Assets/Textures/Block/block_green");
-            Texture2D cubeFloorUpper = Content.Load<Texture2D>("Assets/Textures/Block/block_yellow");
+            Texture2D cubeFloor = Content.Load<Texture2D>("Assets/Textures/Block/block_yellow");
 
-
-            Texture2D wall = Content.Load<Texture2D>("Assets/Textures/Block/block_yellow");
+            Texture2D wall = Content.Load<Texture2D>("Assets/Textures/Block/block_green");
+            Texture2D floor = Content.Load<Texture2D>("Assets/Textures/Block/block_lime");
 
             textures = new Dictionary<string, Texture2D>
             {
-                {"Cube", cubeTexture}, {"Box", cubeFloor}, {"WhiteSquare", whiteSquareTexture},
-                {"Compass", compassTexture}, {"wall", wall }
+                {"Cube", cubeTexture}, 
+                {"Box", cubeFloor}, 
+                {"WhiteSquare", whiteSquareTexture},
+                {"Compass", compassTexture},
+                {"Wall", wall },
+                {"Floor", floor }
             };
         }
 
