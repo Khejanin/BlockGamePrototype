@@ -351,7 +351,7 @@ namespace GDGame.Game.Scenes
             Texture2D cubeFloorUpper = Content.Load<Texture2D>("Assets/Textures/Block/block_yellow");
 
 
-            Texture2D wall = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/grass1");
+            Texture2D wall = Content.Load<Texture2D>("Assets/Textures/Block/block_yellow");
 
             textures = new Dictionary<string, Texture2D>
             {
