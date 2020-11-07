@@ -31,8 +31,6 @@ namespace GDGame.Game.Scenes
 
 
         ////FOR SKYBOX____ TEMP
-        //private PrimitiveObject archetypalTexturedQuad;
-        //private float worldScale = 3000;
         private PrimitiveObject archetypalTexturedQuad, primitiveObject;
 
         public MainScene(Main game) : base(game)
