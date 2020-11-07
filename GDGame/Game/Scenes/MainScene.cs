@@ -33,7 +33,7 @@ namespace GDGame.Game.Scenes
         ////FOR SKYBOX____ TEMP
         //private PrimitiveObject archetypalTexturedQuad;
         //private float worldScale = 3000;
-        //private VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[4];
+        private PrimitiveObject archetypalTexturedQuad, primitiveObject;
 
         public MainScene(Main game) : base(game)
         {
@@ -76,13 +76,15 @@ namespace GDGame.Game.Scenes
             //models
             InitStaticModels();
 
-            //grid
+            //grids
             InitGrid();
 
             InitUi();
 
             //Skybox
-            InitSkyBox();
+            InitArchetypalQuad();
+            InitSkybox();
+            
         }
 
 
@@ -158,8 +160,8 @@ namespace GDGame.Game.Scenes
                 primitiveType, primitiveCount);
 
             //step 3 - make the primitive object
-            Transform3D transform3D = new Transform3D(new Vector3(0, 20, 0),
-                Vector3.Zero, new Vector3(10, 10, 10),
+            Transform3D transform3D = new Transform3D(new Vector3(1, 2, 0),
+                Vector3.Zero, new Vector3(4,4,4),
                 Vector3.UnitZ, Vector3.UnitY);
 
             EffectParameters effectParameters = new EffectParameters(UnlitWireframeEffect,
@@ -228,34 +230,45 @@ namespace GDGame.Game.Scenes
             UiManager.AddUiElement("ToolTip", uiText);
         }
 
-        private void InitSkyBox()
+        private void InitArchetypalQuad()
         {
             //SKYBOX
             float halfLength = 0.5f;
             VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[4];
 
-            vertices[0] = new VertexPositionColorTexture(new Vector3(-halfLength, halfLength, 0), new Color(255, 255, 255, 255), new Vector2(0, 0));
+            vertices[0] = new VertexPositionColorTexture(new Vector3(-halfLength, halfLength, 0), Color.White, new Vector2(0, 0));
             vertices[1] = new VertexPositionColorTexture(new Vector3(-halfLength, -halfLength, 0), Color.White, new Vector2(0, 1));
             vertices[2] = new VertexPositionColorTexture(new Vector3(halfLength, halfLength, 0), Color.White, new Vector2(1, 0));
             vertices[3] = new VertexPositionColorTexture(new Vector3(halfLength, -halfLength, 0), Color.White, new Vector2(1, 1));
 
+
+            BasicEffect unlitTexturedEffect = new BasicEffect(Graphics.GraphicsDevice);
+            unlitTexturedEffect.VertexColorEnabled = true; 
+            unlitTexturedEffect.TextureEnabled = true;
+
             Transform3D transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, Vector3.One, Vector3.UnitZ, Vector3.UnitY);
 
-            EffectParameters effectParameters = new EffectParameters(new BasicEffect(Graphics.GraphicsDevice), textures["wall"], /*bug*/ Color.White, 1);
+            EffectParameters effectParameters = new EffectParameters(unlitTexturedEffect, textures["wall"], /*bug*/ Color.White, 1);
 
-            IVertexData vertexData = new VertexData<VertexPositionColorTexture>(vertices, PrimitiveType.TriangleStrip, 2);
+            IVertexData vertexData = new VertexData<VertexPositionColorTexture>(vertices, Microsoft.Xna.Framework.Graphics.PrimitiveType.TriangleStrip, 2);
 
-            PrimitiveObject archetypalTexturedQuad = new PrimitiveObject("original texture quad", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, vertexData);
-            float worldScale = 3000;
+            this.archetypalTexturedQuad = new PrimitiveObject("original texture quad", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, vertexData);
+        }
 
-            PrimitiveObject primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
-            primitiveObject.ID = "sky front";
-            primitiveObject.EffectParameters.Texture = textures["Cube"];
+        private void InitSkybox()
+        { 
+            float worldScale = 1000;
+
+            //grass
+            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            primitiveObject.ID = "grass";
+            primitiveObject.EffectParameters.Texture = textures["wall"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(180, 180, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, worldScale / 2.0f);
             ObjectManager.Add(primitiveObject);
         }
+
 
         private float GetAngle(Vector3 forward, Vector3 look)
         {
