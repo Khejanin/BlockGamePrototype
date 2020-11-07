@@ -14,7 +14,7 @@ namespace GDGame.Game.Scenes
         private bool terminateOnNextTick;
         private OnUnloaded onUnloadedCallback;
 
-        protected Color BackgroundColor = Color.CornflowerBlue;
+        protected Color backgroundColor = Color.CornflowerBlue;
 
         protected Scene(Main game, bool unloadsContent = false)
         {
@@ -51,7 +51,7 @@ namespace GDGame.Game.Scenes
             if (terminateOnNextTick)
             {
                 Terminate();
-                terminateOnNextTick = false;
+                
                 onUnloadedCallback.Invoke();
             }
         }
@@ -59,24 +59,32 @@ namespace GDGame.Game.Scenes
         public void Update(GameTime gameTime)
         {
             PreUpdate();
-            UpdateScene(gameTime);
+
+            if (!terminateOnNextTick)
+            {
+                UpdateScene(gameTime);
+            }
+            else
+            {
+                terminateOnNextTick = false;
+            }
         }
-        
+
         protected abstract void UpdateScene(GameTime gameTime);
         
         public void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(BackgroundColor);
+            GraphicsDevice.Clear(backgroundColor);
             DrawScene(gameTime);
         }
         
         protected abstract void DrawScene(GameTime gameTime);
 
-        public virtual void PreTerminate()
+        protected virtual void PreTerminate()
         {
         }
-        
-        public abstract void Terminate();
+
+        protected abstract void Terminate();
         
         public virtual void UnloadScene(OnUnloaded cb)
         {

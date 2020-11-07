@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using GDGame.Game.UI;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
@@ -9,11 +10,9 @@ namespace GDGame.Game.Scenes
 {
     public class EndScene : Scene
     {
-        private Text2D menuText;
-
         public EndScene(Main game,bool unloadsContent = false) : base(game,unloadsContent)
         {
-            BackgroundColor = Color.Black;
+            backgroundColor = Color.Black;
         }
 
         public override void Initialize()
@@ -40,6 +39,10 @@ namespace GDGame.Game.Scenes
 
         protected override void UpdateScene(GameTime gameTime)
         {
+            if (KeyboardManager.IsFirstKeyPress(Keys.NumPad0))
+            {
+                Debug.WriteLine("0");
+            }
         }
 
         protected override void DrawScene(GameTime gameTime)
@@ -47,7 +50,7 @@ namespace GDGame.Game.Scenes
         }
 
 
-        public override void Terminate()
+        protected override void Terminate()
         {
             UiManager.Clear();
         }

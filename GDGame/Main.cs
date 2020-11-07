@@ -74,8 +74,6 @@ namespace GDGame
             InitGraphics(1024, 768);
 
             base.Initialize();
-            
-            SceneManager.Initialize();
         }
 
         

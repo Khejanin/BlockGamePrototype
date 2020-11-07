@@ -132,12 +132,13 @@ namespace GDGame.Game.Scenes
 
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["Box"]);
-            goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f,ColliderType.CheckOnly));
+            goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
             ObjectManager.Add(archetypalBoxWireframe);
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
-                {"StaticTile", staticTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", player}, {"GoalTile", goal}
+                {"StaticTile", staticTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", player},
+                {"GoalTile", goal}
             };
         }
 
@@ -195,11 +196,12 @@ namespace GDGame.Game.Scenes
             Texture2D compass = textures["Compass"];
             Vector2 origin = new Vector2(compass.Width / 2f, compass.Height / 2f);
             pos = new Rectangle(new Point((int) (screenWidth - 60) + border, border + 50), new Point(100, 100));
-            uiSprite = new UiSprite(StatusType.Drawn, compass, pos, null, Color.White, 0, origin, SpriteEffects.None, 0);
+            uiSprite = new UiSprite(StatusType.Drawn, compass, pos, null, Color.White, 0, origin, SpriteEffects.None,
+                0);
             UiManager.AddUiElement("Compass", uiSprite);
 
             string text = "moves";
-            Vector2 position = Game.ScreenCentre + Vector2.UnitY*screenHeight/2;
+            Vector2 position = Game.ScreenCentre + Vector2.UnitY * screenHeight / 2;
             Text2D text2D = new Text2D(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("Moves", text2D);
 
@@ -290,7 +292,7 @@ namespace GDGame.Game.Scenes
                 {"BlueCube", attachableModel}, {"RedCube", playerModel}, {"Box", boxModel}, {"Pyramid", enemyModel}
             };
         }
-        
+
         private void InitEvents()
         {
             EventSystem.Base.EventSystem.RegisterListener<GameStateMessageEventInfo>(OnGameStateMessageReceived);
@@ -308,8 +310,6 @@ namespace GDGame.Game.Scenes
                     break;
             }
         }
-        
-        
 
         #endregion
 
@@ -320,7 +320,6 @@ namespace GDGame.Game.Scenes
             float angle = GetAngle(Vector3.Forward, CameraManager.ActiveCamera.Transform3D.Look);
             UiSprite uiSprite = UiManager.Get("Compass") as UiSprite;
             uiSprite?.SetRotation(angle);
-
             List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
             if (players.Count > 0)
             {
@@ -355,20 +354,20 @@ namespace GDGame.Game.Scenes
         {
         }
 
-        public override void PreTerminate()
+        protected override void PreTerminate()
         {
             base.PreTerminate();
             ObjectManager.Enabled = false;
         }
 
-        public override void Terminate()
+        protected override void Terminate()
         {
             //We will do this with a bitmask in Scene base class later
             UiManager.Clear();
-            
+
             ObjectManager.RemoveAll(actor3D => actor3D != null);
             SoundManager.RemoveIf(s => s != null);
-            
+
             ObjectManager.Enabled = true;
         }
 

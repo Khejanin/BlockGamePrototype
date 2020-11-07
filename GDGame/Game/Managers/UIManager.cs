@@ -18,6 +18,8 @@ namespace GDGame.Game.Managers
             spriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
+        public int Count => elements.Count;
+
         public void AddUiElement(string name, UiElement element)
         {
             elements.Add(name, element);
@@ -26,7 +28,8 @@ namespace GDGame.Game.Managers
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            foreach (KeyValuePair<string, UiElement> keyValuePair in elements.Where(keyValuePair => keyValuePair.Value.StatusType == StatusType.Drawn))
+            foreach (KeyValuePair<string, UiElement> keyValuePair in elements.Where(keyValuePair =>
+                keyValuePair.Value.StatusType == StatusType.Drawn))
             {
                 keyValuePair.Value.Draw(gameTime, spriteBatch);
             }

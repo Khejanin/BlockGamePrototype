@@ -5,36 +5,36 @@ namespace GDGame.Game.EventSystem.Base
 {
     public static class EventSystem
     {
-        private static Dictionary<Type, Dictionary<int, EventListener>> eventListeners;
+        private static Dictionary<Type, Dictionary<int, EventListener>> _eventListeners;
 
         public static void RegisterListener<T>(Action<T> listener) where T : EventInfo
         {
             var eventType = typeof(T);
-            if (eventListeners == null) eventListeners = new Dictionary<Type, Dictionary<int, EventListener>>();
+            _eventListeners ??= new Dictionary<Type, Dictionary<int, EventListener>>();
 
-            if (!eventListeners.ContainsKey(eventType) || eventListeners[eventType] == null)
-                eventListeners[eventType] = new Dictionary<int, EventListener>();
+            if (!_eventListeners.ContainsKey(eventType) || _eventListeners[eventType] == null)
+                _eventListeners[eventType] = new Dictionary<int, EventListener>();
 
-            eventListeners[eventType][listener.GetHashCode()] = ei => { listener((T) ei); };
+            _eventListeners[eventType][listener.GetHashCode()] = ei => { listener((T) ei); };
         }
 
         public static void UnregisterListener<T>(Action<T> listener) where T : EventInfo
         {
             var eventType = typeof(T);
 
-            if (eventListeners != null)
-                if (eventListeners.ContainsKey(eventType) && eventListeners[eventType] != null)
-                    eventListeners[eventType].Remove(listener.GetHashCode());
+            if (_eventListeners != null)
+                if (_eventListeners.ContainsKey(eventType) && _eventListeners[eventType] != null)
+                    _eventListeners[eventType].Remove(listener.GetHashCode());
         }
 
         public static void FireEvent(EventInfo eventInfo)
         {
             var trueEventInfoClass = eventInfo.GetType();
-            if (eventListeners == null || !eventListeners.ContainsKey(trueEventInfoClass))
+            if (_eventListeners == null || !_eventListeners.ContainsKey(trueEventInfoClass))
                 // No one is listening, we are done.
                 return;
 
-            foreach (var el in eventListeners[trueEventInfoClass].Values) el(eventInfo);
+            foreach (var el in _eventListeners[trueEventInfoClass].Values) el(eventInfo);
         }
 
         private delegate void EventListener(EventInfo ei);

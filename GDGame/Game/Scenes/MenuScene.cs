@@ -9,11 +9,9 @@ namespace GDGame.Game.Scenes
 {
     public class MenuScene : Scene
     {
-        private Text2D menuText;
-
         public MenuScene(Main game,bool unloadsContent = false) : base(game,unloadsContent)
         {
-            BackgroundColor = Color.Black;
+            backgroundColor = Color.Black;
         }
 
         public override void Initialize()
@@ -30,12 +28,12 @@ namespace GDGame.Game.Scenes
             CameraManager.Add(camera3D);
         }
 
-        
-        protected void InitializeText()
+
+        private void InitializeText()
         {
-            Text2D menuText = new Text2D(StatusType.Drawn, "Press SPACEBAR to start the Game!", Game.Fonts["UI"],
+            Text2D element = new Text2D(StatusType.Drawn, "Press SPACEBAR to start the Game!", Game.Fonts["UI"],
                 Game.ScreenCentre, Color.Wheat);
-            UiManager.AddUiElement("MenuText", menuText);
+            UiManager.AddUiElement("MenuText", element);
         }
 
         protected override void UpdateScene(GameTime gameTime)
@@ -51,7 +49,7 @@ namespace GDGame.Game.Scenes
         }
 
 
-        public override void Terminate()
+        protected override void Terminate()
         {
             UiManager.Clear();
             CameraManager.Clear();
