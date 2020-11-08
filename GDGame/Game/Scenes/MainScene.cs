@@ -261,6 +261,15 @@ namespace GDGame.Game.Scenes
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
             ObjectManager.Add(primitiveObject);
 
+            //logo
+            primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
+            primitiveObject.ID = "logo";
+            primitiveObject.EffectParameters.Texture = textures["LogoMirror"];
+            primitiveObject.Transform3D.Scale = new Vector3(worldScale / 12.0f, worldScale / 12.0f, 1);
+            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, 180, 0), 0);
+            primitiveObject.Transform3D.Translation = new Vector3(0, 0, (-worldScale / 2.0f) * 0.95f);
+            ObjectManager.Add(primitiveObject);
+
             //Floor
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "Floor";
@@ -349,9 +358,11 @@ namespace GDGame.Game.Scenes
             Texture2D whiteSquareTexture = Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare");
             Texture2D compassTexture = Content.Load<Texture2D>("Assets/Textures/Base/BasicCompass");
             Texture2D cubeFloor = Content.Load<Texture2D>("Assets/Textures/Block/block_yellow");
+            Texture2D logo = Content.Load<Texture2D>("Assets/Textures/Menu/logo");
+            Texture2D logoMirror = Content.Load<Texture2D>("Assets/Textures/Menu/logo_mirror");
 
             Texture2D wall = Content.Load<Texture2D>("Assets/Textures/Block/block_green");
-            Texture2D floor = Content.Load<Texture2D>("Assets/Textures/Block/block_lime");
+            Texture2D floor = Content.Load<Texture2D>("Assets/Textures/Skybox/floor_neon");
 
             textures = new Dictionary<string, Texture2D>
             {
@@ -361,8 +372,11 @@ namespace GDGame.Game.Scenes
                 {"Box", cubeFloor}, 
                 {"WhiteSquare", whiteSquareTexture},
                 {"Compass", compassTexture},
-                {"Wall", wall },
-                {"Floor", floor }
+                {"Wall1", wall },
+                {"Wall", floor },
+                {"Floor", floor },
+                {"Logo", logo },
+                {"LogoMirror", logoMirror }
             };
         }
 
