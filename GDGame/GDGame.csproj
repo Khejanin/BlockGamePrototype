@@ -24,6 +24,7 @@
     <None Remove="Game\LevelFiles\Paul_Level_3.json" />
     <None Remove="Game\LevelFiles\Paul_Level_4.json" />
     <None Remove="Game\LevelFiles\Paul_Level_5.json" />
+    <None Remove="Game\LevelFiles\Paul_Level_6.json" />
     <None Remove="Game\LevelFiles\PrototypeLevel.json" />
   </ItemGroup>
   <ItemGroup>
@@ -46,6 +47,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Game\LevelFiles\Paul_Level_5.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Game\LevelFiles\Paul_Level_6.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Game\LevelFiles\PrototypeLevel.json">

@@ -138,8 +138,7 @@ namespace GDGame.Game.Managers
         {
             this.activeSongIndex = next;
 
-            if (this.mySoundInstance != null && this.mySoundInstance.State == SoundState.Playing)
-                this.mySoundInstance.Stop();
+            StopSong();
 
             this.currentSong = list[next];
             this.mySoundInstance = currentSong.GetSfx().CreateInstance();
@@ -147,36 +146,53 @@ namespace GDGame.Game.Managers
 
         public void StopSong()
         {
-            this.mySoundInstance.Pause();
+            if (this.mySoundInstance != null && this.mySoundInstance.State == SoundState.Playing)
+                this.mySoundInstance.Stop();
         }
+
+        public void changeMusicState()
+        {
+            if (this.mySoundInstance.State == SoundState.Playing)
+                pauseSong();
+            else if (this.mySoundInstance.State == SoundState.Paused)
+                resumeSong();
+        }
+
+        public void pauseSong()
+        {
+            if (this.mySoundInstance != null && this.mySoundInstance.State == SoundState.Playing)
+                this.mySoundInstance.Pause();
+        }
+
+        public void resumeSong()
+        {
+            if (this.mySoundInstance != null && this.mySoundInstance.State == SoundState.Paused)
+                this.mySoundInstance.Resume();
+        }
+
 
         public void volumeUp()
         {
-            if (this.mySoundInstance != null && this.mySoundInstance.State == SoundState.Playing)
-            {
-                this.mySoundInstance.Pause();
-                float newVol = (float)(this.mySoundInstance.Volume + 0.25);
-                if (newVol >= 1.0)
-                    newVol = 1;
+            pauseSong();
 
-                this.mySoundInstance.Volume = newVol;
-                this.mySoundInstance.Play();
-            }
+            float newVol = (float)(this.mySoundInstance.Volume + 0.1);
+            if (newVol >= 1.0)
+                newVol = 1;
+            
+            this.mySoundInstance.Volume = newVol;
+            resumeSong();
         }
 
         public void volumeDown()
         {
-            if (this.mySoundInstance != null && this.mySoundInstance.State == SoundState.Playing)
-            {
-                this.mySoundInstance.Pause();
-                float newVol = (float)(this.mySoundInstance.Volume - 0.25);
-                if(newVol <= 0)
-                    newVol = 0;
+            pauseSong();
 
-                this.mySoundInstance.Volume = newVol;
-                this.mySoundInstance.Play();
-            }
-                
+            float newVol = (float)(this.mySoundInstance.Volume - 0.1);
+            if (newVol <= 0)
+                newVol = 0;
+
+            this.mySoundInstance.Volume = newVol;
+            resumeSong();
         }
 
         public override void Update(GameTime gameTime)

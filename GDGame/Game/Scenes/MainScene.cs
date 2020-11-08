@@ -101,7 +101,7 @@ namespace GDGame.Game.Scenes
         private void InitGrid()
         {
             Grid grid = new Grid(new TileFactory(ObjectManager, drawnActors));
-            grid.GenerateGrid(@"Game\LevelFiles\Paul_Level_5.json");
+            grid.GenerateGrid(@"Game\LevelFiles\Paul_Level_6.json");
         }
 
         private void InitStaticModels()
@@ -330,6 +330,10 @@ namespace GDGame.Game.Scenes
             SoundManager.Add(new Sounds(track03, "gameTrack03", ActorType.MusicTrack, StatusType.Update));
             SoundManager.Add(new Sounds(track04, "playerMove", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
+
+
+            SoundManager.NextSong();
+            SoundManager.volumeDown(); SoundManager.volumeDown();
         }
 
         private void LoadTextures()
@@ -401,14 +405,23 @@ namespace GDGame.Game.Scenes
                 // this.cameraManager.ActiveCameraIndex++;
             }
 
-            ////Cycle Through Audio
-            //if (KeyboardManager.IsFirstKeyPress(Keys.M))
-            //    SoundManager.NextSong();
-            //if (KeyboardManager.IsKeyDown(Keys.Enter))
-            //    SoundManager.StopSong();
+            //Cycle Through Audio
+            if (KeyboardManager.IsFirstKeyPress(Keys.M))
+                SoundManager.NextSong();
 
-            //if (KeyboardManager.IsKeyDown(Keys.L)) { SoundManager.volumeUp(); }
-            //else if (KeyboardManager.IsKeyDown(Keys.K)) { SoundManager.volumeDown(); }
+            //Stop Music
+            if (KeyboardManager.IsKeyDown(Keys.N))
+                SoundManager.StopSong();
+
+            //Volume Changes
+            if (KeyboardManager.IsKeyDown(Keys.L))
+                SoundManager.volumeUp();
+            else if (KeyboardManager.IsKeyDown(Keys.K))
+                SoundManager.volumeDown();
+
+            //Pause/resume music
+            if(KeyboardManager.IsFirstKeyPress(Keys.P))
+                SoundManager.changeMusicState();
         }
 
         public override void Terminate()
