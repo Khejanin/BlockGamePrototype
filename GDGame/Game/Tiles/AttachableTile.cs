@@ -1,4 +1,5 @@
 ﻿using System;
+using GDGame.Game.Parameters.Effect;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;

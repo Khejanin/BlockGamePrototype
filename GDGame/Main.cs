@@ -158,9 +158,6 @@ namespace GDGame
 
             WireframeRasterizerState = new RasterizerState();
             WireframeRasterizerState.FillMode = FillMode.WireFrame;
-            
-            
-            
         }
         
         private void LoadFonts()

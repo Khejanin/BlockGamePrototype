@@ -1,4 +1,5 @@
-﻿using GDLibrary.Enums;
+﻿using GDGame.Game.Parameters.Effect;
+using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework.Graphics;

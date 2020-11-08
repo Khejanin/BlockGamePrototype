@@ -8,10 +8,12 @@
 #endif
 
 matrix WorldViewProjection;
+float3 LightDir;
 
 struct VertexShaderInput
 {
 	float4 Position : POSITION0;
+	float3 Normal : NORMAL0;
 };
 
 struct VertexShaderOutput
@@ -23,9 +25,14 @@ struct VertexShaderOutput
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput)0;
+	LightDir = float3(1,-1,0);
+	
+	float4 c = dot(LightDir,input.Normal);
 
-	output.Position = mul(input.Position, WorldViewProjection);
-	output.Color = float4(0,0,0,0);
+    c = step(0.8,c);
+
+	output.Position = mul(input.Position,WorldViewProjection);
+	output.Color = float4(1,1,1,1) * c;
 
 	return output;
 }

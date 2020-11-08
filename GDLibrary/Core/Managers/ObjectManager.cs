@@ -28,7 +28,7 @@ namespace GDLibrary.Managers
 
         public void Add(DrawnActor3D actor)
         {
-            if (actor.EffectParameters.Alpha < 1)
+            if (actor.EffectParameters.GetAlpha() < 1)
             {
                 transparentList.Add(actor);
             }

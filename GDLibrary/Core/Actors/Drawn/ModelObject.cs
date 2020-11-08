@@ -5,6 +5,7 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using GDGame.Game.Parameters.Effect;
 
 namespace GDLibrary.Actors
 {
@@ -78,27 +79,7 @@ namespace GDLibrary.Actors
 
         public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
         {
-            EffectParameters.Effect.View = camera.View;
-            EffectParameters.Effect.Projection = camera.Projection;
-            EffectParameters.Effect.DiffuseColor = EffectParameters.DiffuseColor.ToVector3();
-            EffectParameters.Effect.Alpha = EffectParameters.Alpha;
-            EffectParameters.Effect.CurrentTechnique.Passes[0].Apply();
-
-            //Not all models NEED a texture. Does a semi-transparent window need a texture?
-            if (EffectParameters.Texture != null)
-            {
-                EffectParameters.Effect.Texture = EffectParameters.Texture;
-            }
-
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                foreach (ModelMeshPart part in mesh.MeshParts)
-                {
-                    part.Effect = EffectParameters.Effect;
-                }
-                EffectParameters.Effect.World = BoneTransforms[mesh.ParentBone.Index] * Transform3D.World;
-                mesh.Draw();
-            }
+            EffectParameters.DrawMesh(Transform3D.World,camera,model,boneTransforms);
         }
 
         public new object Clone()

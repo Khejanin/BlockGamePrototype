@@ -5,9 +5,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using GDGame.Game.Parameters.Effect;
 
 namespace GDLibrary.Actors
-{
+{ 
     /// <summary>
     /// Base class for all drawn 3D actors used in the engine. This class adds an EffectParameters field.
     /// </summary>

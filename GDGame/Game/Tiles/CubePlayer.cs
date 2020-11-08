@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
+using GDGame.Game.Parameters.Effect;
 using GDLibrary.Interfaces;
 using static GDGame.Game.Utilities.Raycaster;
 
@@ -46,7 +47,7 @@ namespace GDGame.Game.Tiles
             foreach (AttachableTile tile in attachCandidates.SelectMany(shape =>  shape.AttachableTiles))
             {
                 AttachedTiles.Add(tile);
-                tile.EffectParameters.DiffuseColor = Color.Green;
+                //tile.EffectParameters.DiffuseColor = Color.Green;
             }
 
             IsAttached = true;
@@ -56,7 +57,7 @@ namespace GDGame.Game.Tiles
         {
             foreach (AttachableTile tile in AttachedTiles)
             {
-                tile.EffectParameters.DiffuseColor = Color.White;
+                //tile.EffectParameters.DiffuseColor = Color.White;
             }
 
             AttachedTiles.Clear();

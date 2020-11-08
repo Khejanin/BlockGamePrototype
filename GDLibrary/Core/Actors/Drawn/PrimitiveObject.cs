@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using GDGame.Game.Parameters.Effect;
 
 namespace GDLibrary.Actors
 {
@@ -45,8 +46,8 @@ namespace GDLibrary.Actors
 
         public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
         {
-            EffectParameters.Draw(Transform3D.World, camera);
-            IVertexData.Draw(gameTime, EffectParameters.Effect, graphicsDevice);
+            EffectParameters.DrawPrimitive(Transform3D.World, camera);
+            IVertexData.Draw(gameTime, null, graphicsDevice);
         }
 
         public new object Clone()
