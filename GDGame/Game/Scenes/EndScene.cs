@@ -32,7 +32,7 @@ namespace GDGame.Game.Scenes
         
         protected void InitializeText()
         {
-            Text2D winText = new Text2D(StatusType.Drawn, "You won!!! Press ESC to close the Game!", Game.Fonts["UI"],
+            UiText winText = new UiText(StatusType.Drawn, "You won!!! Press ESC to close the Game!", Game.Fonts["UI"],
                 Game.ScreenCentre, Color.Wheat);
             UiManager.AddUiElement("MenuText", winText);
         }
