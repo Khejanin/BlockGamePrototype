@@ -338,6 +338,10 @@ namespace GDGame.Game.Scenes
             SoundManager.Add(new Sounds(track03, "gameTrack03", ActorType.MusicTrack, StatusType.Update));
             SoundManager.Add(new Sounds(track04, "playerMove", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
+
+
+            SoundManager.NextSong();
+            SoundManager.volumeDown(); SoundManager.volumeDown();
         }
 
         private void LoadTextures()

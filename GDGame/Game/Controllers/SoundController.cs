@@ -28,7 +28,7 @@ namespace GDGame.Game.Controllers
             SoundEffect temp = soundManager.FindSound(moveSFX).GetSfx();
             if (temp != null)
                 this.playerMove = temp.CreateInstance();
-                //this.playerMove.Volume = (float)0.4;
+            this.playerMove.Volume = playerMove.Volume / 2;
 
             SoundEffect temp2 = soundManager.FindSound(attachSFX).GetSfx();
             if (temp2 != null)
