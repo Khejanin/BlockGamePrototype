@@ -106,40 +106,32 @@ namespace GDGame.Game.Scenes
 
         private void InitStaticModels()
         {
-            //transform
-            Transform3D transform3D =
-                new Transform3D(Vector3.Up, Vector3.Zero, Vector3.One, -Vector3.UnitZ, Vector3.UnitY);
-
-            EffectParameters wireframeEffectParameters = new EffectParameters(ModelEffect, null, Color.White, 1);
-
-            archetypalBoxWireframe = new ModelObject("original wireframe box mesh", ActorType.Helper,
-                StatusType.Update | StatusType.Drawn, transform3D, wireframeEffectParameters, models["Box"]);
-
             EffectParameters effectParameters = new EffectParameters(ModelEffect, textures["Box"], Color.White, 1);
-            transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
+            var transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
             StaticTile staticTile = new StaticTile("StaticTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"]);
             staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
-            effectParameters = new EffectParameters(ModelEffect, textures["Cube"], Color.White, 1);
+            effectParameters = new EffectParameters(ModelEffect, textures["Attachable"], Color.White, 1);
             AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["BlueCube"]);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Attachable"]);
             attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             attachableTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
+            effectParameters = new EffectParameters(ModelEffect, textures["Player"], Color.White, 1);
             CubePlayer player = new CubePlayer("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["RedCube"], Game.Fonts["UI"]);
+                transform3D, effectParameters, models["Player"], Game.Fonts["UI"]);
             player.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             player.ControllerList.Add(new PlayerController(KeyboardManager));
             player.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
             player.ControllerList.Add(new RotationComponent());
             player.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
+            effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, models["Box"]);
+                effectParameters, models["Enemy"]);
             goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
-            ObjectManager.Add(archetypalBoxWireframe);
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
                 {"StaticTile", staticTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", player},
@@ -343,8 +335,9 @@ namespace GDGame.Game.Scenes
         private void LoadTextures()
         {
             //Texture2D cubeTexture = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/TextureCube");
-            Texture2D cubeTexture = Content.Load<Texture2D>("Assets/Textures/Block/block_purple");
-            Texture2D createTexture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
+            Texture2D playerTexture = Content.Load<Texture2D>("Assets/Textures/Block/block_purple");
+            Texture2D attachableTexture = Content.Load<Texture2D>("Assets/Textures/Block/block_green");
+            Texture2D finishTexture = Content.Load<Texture2D>("Assets/Textures/Block/block_lime");
             Texture2D whiteSquareTexture = Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare");
             Texture2D compassTexture = Content.Load<Texture2D>("Assets/Textures/Base/BasicCompass");
             Texture2D cubeFloor = Content.Load<Texture2D>("Assets/Textures/Block/block_yellow");
@@ -354,7 +347,9 @@ namespace GDGame.Game.Scenes
 
             textures = new Dictionary<string, Texture2D>
             {
-                {"Cube", cubeTexture}, 
+                {"Player", playerTexture}, 
+                {"Attachable", attachableTexture}, 
+                {"Finish", finishTexture}, 
                 {"Box", cubeFloor}, 
                 {"WhiteSquare", whiteSquareTexture},
                 {"Compass", compassTexture},
@@ -365,14 +360,14 @@ namespace GDGame.Game.Scenes
 
         private void LoadModels()
         {
-            Model attachableModel = Content.Load<Model>("Assets/Models/BlueCube");
-            Model playerModel = Content.Load<Model>("Assets/Models/RedCube");
+            Model attachableModel = Content.Load<Model>("Assets/Models/AttachableCube");
+            Model playerModel = Content.Load<Model>("Assets/Models/Player");
             Model boxModel = Content.Load<Model>("Assets/Models/box2");
-            Model enemyModel = Content.Load<Model>("Assets/Models/Pyramid");
+            Model enemyModel = Content.Load<Model>("Assets/Models/Enemy");
 
             models = new Dictionary<string, Model>
             {
-                {"BlueCube", attachableModel}, {"RedCube", playerModel}, {"Box", boxModel}, {"Pyramid", enemyModel}
+                {"Attachable", attachableModel}, {"Player", playerModel}, {"Box", boxModel}, {"Enemy", enemyModel}
             };
         }
 
