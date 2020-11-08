@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using GDGame.Game.UI;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
@@ -7,14 +8,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GDGame.Game.Scenes
 {
-    public class MenuScene : Scene
+    public class EndScene : Scene
     {
-<<<<<<< HEAD
-        private UiText menuUiText;
-
-=======
->>>>>>> origin/temp
-        public MenuScene(Main game,bool unloadsContent = false) : base(game,unloadsContent)
+        public EndScene(Main game,bool unloadsContent = false) : base(game,unloadsContent)
         {
             backgroundColor = Color.Black;
         }
@@ -33,25 +29,19 @@ namespace GDGame.Game.Scenes
             CameraManager.Add(camera3D);
         }
 
-
-        private void InitializeText()
+        
+        protected void InitializeText()
         {
-<<<<<<< HEAD
-            UiText menuUiText = new UiText(StatusType.Drawn, "Press SPACEBAR to start the Game!", Game.Fonts["UI"],
+            Text2D winText = new Text2D(StatusType.Drawn, "You won!!! Press ESC to close the Game!", Game.Fonts["UI"],
                 Game.ScreenCentre, Color.Wheat);
-            UiManager.AddUiElement("MenuText", menuUiText);
-=======
-            Text2D element = new Text2D(StatusType.Drawn, "Press SPACEBAR to start the Game!", Game.Fonts["UI"],
-                Game.ScreenCentre, Color.Wheat);
-            UiManager.AddUiElement("MenuText", element);
->>>>>>> origin/temp
+            UiManager.AddUiElement("MenuText", winText);
         }
 
         protected override void UpdateScene(GameTime gameTime)
         {
-            if (KeyboardManager.IsFirstKeyPress(Keys.Space))
+            if (KeyboardManager.IsFirstKeyPress(Keys.NumPad0))
             {
-                Game.SceneManager.NextScene();
+                Debug.WriteLine("0");
             }
         }
 
@@ -63,7 +53,6 @@ namespace GDGame.Game.Scenes
         protected override void Terminate()
         {
             UiManager.Clear();
-            CameraManager.Clear();
         }
     }
 }

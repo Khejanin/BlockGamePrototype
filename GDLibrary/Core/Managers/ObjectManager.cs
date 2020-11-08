@@ -60,42 +60,48 @@ namespace GDLibrary.Managers
 
         public override void Update(GameTime gameTime)
         {
-            foreach (DrawnActor3D actor in opaqueList)
+            if (Enabled)
             {
-                if ((actor.StatusType & StatusType.Update) == StatusType.Update)
+                foreach (DrawnActor3D actor in opaqueList)
                 {
-                    actor.Update(gameTime);
+                    if ((actor.StatusType & StatusType.Update) == StatusType.Update)
+                    {
+                        actor.Update(gameTime);
+                    }
                 }
-            }
 
-            foreach (DrawnActor3D actor in transparentList)
-            {
-                if ((actor.StatusType & StatusType.Update) == StatusType.Update)
+                foreach (DrawnActor3D actor in transparentList)
                 {
-                    actor.Update(gameTime);
+                    if ((actor.StatusType & StatusType.Update) == StatusType.Update)
+                    {
+                        actor.Update(gameTime);
+                    }
                 }
             }
         }
 
         public override void Draw(GameTime gameTime)
         {
-            foreach (DrawnActor3D actor in opaqueList)
+            if (Enabled)
             {
-                if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
+                foreach (DrawnActor3D actor in opaqueList)
                 {
-                    actor.Draw(gameTime,
-                       cameraManager.ActiveCamera,
-                        GraphicsDevice);
+                    if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
+                    {
+                        actor.Draw(gameTime,
+                            cameraManager.ActiveCamera,
+                            GraphicsDevice);
+                    }
                 }
-            }
 
-            foreach (DrawnActor3D actor in transparentList)
-            {
-                if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
+                foreach (DrawnActor3D actor in transparentList)
                 {
-                    actor.Draw(gameTime,
-                       cameraManager.ActiveCamera,
-                        GraphicsDevice);
+                    if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
+                    {
+                        actor.Draw(gameTime,
+                            cameraManager.ActiveCamera,
+                            GraphicsDevice);
+                    }
                 }
             }
         }

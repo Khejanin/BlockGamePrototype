@@ -4,6 +4,7 @@ using System.Security.Permissions;
 using GDGame.Game.Actors.Audio;
 using GDGame.Game.Controllers;
 using GDGame.Game.Controllers.CameraControllers;
+using GDGame.Game.EventSystem;
 using GDGame.Game.Factory;
 using GDGame.Game.Tiles;
 using GDGame.Game.UI;
@@ -29,6 +30,8 @@ namespace GDGame.Game.Scenes
         private Dictionary<string, Texture2D> textures;
         private Dictionary<string, DrawnActor3D> drawnActors;
 
+        private bool nextScene = false;
+
 
         ////FOR SKYBOX____ TEMP
         private PrimitiveObject archetypalTexturedQuad, primitiveObject;
@@ -44,6 +47,7 @@ namespace GDGame.Game.Scenes
             InitDrawnContent();
 
             SetTargetToCamera();
+            InitEvents();
         }
 
         private void SetTargetToCamera()
@@ -130,7 +134,7 @@ namespace GDGame.Game.Scenes
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["Enemy"]);
-            goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f,ColliderType.CheckOnly));
 
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
@@ -375,16 +379,33 @@ namespace GDGame.Game.Scenes
             };
         }
 
+        private void InitEvents()
+        {
+            EventSystem.Base.EventSystem.RegisterListener<GameStateMessageEventInfo>(OnGameStateMessageReceived);
+        }
+
+        private void OnGameStateMessageReceived(GameStateMessageEventInfo eventInfo)
+        {
+            switch (eventInfo.gameState)
+            {
+                case GameState.WON:
+                    Game.SceneManager.NextScene();
+                    break;
+                case GameState.LOST:
+                    //You know how it is on this bitch of an earth
+                    break;
+            }
+        }
+
         #endregion
 
         #region Override Methodes
 
-        public override void Update(GameTime gameTime)
+        protected override void UpdateScene(GameTime gameTime)
         {
             float angle = GetAngle(Vector3.Forward, CameraManager.ActiveCamera.Transform3D.Look);
             UiSprite uiSprite = UiManager["Compass"] as UiSprite;
             uiSprite?.SetRotation(angle);
-
             List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
             if (players.Count > 0)
             {
@@ -424,8 +445,25 @@ namespace GDGame.Game.Scenes
                 SoundManager.changeMusicState();
         }
 
-        public override void Terminate()
+        protected override void DrawScene(GameTime gameTime)
         {
+        }
+
+        protected override void PreTerminate()
+        {
+            base.PreTerminate();
+            ObjectManager.Enabled = false;
+        }
+
+        protected override void Terminate()
+        {
+            //We will do this with a bitmask in Scene base class later
+            UiManager.Clear();
+
+            ObjectManager.RemoveAll(actor3D => actor3D != null);
+            SoundManager.RemoveIf(s => s != null);
+
+            ObjectManager.Enabled = true;
         }
 
         #endregion

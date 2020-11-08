@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
+using GDGame.Game.EventSystem;
+using GDGame.Game.Scenes;
 using GDLibrary.Interfaces;
 using static GDGame.Game.Utilities.Raycaster;
 
@@ -65,8 +67,7 @@ namespace GDGame.Game.Tiles
 
         public bool CheckWinCondition()
         {
-            Raycaster.HitResult hit = Raycaster.Raycast(this, Transform3D.Translation, Vector3.Up, true, 0.5f);
-            System.Diagnostics.Debug.WriteLine("YOU WIN!!!");
+            HitResult hit = Raycaster.Raycast(this, Transform3D.Translation, Vector3.Up, true, 0.5f,false);
             return hit != null && hit.actor is GoalTile;
         }
 
@@ -83,7 +84,8 @@ namespace GDGame.Game.Tiles
                  if (CurrentMovementTime <= 0)
                  {
                     UpdateAttachCandidates(); //remove this later
-                    CheckWinCondition(); //remove this later
+                    bool won = CheckWinCondition(); //remove this later
+                    if (won) EventSystem.Base.EventSystem.FireEvent(new GameStateMessageEventInfo(GameState.WON));
                  }
              }
         }

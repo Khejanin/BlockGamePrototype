@@ -55,6 +55,14 @@
     <Content Include="Game\LevelFiles\PrototypeLevel.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Remove="Game\LevelFiles\BridgeLevel.json" />
+    <Content Include="Game\LevelFiles\BridgeLevel.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Game\LevelFiles\MediumLevel.json" />
+    <Content Include="Game\LevelFiles\MediumLevel.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />

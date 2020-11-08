@@ -74,8 +74,6 @@ namespace GDGame
             InitGraphics(1024, 768);
 
             base.Initialize();
-            
-            SceneManager.Initialize();
         }
 
         
@@ -96,6 +94,7 @@ namespace GDGame
         {
             SceneManager.AddScene("Menu", new MenuScene(this));
             SceneManager.AddScene("Game", new MainScene(this));
+            SceneManager.AddScene("End",new EndScene(this));
         }
 
         private void InitManagers()
@@ -158,9 +157,6 @@ namespace GDGame
 
             WireframeRasterizerState = new RasterizerState();
             WireframeRasterizerState.FillMode = FillMode.WireFrame;
-            
-            
-            
         }
         
         private void LoadFonts()

@@ -11,14 +11,19 @@ namespace GDGame.Game.Scenes
     {
         private Main game;
         private bool unloadsContent;
+        private bool terminateOnNextTick;
+        private OnUnloaded onUnloadedCallback;
 
-        protected Color BackgroundColor = Color.CornflowerBlue;
+        protected Color backgroundColor = Color.CornflowerBlue;
 
         protected Scene(Main game, bool unloadsContent = false)
         {
             this.game = game;
             this.unloadsContent = unloadsContent;
         }
+
+        public delegate void OnUnloaded();
+
         
         #region Parameters
         protected GraphicsDevice GraphicsDevice => game.GraphicsDevice;
@@ -40,23 +45,57 @@ namespace GDGame.Game.Scenes
         #endregion
         
         public abstract void Initialize();
-        public abstract void Update(GameTime gameTime);
-        
-        public virtual void Draw(GameTime gameTime)
+
+        private void PreUpdate()
         {
-            GraphicsDevice.Clear(BackgroundColor);
+            if (terminateOnNextTick)
+            {
+                Terminate();
+                
+                onUnloadedCallback.Invoke();
+            }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            PreUpdate();
+
+            if (!terminateOnNextTick)
+            {
+                UpdateScene(gameTime);
+            }
+            else
+            {
+                terminateOnNextTick = false;
+            }
+        }
+
+        protected abstract void UpdateScene(GameTime gameTime);
+        
+        public void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(backgroundColor);
+            DrawScene(gameTime);
         }
         
-        public abstract void Terminate();
-        
-        public virtual void UnloadScene()
+        protected abstract void DrawScene(GameTime gameTime);
+
+        protected virtual void PreTerminate()
         {
+        }
+
+        protected abstract void Terminate();
+        
+        public virtual void UnloadScene(OnUnloaded cb)
+        {
+            onUnloadedCallback = cb;
             if (unloadsContent) 
                 Content.Unload();
             
             CameraManager.Clear();
-            
-            Terminate();
+
+            terminateOnNextTick = true;
+            PreTerminate();
         }
     }
 }

@@ -5,34 +5,33 @@ namespace GDGame.Game.Scenes
 {
     public class SceneManager : DrawableGameComponent
     {
-        private Scene CurrentScene
-        {
-            get { return SceneList[currentSceneIndex];}
-        }
-        
+        private Scene CurrentScene => sceneList[currentSceneIndex];
+
         //So you can access by key and then request Scene at index to be switched to
-        public Dictionary<string, int> SceneIndexDictionary { get; private set; }
-        
-        private List<Scene> SceneList;
+        private Dictionary<string, int> SceneIndexDictionary { get; }
+
+        private List<Scene> sceneList;
         private int currentSceneIndex;
+        private int nextSceneIndex = -1;
+        private bool currentlySwitching;
 
         //The Game needs a SceneManager, and the SceneManager needs a Scene.
         public SceneManager(Microsoft.Xna.Framework.Game game) : base(game)
         {
-            SceneList = new List<Scene>();
+            sceneList = new List<Scene>();
             SceneIndexDictionary = new Dictionary<string, int>();
             currentSceneIndex = 0;
         }
 
         public void AddScene(string key, Scene s)
         {
-            SceneIndexDictionary.Add(key,SceneList.Count);
-            SceneList.Add(s);
+            SceneIndexDictionary.Add(key,sceneList.Count);
+            sceneList.Add(s);
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
-            SceneList[currentSceneIndex].Initialize();
+            sceneList[currentSceneIndex].Initialize();
         }
 
         public void NextScene()
@@ -46,11 +45,17 @@ namespace GDGame.Game.Scenes
         }
 
         //A loading screen would be nice but I don't have time to test and implement async operations, we just gotta live with the unresponsiveness for now.
-        public void SwitchScene(int sceneIndex)
+        private void SwitchScene(int sceneIndex)
         {
-            SceneList[currentSceneIndex].UnloadScene();
+            sceneList[currentSceneIndex].UnloadScene(OnCurrentSceneUnloaded);
+            nextSceneIndex = sceneIndex;
+            currentlySwitching = false;
+        }
 
-            currentSceneIndex = sceneIndex;
+        public void OnCurrentSceneUnloaded()
+        {
+            currentlySwitching = true;
+            currentSceneIndex = nextSceneIndex;
             CurrentScene.Initialize();
         }
 
@@ -59,7 +64,7 @@ namespace GDGame.Game.Scenes
             base.Update(gameTime);
             CurrentScene.Update(gameTime);
         }
-        
+
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
