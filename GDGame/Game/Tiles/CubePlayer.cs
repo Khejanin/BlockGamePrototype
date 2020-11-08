@@ -65,7 +65,7 @@ namespace GDGame.Game.Tiles
             IsAttached = false;
         }
 
-        public bool CheckWinCondition()
+        private bool CheckWinCondition()
         {
             HitResult hit = Raycaster.Raycast(this, Transform3D.Translation, Vector3.Up, true, 0.5f,false);
             return hit != null && hit.actor is GoalTile;

@@ -96,7 +96,7 @@ namespace GDGame.Game.Scenes
             Camera3D camera3D = new Camera3D("cam", ActorType.Camera3D, StatusType.Update, transform3D,
                 ProjectionParameters.StandardDeepFourThree);
             camera3D.ControllerList.Add(new RotationAroundActor("main_cam", ControllerType.FlightCamera,
-                KeyboardManager, 35, 20));
+                KeyboardManager, 20, 20));
 
             CameraManager.Add(camera3D);
             CameraManager.ActiveCameraIndex = 0; //0, 1, 2, 3
