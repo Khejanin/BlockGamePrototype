@@ -133,7 +133,7 @@ namespace GDGame.Game.Scenes
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, models["Enemy"]);
+                effectParameters, models["Box"]);
             goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f,ColliderType.CheckOnly));
 
             drawnActors = new Dictionary<string, DrawnActor3D>
@@ -351,7 +351,8 @@ namespace GDGame.Game.Scenes
 
         private void LoadTextures()
         {
-            //Texture2D cubeTexture = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/TextureCube");
+            Texture2D cubeTexture = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/TextureCube");
+            Texture2D basicFloor = Content.Load<Texture2D>("Assets/Textures/Block/BasicFloor");
             Texture2D playerTexture = Content.Load<Texture2D>("Assets/Textures/Block/block_purple");
             Texture2D attachableTexture = Content.Load<Texture2D>("Assets/Textures/Block/block_green");
             Texture2D finishTexture = Content.Load<Texture2D>("Assets/Textures/Block/block_lime");
@@ -366,10 +367,10 @@ namespace GDGame.Game.Scenes
 
             textures = new Dictionary<string, Texture2D>
             {
-                {"Player", playerTexture}, 
-                {"Attachable", attachableTexture}, 
-                {"Finish", finishTexture}, 
-                {"Box", cubeFloor}, 
+                {"Player", cubeTexture}, 
+                {"Attachable", cubeTexture}, 
+                {"Finish", cubeTexture}, 
+                {"Box", basicFloor}, 
                 {"WhiteSquare", whiteSquareTexture},
                 {"Compass", compassTexture},
                 {"Wall1", wall },
@@ -383,13 +384,15 @@ namespace GDGame.Game.Scenes
         private void LoadModels()
         {
             Model attachableModel = Content.Load<Model>("Assets/Models/AttachableCube");
+            Model redCube = Content.Load<Model>("Assets/Models/RedCube");
+            Model blueCube = Content.Load<Model>("Assets/Models/blueCube");
             Model playerModel = Content.Load<Model>("Assets/Models/Player");
             Model boxModel = Content.Load<Model>("Assets/Models/box2");
             Model enemyModel = Content.Load<Model>("Assets/Models/Enemy");
 
             models = new Dictionary<string, Model>
             {
-                {"Attachable", attachableModel}, {"Player", playerModel}, {"Box", boxModel}, {"Enemy", enemyModel}
+                {"Attachable", redCube}, {"Player", blueCube}, {"Box", boxModel}, {"Enemy", enemyModel}
             };
         }
 
