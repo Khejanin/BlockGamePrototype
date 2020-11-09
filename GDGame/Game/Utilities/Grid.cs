@@ -32,7 +32,7 @@ namespace GDLibrary
                 }
             }
             else
-                throw new FileNotFoundException("The level file with the path: " + levelFilePath + " was not found!");
+                throw new FileNotFoundException("The level file with the path: " + levelFilePath + " was not found! Remember to set Build Action to 'Content' and Copy to 'Copy always' in the file properties!");
 
             LevelData data = LevelDataConverter.ConvertJsonToLevelData(jsonString);
             grid = new GridTile[(int)data.gridSize.X, (int)data.gridSize.Y, (int)data.gridSize.Z];
