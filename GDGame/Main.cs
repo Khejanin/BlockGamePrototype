@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using GDGame.Game.Managers;
-using GDGame.Game.Scenes;
+using GDGame.Managers;
+using GDGame.Scenes;
+using GDLibrary.Actors;
+using GDLibrary.Managers;
+using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using GDLibrary.Managers;
-using GDLibrary.Actors;
-using GDLibrary.Parameters;
 
 namespace GDGame
 {

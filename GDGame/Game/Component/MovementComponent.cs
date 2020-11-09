@@ -1,15 +1,16 @@
 ﻿using System.Linq;
-using GDGame.Game.Tiles;
+using GDGame.Actors;
+using GDGame.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 
-namespace GDGame.Game.Controllers
+namespace GDGame.Component
 {
     public class MovementComponent : IController
     {
-        private GridTile parent;
+        private MovableTile parent;
 
         private int movementTime;
         private Curve1D curve1D;
@@ -35,7 +36,7 @@ namespace GDGame.Game.Controllers
 
         public void Update(GameTime gameTime, IActor actor)
         {
-            parent ??= actor as GridTile;
+            parent ??= actor as MovableTile;
 
             if (parent != null && parent.IsMoving)
             {
@@ -99,7 +100,7 @@ namespace GDGame.Game.Controllers
                         playerController.IsMoveValid(rot, parent.RotatePoint, endPos,offset))
                     {
                         //Calculate movement for each attached tile
-                        if (parent is CubePlayer player)
+                        if (parent is PlayerTile player)
                             foreach (MovementComponent movementController in player.AttachedTiles.Select(tile =>
                                 (MovementComponent) tile.ControllerList.Find(controller =>
                                     controller.GetType() == typeof(MovementComponent))))

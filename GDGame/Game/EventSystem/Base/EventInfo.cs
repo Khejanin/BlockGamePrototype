@@ -1,5 +1,5 @@
 ﻿
-namespace GDGame.Game.EventSystem.Base
+namespace GDGame.EventSystem
  {
      public abstract class EventInfo
      {

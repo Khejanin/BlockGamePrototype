@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using GDGame.Game.Enums;
-using GDGame.Game.Factory;
-using GDGame.Game.Tiles;
+using GDGame.Actors;
+using GDGame.Enums;
+using GDGame.Factory;
+using GDGame.Tiles;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
-namespace GDLibrary
+namespace GDGame.Utilities
 {
     public class Grid
     {
         private TileFactory tileFactory;
-        private static GridTile[,,] grid;
-        private static Dictionary<int, Shape> shapes;
+        private static BasicTile[,,] _grid;
+        private static Dictionary<int, Shape> _shapes;
 
         public Grid(TileFactory tileFactory)
         {
             this.tileFactory = tileFactory;
-            shapes = new Dictionary<int, Shape>();
+            _shapes = new Dictionary<int, Shape>();
         }
 
         public void GenerateGrid(string levelFilePath)
@@ -26,16 +27,14 @@ namespace GDLibrary
 
             if (File.Exists(levelFilePath))
             {
-                using (StreamReader reader = new StreamReader(File.OpenRead(levelFilePath)))
-                {
-                    jsonString = reader.ReadToEnd();
-                }
+                using StreamReader reader = new StreamReader(File.OpenRead(levelFilePath));
+                jsonString = reader.ReadToEnd();
             }
             else
                 throw new FileNotFoundException("The level file with the path: " + levelFilePath + " was not found! Remember to set Build Action to 'Content' and Copy to 'Copy always' in the file properties!");
 
             LevelData data = LevelDataConverter.ConvertJsonToLevelData(jsonString);
-            grid = new GridTile[(int)data.gridSize.X, (int)data.gridSize.Y, (int)data.gridSize.Z];
+            _grid = new BasicTile[(int)data.gridSize.X, (int)data.gridSize.Y, (int)data.gridSize.Z];
             Vector3 pos = Vector3.Zero;
 
 
@@ -48,12 +47,12 @@ namespace GDLibrary
                     {
                         if (data.gridValues[x, y, z] != ETileType.None) 
                         {
-                            GridTile tile = tileFactory.CreateTile(data.gridValues[x, y, z]);
+                            BasicTile tile = tileFactory.CreateTile(data.gridValues[x, y, z]);
                             tile?.SetPosition(pos + new Vector3(0, 0, data.gridSize.Z - 1));
-                            grid[x, y, (int)data.gridSize.Z - 1 - z] = tile;
+                            _grid[x, y, (int)data.gridSize.Z - 1 - z] = tile;
                         }
                         else
-                            grid[x, y, (int)data.gridSize.Z - 1 - z] = null;
+                            _grid[x, y, (int)data.gridSize.Z - 1 - z] = null;
 
                         pos.Z -= data.tileSize.Z; //MonoGames Forward is -UnitZ
                     }
@@ -66,35 +65,35 @@ namespace GDLibrary
                 pos.X += data.tileSize.X;
             }
 
-            CreateShapes(data, grid);
+            CreateShapes(data, _grid);
         }
 
-        private void CreateShapes(LevelData data, GridTile[,,] grid)
+        private void CreateShapes(LevelData data, BasicTile[,,] grid)
         {
             foreach (var shapesKey in data.shapes.Keys)
             {
                 Shape newShape = this.tileFactory.CreateShape();
-                foreach (var shape in data.shapes[shapesKey])
+                foreach (Vector3 shape in data.shapes[shapesKey])
                 {
-                    AttachableTile tile = grid[(int)shape.X, (int)shape.Y, (int)data.gridSize.Z - 1 - (int)shape.Z] as AttachableTile;
+                    MovableTile tile = grid[(int)shape.X, (int)shape.Y, (int)data.gridSize.Z - 1 - (int)shape.Z] as MovableTile;
                     newShape.AddTile(tile);
-                    tile.Shape = newShape;
+                    if (tile != null) tile.Shape = newShape;
                 }
-                shapes.Add((int)shapesKey, newShape);
+                _shapes.Add((int)shapesKey, newShape);
             }
         }
 
         public static void MoveTo(Vector3 start, Vector3 dest)
         {
-            grid[(int)dest.X,(int)dest.Y,(int)dest.Z] = grid[(int)start.X,(int)start.Y,(int)start.Z];
-            grid[(int)start.X,(int)start.Y,(int)start.Z] = null;
+            _grid[(int)dest.X,(int)dest.Y,(int)dest.Z] = _grid[(int)start.X,(int)start.Y,(int)start.Z];
+            _grid[(int)start.X,(int)start.Y,(int)start.Z] = null;
         }
 
         public struct GridPositionResult
         {
             public Vector3 pos;
-            public GridTile floorTile;
-            public GridTile positionTile;
+            public BasicTile floorTile;
+            public BasicTile positionTile;
             public bool validMovePos;
         }
 
@@ -106,14 +105,14 @@ namespace GDLibrary
                 int y = (int) pos.Y;
                 int z = (int) pos.Z;
                 
-                GridTile floorTile = grid[x, y - 1, z];
-                GridTile destinationTile = grid[x, y , z];
-                
-                GridPositionResult gpr = new GridPositionResult();
-                gpr.pos = pos;
-                gpr.floorTile = floorTile;
-                gpr.positionTile = destinationTile;
-                
+                BasicTile floorTile = _grid[x, y - 1, z];
+                BasicTile destinationTile = _grid[x, y , z];
+
+                GridPositionResult gpr = new GridPositionResult
+                {
+                    pos = pos, floorTile = floorTile, positionTile = destinationTile
+                };
+
                 bool hasFloor = floorTile != null;
                 bool validDest = destinationTile == null;
                 if (hasFloor && validDest)
@@ -142,8 +141,8 @@ namespace GDLibrary
         {
             try
             {
-                bool hasFloor = grid[x, y - 1, z] != null;
-                bool isFree = grid[x, y, z] == null;
+                bool hasFloor = _grid[x, y - 1, z] != null;
+                bool isFree = _grid[x, y, z] == null;
 
                 return hasFloor && isFree;
             }
@@ -155,17 +154,12 @@ namespace GDLibrary
 
         public static Shape GetShapeById(int id)
         {
-            if(shapes.ContainsKey(id)) 
-            {
-                return shapes[id];
-            }
-
-            return null;
+            return _shapes.ContainsKey(id) ? _shapes[id] : null;
         }
 
-        public GridTile[,,] GetGrid()
+        public BasicTile[,,] GetGrid()
         {
-            return grid;
+            return _grid;
         }
     }
 }

@@ -1,11 +1,11 @@
-using GDGame.Game.Managers;
+using GDGame.Managers;
 using GDLibrary.Actors;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GDGame.Game.Scenes
+namespace GDGame.Scenes
 {
     public abstract class Scene
     {

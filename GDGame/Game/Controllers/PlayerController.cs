@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using GDGame.Game.Tiles;
-using GDGame.Game.Utilities;
+using GDGame.Actors;
+using GDGame.Component;
+using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace GDGame.Game.Controllers
+namespace GDGame.Controllers
 {
     public class PlayerController : IController
     {
         private KeyboardManager keyboardManager;
-        private CubePlayer player;
+        private PlayerTile playerTile;
 
         public PlayerController(KeyboardManager keyboardManager)
         {
@@ -24,7 +24,7 @@ namespace GDGame.Game.Controllers
 
         public void Update(GameTime gameTime, IActor actor)
         {
-            player ??= (CubePlayer) actor;
+            playerTile ??= (PlayerTile) actor;
             if (keyboardManager.IsKeyPressed())
                 HandleKeyboardInput(gameTime);
         }
@@ -41,13 +41,13 @@ namespace GDGame.Game.Controllers
 
         private void HandlePlayerMovement()
         {
-            if (keyboardManager.IsFirstKeyPress(Keys.Space) && !player.IsAttached)
-                player.Attach();
+            if (keyboardManager.IsFirstKeyPress(Keys.Space) && !playerTile.IsAttached)
+                playerTile.Attach();
             else if (!keyboardManager.IsKeyDown(Keys.Space) && keyboardManager.IsStateChanged() &&
-                     player.IsAttached)
-                player.Detach();
+                     playerTile.IsAttached)
+                playerTile.Detach();
 
-            if (!player.IsMoving)
+            if (!playerTile.IsMoving)
             {
                 Vector3 moveDir = Vector3.Zero;
                 if (keyboardManager.IsKeyDown(Keys.Up))
@@ -62,7 +62,7 @@ namespace GDGame.Game.Controllers
 
                 if (moveDir != Vector3.Zero)
                 {
-                    MovementComponent movementComponent = (MovementComponent) player.ControllerList.Find(controller =>
+                    MovementComponent movementComponent = (MovementComponent) playerTile.ControllerList.Find(controller =>
                         controller.GetType() == typeof(MovementComponent));
                     movementComponent?.Move(moveDir);
                 }
@@ -71,13 +71,13 @@ namespace GDGame.Game.Controllers
 
         public bool IsMoveValid(Quaternion rotationToApply, Vector3 rotatePoint, Vector3 playerTargetPos, Vector3 offset)
         {
-            List<Vector3> initials = player.AttachedTiles.Select(i => i.Transform3D.Translation).ToList();
-            initials.Insert(0, player.Transform3D.Translation);
-            List<Vector3> ends = player.AttachedTiles.Select(i => i.CalculateTargetPosition(rotatePoint, rotationToApply)).ToList();
+            List<Vector3> initials = playerTile.AttachedTiles.Select(i => i.Transform3D.Translation).ToList();
+            initials.Insert(0, playerTile.Transform3D.Translation);
+            List<Vector3> ends = playerTile.AttachedTiles.Select(i => i.CalculateTargetPosition(rotatePoint, rotationToApply)).ToList();
             ends.Insert(0, playerTargetPos);
             List<Raycaster.HitResult> results = new List<Raycaster.HitResult>();
             List<Raycaster.FloorHitResult> floorHitResults = new List<Raycaster.FloorHitResult>();
-            player.PlayerCastAll(offset,initials, ends,ref results,ref floorHitResults);
+            playerTile.PlayerCastAll(offset,initials, ends,ref results,ref floorHitResults);
             return results.Count == 0 && floorHitResults.Count > 0;
         }
 

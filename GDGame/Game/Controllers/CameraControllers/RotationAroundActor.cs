@@ -6,7 +6,7 @@ using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace GDGame.Game.Controllers.CameraControllers
+namespace GDGame.Controllers
 {
     public class RotationAroundActor : Controller
     {

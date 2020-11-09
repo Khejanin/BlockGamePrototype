@@ -12,13 +12,7 @@
 #define USE_UNITY_DEBUGGING
 #endif
 
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-
 #if PARSE_ESCAPED_UNICODE
-using System.Text.RegularExpressions;
 #endif
 
 #if USE_UNITY_DEBUGGING
@@ -26,8 +20,13 @@ using UnityEngine;
 #else
 using System.Diagnostics;
 #endif
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
 
-namespace Boomlagoon.JSON {
+namespace GDGame.Utilities {
 
 	public static class Extensions {
 		public static T Pop<T>(this List<T> list) {

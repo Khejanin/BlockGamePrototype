@@ -3,7 +3,7 @@ using GDLibrary.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
-namespace GDGame.Game.Actors.Audio
+namespace GDGame.Actors
 {
     public class Sounds : Actor
     {

@@ -3,12 +3,13 @@ using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework.Graphics;
 
-
-namespace GDGame.Game.Tiles
+namespace GDGame.Actors
 {
-    public class GoalTile : GridTile
+    public class GoalTile : BasicTile
     {
-        public GoalTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform, effectParameters, model)
+        public GoalTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
+            EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform,
+            effectParameters, model)
         {
         }
 
