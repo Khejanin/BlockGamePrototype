@@ -352,6 +352,7 @@ namespace GDGame.Scenes
             Texture2D cubeTexture = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/TextureCube");
             Texture2D basicFloor = Content.Load<Texture2D>("Assets/Textures/Block/BasicFloor");
             Texture2D basicYGFloor = Content.Load<Texture2D>("Assets/Textures/Block/floor");
+            Texture2D basicBGFloor = Content.Load<Texture2D>("Assets/Textures/Block/BlockTextureBlue");
             Texture2D playerTexture = Content.Load<Texture2D>("Assets/Textures/Block/block_purple");
             Texture2D attachableTexture = Content.Load<Texture2D>("Assets/Textures/Block/block_green");
             Texture2D finishTexture = Content.Load<Texture2D>("Assets/Textures/Block/block_lime");
@@ -369,7 +370,7 @@ namespace GDGame.Scenes
                 {"Player", cubeTexture}, 
                 {"Attachable", cubeTexture}, 
                 {"Finish", cubeTexture}, 
-                {"Box", basicYGFloor}, 
+                {"Box", basicBGFloor}, 
                 {"WhiteSquare", whiteSquareTexture},
                 {"Compass", compassTexture},
                 {"Wall1", wall },
