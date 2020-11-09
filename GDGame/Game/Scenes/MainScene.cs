@@ -345,7 +345,6 @@ namespace GDGame.Scenes
 
 
             SoundManager.NextSong();
-            SoundManager.volumeDown(); SoundManager.volumeDown();
         }
 
         private void LoadTextures()
@@ -451,9 +450,9 @@ namespace GDGame.Scenes
                 SoundManager.StopSong();
 
             //Volume Changes
-            if (KeyboardManager.IsKeyDown(Keys.L))
+            if (KeyboardManager.IsFirstKeyPress(Keys.L))
                 SoundManager.volumeUp();
-            else if (KeyboardManager.IsKeyDown(Keys.K))
+            else if (KeyboardManager.IsFirstKeyPress(Keys.K))
                 SoundManager.volumeDown();
 
             //Pause/resume music

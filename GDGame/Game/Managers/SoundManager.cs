@@ -13,6 +13,7 @@ namespace GDGame.Managers
         private int activeSongIndex = 0;
         private Sounds currentSong;
         private SoundEffectInstance mySoundInstance;
+        private float masterSound = 0.5f;
 
         /// <summary>
         /// Indexer for the camera manager
@@ -99,6 +100,7 @@ namespace GDGame.Managers
                         {
                             this.mySoundInstance = s.GetSfx().CreateInstance();
                             this.mySoundInstance.IsLooped = true;
+                            this.mySoundInstance.Volume = this.masterSound;
                             this.mySoundInstance.Play();
                         }
                     }
@@ -175,11 +177,12 @@ namespace GDGame.Managers
         {
             pauseSong();
 
-            float newVol = (float)(this.mySoundInstance.Volume + 0.1);
-            if (newVol >= 1.0)
-                newVol = 1;
+            this.masterSound = this.masterSound + 0.2f;
+
+            if (this.masterSound >= 1.0)
+                this.masterSound = 1;
             
-            this.mySoundInstance.Volume = newVol;
+            this.mySoundInstance.Volume = this.masterSound;
             resumeSong();
         }
 
@@ -187,16 +190,22 @@ namespace GDGame.Managers
         {
             pauseSong();
 
-            float newVol = (float)(this.mySoundInstance.Volume - 0.1);
-            if (newVol <= 0)
-                newVol = 0;
+            this.masterSound = this.masterSound - 0.2f;
 
-            this.mySoundInstance.Volume = newVol;
+            if (this.masterSound <= 0)
+                this.masterSound = 0;
+
+            this.mySoundInstance.Volume = this.masterSound;
             resumeSong();
         }
 
         public override void Update(GameTime gameTime)
         {
+            //if(this.mySoundInstance.State == SoundState.Stopped)
+            //{
+            //    this.mySoundInstance.Play();
+            //}
+
             base.Update(gameTime);
         }
     }
