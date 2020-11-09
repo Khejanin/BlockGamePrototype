@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Permissions;
-using GDGame.Game.Actors.Audio;
-using GDGame.Game.Controllers;
-using GDGame.Game.Controllers.CameraControllers;
-using GDGame.Game.EventSystem;
-using GDGame.Game.Factory;
-using GDGame.Game.Tiles;
+using GDGame.Actors;
+using GDGame.Component;
+using GDGame.Controllers;
+using GDGame.Enums;
+using GDGame.EventSystem;
+using GDGame.Factory;
 using GDGame.Game.UI;
-using GDLibrary;
+using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Factories;
@@ -20,7 +19,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Color = Microsoft.Xna.Framework.Color;
 
-namespace GDGame.Game.Scenes
+namespace GDGame.Scenes
 {
     public class MainScene : Scene
     {
@@ -112,24 +111,24 @@ namespace GDGame.Game.Scenes
         {
             EffectParameters effectParameters = new EffectParameters(ModelEffect, textures["Box"], Color.White, 1);
             var transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
-            StaticTile staticTile = new StaticTile("StaticTile", ActorType.Primitive,
+            BasicTile staticTile = new BasicTile("StaticTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"]);
             staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Attachable"], Color.White, 1);
-            AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
+            MovableTile movableTile = new MovableTile("AttachableTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Attachable"]);
-            attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
-            attachableTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
+            movableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            movableTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Player"], Color.White, 1);
-            CubePlayer player = new CubePlayer("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Player"], Game.Fonts["UI"]);
-            player.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
-            player.ControllerList.Add(new PlayerController(KeyboardManager));
-            player.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
-            player.ControllerList.Add(new RotationComponent());
-            player.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
+            PlayerTile playerTile = new PlayerTile("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, models["Player"]);
+            playerTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            playerTile.ControllerList.Add(new PlayerController(KeyboardManager));
+            playerTile.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
+            playerTile.ControllerList.Add(new RotationComponent());
+            playerTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
@@ -138,7 +137,7 @@ namespace GDGame.Game.Scenes
 
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
-                {"StaticTile", staticTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", player},
+                {"StaticTile", staticTile}, {"AttachableBlock", movableTile}, {"PlayerBlock", playerTile},
                 {"GoalTile", goal}
             };
         }
@@ -398,17 +397,17 @@ namespace GDGame.Game.Scenes
 
         private void InitEvents()
         {
-            EventSystem.Base.EventSystem.RegisterListener<GameStateMessageEventInfo>(OnGameStateMessageReceived);
+            EventSystem.EventSystem.RegisterListener<GameStateMessageEventInfo>(OnGameStateMessageReceived);
         }
 
         private void OnGameStateMessageReceived(GameStateMessageEventInfo eventInfo)
         {
             switch (eventInfo.gameState)
             {
-                case GameState.WON:
+                case GameState.Won:
                     Game.SceneManager.NextScene();
                     break;
-                case GameState.LOST:
+                case GameState.Lost:
                     //You know how it is on this bitch of an earth
                     break;
             }
@@ -426,9 +425,9 @@ namespace GDGame.Game.Scenes
             List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
             if (players.Count > 0)
             {
-                CubePlayer player = players[0] as CubePlayer;
+                PlayerTile playerTile = players[0] as PlayerTile;
                 UiManager["ToolTip"].StatusType =
-                    player?.AttachCandidates.Count > 0 ? StatusType.Drawn : StatusType.Off;
+                    playerTile?.AttachCandidates.Count > 0 ? StatusType.Drawn : StatusType.Off;
             }
 
             if (KeyboardManager.IsFirstKeyPress(Keys.C))

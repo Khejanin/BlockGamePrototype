@@ -1,28 +1,25 @@
 ﻿using System;
-using GDGame.Game.Enums;
-using GDGame.Game.Utilities;
+using System.Collections.Generic;
+using System.Linq;
+using GDGame.Enums;
+using GDGame.EventSystem;
+using GDGame.Tiles;
 using GDLibrary.Enums;
+using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using System.Linq;
-using GDGame.Game.EventSystem;
-using GDGame.Game.Scenes;
-using GDLibrary.Interfaces;
-using static GDGame.Game.Utilities.Raycaster;
+using static GDGame.Utilities.Raycaster;
 
-namespace GDGame.Game.Tiles
+namespace GDGame.Actors
 {
-    public class CubePlayer : GridTile, ICloneable
+    public class PlayerTile : MovableTile, ICloneable
     {
-        private SpriteFont font;
-
         private List<Shape> attachCandidates;
 
         public List<Shape> AttachCandidates => attachCandidates;
 
-        public List<AttachableTile> AttachedTiles { get; }
+        public List<MovableTile> AttachedTiles { get; }
 
         public bool IsAttached { get; private set; }
 
@@ -32,12 +29,11 @@ namespace GDGame.Game.Tiles
             public HitResult hit;
         }
 
-        public CubePlayer(string id, ActorType actorType, StatusType statusType,
-            Transform3D transform, EffectParameters effectParameters, Model model, SpriteFont font)
+        public PlayerTile(string id, ActorType actorType, StatusType statusType,
+            Transform3D transform, EffectParameters effectParameters, Model model)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
-            this.font = font;
-            AttachedTiles = new List<AttachableTile>();
+            AttachedTiles = new List<MovableTile>();
             attachCandidates = new List<Shape>();
         }
 
@@ -45,7 +41,7 @@ namespace GDGame.Game.Tiles
         {
             if (attachCandidates.Count == 0) return;
 
-            foreach (AttachableTile tile in attachCandidates.SelectMany(shape =>  shape.AttachableTiles))
+            foreach (MovableTile tile in attachCandidates.SelectMany(shape =>  shape.AttachableTiles))
             {
                 AttachedTiles.Add(tile);
                 tile.EffectParameters.DiffuseColor = Color.Green;
@@ -56,7 +52,7 @@ namespace GDGame.Game.Tiles
 
         public void Detach()
         {
-            foreach (AttachableTile tile in AttachedTiles)
+            foreach (MovableTile tile in AttachedTiles)
             {
                 tile.EffectParameters.DiffuseColor = Color.White;
             }
@@ -67,8 +63,8 @@ namespace GDGame.Game.Tiles
 
         private bool CheckWinCondition()
         {
-            HitResult hit = Raycaster.Raycast(this, Transform3D.Translation, Vector3.Up, true, 0.5f,false);
-            return hit != null && hit.actor is GoalTile;
+            HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Up, true, 0.5f,false);
+            return hit?.actor is GoalTile;
         }
 
         /// <summary>
@@ -85,7 +81,7 @@ namespace GDGame.Game.Tiles
                  {
                     UpdateAttachCandidates(); //remove this later
                     bool won = CheckWinCondition(); //remove this later
-                    if (won) EventSystem.Base.EventSystem.FireEvent(new GameStateMessageEventInfo(GameState.WON));
+                    if (won) EventSystem.EventSystem.FireEvent(new GameStateMessageEventInfo(GameState.Won));
                  }
              }
         }
@@ -96,7 +92,7 @@ namespace GDGame.Game.Tiles
             attachCandidates.Clear();
 
             foreach (PlayerSurroundCheck check in CheckSurroundings())
-                if (check.hit?.actor is AttachableTile tile)
+                if (check.hit?.actor is MovableTile tile)
                     attachCandidates.Add(tile.Shape);
         }
 
@@ -128,18 +124,18 @@ namespace GDGame.Game.Tiles
 
         public new object Clone()
         {
-            CubePlayer cubePlayer = new CubePlayer("clone - " + ID, ActorType, StatusType,
+            PlayerTile playerTile = new PlayerTile("clone - " + ID, ActorType, StatusType,
                 Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as EffectParameters, Model, font);
+                EffectParameters.Clone() as EffectParameters, Model);
             if (ControllerList != null)
             {
                 foreach (IController controller in ControllerList)
                 {
-                    cubePlayer.ControllerList.Add(controller.Clone() as IController);
+                    playerTile.ControllerList.Add(controller.Clone() as IController);
                 }
             }
 
-            return cubePlayer;
+            return playerTile;
         }
     }
 }

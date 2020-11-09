@@ -1,22 +1,23 @@
-﻿using GDLibrary.Actors;
+﻿using System.Collections.Generic;
+using GDGame.Actors;
+using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
-using System.Collections.Generic;
 
-namespace GDGame.Game.Tiles
+namespace GDGame.Tiles
 {
     public class Shape : Actor3D
     {
-        private List<AttachableTile> attachableTiles;
+        private List<MovableTile> attachableTiles;
 
-        public List<AttachableTile> AttachableTiles { get => attachableTiles; set => attachableTiles = value; }
+        public List<MovableTile> AttachableTiles { get => attachableTiles; set => attachableTiles = value; }
 
         public Shape(string id, ActorType actorType, StatusType statusType, Transform3D transform3D) : base(id, actorType, statusType, transform3D)
         {
-            AttachableTiles = new List<AttachableTile>();
+            AttachableTiles = new List<MovableTile>();
         }
 
-        public void AddTile(AttachableTile tile)
+        public void AddTile(MovableTile tile)
         {
             AttachableTiles.Add(tile);
         }

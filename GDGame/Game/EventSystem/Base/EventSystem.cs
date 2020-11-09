@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GDGame.Game.EventSystem.Base
+namespace GDGame.EventSystem
 {
     public static class EventSystem
     {

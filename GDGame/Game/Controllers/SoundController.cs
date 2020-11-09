@@ -1,19 +1,18 @@
-﻿using GDLibrary;
-using GDGame.Game.Tiles;
-using GDLibrary.Enums;
-using GDLibrary.Interfaces;
+﻿using GDGame.Actors;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
-using GDGame.Game.Managers;
+using GDGame.Managers;
+using GDLibrary.Enums;
+using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 
-namespace GDGame.Game.Controllers
+namespace GDGame.Controllers
 {
     internal class SoundController : IController
     {
         private KeyboardManager keyboardManager;
-        private CubePlayer player;
+        private PlayerTile playerTile;
         private SoundManager soundManager;
         private string moveSFX, attachSFX;
         private SoundEffectInstance playerMove, playerAttach;
@@ -47,7 +46,7 @@ namespace GDGame.Game.Controllers
 
         public void Update(GameTime gameTime, IActor actor)
         {
-            player ??= actor as CubePlayer;
+            playerTile ??= actor as PlayerTile;
             if (this.keyboardManager.IsKeyPressed())
                 HandleKeyboardInput(gameTime);
         }
@@ -59,11 +58,11 @@ namespace GDGame.Game.Controllers
 
         private void HandlePlayerMovement()
         {
-            if (keyboardManager.IsFirstKeyPress(Keys.Space) && player.IsAttached && this.playerAttach != null)   
+            if (keyboardManager.IsFirstKeyPress(Keys.Space) && playerTile.IsAttached && this.playerAttach != null)   
                     playerAttach.Play();
 
 
-            if (player.IsMoving)
+            if (playerTile.IsMoving)
             {
                 if (this.playerMove != null && this.keyboardManager.IsFirstKeyPress(Keys.Up) || this.keyboardManager.IsFirstKeyPress(Keys.Down) 
                     || this.keyboardManager.IsFirstKeyPress(Keys.Left) || this.keyboardManager.IsFirstKeyPress(Keys.Right))

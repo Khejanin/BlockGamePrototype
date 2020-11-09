@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using GDGame.Game.Actors.Audio;
+using GDGame.Actors;
 using GDLibrary.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
-namespace GDGame.Game.Managers
+namespace GDGame.Managers
 {
     public class SoundManager : GameComponent
     {

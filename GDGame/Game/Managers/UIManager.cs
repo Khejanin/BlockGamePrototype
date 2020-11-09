@@ -5,7 +5,7 @@ using GDLibrary.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GDGame.Game.Managers
+namespace GDGame.Managers
 {
     public class UiManager : DrawableGameComponent
     {

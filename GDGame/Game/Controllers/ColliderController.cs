@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using GDGame.Game.Interfaces;
+﻿using GDGame.Enums;
+using GDGame.Interfaces;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
@@ -7,19 +7,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SharpDX.Direct2D1.Effects;
 
-namespace GDGame.Game.Controllers
+namespace GDGame.Controllers
 {
-    public enum ColliderShape
-    {
-        Cube,
-        Sphere
-    }
-
-    public enum ColliderType
-    {
-        CheckOnly,
-        Blocking
-    }
 
     public abstract class ColliderController : IDrawnController
     {

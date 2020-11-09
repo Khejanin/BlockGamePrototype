@@ -1,13 +1,7 @@
-using GDGame.Game.EventSystem.Base;
+using GDGame.Enums;
 
-namespace GDGame.Game.EventSystem
+namespace GDGame.EventSystem
 {
-    public enum GameState
-    {
-        WON,
-        LOST
-    }
-    
     public class GameStateMessageEventInfo : EventInfo
     {
         public GameState gameState;

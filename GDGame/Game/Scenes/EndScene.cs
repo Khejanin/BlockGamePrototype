@@ -6,7 +6,7 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace GDGame.Game.Scenes
+namespace GDGame.Scenes
 {
     public class EndScene : Scene
     {

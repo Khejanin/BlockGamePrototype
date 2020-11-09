@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using GDGame.Scenes;
 using Microsoft.Xna.Framework;
 
-namespace GDGame.Game.Scenes
+namespace GDGame.Managers
 {
     public class SceneManager : DrawableGameComponent
     {

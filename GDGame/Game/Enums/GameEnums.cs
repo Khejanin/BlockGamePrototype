@@ -1,4 +1,4 @@
-﻿namespace GDGame.Game.Enums
+﻿namespace GDGame.Enums
 {
     public enum EDirection : sbyte
     {
@@ -19,5 +19,23 @@
         Trigger,
         PlayerStart,
         Win
+    }
+    
+    public enum ColliderShape
+    {
+        Cube,
+        Sphere
+    }
+
+    public enum ColliderType
+    {
+        CheckOnly,
+        Blocking
+    }
+    
+    public enum GameState
+    {
+        Won,
+        Lost
     }
 }

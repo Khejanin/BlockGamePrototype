@@ -3,7 +3,7 @@ using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GDGame.Game.Interfaces
+namespace GDGame.Interfaces
 {
     public interface IDrawnController : IController
     {

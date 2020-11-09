@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 
-namespace GDGame
+namespace GDGame.Constants
 {
     public class GameConstants
     {
