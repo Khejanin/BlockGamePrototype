@@ -330,9 +330,9 @@ namespace GDGame.Scenes
         private void LoadSounds()
         {
             //step 1 - load songs
-            SoundEffect track01 = Content.Load<SoundEffect>("Assets/GameTracks/GameTrack01");
-            SoundEffect track02 = Content.Load<SoundEffect>("Assets/GameTracks/GameTrack02");
-            SoundEffect track03 = Content.Load<SoundEffect>("Assets/GameTracks/GameTrack03");
+            SoundEffect track01 = Content.Load<SoundEffect>("Assets/GameTracks/GameTrack02");
+            SoundEffect track02 = Content.Load<SoundEffect>("Assets/GameTracks/GameTrack03");
+            SoundEffect track03 = Content.Load<SoundEffect>("Assets/GameTracks/gameTrack04");
             SoundEffect track04 = Content.Load<SoundEffect>("Assets/Sound/Knock03");
             SoundEffect track05 = Content.Load<SoundEffect>("Assets/Sound/Click01");
 

@@ -132,7 +132,7 @@ namespace GDGame.Managers
             }
 
             SwitchSong(next);
-            this.mySoundInstance.Volume = (float)0.5;
+            this.mySoundInstance.Volume = this.masterSound;
             this.mySoundInstance.Play();
         }
 
