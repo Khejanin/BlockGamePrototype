@@ -31,12 +31,15 @@ namespace GDGame.Scenes
 
         private bool nextScene = false;
 
+        private string levelname;
+
 
         ////FOR SKYBOX____ TEMP
         private PrimitiveObject archetypalTexturedQuad, primitiveObject;
 
-        public MainScene(Main game) : base(game)
+        public MainScene(Main game,string levelname = "Paul_Level_6.json") : base(game)
         {
+            this.levelname = @"Game\LevelFiles\" + levelname;
         }
 
         public override void Initialize()
@@ -104,7 +107,7 @@ namespace GDGame.Scenes
         private void InitGrid()
         {
             Grid grid = new Grid(new TileFactory(ObjectManager, drawnActors));
-            grid.GenerateGrid(@"Game\LevelFiles\Paul_Level_6.json");
+            grid.GenerateGrid(levelname);
         }
 
         private void InitStaticModels()
