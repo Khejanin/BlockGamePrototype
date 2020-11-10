@@ -104,7 +104,7 @@ namespace GDGame.Scenes
         private void InitGrid()
         {
             Grid grid = new Grid(new TileFactory(ObjectManager, drawnActors));
-            grid.GenerateGrid(@"Game\LevelFiles\presentationLevel1.json");
+            grid.GenerateGrid(@"Game\LevelFiles\Paul_Level_6.json");
         }
 
         private void InitStaticModels()
@@ -125,7 +125,7 @@ namespace GDGame.Scenes
             PlayerTile playerTile = new PlayerTile("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, models["Player"]);
             playerTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
-            playerTile.ControllerList.Add(new PlayerController(KeyboardManager));
+            playerTile.ControllerList.Add(new PlayerController(KeyboardManager,GamePadManager));
             playerTile.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
             playerTile.ControllerList.Add(new RotationComponent());
             playerTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));

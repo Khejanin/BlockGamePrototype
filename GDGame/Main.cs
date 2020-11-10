@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using GDGame.Managers;
 using GDGame.Scenes;
+using GDLibrary;
 using GDLibrary.Actors;
 using GDLibrary.Managers;
 using GDLibrary.Parameters;
@@ -25,6 +26,8 @@ namespace GDGame
         public ObjectManager ObjectManager { get; private set; }
 
         public KeyboardManager KeyboardManager { get; private set; }
+        
+        public GamePadManager GamePadManager { get; private set; }
 
         public MouseManager MouseManager { get; private set; }
 
@@ -110,6 +113,10 @@ namespace GDGame
             //Keyboard
             KeyboardManager = new KeyboardManager(this);
             Components.Add(KeyboardManager);
+            
+            //Gamepad
+            GamePadManager = new GamePadManager(this,1);
+            Components.Add(GamePadManager);
 
             //Mouse
             MouseManager = new MouseManager(this, false);

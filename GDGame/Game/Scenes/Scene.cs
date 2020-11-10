@@ -1,4 +1,5 @@
 using GDGame.Managers;
+using GDLibrary;
 using GDLibrary.Actors;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
@@ -31,6 +32,7 @@ namespace GDGame.Scenes
         protected ContentManager Content => game.Content;
         protected ObjectManager ObjectManager => game.ObjectManager;
         protected KeyboardManager KeyboardManager => game.KeyboardManager;
+        protected GamePadManager GamePadManager => game.GamePadManager;
         protected CameraManager<Camera3D> CameraManager => game.CameraManager;
         protected MouseManager MouseManager => game.MouseManager;
         protected SoundManager SoundManager => game.SoundManager;

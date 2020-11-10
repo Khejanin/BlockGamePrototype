@@ -4,6 +4,7 @@ using System.Linq;
 using GDGame.Actors;
 using GDGame.Component;
 using GDGame.Utilities;
+using GDLibrary;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
@@ -15,11 +16,13 @@ namespace GDGame.Controllers
     public class PlayerController : IController
     {
         private KeyboardManager keyboardManager;
+        private GamePadManager gamePadManager;
         private PlayerTile playerTile;
 
-        public PlayerController(KeyboardManager keyboardManager)
+        public PlayerController(KeyboardManager keyboardManager,GamePadManager gamePadManager)
         {
             this.keyboardManager = keyboardManager;
+            this.gamePadManager = gamePadManager;
         }
 
         public void Update(GameTime gameTime, IActor actor)
@@ -41,23 +44,23 @@ namespace GDGame.Controllers
 
         private void HandlePlayerMovement()
         {
-            if (keyboardManager.IsFirstKeyPress(Keys.Space) && !playerTile.IsAttached)
+            if ((keyboardManager.IsFirstKeyPress(Keys.Space) || gamePadManager.IsButtonPressed(PlayerIndex.One,Buttons.RightTrigger)) && !playerTile.IsAttached)
                 playerTile.Attach();
-            else if (!keyboardManager.IsKeyDown(Keys.Space) && keyboardManager.IsStateChanged() &&
+            else if ((!keyboardManager.IsKeyDown(Keys.Space) || !gamePadManager.IsButtonPressed(PlayerIndex.One,Buttons.RightTrigger)) && keyboardManager.IsStateChanged() &&
                      playerTile.IsAttached)
                 playerTile.Detach();
 
             if (!playerTile.IsMoving)
             {
                 Vector3 moveDir = Vector3.Zero;
-                if (keyboardManager.IsKeyDown(Keys.Up))
+                if (keyboardManager.IsKeyDown(Keys.Up) || gamePadManager.IsButtonPressed(PlayerIndex.One,Buttons.LeftThumbstickUp))
                     moveDir = -Vector3.UnitZ;
-                else if (keyboardManager.IsKeyDown(Keys.Down))
+                else if (keyboardManager.IsKeyDown(Keys.Down)|| gamePadManager.IsButtonPressed(PlayerIndex.One,Buttons.LeftThumbstickDown))
                     moveDir = Vector3.UnitZ;
 
-                if (keyboardManager.IsKeyDown(Keys.Left))
+                if (keyboardManager.IsKeyDown(Keys.Left)|| gamePadManager.IsButtonPressed(PlayerIndex.One,Buttons.LeftThumbstickLeft))
                     moveDir = -Vector3.UnitX;
-                else if (keyboardManager.IsKeyDown(Keys.Right))
+                else if (keyboardManager.IsKeyDown(Keys.Right)|| gamePadManager.IsButtonPressed(PlayerIndex.One,Buttons.LeftThumbstickRight))
                     moveDir = Vector3.UnitX;
 
                 if (moveDir != Vector3.Zero)
@@ -83,7 +86,7 @@ namespace GDGame.Controllers
 
         public object Clone()
         {
-            return new PlayerController(keyboardManager);
+            return new PlayerController(keyboardManager,gamePadManager);
         }
     }
 }
