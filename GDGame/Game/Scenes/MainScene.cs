@@ -104,7 +104,7 @@ namespace GDGame.Scenes
         private void InitGrid()
         {
             Grid grid = new Grid(new TileFactory(ObjectManager, drawnActors));
-            grid.GenerateGrid(@"Game\LevelFiles\Paul_Level_5.json");
+            grid.GenerateGrid(@"Game\LevelFiles\presentationLevel1.json");
         }
 
         private void InitStaticModels()
@@ -193,7 +193,11 @@ namespace GDGame.Scenes
             location = new Point((int) (screenWidth - 50) - border, border + 50);
             size = new Point(100);
             pos = new Rectangle(location, size);
-            uiSprite = new UiSprite(StatusType.Drawn, textures["Compass"], pos, Color.White);
+            
+            uiSprite = new UiSprite(StatusType.Drawn, textures["Circle"], pos, Color.White);
+            UiManager.AddUiElement("Circle", uiSprite);
+            
+            uiSprite = new UiSprite(StatusType.Drawn,textures["Compass"],pos,Color.White);
             UiManager.AddUiElement("Compass", uiSprite);
 
             heightFromBottom = 75;
@@ -219,7 +223,7 @@ namespace GDGame.Scenes
             UiManager.AddUiElement("MovesNumeric", uiText);
 
             text = "Hold Space To Attach";
-            uiText = new UiText(StatusType.Off, text, Game.Fonts["UI"], Vector2.Zero, Color.Black, false);
+            uiText = new UiText(StatusType.Off, text, Game.Fonts["UI"], Vector2.Zero, Color.White, false);
             UiManager.AddUiElement("ToolTip", uiText);
         }
 
@@ -359,6 +363,7 @@ namespace GDGame.Scenes
             Texture2D whiteSquareTexture = Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare");
             Texture2D compassTexture = Content.Load<Texture2D>("Assets/Textures/Base/BasicCompass");
             Texture2D cubeFloor = Content.Load<Texture2D>("Assets/Textures/Block/block_yellow");
+            Texture2D circle = Content.Load<Texture2D>("Assets/Textures/circle");
             Texture2D logo = Content.Load<Texture2D>("Assets/Textures/Menu/logo");
             Texture2D logoMirror = Content.Load<Texture2D>("Assets/Textures/Menu/logo_mirror");
 
@@ -376,6 +381,7 @@ namespace GDGame.Scenes
                 {"Wall1", wall },
                 {"Wall", floor },
                 {"Floor", floor },
+                {"Circle",circle},
                 {"Logo", logo },
                 {"LogoMirror", logoMirror }
             };
