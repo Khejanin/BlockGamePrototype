@@ -49,6 +49,7 @@ namespace GDGame
         private float worldScale = 3000;
         private PrimitiveObject primitiveObject = null;
         public Effect testEffect;
+        public Effect testEffect2;
 
 
         public Main()
@@ -132,6 +133,7 @@ namespace GDGame
         private void LoadEffects()
         {
             testEffect = Content.Load<Effect>("Assets/Effects/test");
+            testEffect2 = Content.Load<Effect>("Assets/Effects/test2");
         }
         
         private void InitEffect()

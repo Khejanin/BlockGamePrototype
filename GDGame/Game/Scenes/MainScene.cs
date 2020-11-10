@@ -29,9 +29,12 @@ namespace GDGame.Game.Scenes
         private Dictionary<string, Texture2D> textures;
         private Dictionary<string, DrawnActor3D> drawnActors;
 
+        public static Transform3D playerTransform3D;
+
 
         ////FOR SKYBOX____ TEMP
         private PrimitiveObject archetypalTexturedQuad, primitiveObject;
+        private TestEffectParameters testEffectParameters;
 
         public MainScene(Main game) : base(game)
         {
@@ -44,6 +47,7 @@ namespace GDGame.Game.Scenes
             InitDrawnContent();
 
             SetTargetToCamera();
+            playerTransform3D = ObjectManager.FindAll(actor3D => actor3D is CubePlayer)[0].Transform3D;
         }
 
         private void SetTargetToCamera()
@@ -116,13 +120,14 @@ namespace GDGame.Game.Scenes
                 StatusType.Update | StatusType.Drawn, transform3D, wireframeEffectParameters, models["Box"]);
 
             BasicEffectParameters effectParameters = new BasicEffectParameters(ModelEffect, textures["Box"], Color.White, 1);
-            
+
             CelEffectParameters celEffectParameters = new CelEffectParameters(Game.testEffect, textures["Box"], Color.White, 1);
+            testEffectParameters = new TestEffectParameters(Game.testEffect2, null ,textures["Box"], Color.White, 1);
             
             
             transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
             StaticTile staticTile = new StaticTile("StaticTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"]);
+                StatusType.Drawn | StatusType.Update, transform3D, testEffectParameters, models["Box"]);
             staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
             effectParameters = new BasicEffectParameters(ModelEffect, textures["Cube"], Color.White, 1);

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using GDGame.Game.Scenes;
 using GDLibrary.Actors;
+using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -219,6 +221,70 @@ namespace GDGame.Game.Parameters.Effect
         public override object Clone()
         {
             return new CelEffectParameters(effect,texture2D,color,alpha);
+        }
+    }
+    
+    public class TestEffectParameters : EffectParameters
+    {
+        //Not currently used
+        protected Texture2D texture2D;
+        protected Color color;
+        protected float alpha;
+        protected Transform3D playerPosition;
+
+        public Transform3D PlayerPosition
+        {
+            get => playerPosition;
+            set => playerPosition = value;
+        }
+
+        public TestEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect,Transform3D position, Texture2D t, Color c,float a) : base(effect)
+        {
+            texture2D = t;
+            color = c;
+            alpha = a;
+            playerPosition = position;
+        }
+        
+        protected override void SetupMaterial(Matrix world, Camera3D camera3D)
+        {
+            effect.Parameters["WorldViewProjection"].SetValue(world*camera3D.View*camera3D.Projection);
+            effect.Parameters["World"].SetValue(world);
+            effect.Parameters["PlayerPos"].SetValue(MainScene.playerTransform3D.Translation);
+            Effect.CurrentTechnique.Passes[0].Apply();
+        }
+
+        public override void DrawPrimitive(Matrix world, Camera3D camera)
+        {
+            base.DrawPrimitive(world, camera);
+        }
+
+        public override void DrawMesh(Matrix world,Camera3D camera3D, Model model, Matrix[] boneTransforms)
+        {
+            base.DrawMesh(world,camera3D, model,boneTransforms);
+            foreach (ModelMesh mesh in model.Meshes)
+            {
+                foreach (ModelMeshPart part in mesh.MeshParts)
+                {
+                    part.Effect = effect;
+                }
+                
+                //@TODO Inefficient, seperate World and View+Projection into different Parameters in shader
+                effect.Parameters["WorldViewProjection"].SetValue(boneTransforms[mesh.ParentBone.Index]*world*camera3D.View*camera3D.Projection);
+                
+                mesh.Draw();
+            }
+        }
+
+
+        public override float GetAlpha()
+        {
+            return alpha;
+        }
+
+        public override object Clone()
+        {
+            return new TestEffectParameters(effect,playerPosition,texture2D,color,alpha);
         }
     }
     
