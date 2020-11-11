@@ -96,8 +96,9 @@ namespace GDGame
         private void CreateScenes()
         {
             SceneManager.AddScene("Menu", new MenuScene(this));
-            SceneManager.AddScene("Level1", new MainScene(this,"Paul_Level_2.json"));
+            SceneManager.AddScene("Level1", new MainScene(this,"test_Enemy_path.json"));
             SceneManager.AddScene("Level2", new MainScene(this,"Paul_Level_5.json"));
+            SceneManager.AddScene("Level3", new MainScene(this,"Paul_Level_6.json"));
             SceneManager.AddScene("End",new EndScene(this));
         }
 

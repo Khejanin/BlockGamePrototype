@@ -7,6 +7,7 @@ using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Managers;
 using GDLibrary.Parameters;
+using GDGame.Game.Actors.Tiles;
 
 namespace GDGame.Factory
 {
@@ -30,12 +31,9 @@ namespace GDGame.Factory
                 ETileType.Static => CreateStatic(),
                 ETileType.Attachable => CreateAttachable(),
                 ETileType.Win => CreateGoal(),
+                ETileType.Enemy => CreateEnemy(),
                 _ => null
             };
-
-            if (tile != null)
-            {
-            }
 
             return tile;
         }
@@ -76,6 +74,14 @@ namespace GDGame.Factory
             goal = goal.Clone() as GoalTile;
             objectManager.Add(goal);
             return goal;
+        }
+
+        private BasicTile CreateEnemy()
+        {
+            EnemyTile enemy = (EnemyTile)drawnActors["EnemyTile"];
+            enemy = enemy.Clone() as EnemyTile;
+            objectManager.Add(enemy);
+            return enemy;
         }
     }
 }

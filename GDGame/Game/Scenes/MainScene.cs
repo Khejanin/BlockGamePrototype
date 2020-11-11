@@ -6,6 +6,7 @@ using GDGame.Controllers;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Factory;
+using GDGame.Game.Actors.Tiles;
 using GDGame.Game.UI;
 using GDGame.Utilities;
 using GDLibrary.Actors;
@@ -138,10 +139,15 @@ namespace GDGame.Scenes
                 effectParameters, models["Box"]);
             goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f,ColliderType.CheckOnly));
 
+            EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, models["Box"]);
+            enemy.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            enemy.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
+
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
                 {"StaticTile", staticTile}, {"AttachableBlock", movableTile}, {"PlayerBlock", playerTile},
-                {"GoalTile", goal}
+                {"GoalTile", goal}, {"EnemyTile", enemy}
             };
         }
 

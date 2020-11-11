@@ -11,6 +11,7 @@ namespace GDGame.Utilities
         public Vector3 tileSize;
         public ETileType[,,] gridValues;
         public Dictionary<double, List<Vector3>> shapes;
+        public Dictionary<Vector3, List<Vector3>> enemyPaths;
     }
 
     public static class LevelDataConverter
@@ -31,7 +32,8 @@ namespace GDGame.Utilities
                 gridSize = gridSize,
                 tileSize = tileSize,
                 gridValues = new ETileType[(int)gridSize.X, (int)gridSize.Y, (int)gridSize.Z],
-                shapes = new Dictionary<double, List<Vector3>>()
+                shapes = new Dictionary<double, List<Vector3>>(),
+                enemyPaths = new Dictionary<Vector3, List<Vector3>>()
             };
         
             //populate Grid values
@@ -54,13 +56,27 @@ namespace GDGame.Utilities
                             JSONObject obj = jsonZ[z].Obj;
                             data.gridValues[x, y, z] = (ETileType) obj.GetNumber("TileType");
                         
-                            //check if part of shape and store it seperately separately
+                            //check if part of shape and store it separately
                             double shapeId = obj.GetNumber("ShapeId");
                             if(shapeId != -1d)
                                 if(data.shapes.ContainsKey(shapeId))
                                     data.shapes[shapeId].Add(new Vector3(x, y, z));
                                 else
                                     data.shapes.Add(shapeId, new List<Vector3>() { new Vector3(x, y, z) });
+
+                            //check if enemy and add paths to data
+                            if(data.gridValues[x, y, z] == ETileType.Enemy)
+                            {
+                                JSONArray path = obj.GetArray("Path");
+                                List<Vector3> pathPositions = new List<Vector3>();
+                                
+                                for(int i = 0; i < path.Length; i++)
+                                {
+                                    JSONObject pathObj = path[i].Obj;
+                                    pathPositions.Add(new Vector3((int)pathObj["X"].Number, (int)pathObj["Y"].Number, (int)pathObj["Z"].Number));
+                                }
+                                data.enemyPaths.Add(new Vector3(x, y, z), pathPositions);
+                            }
                         }
                     }
                 }

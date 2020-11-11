@@ -18,7 +18,8 @@
         Attachable,
         Trigger,
         PlayerStart,
-        Win
+        Win,
+        Enemy
     }
     
     public enum ColliderShape
