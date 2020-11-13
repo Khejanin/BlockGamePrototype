@@ -39,4 +39,9 @@
         Won,
         Lost
     }
+
+    public enum PlayerEventType
+    {
+        Move
+    }
 }

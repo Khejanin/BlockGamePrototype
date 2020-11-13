@@ -96,7 +96,7 @@ namespace GDGame.Utilities
                 }
 
                 if(enemy.path.Count > 0)
-                    enemy.currentPos = enemy.path[0];
+                    enemy.currentPositionIndex = 0;
             }
         }
 

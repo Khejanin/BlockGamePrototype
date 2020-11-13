@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GDGame.Actors;
 using GDGame.Component;
+using GDGame.EventSystem;
 using GDGame.Utilities;
 using GDLibrary;
 using GDLibrary.Enums;
@@ -68,6 +69,7 @@ namespace GDGame.Controllers
                     MovementComponent movementComponent = (MovementComponent) playerTile.ControllerList.Find(controller =>
                         controller.GetType() == typeof(MovementComponent));
                     movementComponent?.Move(moveDir);
+                    EventSystem.EventSystem.FireEvent(new PlayerEventInfo { type = Enums.PlayerEventType.Move });
                 }
             }
         }
