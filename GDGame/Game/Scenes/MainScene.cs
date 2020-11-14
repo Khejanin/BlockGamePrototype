@@ -24,13 +24,9 @@ namespace GDGame.Scenes
 {
     public class MainScene : Scene
     {
-        private ModelObject archetypalBoxWireframe;
-
         private Dictionary<string, Model> models;
         private Dictionary<string, Texture2D> textures;
         private Dictionary<string, DrawnActor3D> drawnActors;
-
-        private bool nextScene = false;
 
         private string levelname;
 
@@ -269,7 +265,7 @@ namespace GDGame.Scenes
             primitiveObject.ID = "back";
             primitiveObject.EffectParameters.Texture = textures["Wall"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, 180, 0), 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
             ObjectManager.Add(primitiveObject);
 
@@ -278,7 +274,7 @@ namespace GDGame.Scenes
             primitiveObject.ID = "logo";
             primitiveObject.EffectParameters.Texture = textures["LogoMirror"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale / 12.0f, worldScale / 12.0f, 1);
-            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, 180, 0), 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, (-worldScale / 2.0f) * 0.95f);
             ObjectManager.Add(primitiveObject);
 
@@ -287,7 +283,7 @@ namespace GDGame.Scenes
             primitiveObject.ID = "Floor";
             primitiveObject.EffectParameters.Texture = textures["Floor"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, -90, 90), 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, -90, 90);
             primitiveObject.Transform3D.Translation = new Vector3(0, -worldScale / 2.0f, 0);
             ObjectManager.Add(primitiveObject);
 
@@ -296,7 +292,7 @@ namespace GDGame.Scenes
             primitiveObject.ID = "front";
             primitiveObject.EffectParameters.Texture = textures["Wall"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, 0, 180), 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 0, 180);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, worldScale / 2.0f);
             ObjectManager.Add(primitiveObject);
 
@@ -305,7 +301,7 @@ namespace GDGame.Scenes
             primitiveObject.ID = "Right wall";
             primitiveObject.EffectParameters.Texture = textures["Wall"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(270, 0, 270), 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(270, 0, 270);
             primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
             ObjectManager.Add(primitiveObject);
 
@@ -314,7 +310,7 @@ namespace GDGame.Scenes
             primitiveObject.ID = "Left wall";
             primitiveObject.EffectParameters.Texture = textures["Wall"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(-270, 0, 270), 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(-270, 0, 270);
             primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
             ObjectManager.Add(primitiveObject);
         }

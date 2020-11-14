@@ -3,6 +3,8 @@ using GDGame.Managers;
 using GDGame.Scenes;
 using GDLibrary;
 using GDLibrary.Actors;
+using GDLibrary.Enums;
+using GDLibrary.Events;
 using GDLibrary.Managers;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
@@ -49,8 +51,6 @@ namespace GDGame
 
         public ProjectionParameters GlobalProjectionParameters => ProjectionParameters.StandardDeepSixteenTen;
 
-        private float worldScale = 3000;
-        private PrimitiveObject primitiveObject = null;
         public Effect testEffect;
 
 
@@ -104,6 +104,8 @@ namespace GDGame
 
         private void InitManagers()
         {
+            Components.Add(new EventDispatcher(this));
+            
             //Camera
             CameraManager = new CameraManager<Camera3D>(this);
             Components.Add(CameraManager);
@@ -129,7 +131,7 @@ namespace GDGame
             Components.Add(SoundManager);
             
             //Object
-            ObjectManager = new ObjectManager(this, 6, 10, CameraManager);
+            ObjectManager = new ObjectManager(this, StatusType.Update | StatusType.Drawn, 6, 10, CameraManager);
             Components.Add(ObjectManager);
             
             UiManager = new UiManager(this);
@@ -184,11 +186,6 @@ namespace GDGame
             InitDebug();
         }
 
-        protected override void UnloadContent()
-        {
-            base.UnloadContent();
-        }
-
         #endregion
 
         private void InitGraphics(int width, int height)
@@ -201,7 +198,7 @@ namespace GDGame
             Graphics.ApplyChanges();
 
             //set screen centre based on resolution
-            ScreenCentre = new Vector2(width / 2, height / 2);
+            ScreenCentre = new Vector2(width / 2f, height / 2f);
 
             //set cull mode to show front and back faces - inefficient but we will change later
             RasterizerState rs = new RasterizerState();
@@ -226,11 +223,6 @@ namespace GDGame
                 Exit();
 
             base.Update(gameTime);
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
         }
 
         #endregion
