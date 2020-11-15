@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace GDGame.Game.Actors.Tiles
 {
-    class EnemyTile : MovableTile
+    class EnemyTile : BasicTile
     {
         private MovementComponent movementComponent;
 
