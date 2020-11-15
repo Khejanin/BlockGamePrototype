@@ -14,7 +14,6 @@ namespace GDGame.Managers
         private List<Scene> sceneList;
         private int currentSceneIndex;
         private int nextSceneIndex = -1;
-        private bool currentlySwitching;
 
         //The Game needs a SceneManager, and the SceneManager needs a Scene.
         public SceneManager(Microsoft.Xna.Framework.Game game) : base(game)
@@ -50,12 +49,10 @@ namespace GDGame.Managers
         {
             sceneList[currentSceneIndex].UnloadScene(OnCurrentSceneUnloaded);
             nextSceneIndex = sceneIndex;
-            currentlySwitching = false;
         }
 
         public void OnCurrentSceneUnloaded()
         {
-            currentlySwitching = true;
             currentSceneIndex = nextSceneIndex;
             CurrentScene.Initialize();
         }

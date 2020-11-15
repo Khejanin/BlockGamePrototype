@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 
 namespace GDLibrary.Parameters
 {
@@ -16,35 +15,29 @@ namespace GDLibrary.Parameters
         private Vector3 translation, rotationInDegrees, scale;
         private Vector3 look, up; //right = Vector3.Cross(look, up)
         private Vector3 originalLook, originalUp, originalRotationInDegrees;
-        private Quaternion rotation;
-
-        public Transform3D parent;
-        private List<Transform3D> children;
+        private bool isDirty = true;
+        private Matrix world;
 
         #endregion Fields
 
         #region Properties
 
-        public Quaternion Rotation
-        {
-            get => Quaternion.Normalize(rotation);
-            set => rotation = value;
-        }
-
         public Matrix World
         {
             get
             {
-                return Matrix.Identity
+                if (isDirty)
+                {
+                    world = Matrix.Identity
                     * Matrix.CreateScale(scale)
-                       /* * Matrix.CreateRotationX(MathHelper.ToRadians(rotationInDegrees.X))
+                    * Matrix.CreateRotationX(MathHelper.ToRadians(rotationInDegrees.X))
                       * Matrix.CreateRotationY(MathHelper.ToRadians(rotationInDegrees.Y))
                         * Matrix.CreateRotationZ(MathHelper.ToRadians(rotationInDegrees.Z))
-                            * Matrix.CreateTranslation(translation)*/
-                       * Matrix.CreateFromQuaternion(Rotation)
-                       * Matrix.CreateTranslation(this.translation)
-                       * (parent?.World ?? Matrix.Identity);
-                ;
+                        * Matrix.CreateTranslation(translation);
+                    isDirty = false;
+                }
+
+                return world;
             }
         }
 
@@ -55,7 +48,10 @@ namespace GDLibrary.Parameters
                 look.Normalize(); //less-cpu intensive than Vector3.Normalize()
                 return look;
             }
-            set { look = value; }
+            set
+            {
+                look = value;
+            }
         }
 
         public Vector3 Up
@@ -65,30 +61,57 @@ namespace GDLibrary.Parameters
                 up.Normalize(); //less-cpu intensive than Vector3.Normalize()
                 return up;
             }
-            set { up = value; }
+            set
+            {
+                up = value;
+            }
         }
 
         public Vector3 Right
         {
-            get { return Vector3.Normalize(Vector3.Cross(look, up)); }
+            get
+            {
+                return Vector3.Normalize(Vector3.Cross(look, up));
+            }
         }
 
         public Vector3 Translation
         {
-            get { return translation; }
-            set { translation = value; }
+            get
+            {
+                return translation;
+            }
+            set
+            {
+                translation = value;
+                isDirty = true;
+            }
         }
 
         public Vector3 RotationInDegrees
         {
-            get { return rotationInDegrees; }
-            set { rotationInDegrees = value; }
+            get
+            {
+                return rotationInDegrees;
+            }
+            set
+            {
+                rotationInDegrees = value;
+                isDirty = true;
+            }
         }
 
         public Vector3 Scale
         {
-            get { return scale; }
-            set { scale = value; }
+            get
+            {
+                return scale;
+            }
+            set
+            {
+                scale = value;
+                isDirty = true;
+            }
         }
 
         #endregion Properties
@@ -111,27 +134,32 @@ namespace GDLibrary.Parameters
             originalLook = Look = look;
             originalUp = Up = up;
 
-            Rotation = Quaternion.Identity * Quaternion.CreateFromYawPitchRoll(
-                MathHelper.ToRadians(rotationInDegrees.Y), MathHelper.ToRadians(rotationInDegrees.X),
-                MathHelper.ToRadians(rotationInDegrees.Z));
+        //    this.isDirty = true;
         }
 
         #region Movement
 
         public void TranslateBy(Vector3 delta)
         {
-            translation += delta;
+            Translation += delta;
         }
 
         public void RotateAroundUpBy(float magnitude)
         {
-            //to do...
+            //add to existing rotation
+            rotationInDegrees.Y += magnitude; //this is what orients model on the screen
+
+            //transform the original look using this rotationInDegrees around UnitY and normalize
+            look = Vector3.Normalize(Vector3.Transform(originalLook,
+                Matrix.CreateRotationY(MathHelper.ToRadians(rotationInDegrees.Y))));
+
+            this.isDirty = true;
         }
 
         public void RotateBy(Vector3 axisAndMagnitude)
         {
             //add this statement to allow us to add/subtract from whatever the current rotation is
-            rotationInDegrees = originalRotationInDegrees + axisAndMagnitude;
+            RotationInDegrees = originalRotationInDegrees + axisAndMagnitude;
 
             //explain: yaw, pitch, roll
             //create a new "XYZ" axis to rotate around using the (x,y,0) values from mouse and any current rotation

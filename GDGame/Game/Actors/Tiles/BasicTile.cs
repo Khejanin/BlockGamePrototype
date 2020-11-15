@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using GDGame.Tiles;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
@@ -14,25 +13,6 @@ namespace GDGame.Actors
     {
         public Shape Shape { get; set; }
         public bool CanMoveInto { get; set; }
-
-        public List<Vector3> GetBoundsPoints()
-        {
-            List<Vector3> result = new List<Vector3>
-            {
-                Transform3D.Translation + Transform3D.Scale, Transform3D.Translation - Transform3D.Scale
-            };
-            return result;
-        }
-        
-        public List<Vector3> GetBoundsPointsWithRotation()
-        {
-            List<Vector3> result = new List<Vector3>
-            {
-                Transform3D.Translation + Vector3.Transform(Transform3D.Scale, Transform3D.Rotation),
-                Transform3D.Translation - Vector3.Transform(Transform3D.Scale, Transform3D.Rotation)
-            };
-            return result;
-        } 
 
         public BasicTile(string id, ActorType actorType, StatusType statusType,
             Transform3D transform, EffectParameters effectParameters, Model model)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GDGame.Actors;
+using GDGame.Enums;
 using GDLibrary.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;

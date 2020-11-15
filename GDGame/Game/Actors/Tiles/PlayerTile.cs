@@ -25,7 +25,6 @@ namespace GDGame.Actors
 
         private struct PlayerSurroundCheck
         {
-            public EDirection dir;
             public HitResult hit;
         }
 
