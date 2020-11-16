@@ -38,7 +38,7 @@ namespace GDGame.Scenes
         ////FOR SKYBOX____ TEMP
         private PrimitiveObject archetypalTexturedQuad, primitiveObject;
 
-        public MainScene(Main game,string levelname = "Paul_Level_6.json") : base(game)
+        public MainScene(Main game,string levelname) : base(game)
         {
             this.levelname = @"Game\LevelFiles\" + levelname;
         }
@@ -413,7 +413,7 @@ namespace GDGame.Scenes
 
         private void InitEvents()
         {
-            EventSystem.EventSystem.RegisterListener<GameStateMessageEventInfo>(OnGameStateMessageReceived);
+            EventSystem.EventManager.RegisterListener<GameStateMessageEventInfo>(OnGameStateMessageReceived);
         }
 
         private void OnGameStateMessageReceived(GameStateMessageEventInfo eventInfo)
