@@ -1,10 +1,9 @@
-﻿using System;
-using GDLibrary.Enums;
+﻿using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
+using System;
 
 namespace GDLibrary.Actors
 {
@@ -122,21 +121,5 @@ namespace GDLibrary.Actors
 
             return actor;
         }
-
-        #region OurCode
-
-        public List<BoundingSphere> GetBounds()
-        {
-            List<BoundingSphere> result = new List<BoundingSphere>();
-            
-            foreach (ModelMesh mesh in Model.Meshes)
-            {
-                result.Add(mesh.BoundingSphere);
-            }
-
-            return result;
-        }
-
-        #endregion
     }
 }

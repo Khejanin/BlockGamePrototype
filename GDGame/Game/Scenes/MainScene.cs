@@ -24,13 +24,9 @@ namespace GDGame.Scenes
 {
     public class MainScene : Scene
     {
-        private ModelObject archetypalBoxWireframe;
-
         private Dictionary<string, Model> models;
         private Dictionary<string, Texture2D> textures;
         private Dictionary<string, DrawnActor3D> drawnActors;
-
-        private bool nextScene = false;
 
         private string levelname;
 
@@ -262,59 +258,51 @@ namespace GDGame.Scenes
         }
 
         private void InitSkybox()
-        { 
-            float worldScale = 500;
-            //Back
-            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
-            primitiveObject.ID = "back";
-            primitiveObject.EffectParameters.Texture = textures["Wall"];
-            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, 180, 0), 0);
-            primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
-            ObjectManager.Add(primitiveObject);
-
-            //logo
-            primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
-            primitiveObject.ID = "logo";
-            primitiveObject.EffectParameters.Texture = textures["LogoMirror"];
-            primitiveObject.Transform3D.Scale = new Vector3(worldScale / 12.0f, worldScale / 12.0f, 1);
-            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, 180, 0), 0);
-            primitiveObject.Transform3D.Translation = new Vector3(0, 0, (-worldScale / 2.0f) * 0.95f);
-            ObjectManager.Add(primitiveObject);
+        {
+            float worldScale = 35;
 
             //Floor
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "Floor";
-            primitiveObject.EffectParameters.Texture = textures["Floor"];
+            primitiveObject.EffectParameters.Texture = textures["floor2"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, -90, 90), 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, -90, 90);
             primitiveObject.Transform3D.Translation = new Vector3(0, -worldScale / 2.0f, 0);
             ObjectManager.Add(primitiveObject);
 
-            //Front
+            //Back 
+            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            primitiveObject.ID = "back";
+            primitiveObject.EffectParameters.Texture = textures["kWall1"];
+            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
+            primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
+            ObjectManager.Add(primitiveObject);
+
+            //Front 
             primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "front";
-            primitiveObject.EffectParameters.Texture = textures["Wall"];
+            primitiveObject.EffectParameters.Texture = textures["kWall2"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(0, 0, 180), 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 0, 0);
             primitiveObject.Transform3D.Translation = new Vector3(0, 0, worldScale / 2.0f);
             ObjectManager.Add(primitiveObject);
 
             //RWall
             primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "Right wall";
-            primitiveObject.EffectParameters.Texture = textures["Wall"];
+            primitiveObject.EffectParameters.Texture = textures["kWall3"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(270, 0, 270), 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(270, 90, 270);
             primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
             ObjectManager.Add(primitiveObject);
 
             //LWall
             primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
             primitiveObject.ID = "Left wall";
-            primitiveObject.EffectParameters.Texture = textures["Wall"];
+            primitiveObject.EffectParameters.Texture = textures["kWall4"];
             primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.Rotation = new Quaternion(new Vector3(-270, 0, 270), 0);
+            primitiveObject.Transform3D.RotationInDegrees = new Vector3(-270, -90, 270);
             primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
             ObjectManager.Add(primitiveObject);
         }
@@ -379,6 +367,12 @@ namespace GDGame.Scenes
             Texture2D wall = Content.Load<Texture2D>("Assets/Textures/Block/block_green");
             Texture2D floor = Content.Load<Texture2D>("Assets/Textures/Skybox/floor_neon");
 
+            Texture2D panel1 = Content.Load<Texture2D>("Assets/Textures/Skybox/kWall1");
+            Texture2D panel2 = Content.Load<Texture2D>("Assets/Textures/Skybox/kWall2");
+            Texture2D panel3 = Content.Load<Texture2D>("Assets/Textures/Skybox/kWall3");
+            Texture2D panel4 = Content.Load<Texture2D>("Assets/Textures/Skybox/kWall4");
+            Texture2D floor1 = Content.Load<Texture2D>("Assets/Textures/Skybox/tiles");
+
             textures = new Dictionary<string, Texture2D>
             {
                 {"Player", cubeTexture}, 
@@ -392,7 +386,12 @@ namespace GDGame.Scenes
                 {"Floor", floor },
                 {"Circle",circle},
                 {"Logo", logo },
-                {"LogoMirror", logoMirror }
+                {"LogoMirror", logoMirror },
+                {"kWall1", panel1 },
+                {"kWall2", panel2 },
+                {"kWall3", panel3 },
+                {"kWall4", panel4 },
+                {"floor2", floor1 }
             };
         }
 

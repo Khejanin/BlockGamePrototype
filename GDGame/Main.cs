@@ -4,6 +4,7 @@ using GDGame.Managers;
 using GDGame.Scenes;
 using GDLibrary;
 using GDLibrary.Actors;
+using GDLibrary.Enums;
 using GDLibrary.Managers;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
@@ -112,6 +113,8 @@ namespace GDGame
             //Events
             Components.Add(new EventManager(this));
             
+            Components.Add(new EventDispatcher(this));
+            
             //Camera
             CameraManager = new CameraManager<Camera3D>(this);
             Components.Add(CameraManager);
@@ -137,7 +140,7 @@ namespace GDGame
             Components.Add(SoundManager);
             
             //Object
-            ObjectManager = new ObjectManager(this, 6, 10, CameraManager);
+            ObjectManager = new ObjectManager(this, StatusType.Update | StatusType.Drawn, 6, 10, CameraManager);
             Components.Add(ObjectManager);
             
             UiManager = new UiManager(this);
@@ -209,7 +212,7 @@ namespace GDGame
             Graphics.ApplyChanges();
 
             //set screen centre based on resolution
-            ScreenCentre = new Vector2(width / 2, height / 2);
+            ScreenCentre = new Vector2(width / 2f, height / 2f);
 
             //set cull mode to show front and back faces - inefficient but we will change later
             RasterizerState rs = new RasterizerState();

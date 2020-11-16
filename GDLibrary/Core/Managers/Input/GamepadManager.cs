@@ -146,5 +146,7 @@ namespace GDLibrary
             return IsPlayerConnected(playerIndex) ?
                 newState[(int)playerIndex].Buttons : default;
         }
+
+        //to do...add vibration
     }
 }

@@ -1,12 +1,15 @@
 ﻿using GDLibrary.Actors;
 using GDLibrary.Enums;
+using GDLibrary.Events;
+using GDLibrary.GameComponents;
+using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
 namespace GDLibrary.Managers
 {
-    public class ObjectManager : DrawableGameComponent
+    public class ObjectManager : PausableDrawableGameComponent
     {
         #region Fields
 
@@ -18,24 +21,60 @@ namespace GDLibrary.Managers
 
         #region Constructors & Core
 
-        public ObjectManager(Game game,
-          int initialOpaqueDrawSize, int initialTransparentDrawSize, CameraManager<Camera3D> cameraManager) : base(game)
+        public ObjectManager(Game game, StatusType statusType,
+          int initialOpaqueDrawSize, int initialTransparentDrawSize,
+          CameraManager<Camera3D> cameraManager) : base(game, statusType)
         {
             this.cameraManager = cameraManager;
             opaqueList = new List<DrawnActor3D>(initialOpaqueDrawSize);
             transparentList = new List<DrawnActor3D>(initialTransparentDrawSize);
+
+            //        EventDispatcherV2.Subscribe(EventCategoryType.Menu, HandleMenuChanged);
+
+            SubscribeToEvents();
+        }
+
+        protected override void SubscribeToEvents()
+        {
+            //menu
+            EventDispatcher.Subscribe(EventCategoryType.Menu, HandleEvent);
+
+
+            //remove
+            EventDispatcher.Subscribe(EventCategoryType.Object, HandleEvent);
+
+            //add
+
+            //transparency
+        }
+
+        protected override void HandleEvent(EventData eventData)
+        {
+            if (eventData.EventCategoryType == EventCategoryType.Menu)
+            {
+                if (eventData.EventActionType == EventActionType.OnPause)
+                    this.StatusType = StatusType.Off;
+                else if (eventData.EventActionType == EventActionType.OnPlay)
+                    this.StatusType = StatusType.Drawn | StatusType.Update;
+            }
+            else if (eventData.EventCategoryType == EventCategoryType.Object)
+            {
+                if (eventData.EventActionType == EventActionType.OnRemoveActor)
+                {
+                    DrawnActor3D removeObject = eventData.Parameters[0] as DrawnActor3D;
+
+                    opaqueList.Remove(removeObject);
+
+                }
+            }
         }
 
         public void Add(DrawnActor3D actor)
         {
             if (actor.EffectParameters.Alpha < 1)
-            {
                 transparentList.Add(actor);
-            }
             else
-            {
                 opaqueList.Add(actor);
-            }
         }
 
         public bool RemoveFirstIf(Predicate<DrawnActor3D> predicate)
@@ -58,51 +97,33 @@ namespace GDLibrary.Managers
             return opaqueList.RemoveAll(predicate);
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void ApplyUpdate(GameTime gameTime)
         {
-            if (Enabled)
+            foreach (DrawnActor3D actor in opaqueList)
             {
-                foreach (DrawnActor3D actor in opaqueList)
-                {
-                    if ((actor.StatusType & StatusType.Update) == StatusType.Update)
-                    {
-                        actor.Update(gameTime);
-                    }
-                }
+                if ((actor.StatusType & StatusType.Update) == StatusType.Update)
+                    actor.Update(gameTime);
+            }
 
-                foreach (DrawnActor3D actor in transparentList)
-                {
-                    if ((actor.StatusType & StatusType.Update) == StatusType.Update)
-                    {
-                        actor.Update(gameTime);
-                    }
-                }
+            foreach (DrawnActor3D actor in transparentList)
+            {
+                if ((actor.StatusType & StatusType.Update) == StatusType.Update)
+                    actor.Update(gameTime);
             }
         }
 
-        public override void Draw(GameTime gameTime)
+        protected override void ApplyDraw(GameTime gameTime)
         {
-            if (Enabled)
+            foreach (DrawnActor3D actor in opaqueList)
             {
-                foreach (DrawnActor3D actor in opaqueList)
-                {
-                    if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
-                    {
-                        actor.Draw(gameTime,
-                            cameraManager.ActiveCamera,
-                            GraphicsDevice);
-                    }
-                }
+                if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
+                    actor.Draw(gameTime, cameraManager.ActiveCamera, GraphicsDevice);
+            }
 
-                foreach (DrawnActor3D actor in transparentList)
-                {
-                    if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
-                    {
-                        actor.Draw(gameTime,
-                            cameraManager.ActiveCamera,
-                            GraphicsDevice);
-                    }
-                }
+            foreach (DrawnActor3D actor in transparentList)
+            {
+                if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
+                    actor.Draw(gameTime, cameraManager.ActiveCamera, GraphicsDevice);
             }
         }
 
