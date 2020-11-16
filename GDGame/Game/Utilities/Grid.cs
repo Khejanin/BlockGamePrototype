@@ -47,7 +47,7 @@ namespace GDGame.Utilities
                         if (data.gridValues[x, y, z] != ETileType.None)
                         {
                             BasicTile tile = tileFactory.CreateTile(data.gridValues[x, y, z]);
-                            tile?.SetPosition(pos + new Vector3(0, 0, data.gridSize.Z - 1));
+                            if(tile != null ) tile.Transform3D.Translation = pos + new Vector3(0, 0, data.gridSize.Z - 1);
                             _grid[x, y, (int) data.gridSize.Z - 1 - z] = tile;
                         }
                         else
@@ -76,8 +76,8 @@ namespace GDGame.Utilities
                 Shape newShape = this.tileFactory.CreateShape();
                 foreach (Vector3 shape in data.shapes[shapesKey])
                 {
-                    MovableTile tile =
-                        grid[(int) shape.X, (int) shape.Y, (int) data.gridSize.Z - 1 - (int) shape.Z] as MovableTile;
+                    AttachableTile tile =
+                        grid[(int) shape.X, (int) shape.Y, (int) data.gridSize.Z - 1 - (int) shape.Z] as AttachableTile;
                     newShape.AddTile(tile);
                     if (tile != null) tile.Shape = newShape;
                 }

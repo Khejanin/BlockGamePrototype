@@ -10,9 +10,10 @@ using System.Collections.Generic;
 
 namespace GDGame.Game.Actors.Tiles
 {
-    class EnemyTile : BasicTile
+    class EnemyTile : MovableTile
     {
         private MovementComponent movementComponent;
+        private int pathDir = 1;
 
         public List<Vector3> path;
         public int currentPositionIndex;
@@ -20,26 +21,29 @@ namespace GDGame.Game.Actors.Tiles
         public EnemyTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform, effectParameters, model)
         {
             path = new List<Vector3>();
-            //EventSystem.EventSystem.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
+        }
+
+        public override void InitializeTile()
+        {
+            EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
+            movementComponent = (MovementComponent)ControllerList.Find(controller => controller.GetType() == typeof(MovementComponent));
         }
 
         private void HandlePlayerEvent(PlayerEventInfo info)
         {
             if(info.type == Enums.PlayerEventType.Move)
-            {
-                if(movementComponent == null) 
-                    movementComponent = (MovementComponent)ControllerList.Find(controller => controller.GetType() == typeof(MovementComponent));
-
-                movementComponent.Move(Vector3.Normalize(NextPathPoint() - Transform3D.Translation));
+            {   
+                movementComponent.Move(Vector3.Normalize(NextPathPoint() - path[currentPositionIndex]));
+                currentPositionIndex += pathDir;
             }
         }
 
         private Vector3 NextPathPoint()
         {
-            if (++currentPositionIndex == path.Count)
-                currentPositionIndex = 0;
+            if (currentPositionIndex + pathDir == path.Count || currentPositionIndex + pathDir == -1)
+                pathDir *= -1;
 
-            return path[currentPositionIndex];
+            return path[currentPositionIndex + pathDir];
         }
 
         public new object Clone()

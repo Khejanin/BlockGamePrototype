@@ -116,10 +116,10 @@ namespace GDGame.Scenes
             staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Attachable"], Color.White, 1);
-            MovableTile movableTile = new MovableTile("AttachableTile", ActorType.Primitive,
+            AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Attachable"]);
-            movableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
-            movableTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
+            attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            attachableTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Player"], Color.White, 1);
             PlayerTile playerTile = new PlayerTile("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
@@ -139,6 +139,7 @@ namespace GDGame.Scenes
                 effectParameters, models["Box"]);
             enemy.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             enemy.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
+            enemy.ControllerList.Add(new RotationComponent());
 
             ButtonTile button = new ButtonTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["Box"]);
@@ -146,7 +147,7 @@ namespace GDGame.Scenes
 
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
-                {"StaticTile", staticTile}, {"AttachableBlock", movableTile}, {"PlayerBlock", playerTile},
+                {"StaticTile", staticTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", playerTile},
                 {"GoalTile", goal}, {"EnemyTile", enemy}, {"ButtonTile", button}
             };
         }

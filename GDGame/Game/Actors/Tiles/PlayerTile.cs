@@ -19,7 +19,7 @@ namespace GDGame.Actors
 
         public List<Shape> AttachCandidates => attachCandidates;
 
-        public List<MovableTile> AttachedTiles { get; }
+        public List<AttachableTile> AttachedTiles { get; }
 
         public bool IsAttached { get; private set; }
 
@@ -32,7 +32,7 @@ namespace GDGame.Actors
             Transform3D transform, EffectParameters effectParameters, Model model)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
-            AttachedTiles = new List<MovableTile>();
+            AttachedTiles = new List<AttachableTile>();
             attachCandidates = new List<Shape>();
         }
 
@@ -40,7 +40,7 @@ namespace GDGame.Actors
         {
             if (attachCandidates.Count == 0) return;
 
-            foreach (MovableTile tile in attachCandidates.SelectMany(shape =>  shape.AttachableTiles))
+            foreach (AttachableTile tile in attachCandidates.SelectMany(shape =>  shape.AttachableTiles))
             {
                 AttachedTiles.Add(tile);
                 tile.EffectParameters.DiffuseColor = Color.Green;
@@ -51,7 +51,7 @@ namespace GDGame.Actors
 
         public void Detach()
         {
-            foreach (MovableTile tile in AttachedTiles)
+            foreach (AttachableTile tile in AttachedTiles)
             {
                 tile.EffectParameters.DiffuseColor = Color.White;
             }
@@ -80,7 +80,7 @@ namespace GDGame.Actors
                  {
                     UpdateAttachCandidates(); //remove this later
                     bool won = CheckWinCondition(); //remove this later
-                    if (won) EventSystem.EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Won));
+                    if (won) EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Won));
                  }
              }
         }
@@ -91,7 +91,7 @@ namespace GDGame.Actors
             attachCandidates.Clear();
 
             foreach (PlayerSurroundCheck check in CheckSurroundings())
-                if (check.hit?.actor is MovableTile tile)
+                if (check.hit?.actor is AttachableTile tile)
                     attachCandidates.Add(tile.Shape);
         }
 

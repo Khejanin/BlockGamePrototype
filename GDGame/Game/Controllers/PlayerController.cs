@@ -69,7 +69,6 @@ namespace GDGame.Controllers
                     MovementComponent movementComponent = (MovementComponent) playerTile.ControllerList.Find(controller =>
                         controller.GetType() == typeof(MovementComponent));
                     movementComponent?.Move(moveDir);
-                    EventSystem.EventManager.FireEvent(new PlayerEventInfo { type = Enums.PlayerEventType.Move });
                 }
             }
         }

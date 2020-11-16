@@ -36,6 +36,7 @@ namespace GDGame.Factory
                 _ => null
             };
 
+            tile.InitializeTile();
             return tile;
         }
 
@@ -55,10 +56,10 @@ namespace GDGame.Factory
 
         private BasicTile CreateAttachable()
         {
-            MovableTile movableTile = (MovableTile) drawnActors["AttachableBlock"];
-            movableTile = movableTile.Clone() as MovableTile;
-            objectManager.Add(movableTile);
-            return movableTile;
+            AttachableTile attachableTile = (AttachableTile) drawnActors["AttachableBlock"];
+            attachableTile = attachableTile.Clone() as AttachableTile;
+            objectManager.Add(attachableTile);
+            return attachableTile;
         }
 
         private BasicTile CreatePlayer()

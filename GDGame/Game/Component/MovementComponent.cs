@@ -2,6 +2,7 @@
 using System.Linq;
 using GDGame.Actors;
 using GDGame.Controllers;
+using GDGame.EventSystem;
 using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
@@ -70,13 +71,10 @@ namespace GDGame.Component
         {
             if (parent != null && !parent.IsMoving)
             {
-                if (parent.ActorType == ActorType.Player)
-                {
-                    RotationComponent rotationComponent =
-                        (RotationComponent) parent.ControllerList.Find(controller =>
-                            controller.GetType() == typeof(RotationComponent));
-                    rotationComponent?.SetRotatePoint(direction);
-                }
+                RotationComponent rotationComponent =
+                    (RotationComponent) parent.ControllerList.Find(controller =>
+                        controller.GetType() == typeof(RotationComponent));
+                rotationComponent?.SetRotatePoint(direction);
 
                 //offset between the player and the point to rotate around
                 Vector3 offset = parent.Transform3D.Translation - parent.RotatePoint;
@@ -99,6 +97,7 @@ namespace GDGame.Component
                     if (playerController != null &&
                         playerController.IsMoveValid(rotationQuaternion, parent.RotatePoint, endPos, offset))
                     {
+                        EventManager.FireEvent(new PlayerEventInfo { type = Enums.PlayerEventType.Move });
                         //Calculate movement for each attached tile
                         if (parent is PlayerTile player)
                             foreach (MovementComponent movementController in player.AttachedTiles.Select(tile =>

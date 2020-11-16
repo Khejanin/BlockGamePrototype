@@ -19,11 +19,8 @@ namespace GDGame.Actors
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
         }
-
-        public virtual void SetPosition(Vector3 position)
-        {
-            Transform3D.Translation = position;
-        }
+        
+        public virtual void InitializeTile() { }
 
         public new object Clone()
         {
