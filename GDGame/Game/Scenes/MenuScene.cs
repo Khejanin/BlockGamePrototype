@@ -17,7 +17,8 @@ namespace GDGame.Scenes
     public class MenuScene : Scene
     {
         private Dictionary<string, Texture2D> textures;
-
+        UiButton playUiButton;
+        UiButton quitUiButton;
         public MenuScene(Main game,bool unloadsContent = false) : base(game,unloadsContent)
         {
             MouseManager mouseManager = new MouseManager(game,true);
@@ -34,8 +35,25 @@ namespace GDGame.Scenes
 
         private void InitialiseButtons()
         {
-            UiButton menuUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X -93, Game.ScreenCentre.Y -40),"Play", textures["bStart"], Game.Fonts["UI"]);
-            UiManager.AddUiElement("MenuBotton", menuUiButton);
+            playUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X -93, Game.ScreenCentre.Y -40),"Play", textures["bStart"], Game.Fonts["UI"]);
+            UiManager.AddUiElement("MenuBotton", playUiButton);
+
+            playUiButton.Click += Click_PlayBtn;
+
+            quitUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X - 93, Game.ScreenCentre.Y + 80), "Quit", textures["bStart"], Game.Fonts["UI"]);
+            UiManager.AddUiElement("QuitBotton", quitUiButton);
+
+            quitUiButton.Click += Click_QuitBtn;
+        }
+
+        private void Click_QuitBtn()
+        {
+            Game.Exit();
+        }
+
+        private void Click_PlayBtn()
+        {
+            Game.SceneManager.NextScene();
         }
 
         private void InitializeLoadContent()
@@ -63,14 +81,10 @@ namespace GDGame.Scenes
 
         protected override void UpdateScene(GameTime gameTime)
         {
-
+            playUiButton.Update(gameTime);
+            quitUiButton.Update(gameTime);
 
             if (KeyboardManager.IsFirstKeyPress(Keys.Space))
-            {
-                Game.SceneManager.NextScene();
-            }
-
-            if (MouseManager.IsLeftButtonClickedOnce())
             {
                 Game.SceneManager.NextScene();
             }
@@ -78,7 +92,7 @@ namespace GDGame.Scenes
 
         protected override void DrawScene(GameTime gameTime)
         {
-
+            
         }
 
 

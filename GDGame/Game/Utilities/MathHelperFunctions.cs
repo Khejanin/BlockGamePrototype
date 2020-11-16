@@ -5,22 +5,45 @@ namespace GDGame.Utilities
 {
     public class MathHelperFunctions
     {
-        public static Vector3 QuaternionToEulerAngles(Quaternion quaternion)
+        public static Vector3 QuaternionToEulerAngles(Quaternion q)
         {
-            Vector3 angles;
+            Vector3 pitchYawRoll = Vector3.Zero;
+            q.Normalize();
 
-            double rollN = 2 * (quaternion.W * quaternion.X + quaternion.Y * quaternion.Z);
-            double rollD = 1 - 2 * (quaternion.X * quaternion.X + quaternion.Y * quaternion.Y);
-            angles.X = MathHelper.ToDegrees((float) Math.Atan2(rollN, rollD));
+            float sqx = q.X * q.X;
+            float sqy = q.Y * q.Y;
+            float sqz = q.Z * q.Z;
 
-            double pitchN = 2 * (quaternion.W * quaternion.Y - quaternion.Z * quaternion.X);
-            angles.Y = MathHelper.ToDegrees((float) Math.Asin(pitchN));
+            float roll;
+            float pitch;
+            float yaw;
 
-            double yawN = 2 * (quaternion.W * quaternion.Z + quaternion.X * quaternion.Y);
-            double yawD = 1 - 2 * (quaternion.Y * quaternion.Y + quaternion.Z * quaternion.Z);
-            angles.Z = MathHelper.ToDegrees((float) Math.Atan2(yawN, yawD));
-            
-            return angles;
+            float test = q.W * q.Y - q.Z * q.X;
+
+            if (test > 0.4999996)
+            {
+                yaw = (float) (-2 * Math.Atan2(q.X, q.W));
+                pitch = (float) (Math.PI / 2);
+                roll = 0;
+            }
+            else if (test < -0.4999996)
+            {
+                yaw = (float) (2 * Math.Atan2(q.X, q.W));
+                pitch = (float) (-Math.PI / 2);
+                roll = 0;
+            }
+            else
+            {
+                roll = (float) Math.Atan2(2f * (q.X * q.W + q.Y * q.Z), 1 - 2f * (sqx + sqy));
+                pitch = (float) Math.Asin(2f * test);
+                yaw = (float) Math.Atan2(2f * (q.X * q.Y + q.Z * q.W), 1 - 2f * (sqy + sqz));
+            }
+
+
+            pitchYawRoll.X = MathF.Round(MathHelper.ToDegrees(roll));
+            pitchYawRoll.Y = MathF.Round(MathHelper.ToDegrees(pitch));
+            pitchYawRoll.Z = MathF.Round(MathHelper.ToDegrees(yaw));
+            return pitchYawRoll;
         }
     }
 }
