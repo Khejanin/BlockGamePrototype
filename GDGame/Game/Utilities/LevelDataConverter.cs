@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using GDGame.Enums;
 using Microsoft.Xna.Framework;
 
@@ -12,6 +13,7 @@ namespace GDGame.Utilities
         public ETileType[,,] gridValues;
         public Dictionary<double, List<Vector3>> shapes;
         public Dictionary<Vector3, List<Vector3>> enemyPaths;
+        public Dictionary<Vector3, List<Vector3>> buttonTargets;
     }
 
     public static class LevelDataConverter
@@ -33,7 +35,8 @@ namespace GDGame.Utilities
                 tileSize = tileSize,
                 gridValues = new ETileType[(int)gridSize.X, (int)gridSize.Y, (int)gridSize.Z],
                 shapes = new Dictionary<double, List<Vector3>>(),
-                enemyPaths = new Dictionary<Vector3, List<Vector3>>()
+                enemyPaths = new Dictionary<Vector3, List<Vector3>>(),
+                buttonTargets = new Dictionary<Vector3, List<Vector3>>(),
             };
         
             //populate Grid values
@@ -76,6 +79,14 @@ namespace GDGame.Utilities
                                     pathPositions.Add(new Vector3((int)pathObj["X"].Number, (int)pathObj["Y"].Number, (int)pathObj["Z"].Number));
                                 }
                                 data.enemyPaths.Add(new Vector3(x, y, z), pathPositions);
+                            }
+
+                            //check if button and add targets to data
+                            if (data.gridValues[x, y, z] == ETileType.Button)
+                            {
+                                JSONArray targets = obj.GetArray("TargetGridPositions");
+                                List<Vector3> targetGridPositions = targets.Select(t => t.Obj).Select(pathObj => new Vector3((int)pathObj["X"].Number, (int)pathObj["Y"].Number, (int)pathObj["Z"].Number)).ToList();
+                                data.buttonTargets.Add(new Vector3(x, y, z), targetGridPositions);
                             }
                         }
                     }

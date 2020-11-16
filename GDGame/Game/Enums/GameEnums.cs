@@ -8,7 +8,8 @@
         Trigger,
         PlayerStart,
         Win,
-        Enemy
+        Enemy,
+        Button
     }
     
     public enum ColliderShape

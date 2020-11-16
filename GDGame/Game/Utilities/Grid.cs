@@ -66,6 +66,7 @@ namespace GDGame.Utilities
 
             CreateShapes(data, _grid);
             SetEnemyPaths(data, _grid);
+            SetButtonTargets(data, _grid);
         }
 
         private void CreateShapes(LevelData data, BasicTile[,,] grid)
@@ -100,6 +101,20 @@ namespace GDGame.Utilities
 
                 if (enemy.path.Count > 0)
                     enemy.currentPositionIndex = 0;
+            }
+        }
+
+        private void SetButtonTargets(LevelData data, BasicTile[,,] grid)
+        {
+            foreach (var buttonTargetKey in data.buttonTargets.Keys)
+            {
+                List<BasicTile> targets = new List<BasicTile>();
+                ButtonTile button = grid[(int)buttonTargetKey.X, (int)buttonTargetKey.Y, (int)data.gridSize.Z - 1 - (int)buttonTargetKey.Z] as ButtonTile;
+
+                foreach (var target in data.buttonTargets[buttonTargetKey])
+                    targets.Add(grid[(int)target.X, (int)target.Y, (int)target.Z]);
+
+                button.Targets = targets;
             }
         }
     }

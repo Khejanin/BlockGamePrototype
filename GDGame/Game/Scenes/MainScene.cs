@@ -140,10 +140,14 @@ namespace GDGame.Scenes
             enemy.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             enemy.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
+            ButtonTile button = new ButtonTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, models["Box"]);
+            button.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
                 {"StaticTile", staticTile}, {"AttachableBlock", movableTile}, {"PlayerBlock", playerTile},
-                {"GoalTile", goal}, {"EnemyTile", enemy}
+                {"GoalTile", goal}, {"EnemyTile", enemy}, {"ButtonTile", button}
             };
         }
 

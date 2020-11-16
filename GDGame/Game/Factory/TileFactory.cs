@@ -32,6 +32,7 @@ namespace GDGame.Factory
                 ETileType.Attachable => CreateAttachable(),
                 ETileType.Win => CreateGoal(),
                 ETileType.Enemy => CreateEnemy(),
+                ETileType.Button => CreateButton(),
                 _ => null
             };
 
@@ -82,6 +83,14 @@ namespace GDGame.Factory
             enemy = enemy.Clone() as EnemyTile;
             objectManager.Add(enemy);
             return enemy;
+        }
+
+        private BasicTile CreateButton()
+        {
+            ButtonTile button = (ButtonTile)drawnActors["ButtonTile"];
+            button = button.Clone() as ButtonTile;
+            objectManager.Add(button);
+            return button;
         }
     }
 }
