@@ -1,4 +1,5 @@
 ﻿using GDLibrary.Enums;
+using GDLibrary.Events;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -8,6 +9,7 @@ using System.Text;
 
 namespace GDGame.Game.UI
 {
+    public delegate void EventHandler();
     public class UiButton : UiElement
     {
         private MouseState mouseCurrent;
@@ -19,6 +21,7 @@ namespace GDGame.Game.UI
         Vector2 position;
         string text;
 
+        public event EventHandler Click;
 
         public UiButton(StatusType statusType, Vector2 position, string text, Texture2D background, SpriteFont font) : base(statusType)
         {
@@ -51,7 +54,7 @@ namespace GDGame.Game.UI
             }
             
         }
-        protected void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             mousePrevious = mouseCurrent;
             mouseCurrent = Mouse.GetState();
@@ -61,6 +64,11 @@ namespace GDGame.Game.UI
             if(MouseBox.Intersects(Box))
             {
                 hover = true;
+
+                if(mouseCurrent.LeftButton == ButtonState.Released && mousePrevious.LeftButton == ButtonState.Pressed)
+                {
+                    Click?.Invoke();
+                }
                 
             }
         }

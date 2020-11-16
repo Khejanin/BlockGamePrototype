@@ -17,7 +17,7 @@ namespace GDGame.Scenes
     public class MenuScene : Scene
     {
         private Dictionary<string, Texture2D> textures;
-
+        UiButton menuUiButton;
         public MenuScene(Main game,bool unloadsContent = false) : base(game,unloadsContent)
         {
             MouseManager mouseManager = new MouseManager(game,true);
@@ -34,8 +34,15 @@ namespace GDGame.Scenes
 
         private void InitialiseButtons()
         {
-            UiButton menuUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X -93, Game.ScreenCentre.Y -40),"Play", textures["bStart"], Game.Fonts["UI"]);
+            menuUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X -93, Game.ScreenCentre.Y -40),"Play", textures["bStart"], Game.Fonts["UI"]);
             UiManager.AddUiElement("MenuBotton", menuUiButton);
+
+            menuUiButton.Click += Click_PlayBtn;
+        }
+
+        private void Click_PlayBtn()
+        {
+            Game.SceneManager.NextScene();
         }
 
         private void InitializeLoadContent()
@@ -63,14 +70,9 @@ namespace GDGame.Scenes
 
         protected override void UpdateScene(GameTime gameTime)
         {
-
+            menuUiButton.Update(gameTime);
 
             if (KeyboardManager.IsFirstKeyPress(Keys.Space))
-            {
-                Game.SceneManager.NextScene();
-            }
-
-            if (MouseManager.IsLeftButtonClickedOnce())
             {
                 Game.SceneManager.NextScene();
             }
