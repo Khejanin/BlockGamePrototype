@@ -80,7 +80,7 @@ namespace GDGame.Actors
                  {
                     UpdateAttachCandidates(); //remove this later
                     bool won = CheckWinCondition(); //remove this later
-                    if (won) EventSystem.EventSystem.FireEvent(new GameStateMessageEventInfo(GameState.Won));
+                    if (won) EventSystem.EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Won));
                  }
              }
         }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GDGame.EventSystem;
 using GDGame.Managers;
 using GDGame.Scenes;
 using GDLibrary;
@@ -51,6 +52,8 @@ namespace GDGame
 
         public ProjectionParameters GlobalProjectionParameters => ProjectionParameters.StandardDeepSixteenTen;
 
+        private float worldScale = 3000;
+        private PrimitiveObject primitiveObject = null;
         public Effect testEffect;
 
 
@@ -96,14 +99,21 @@ namespace GDGame
         private void CreateScenes()
         {
             SceneManager.AddScene("Menu", new MenuScene(this));
-            SceneManager.AddScene("Level1", new MainScene(this,"test_Enemy_path.json"));
-            SceneManager.AddScene("Level2", new MainScene(this,"Paul_Level_5.json"));
-            SceneManager.AddScene("Level3", new MainScene(this,"Paul_Level_6.json"));
+            SceneManager.AddScene("Tutorial", new TutorialScene(this));
+            SceneManager.AddScene("Level1", new MainScene(this,"Paul_Level_1.json"));
+            SceneManager.AddScene("Level2", new MainScene(this,"Paul_Level_2.json"));
+            SceneManager.AddScene("Level3", new MainScene(this,"Paul_Level_3.json"));
+            SceneManager.AddScene("Level4", new MainScene(this,"Paul_Level_4.json"));
+            SceneManager.AddScene("Level5", new MainScene(this,"Paul_Level_5.json"));
+            SceneManager.AddScene("Level6", new MainScene(this,"Paul_Level_6.json"));
             SceneManager.AddScene("End",new EndScene(this));
         }
 
         private void InitManagers()
         {
+            //Events
+            Components.Add(new EventManager(this));
+            
             Components.Add(new EventDispatcher(this));
             
             //Camera
@@ -186,6 +196,11 @@ namespace GDGame
             InitDebug();
         }
 
+        protected override void UnloadContent()
+        {
+            base.UnloadContent();
+        }
+
         #endregion
 
         private void InitGraphics(int width, int height)
@@ -223,6 +238,11 @@ namespace GDGame
                 Exit();
 
             base.Update(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
         }
 
         #endregion
