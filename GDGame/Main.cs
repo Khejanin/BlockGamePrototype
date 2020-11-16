@@ -5,6 +5,7 @@ using GDGame.Scenes;
 using GDLibrary;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
+using GDLibrary.Events;
 using GDLibrary.Managers;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
