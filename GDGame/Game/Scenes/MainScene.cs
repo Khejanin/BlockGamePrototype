@@ -13,6 +13,7 @@ using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Factories;
 using GDLibrary.Interfaces;
+using GDLibrary.Managers;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -27,6 +28,7 @@ namespace GDGame.Scenes
         private Dictionary<string, Model> models;
         private Dictionary<string, Texture2D> textures;
         private Dictionary<string, DrawnActor3D> drawnActors;
+        private MouseManager mouseManager;
 
         private string levelname;
         private bool optionsToggle = false;
@@ -37,6 +39,7 @@ namespace GDGame.Scenes
 
         public MainScene(Main game,string levelname) : base(game)
         {
+            mouseManager = new MouseManager(game, false);
             this.levelname = @"Game\LevelFiles\" + levelname;
         }
 
@@ -254,8 +257,9 @@ namespace GDGame.Scenes
             if(optionsToggle)
             {
                 optionsToggle = false;
+                mouseManager.MouseVisible = false;
             }
-            else { optionsToggle = true; }
+            else { optionsToggle = true; mouseManager.MouseVisible = true; }
 
             UiManager.Options(optionsToggle);
         }
