@@ -10,7 +10,7 @@ namespace GDGame.Scenes
 {
     public class EndScene : Scene
     {
-        public EndScene(Main game,bool unloadsContent = false) : base(game,unloadsContent)
+        public EndScene(Main game, bool unloadsContent = false) : base(game, unloadsContent)
         {
             backgroundColor = Color.Black;
         }
@@ -29,7 +29,7 @@ namespace GDGame.Scenes
             CameraManager.Add(camera3D);
         }
 
-        
+
         protected void InitializeText()
         {
             UiText winText = new UiText(StatusType.Drawn, "You won!!! Press ESC to close the Game!", Game.Fonts["UI"],

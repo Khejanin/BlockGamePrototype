@@ -14,7 +14,7 @@ namespace GDGame.Managers
         private int activeSongIndex = 0;
         private Sounds currentSong;
         private SoundEffectInstance mySoundInstance;
-        private float masterSound = 0.5f;
+        private float masterSound = 0.2f;
 
         /// <summary>
         /// Indexer for the camera manager
@@ -134,6 +134,7 @@ namespace GDGame.Managers
 
             SwitchSong(next);
             this.mySoundInstance.Volume = this.masterSound;
+            this.mySoundInstance.IsLooped = true;
             this.mySoundInstance.Play();
         }
 

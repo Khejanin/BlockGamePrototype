@@ -16,7 +16,8 @@
 
         Helper,
         MusicTrack,
-        SoundEffect
+        SoundEffect,
+        specialTrack
     }
 
     /// <summary>

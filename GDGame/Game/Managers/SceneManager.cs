@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using GDGame.Enums;
+using GDGame.EventSystem;
 using GDGame.Scenes;
 using Microsoft.Xna.Framework;
 
@@ -13,6 +15,9 @@ namespace GDGame.Managers
 
         private List<Scene> sceneList;
         private int currentSceneIndex;
+
+        public int CurrentSceneIndex => currentSceneIndex;
+
         private int nextSceneIndex = -1;
 
         //The Game needs a SceneManager, and the SceneManager needs a Scene.
@@ -27,6 +32,7 @@ namespace GDGame.Managers
         {
             SceneIndexDictionary.Add(key,sceneList.Count);
             sceneList.Add(s);
+            s.SceneName = key;
         }
 
         public override void Initialize()
@@ -47,6 +53,7 @@ namespace GDGame.Managers
         //A loading screen would be nice but I don't have time to test and implement async operations, we just gotta live with the unresponsiveness for now.
         private void SwitchScene(int sceneIndex)
         {
+            EventManager.FireEvent(new SceneEventInfo {sceneActionType = SceneActionType.OnSceneChange});
             sceneList[currentSceneIndex].UnloadScene(OnCurrentSceneUnloaded);
             nextSceneIndex = sceneIndex;
         }

@@ -57,6 +57,36 @@
 /processorParam:Quality=Best
 /build:Assets/GameTracks/gameTrack04.mp3
 
+#begin Assets/GameTracks/testTrack01.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/GameTracks/testTrack01.mp3
+
+#begin Assets/GameTracks/testTrack02.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/GameTracks/testTrack02.mp3
+
+#begin Assets/GameTracks/testTrack03.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/GameTracks/testTrack03.mp3
+
+#begin Assets/GameTracks/testTrack04.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/GameTracks/testTrack04.mp3
+
+#begin Assets/GameTracks/testTrack06.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/GameTracks/testTrack06.mp3
+
 #begin Assets/Models/AttachableCube.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -520,6 +550,30 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Block/floor.png
 
+#begin Assets/Textures/Block/sugar01.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Block/sugar01.png
+
+#begin Assets/Textures/Block/sugar02.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Block/sugar02.png
+
 #begin Assets/Textures/circle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -711,6 +765,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Props/Crates/crate5.jpg
+
+#begin Assets/Textures/Props/GameTextures/ceramicColoring.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Props/GameTextures/ceramicColoring.png
+
+#begin Assets/Textures/Props/GameTextures/genMetal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Props/GameTextures/genMetal.png
 
 #begin Assets/Textures/Props/GameTextures/TextureCube.png
 /importer:TextureImporter

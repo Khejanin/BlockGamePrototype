@@ -35,4 +35,10 @@
         Move,
         Die
     }
+    
+    public enum SceneActionType
+    {
+        OnSceneChange,
+        OnSceneLoaded
+    }
 }
