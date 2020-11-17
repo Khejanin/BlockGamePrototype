@@ -34,4 +34,10 @@
     {
         Move
     }
+    
+    public enum SceneActionType
+    {
+        OnSceneChange,
+        OnSceneLoaded
+    }
 }

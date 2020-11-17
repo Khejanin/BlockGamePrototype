@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GDGame.EventSystem;
 using GDGame.Managers;
 using GDGame.Scenes;
@@ -18,6 +19,8 @@ namespace GDGame
     {
         public GraphicsDeviceManager Graphics { get; }
 
+        public LevelDataManager LevelDataManager { get; set; }
+
         public BasicEffect ModelEffect { get; private set; }
 
         public BasicEffect UnlitTexturedEffect { get; private set; }
@@ -29,7 +32,7 @@ namespace GDGame
         public ObjectManager ObjectManager { get; private set; }
 
         public KeyboardManager KeyboardManager { get; private set; }
-        
+
         public GamePadManager GamePadManager { get; private set; }
 
         public MouseManager MouseManager { get; private set; }
@@ -43,12 +46,13 @@ namespace GDGame
         public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
 
         public SoundManager SoundManager { get; private set; }
-        
+
         public SceneManager SceneManager { get; private set; }
         public UiManager UiManager { get; private set; }
 
 
         public Dictionary<string, SpriteFont> Fonts { get; private set; }
+
 
         public ProjectionParameters GlobalProjectionParameters => ProjectionParameters.StandardDeepSixteenTen;
 
@@ -70,7 +74,7 @@ namespace GDGame
         {
             // TODO: Add your initialization logic here
             Window.Title = "My Amazing Game";
-            
+
             InitManagers();
             CreateScenes();
             LoadEffects();
@@ -81,8 +85,6 @@ namespace GDGame
 
             base.Initialize();
         }
-
-        
 
 
         private void InitDebug()
@@ -102,15 +104,15 @@ namespace GDGame
 
             SceneManager.AddScene("Menu", new MenuScene(this));
             SceneManager.AddScene("Tutorial", new TutorialScene(this));
-            SceneManager.AddScene("Level1", new MainScene(this,"Paul_Level_1.json"));
-            SceneManager.AddScene("Level2", new MainScene(this,"Paul_Level_2.json"));
-            SceneManager.AddScene("Level3", new MainScene(this,"Paul_Level_3.json"));
-            SceneManager.AddScene("Level4", new MainScene(this,"Paul_Level_4.json"));
-            SceneManager.AddScene("Level5", new MainScene(this,"Paul_Level_5.json"));
-            SceneManager.AddScene("Level6", new MainScene(this,"Paul_Level_6.json"));
+            SceneManager.AddScene("Level1", new MainScene(this, "Paul_Level_1.json"));
+            SceneManager.AddScene("Level2", new MainScene(this, "Paul_Level_2.json"));
+            SceneManager.AddScene("Level3", new MainScene(this, "Paul_Level_3.json"));
+            SceneManager.AddScene("Level4", new MainScene(this, "Paul_Level_4.json"));
+            SceneManager.AddScene("Level5", new MainScene(this, "Paul_Level_5.json"));
+            SceneManager.AddScene("Level6", new MainScene(this, "Paul_Level_6.json"));
 
             //thows back to menu eventually
-            SceneManager.AddScene("End",new EndScene(this));
+            SceneManager.AddScene("End", new EndScene(this));
 
             //shouldnt be able to "next scene" to this
             SceneManager.AddScene("Options", new OptionsMenuScene(this));
@@ -120,13 +122,13 @@ namespace GDGame
         {
             //Events
             Components.Add(new EventManager(this));
-            
+
             Components.Add(new EventDispatcher(this));
-            
+
             //Camera
             CameraManager = new CameraManager<Camera3D>(this);
             Components.Add(CameraManager);
-            
+
             //Scene
             SceneManager = new SceneManager(this);
             Components.Add(SceneManager);
@@ -134,9 +136,9 @@ namespace GDGame
             //Keyboard
             KeyboardManager = new KeyboardManager(this);
             Components.Add(KeyboardManager);
-            
+
             //Gamepad
-            GamePadManager = new GamePadManager(this,1);
+            GamePadManager = new GamePadManager(this, 1);
             Components.Add(GamePadManager);
 
             //Mouse
@@ -146,21 +148,22 @@ namespace GDGame
             //Sound
             SoundManager = new SoundManager(this);
             Components.Add(SoundManager);
-            
+
             //Object
             ObjectManager = new ObjectManager(this, StatusType.Update | StatusType.Drawn, 6, 10, CameraManager);
             Components.Add(ObjectManager);
-            
+
             UiManager = new UiManager(this);
             Components.Add(UiManager);
 
+            LevelDataManager = new LevelDataManager();
         }
 
         private void LoadEffects()
         {
             testEffect = Content.Load<Effect>("Assets/Effects/test");
         }
-        
+
         private void InitEffect()
         {
             //to do...
@@ -186,14 +189,14 @@ namespace GDGame
             WireframeRasterizerState = new RasterizerState();
             WireframeRasterizerState.FillMode = FillMode.WireFrame;
         }
-        
+
         private void LoadFonts()
         {
             SpriteFont uiFont = Content.Load<SpriteFont>("Assets/Fonts/Arial");
 
             Fonts = new Dictionary<string, SpriteFont> {{"UI", uiFont}};
         }
-        
+
         #endregion
 
         #region Load and Unload Content
@@ -232,8 +235,6 @@ namespace GDGame
             samplerState.AddressU = TextureAddressMode.Clamp;
             samplerState.AddressV = TextureAddressMode.Clamp;
             Graphics.GraphicsDevice.SamplerStates[0] = samplerState;
-            
-            
         }
 
 
@@ -253,5 +254,17 @@ namespace GDGame
         }
 
         #endregion
+    }
+
+    public class LevelStats
+    {
+        public int time;
+        public int moveCount;
+
+        public LevelStats()
+        {
+            time = Int32.MaxValue;
+            moveCount = Int32.MaxValue;
+        }
     }
 }

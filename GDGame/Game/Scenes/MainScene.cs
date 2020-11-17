@@ -50,6 +50,7 @@ namespace GDGame.Scenes
 
             SetTargetToCamera();
             InitEvents();
+            base.Initialize();
         }
 
         private void SetTargetToCamera()
@@ -232,7 +233,7 @@ namespace GDGame.Scenes
             uiText = new UiText(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("Time", uiText);
 
-            text = "5";
+            text = "0";
             position = new Vector2(halfWidth, screenHeight - heightFromBottom);
             uiText = new UiText(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("MovesNumeric", uiText);
@@ -302,7 +303,8 @@ namespace GDGame.Scenes
             EffectParameters effectParameters =
                 new EffectParameters(unlitTexturedEffect, textures["Wall"], Color.White, 1);
 
-            IVertexData vertexData = new VertexData<VertexPositionColorTexture>(vertices, PrimitiveType.TriangleStrip, 2);
+            IVertexData vertexData =
+                new VertexData<VertexPositionColorTexture>(vertices, PrimitiveType.TriangleStrip, 2);
 
             archetypalTexturedQuad = new PrimitiveObject("original texture quad", ActorType.Decorator,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, vertexData);
@@ -372,8 +374,6 @@ namespace GDGame.Scenes
                 ObjectManager.Add(primitiveObject);
             }
         }
-
-        
 
         #endregion
 
@@ -461,6 +461,13 @@ namespace GDGame.Scenes
         private void InitEvents()
         {
             EventManager.RegisterListener<GameStateMessageEventInfo>(OnGameStateMessageReceived);
+            EventManager.RegisterListener<DataManagerEvent>(HandleDataManagerEvent);
+        }
+
+        private void HandleDataManagerEvent(DataManagerEvent obj)
+        {
+            if (UiManager["MovesNumeric"] is UiText uiText)
+                uiText.Text = Game.LevelDataManager.CurrentMovesCount.ToString();
         }
 
         private void OnGameStateMessageReceived(GameStateMessageEventInfo eventInfo)
@@ -485,6 +492,7 @@ namespace GDGame.Scenes
             float angle = MathHelperFunctions.GetAngle(Vector3.Forward, CameraManager.ActiveCamera.Transform3D.Look);
             UiSprite uiSprite = UiManager["Compass"] as UiSprite;
             uiSprite?.SetRotation(angle);
+
             List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
             if (players.Count > 0)
             {
