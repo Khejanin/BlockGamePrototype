@@ -51,6 +51,19 @@ namespace GDGame.Managers
             nextSceneIndex = sceneIndex;
         }
 
+        //direct switch back to main menu - for going back from options and a quit game thing
+        public void MenuSwitchScene()
+        {
+            sceneList[currentSceneIndex].UnloadScene(OnCurrentSceneUnloaded);
+            nextSceneIndex = SceneIndexDictionary["Menu"];
+        }
+        //direct switch to options menu
+        public void OptionsSwitchScene()
+        {
+            sceneList[currentSceneIndex].UnloadScene(OnCurrentSceneUnloaded);
+            nextSceneIndex = SceneIndexDictionary["Options"];
+        }
+
         public void OnCurrentSceneUnloaded()
         {
             currentSceneIndex = nextSceneIndex;

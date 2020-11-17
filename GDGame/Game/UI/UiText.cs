@@ -34,5 +34,7 @@ namespace GDGame.Game.UI
         {
             spriteBatch.DrawString(spriteFont, text, position, color, 0, origin, Vector2.One, SpriteEffects.None, 0);
         }
+
+        public override void Update(GameTime gameTime) { }
     }
 }
