@@ -54,10 +54,11 @@ namespace GDGame.Game.Actors.Tiles
 
             pathDir *= -1;
             Vector3 dest2 = NextPathPoint();
-            if (destination == dest2 || this.Raycast(Transform3D.Translation, direction, true, 1f) != null)
+            Vector3 dir2 = Vector3.Normalize(dest2 - origin);
+            if (destination == dest2 || this.Raycast(Transform3D.Translation, dir2, true, 1f) != null)
                 return Vector3.Zero;
 
-           return Vector3.Normalize(dest2 - origin);
+           return dir2;
         }
 
         private Vector3 NextPathPoint()
