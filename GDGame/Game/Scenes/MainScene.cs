@@ -382,14 +382,12 @@ namespace GDGame.Scenes
 
         private void LoadSounds()
         {
-            SoundManager.StopSong();
             //step 1 - load songs
-            SoundEffect track01 = Content.Load<SoundEffect>("Assets/GameTracks/testTrack01");
-            SoundEffect track02 = Content.Load<SoundEffect>("Assets/GameTracks/testTrack02");
-            SoundEffect track03 = Content.Load<SoundEffect>("Assets/GameTracks/testTrack03");
-            SoundEffect track04 = Content.Load<SoundEffect>("Assets/Sound/Knock04");
-            SoundEffect track05 = Content.Load<SoundEffect>("Assets/Sound/Click02");
-            SoundEffect track06 = Content.Load<SoundEffect>("Assets/GameTracks/testTrack06");
+            SoundEffect track01 = Content.Load<SoundEffect>("Assets/GameTracks/GameTrack02");
+            SoundEffect track02 = Content.Load<SoundEffect>("Assets/GameTracks/GameTrack03");
+            SoundEffect track03 = Content.Load<SoundEffect>("Assets/GameTracks/gameTrack04");
+            SoundEffect track04 = Content.Load<SoundEffect>("Assets/Sound/Knock03");
+            SoundEffect track05 = Content.Load<SoundEffect>("Assets/Sound/Click01");
 
             //Step 2- Make into sounds
             SoundManager.Add(new Sounds(track01, "gameTrack01", ActorType.MusicTrack, StatusType.Update));
@@ -397,7 +395,7 @@ namespace GDGame.Scenes
             SoundManager.Add(new Sounds(track03, "gameTrack03", ActorType.MusicTrack, StatusType.Update));
             SoundManager.Add(new Sounds(track04, "playerMove", ActorType.SoundEffect, StatusType.Update));
             SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
-            SoundManager.Add(new Sounds(track06, "endTheme", ActorType.specialTrack, StatusType.Update));
+
 
             SoundManager.NextSong();
         }
