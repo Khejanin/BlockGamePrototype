@@ -68,7 +68,7 @@ namespace GDGame.Controllers
                 {
                     MovementComponent movementComponent = (MovementComponent) playerTile.ControllerList.Find(controller =>
                         controller.GetType() == typeof(MovementComponent));
-                    movementComponent?.Move(moveDir);
+                    movementComponent?.Move(moveDir, playerTile.OnMoveEnd);
                 }
             }
         }

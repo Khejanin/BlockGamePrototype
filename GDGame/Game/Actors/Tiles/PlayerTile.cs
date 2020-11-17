@@ -16,11 +16,8 @@ namespace GDGame.Actors
     public class PlayerTile : MovableTile, ICloneable
     {
         private List<Shape> attachCandidates;
-
         public List<Shape> AttachCandidates => attachCandidates;
-
         public List<AttachableTile> AttachedTiles { get; }
-
         public bool IsAttached { get; private set; }
 
         private struct PlayerSurroundCheck
@@ -34,6 +31,22 @@ namespace GDGame.Actors
         {
             AttachedTiles = new List<AttachableTile>();
             attachCandidates = new List<Shape>();
+        }
+
+        public override void InitializeTile()
+        {
+            EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
+        }
+
+        private void HandlePlayerEvent(PlayerEventInfo info)
+        {
+            switch(info.type)
+            {
+                case PlayerEventType.Die:
+                    System.Diagnostics.Debug.WriteLine("Player ded");
+                    EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Lost));
+                    break;
+            }
         }
 
         public void Attach()
@@ -66,33 +79,22 @@ namespace GDGame.Actors
             return hit?.actor is GoalTile;
         }
 
-        /// <summary>
-        /// Is in charge of the Animation for when the Player Moves
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public override void Update(GameTime gameTime)
+        public void OnMoveEnd()
         {
-            base.Update(gameTime);
-
-             if (IsMoving)
-             {
-                 if (CurrentMovementTime <= 0)
-                 {
-                    UpdateAttachCandidates(); //remove this later
-                    bool won = CheckWinCondition(); //remove this later
-                    if (won) EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Won));
-                 }
-             }
+            UpdateAttachCandidates();
+            if (CheckWinCondition()) 
+                EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Won));
         }
-
 
         public void UpdateAttachCandidates()
         {
             attachCandidates.Clear();
 
             foreach (PlayerSurroundCheck check in CheckSurroundings())
+            {
                 if (check.hit?.actor is AttachableTile tile)
                     attachCandidates.Add(tile.Shape);
+            }
         }
 
         private List<PlayerSurroundCheck> CheckSurroundings()

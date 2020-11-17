@@ -141,7 +141,7 @@ namespace GDGame.Scenes
             EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update,
                 transform3D,
                 effectParameters, models["Box"]);
-            enemy.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            enemy.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
             enemy.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
             enemy.ControllerList.Add(new RotationComponent());
 

@@ -22,6 +22,7 @@ namespace GDGame.Component
         private Vector3 startPos;
         private Vector3 endPos;
         private Quaternion startRotation;
+        private Action endMoveCallback;
 
         public MovementComponent(int movementTime, Curve1D curve1D)
         {
@@ -47,7 +48,8 @@ namespace GDGame.Component
                 {
                     parent.IsMoving = false;
                     parent.CurrentMovementTime = 0;
-                    startRotation = rotationQuaternion; 
+                    startRotation = rotationQuaternion;
+                    endMoveCallback?.Invoke();
                 }
 
                 Quaternion quaternion = Quaternion.Slerp(startRotation, rotationQuaternion,
@@ -67,10 +69,12 @@ namespace GDGame.Component
             throw new System.NotImplementedException();
         }
 
-        public void Move(Vector3 direction)
+        public void Move(Vector3 direction, Action endMoveCallback = null)
         {
             if (parent != null && !parent.IsMoving)
             {
+                this.endMoveCallback = endMoveCallback;
+
                 RotationComponent rotationComponent =
                     (RotationComponent) parent.ControllerList.Find(controller =>
                         controller.GetType() == typeof(RotationComponent));

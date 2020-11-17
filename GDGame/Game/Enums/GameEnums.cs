@@ -32,6 +32,7 @@
 
     public enum PlayerEventType
     {
-        Move
+        Move,
+        Die
     }
 }
