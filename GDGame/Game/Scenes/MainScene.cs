@@ -29,6 +29,7 @@ namespace GDGame.Scenes
         private Dictionary<string, DrawnActor3D> drawnActors;
 
         private string levelname;
+        private bool optionsToggle = false;
 
 
         ////FOR SKYBOX____ TEMP
@@ -235,6 +236,28 @@ namespace GDGame.Scenes
             text = "Hold Space To Attach";
             uiText = new UiText(StatusType.Off, text, Game.Fonts["UI"], Vector2.Zero, Color.White, false);
             UiManager.AddUiElement("ToolTip", uiText);
+
+            float screenHeightFull = GraphicsDevice.Viewport.Height-768;
+            float screenWidthFull = GraphicsDevice.Viewport.Width-1024;
+
+            position = new Vector2(screenWidthFull, screenHeightFull);
+            UiQuickOptions uiOptionsOverlay = new UiQuickOptions(StatusType.Off, position, " ", textures["options"], Game.Fonts["UI"]);
+            UiManager.AddUiElement("OptionsOverlay", uiOptionsOverlay);
+
+            UiButton uiOptionsButton = new UiButton(StatusType.Off, new Vector2(screenWidthFull, screenHeightFull), " ", textures["Logo"], Game.Fonts["UI"]);
+            UiManager.AddUiElement("OptionsButton", uiOptionsButton);
+        }
+
+        //in game options menu trigger
+        private void OptionsMenu()
+        {
+            if(optionsToggle)
+            {
+                optionsToggle = false;
+            }
+            else { optionsToggle = true; }
+
+            UiManager.Options(optionsToggle);
         }
 
         private void InitArchetypalQuad()
@@ -312,7 +335,6 @@ namespace GDGame.Scenes
             ObjectManager.Add(primitiveObject);
         }
 
-
         private float GetAngle(Vector3 forward, Vector3 look)
         {
             Vector3 noY = look * (Vector3.Forward + Vector3.Right);
@@ -368,6 +390,7 @@ namespace GDGame.Scenes
             Texture2D circle = Content.Load<Texture2D>("Assets/Textures/circle");
             Texture2D logo = Content.Load<Texture2D>("Assets/Textures/Menu/logo");
             Texture2D logoMirror = Content.Load<Texture2D>("Assets/Textures/Menu/logo_mirror");
+            Texture2D options = Content.Load<Texture2D>("Assets/Textures/Menu/menubaseres");
 
             Texture2D wall = Content.Load<Texture2D>("Assets/Textures/Block/block_green");
             Texture2D floor = Content.Load<Texture2D>("Assets/Textures/Skybox/floor_neon");
@@ -396,7 +419,8 @@ namespace GDGame.Scenes
                 {"kWall2", panel2 },
                 {"kWall3", panel3 },
                 {"kWall4", panel4 },
-                {"floor2", floor1 }
+                {"floor2", floor1 },
+                {"options", options }
             };
         }
 
@@ -479,6 +503,10 @@ namespace GDGame.Scenes
             //Pause/resume music
             if(KeyboardManager.IsFirstKeyPress(Keys.P))
                 SoundManager.changeMusicState();
+
+            //options menu
+            if (KeyboardManager.IsFirstKeyPress(Keys.O))
+                this.OptionsMenu();
         }
 
         protected override void DrawScene(GameTime gameTime)

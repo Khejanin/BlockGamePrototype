@@ -1,4 +1,4 @@
-using GDGame.Actors;
+﻿using GDGame.Actors;
 using GDGame.Managers;
 using GDGame.Game.UI;
 using GDLibrary.Actors;
@@ -11,16 +11,17 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using GDLibrary.Managers;
+using GDGame.Scenes;
 
 namespace GDGame.Scenes
 {
-    public class MenuScene : Scene
+    class OptionsMenuScene : Scene
     {
         private Dictionary<string, Texture2D> textures;
-        UiButton playUiButton, optionsUiButton, quitUiButton;
-        public MenuScene(Main game,bool unloadsContent = false) : base(game,unloadsContent)
+        UiButton backUiButton, quitUiButton;
+        public OptionsMenuScene(Main game, bool unloadsContent = false) : base(game, unloadsContent)
         {
-            MouseManager mouseManager = new MouseManager(game,true);
+            MouseManager mouseManager = new MouseManager(game, true);
             backgroundColor = Color.LightCyan;
         }
 
@@ -34,22 +35,15 @@ namespace GDGame.Scenes
 
         private void InitialiseButtons()
         {
-            playUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X -93, Game.ScreenCentre.Y -40),"Play", textures["bStart"], Game.Fonts["UI"]);
-            UiManager.AddUiElement("MenuButton", playUiButton);
-            playUiButton.Click += Click_PlayBtn;
+            backUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X - 93, Game.ScreenCentre.Y - 40), "Resume", textures["bStart"], Game.Fonts["UI"]);
+            UiManager.AddUiElement("BackButton", backUiButton);
 
-            optionsUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X - 93, Game.ScreenCentre.Y + 80), "Options", textures["bStart"], Game.Fonts["UI"]);
-            UiManager.AddUiElement("OptionsButton", optionsUiButton);
-            optionsUiButton.Click += Click_OptionsBtn;
+            backUiButton.Click += Click_BackBtn;
 
-            quitUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X - 93, Game.ScreenCentre.Y + 200), "Quit", textures["bStart"], Game.Fonts["UI"]);
-            UiManager.AddUiElement("QuitButton", quitUiButton);
+            quitUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X - 93, Game.ScreenCentre.Y + 80), "Quit", textures["bStart"], Game.Fonts["UI"]);
+            UiManager.AddUiElement("QuitBotton", quitUiButton);
+
             quitUiButton.Click += Click_QuitBtn;
-        }
-
-        private void Click_OptionsBtn()
-        {
-            Game.SceneManager.OptionsSwitchScene();
         }
 
         private void Click_QuitBtn()
@@ -57,9 +51,9 @@ namespace GDGame.Scenes
             Game.Exit();
         }
 
-        private void Click_PlayBtn()
+        private void Click_BackBtn()
         {
-            Game.SceneManager.NextScene();
+            Game.SceneManager.MenuSwitchScene();
         }
 
         private void InitializeLoadContent()
@@ -67,13 +61,14 @@ namespace GDGame.Scenes
             LoadTextures();
             LoadSounds();
         }
- 
+
         private void InitializeCamera()
         {
             Camera3D camera3D = new Camera3D("Menu_Camera", ActorType.Camera3D, StatusType.Update,
                 new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up), Game.GlobalProjectionParameters);
             CameraManager.Add(camera3D);
         }
+
 
         private void InitializeText()
         {
@@ -84,9 +79,8 @@ namespace GDGame.Scenes
 
         protected override void UpdateScene(GameTime gameTime)
         {
-            playUiButton.Update(gameTime);
+            backUiButton.Update(gameTime);
             quitUiButton.Update(gameTime);
-            optionsUiButton.Update(gameTime);
 
             if (KeyboardManager.IsFirstKeyPress(Keys.Space))
             {
@@ -96,7 +90,7 @@ namespace GDGame.Scenes
 
         protected override void DrawScene(GameTime gameTime)
         {
-            
+
         }
 
 

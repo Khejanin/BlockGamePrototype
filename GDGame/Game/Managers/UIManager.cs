@@ -11,6 +11,7 @@ namespace GDGame.Managers
     {
         private Dictionary<string, UiElement> elements;
         private SpriteBatch spriteBatch;
+        
 
         public UiManager(Microsoft.Xna.Framework.Game game) : base(game)
         {
@@ -23,6 +24,23 @@ namespace GDGame.Managers
         public void AddUiElement(string name, UiElement element)
         {
             elements.Add(name, element);
+        }
+
+        //in game menu overlay trigger
+        public void Options(bool q)
+        {
+            foreach (KeyValuePair<string, UiElement> keyValuePair in elements)
+            {
+                if(keyValuePair.Key.Contains("Options"))
+                {
+                    if(q)
+                    {
+                        keyValuePair.Value.StatusType = StatusType.Drawn;
+                    }
+                    else { keyValuePair.Value.StatusType = StatusType.Off; }
+                    
+                }
+            }
         }
 
         public override void Draw(GameTime gameTime)
