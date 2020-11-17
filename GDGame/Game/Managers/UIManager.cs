@@ -59,6 +59,20 @@ namespace GDGame.Managers
             base.Draw(gameTime);
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            spriteBatch.Begin();
+            foreach (KeyValuePair<string, UiElement> keyValuePair in elements)
+            {
+                if (keyValuePair.Key.Contains("Options"))
+                {
+                    keyValuePair.Value.Update(gameTime);
+                }
+            }
+
+            spriteBatch.End();
+        }
+
         public UiElement this[string key] => elements[key];
 
         public void Clear()

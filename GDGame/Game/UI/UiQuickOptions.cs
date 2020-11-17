@@ -39,6 +39,8 @@ namespace GDGame.Game.UI
             }
         }
 
+        public override void Update(GameTime gameTime) { }
+
         public Rectangle Box
         {
             get

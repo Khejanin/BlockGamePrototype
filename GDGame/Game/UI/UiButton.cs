@@ -54,7 +54,7 @@ namespace GDGame.Game.UI
             }
             
         }
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             mousePrevious = mouseCurrent;
             mouseCurrent = Mouse.GetState();

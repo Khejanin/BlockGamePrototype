@@ -247,8 +247,12 @@ namespace GDGame.Scenes
             UiQuickOptions uiOptionsOverlay = new UiQuickOptions(StatusType.Off, position, " ", textures["options"], Game.Fonts["UI"]);
             UiManager.AddUiElement("OptionsOverlay", uiOptionsOverlay);
 
-            UiButton uiOptionsButton = new UiButton(StatusType.Off, new Vector2(screenWidthFull, screenHeightFull), " ", textures["Logo"], Game.Fonts["UI"]);
-            UiManager.AddUiElement("OptionsButton", uiOptionsButton);
+            //UiButton uiOptionsLogo = new UiButton(StatusType.Off, new Vector2(screenWidthFull, screenHeightFull), " ", textures["Logo"], Game.Fonts["UI"]);
+            //UiManager.AddUiElement("OptionsLogo", uiOptionsLogo);
+
+            UiButton uiOptionsButtonResume = new UiButton(StatusType.Off, new Vector2(screenWidthFull, screenHeightFull), "Resume", textures["optionsButton"], Game.Fonts["UI"]);
+            UiManager.AddUiElement("OptionsButtonResume", uiOptionsButtonResume);
+            uiOptionsButtonResume.Click += OptionsMenu;
         }
 
         //in game options menu trigger
@@ -395,6 +399,7 @@ namespace GDGame.Scenes
             Texture2D logo = Content.Load<Texture2D>("Assets/Textures/Menu/logo");
             Texture2D logoMirror = Content.Load<Texture2D>("Assets/Textures/Menu/logo_mirror");
             Texture2D options = Content.Load<Texture2D>("Assets/Textures/Menu/menubaseres");
+            Texture2D optionsButton = Content.Load<Texture2D>("Assets/Textures/Menu/button");
 
             Texture2D wall = Content.Load<Texture2D>("Assets/Textures/Block/block_green");
             Texture2D floor = Content.Load<Texture2D>("Assets/Textures/Skybox/floor_neon");
@@ -424,7 +429,8 @@ namespace GDGame.Scenes
                 {"kWall3", panel3 },
                 {"kWall4", panel4 },
                 {"floor2", floor1 },
-                {"options", options }
+                {"options", options },
+                {"optionsButton", optionsButton }
             };
         }
 
@@ -511,6 +517,7 @@ namespace GDGame.Scenes
             //options menu
             if (KeyboardManager.IsFirstKeyPress(Keys.O))
                 this.OptionsMenu();
+
         }
 
         protected override void DrawScene(GameTime gameTime)
