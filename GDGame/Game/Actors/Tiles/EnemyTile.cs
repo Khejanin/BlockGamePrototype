@@ -1,6 +1,7 @@
 ﻿using GDGame.Actors;
 using GDGame.Component;
 using GDGame.EventSystem;
+using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
@@ -32,10 +33,31 @@ namespace GDGame.Game.Actors.Tiles
         private void HandlePlayerEvent(PlayerEventInfo info)
         {
             if(info.type == Enums.PlayerEventType.Move)
-            {   
-                movementComponent.Move(Vector3.Normalize(NextPathPoint() - path[currentPositionIndex]));
-                currentPositionIndex += pathDir;
+            {
+                Vector3 moveDir = GetDirection();
+                if (moveDir != Vector3.Zero)
+                {
+                    movementComponent.Move(moveDir);
+                    currentPositionIndex += pathDir;
+                }
             }
+        }
+
+        private Vector3 GetDirection()
+        {
+            Vector3 origin = path[currentPositionIndex];
+            Vector3 destination = NextPathPoint();
+            Vector3 direction = Vector3.Normalize(destination - origin);
+
+            if (this.Raycast(Transform3D.Translation, direction, true, 1f) == null)
+                return direction;
+
+            pathDir *= -1;
+            Vector3 dest2 = NextPathPoint();
+            if (destination == dest2 || this.Raycast(Transform3D.Translation, direction, true, 1f) != null)
+                return Vector3.Zero;
+
+           return Vector3.Normalize(dest2 - origin);
         }
 
         private Vector3 NextPathPoint()
