@@ -11,15 +11,13 @@ namespace GDGame.Managers
     {
         private Dictionary<string, UiElement> elements;
         private SpriteBatch spriteBatch;
-        
+
 
         public UiManager(Microsoft.Xna.Framework.Game game) : base(game)
         {
             elements = new Dictionary<string, UiElement>();
             spriteBatch = new SpriteBatch(GraphicsDevice);
         }
-
-        public int Count => elements.Count;
 
         public void AddUiElement(string name, UiElement element)
         {
@@ -31,14 +29,16 @@ namespace GDGame.Managers
         {
             foreach (KeyValuePair<string, UiElement> keyValuePair in elements)
             {
-                if(keyValuePair.Key.Contains("Options"))
+                if (keyValuePair.Key.Contains("Options"))
                 {
-                    if(q)
+                    if (q)
                     {
-                        keyValuePair.Value.StatusType = StatusType.Drawn;
+                        keyValuePair.Value.StatusType = StatusType.Drawn | StatusType.Update;
                     }
-                    else { keyValuePair.Value.StatusType = StatusType.Off; }
-                    
+                    else
+                    {
+                        keyValuePair.Value.StatusType = StatusType.Off;
+                    }
                 }
             }
         }
@@ -47,7 +47,7 @@ namespace GDGame.Managers
         {
             spriteBatch.Begin();
             foreach (KeyValuePair<string, UiElement> keyValuePair in elements.Where(keyValuePair =>
-                keyValuePair.Value.StatusType == StatusType.Drawn))
+                (keyValuePair.Value.StatusType & StatusType.Drawn) == StatusType.Drawn))
             {
                 keyValuePair.Value.Draw(gameTime, spriteBatch);
             }
@@ -61,16 +61,13 @@ namespace GDGame.Managers
 
         public override void Update(GameTime gameTime)
         {
-            spriteBatch.Begin();
-            foreach (KeyValuePair<string, UiElement> keyValuePair in elements)
+            foreach (KeyValuePair<string, UiElement> keyValuePair in elements.Where(keyValuePair =>
+                (keyValuePair.Value.StatusType & StatusType.Update) == StatusType.Update))
             {
-                if (keyValuePair.Key.Contains("Options"))
-                {
-                    keyValuePair.Value.Update(gameTime);
-                }
+                keyValuePair.Value.Update(gameTime);
             }
 
-            spriteBatch.End();
+            base.Update(gameTime);
         }
 
         public UiElement this[string key] => elements[key];

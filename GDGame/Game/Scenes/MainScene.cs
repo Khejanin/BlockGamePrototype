@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using GDGame.Actors;
 using GDGame.Component;
@@ -30,17 +29,17 @@ namespace GDGame.Scenes
         private Dictionary<string, DrawnActor3D> drawnActors;
         private MouseManager mouseManager;
 
-        private string levelname;
-        private bool optionsToggle = false;
+        private string levelName;
+        private bool optionsToggle;
 
 
         ////FOR SKYBOX____ TEMP
         private PrimitiveObject archetypalTexturedQuad, primitiveObject;
 
-        public MainScene(Main game,string levelname) : base(game)
+        public MainScene(Main game, string levelName) : base(game)
         {
             mouseManager = new MouseManager(game, false);
-            this.levelname = @"Game\LevelFiles\" + levelname;
+            this.levelName = @"Game\LevelFiles\" + levelName;
         }
 
         public override void Initialize()
@@ -89,7 +88,6 @@ namespace GDGame.Scenes
             //Skybox
             InitArchetypalQuad();
             InitSkybox();
-            
         }
 
 
@@ -108,7 +106,7 @@ namespace GDGame.Scenes
         private void InitGrid()
         {
             Grid grid = new Grid(new TileFactory(ObjectManager, drawnActors));
-            grid.GenerateGrid(levelname);
+            grid.GenerateGrid(levelName);
         }
 
         private void InitStaticModels()
@@ -129,23 +127,26 @@ namespace GDGame.Scenes
             PlayerTile playerTile = new PlayerTile("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, models["Player"]);
             playerTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
-            playerTile.ControllerList.Add(new PlayerController(KeyboardManager,GamePadManager));
-            playerTile.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
+            playerTile.ControllerList.Add(new PlayerController(KeyboardManager, GamePadManager));
+            playerTile.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove",
+                "playerAttach"));
             playerTile.ControllerList.Add(new RotationComponent());
             playerTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["Box"]);
-            goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f,ColliderType.CheckOnly));
+            goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
-            EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update, transform3D,
+            EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update,
+                transform3D,
                 effectParameters, models["Box"]);
             enemy.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             enemy.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
             enemy.ControllerList.Add(new RotationComponent());
 
-            ButtonTile button = new ButtonTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
+            ButtonTile button = new ButtonTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
+                transform3D,
                 effectParameters, models["Box"]);
             button.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
@@ -175,10 +176,10 @@ namespace GDGame.Scenes
                 null, Color.White, 1);
 
             //at this point, we're ready!
-            PrimitiveObject primitiveObject = new PrimitiveObject("origin helper",
+            PrimitiveObject actor = new PrimitiveObject("origin helper",
                 ActorType.Helper, StatusType.Drawn, transform3D, effectParameters, vertexData);
 
-            ObjectManager.Add(primitiveObject);
+            ObjectManager.Add(actor);
         }
 
 
@@ -207,11 +208,11 @@ namespace GDGame.Scenes
             location = new Point((int) (screenWidth - 50) - border, border + 50);
             size = new Point(100);
             pos = new Rectangle(location, size);
-            
+
             uiSprite = new UiSprite(StatusType.Drawn, textures["Circle"], pos, Color.White);
             UiManager.AddUiElement("Circle", uiSprite);
-            
-            uiSprite = new UiSprite(StatusType.Drawn,textures["Compass"],pos,Color.White);
+
+            uiSprite = new UiSprite(StatusType.Drawn, textures["Compass"], pos, Color.White);
             UiManager.AddUiElement("Compass", uiSprite);
 
             heightFromBottom = 75;
@@ -240,17 +241,19 @@ namespace GDGame.Scenes
             uiText = new UiText(StatusType.Off, text, Game.Fonts["UI"], Vector2.Zero, Color.White, false);
             UiManager.AddUiElement("ToolTip", uiText);
 
-            float screenHeightFull = GraphicsDevice.Viewport.Height-768;
-            float screenWidthFull = GraphicsDevice.Viewport.Width-1024;
+            float screenHeightFull = GraphicsDevice.Viewport.Height - 768;
+            float screenWidthFull = GraphicsDevice.Viewport.Width - 1024;
 
             position = new Vector2(screenWidthFull, screenHeightFull);
-            UiQuickOptions uiOptionsOverlay = new UiQuickOptions(StatusType.Off, position, " ", textures["options"], Game.Fonts["UI"]);
+            UiQuickOptions uiOptionsOverlay =
+                new UiQuickOptions(StatusType.Off, position, " ", textures["options"], Game.Fonts["UI"]);
             UiManager.AddUiElement("OptionsOverlay", uiOptionsOverlay);
 
             //UiButton uiOptionsLogo = new UiButton(StatusType.Off, new Vector2(screenWidthFull, screenHeightFull), " ", textures["Logo"], Game.Fonts["UI"]);
             //UiManager.AddUiElement("OptionsLogo", uiOptionsLogo);
 
-            UiButton uiOptionsButtonResume = new UiButton(StatusType.Off, new Vector2(screenWidthFull, screenHeightFull), "Resume", textures["optionsButton"], Game.Fonts["UI"]);
+            UiButton uiOptionsButtonResume = new UiButton(StatusType.Update,
+                new Vector2(screenWidthFull, screenHeightFull), "Resume", textures["optionsButton"], Game.Fonts["UI"]);
             UiManager.AddUiElement("OptionsButtonResume", uiOptionsButtonResume);
             uiOptionsButtonResume.Click += OptionsMenu;
         }
@@ -258,12 +261,16 @@ namespace GDGame.Scenes
         //in game options menu trigger
         private void OptionsMenu()
         {
-            if(optionsToggle)
+            if (optionsToggle)
             {
                 optionsToggle = false;
                 mouseManager.MouseVisible = false;
             }
-            else { optionsToggle = true; mouseManager.MouseVisible = true; }
+            else
+            {
+                optionsToggle = true;
+                mouseManager.MouseVisible = true;
+            }
 
             UiManager.Options(optionsToggle);
         }
@@ -274,23 +281,31 @@ namespace GDGame.Scenes
             float halfLength = 0.5f;
             VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[4];
 
-            vertices[0] = new VertexPositionColorTexture(new Vector3(-halfLength, halfLength, 0), Color.White, new Vector2(0, 0));
-            vertices[1] = new VertexPositionColorTexture(new Vector3(-halfLength, -halfLength, 0), Color.White, new Vector2(0, 1));
-            vertices[2] = new VertexPositionColorTexture(new Vector3(halfLength, halfLength, 0), Color.White, new Vector2(1, 0));
-            vertices[3] = new VertexPositionColorTexture(new Vector3(halfLength, -halfLength, 0), Color.White, new Vector2(1, 1));
+            vertices[0] = new VertexPositionColorTexture(new Vector3(-halfLength, halfLength, 0), Color.White,
+                new Vector2(0, 0));
+            vertices[1] = new VertexPositionColorTexture(new Vector3(-halfLength, -halfLength, 0), Color.White,
+                new Vector2(0, 1));
+            vertices[2] = new VertexPositionColorTexture(new Vector3(halfLength, halfLength, 0), Color.White,
+                new Vector2(1, 0));
+            vertices[3] = new VertexPositionColorTexture(new Vector3(halfLength, -halfLength, 0), Color.White,
+                new Vector2(1, 1));
 
 
-            BasicEffect unlitTexturedEffect = new BasicEffect(Graphics.GraphicsDevice);
-            unlitTexturedEffect.VertexColorEnabled = true; 
-            unlitTexturedEffect.TextureEnabled = true;
+            BasicEffect unlitTexturedEffect = new BasicEffect(Graphics.GraphicsDevice)
+            {
+                VertexColorEnabled = true, TextureEnabled = true
+            };
 
-            Transform3D transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, Vector3.One, Vector3.UnitZ, Vector3.UnitY);
+            Transform3D transform3D =
+                new Transform3D(Vector3.Zero, Vector3.Zero, Vector3.One, Vector3.UnitZ, Vector3.UnitY);
 
-            EffectParameters effectParameters = new EffectParameters(unlitTexturedEffect, textures["Wall"], /*bug*/ Color.White, 1);
+            EffectParameters effectParameters =
+                new EffectParameters(unlitTexturedEffect, textures["Wall"], Color.White, 1);
 
-            IVertexData vertexData = new VertexData<VertexPositionColorTexture>(vertices, Microsoft.Xna.Framework.Graphics.PrimitiveType.TriangleStrip, 2);
+            IVertexData vertexData = new VertexData<VertexPositionColorTexture>(vertices, PrimitiveType.TriangleStrip, 2);
 
-            this.archetypalTexturedQuad = new PrimitiveObject("original texture quad", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, vertexData);
+            archetypalTexturedQuad = new PrimitiveObject("original texture quad", ActorType.Decorator,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, vertexData);
         }
 
         private void InitSkybox()
@@ -299,64 +314,66 @@ namespace GDGame.Scenes
 
             //Floor
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
-            primitiveObject.ID = "Floor";
-            primitiveObject.EffectParameters.Texture = textures["floor2"];
-            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, -90, 90);
-            primitiveObject.Transform3D.Translation = new Vector3(0, -worldScale / 2.0f, 0);
-            ObjectManager.Add(primitiveObject);
+            if (primitiveObject != null)
+            {
+                primitiveObject.ID = "Floor";
+                primitiveObject.EffectParameters.Texture = textures["floor2"];
+                primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+                primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, -90, 90);
+                primitiveObject.Transform3D.Translation = new Vector3(0, -worldScale / 2.0f, 0);
+                ObjectManager.Add(primitiveObject);
+            }
 
             //Back 
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
-            primitiveObject.ID = "back";
-            primitiveObject.EffectParameters.Texture = textures["kWall1"];
-            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
-            primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
-            ObjectManager.Add(primitiveObject);
+            if (primitiveObject != null)
+            {
+                primitiveObject.ID = "back";
+                primitiveObject.EffectParameters.Texture = textures["kWall1"];
+                primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+                primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 180, 0);
+                primitiveObject.Transform3D.Translation = new Vector3(0, 0, -worldScale / 2.0f);
+                ObjectManager.Add(primitiveObject);
+            }
 
             //Front 
-            primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
-            primitiveObject.ID = "front";
-            primitiveObject.EffectParameters.Texture = textures["kWall2"];
-            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 0, 0);
-            primitiveObject.Transform3D.Translation = new Vector3(0, 0, worldScale / 2.0f);
-            ObjectManager.Add(primitiveObject);
+            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            if (primitiveObject != null)
+            {
+                primitiveObject.ID = "front";
+                primitiveObject.EffectParameters.Texture = textures["kWall2"];
+                primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+                primitiveObject.Transform3D.RotationInDegrees = new Vector3(0, 0, 0);
+                primitiveObject.Transform3D.Translation = new Vector3(0, 0, worldScale / 2.0f);
+                ObjectManager.Add(primitiveObject);
+            }
 
             //RWall
-            primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
-            primitiveObject.ID = "Right wall";
-            primitiveObject.EffectParameters.Texture = textures["kWall3"];
-            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(270, 90, 270);
-            primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
-            ObjectManager.Add(primitiveObject);
+            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            if (primitiveObject != null)
+            {
+                primitiveObject.ID = "Right wall";
+                primitiveObject.EffectParameters.Texture = textures["kWall3"];
+                primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+                primitiveObject.Transform3D.RotationInDegrees = new Vector3(270, 90, 270);
+                primitiveObject.Transform3D.Translation = new Vector3(worldScale / 2.0f, 0, 0);
+                ObjectManager.Add(primitiveObject);
+            }
 
             //LWall
-            primitiveObject = this.archetypalTexturedQuad.Clone() as PrimitiveObject;
-            primitiveObject.ID = "Left wall";
-            primitiveObject.EffectParameters.Texture = textures["kWall4"];
-            primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
-            primitiveObject.Transform3D.RotationInDegrees = new Vector3(-270, -90, 270);
-            primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
-            ObjectManager.Add(primitiveObject);
+            primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
+            if (primitiveObject != null)
+            {
+                primitiveObject.ID = "Left wall";
+                primitiveObject.EffectParameters.Texture = textures["kWall4"];
+                primitiveObject.Transform3D.Scale = new Vector3(worldScale, worldScale, 1);
+                primitiveObject.Transform3D.RotationInDegrees = new Vector3(-270, -90, 270);
+                primitiveObject.Transform3D.Translation = new Vector3(-worldScale / 2.0f, 0, 0);
+                ObjectManager.Add(primitiveObject);
+            }
         }
 
-        private float GetAngle(Vector3 forward, Vector3 look)
-        {
-            Vector3 noY = look * (Vector3.Forward + Vector3.Right);
-            noY.Normalize();
-
-            Vector3 cross = Vector3.Cross(forward, noY);
-            double dot = Vector3.Dot(forward, noY);
-
-            double angle = Math.Atan2(cross.Length(), dot);
-
-            double test = Vector3.Dot(Vector3.Up, cross);
-            if (test < 0.0f) angle = -angle;
-            return (float) -(angle + Math.PI);
-        }
+        
 
         #endregion
 
@@ -386,15 +403,9 @@ namespace GDGame.Scenes
         private void LoadTextures()
         {
             Texture2D cubeTexture = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/TextureCube");
-            Texture2D basicFloor = Content.Load<Texture2D>("Assets/Textures/Block/BasicFloor");
-            Texture2D basicYGFloor = Content.Load<Texture2D>("Assets/Textures/Block/floor");
-            Texture2D basicBGFloor = Content.Load<Texture2D>("Assets/Textures/Block/BlockTextureBlue");
-            Texture2D playerTexture = Content.Load<Texture2D>("Assets/Textures/Block/block_purple");
-            Texture2D attachableTexture = Content.Load<Texture2D>("Assets/Textures/Block/block_green");
-            Texture2D finishTexture = Content.Load<Texture2D>("Assets/Textures/Block/block_lime");
+            Texture2D basicBgFloor = Content.Load<Texture2D>("Assets/Textures/Block/BlockTextureBlue");
             Texture2D whiteSquareTexture = Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare");
             Texture2D compassTexture = Content.Load<Texture2D>("Assets/Textures/Base/BasicCompass");
-            Texture2D cubeFloor = Content.Load<Texture2D>("Assets/Textures/Block/block_yellow");
             Texture2D circle = Content.Load<Texture2D>("Assets/Textures/circle");
             Texture2D logo = Content.Load<Texture2D>("Assets/Textures/Menu/logo");
             Texture2D logoMirror = Content.Load<Texture2D>("Assets/Textures/Menu/logo_mirror");
@@ -412,34 +423,32 @@ namespace GDGame.Scenes
 
             textures = new Dictionary<string, Texture2D>
             {
-                {"Player", cubeTexture}, 
-                {"Attachable", cubeTexture}, 
-                {"Finish", cubeTexture}, 
-                {"Box", basicBGFloor}, 
+                {"Player", cubeTexture},
+                {"Attachable", cubeTexture},
+                {"Finish", cubeTexture},
+                {"Box", basicBgFloor},
                 {"WhiteSquare", whiteSquareTexture},
                 {"Compass", compassTexture},
-                {"Wall1", wall },
-                {"Wall", floor },
-                {"Floor", floor },
-                {"Circle",circle},
-                {"Logo", logo },
-                {"LogoMirror", logoMirror },
-                {"kWall1", panel1 },
-                {"kWall2", panel2 },
-                {"kWall3", panel3 },
-                {"kWall4", panel4 },
-                {"floor2", floor1 },
-                {"options", options },
-                {"optionsButton", optionsButton }
+                {"Wall1", wall},
+                {"Wall", floor},
+                {"Floor", floor},
+                {"Circle", circle},
+                {"Logo", logo},
+                {"LogoMirror", logoMirror},
+                {"kWall1", panel1},
+                {"kWall2", panel2},
+                {"kWall3", panel3},
+                {"kWall4", panel4},
+                {"floor2", floor1},
+                {"options", options},
+                {"optionsButton", optionsButton}
             };
         }
 
         private void LoadModels()
         {
-            Model attachableModel = Content.Load<Model>("Assets/Models/AttachableCube");
             Model redCube = Content.Load<Model>("Assets/Models/RedCube");
             Model blueCube = Content.Load<Model>("Assets/Models/blueCube");
-            Model playerModel = Content.Load<Model>("Assets/Models/Player");
             Model boxModel = Content.Load<Model>("Assets/Models/box2");
             Model enemyModel = Content.Load<Model>("Assets/Models/Enemy");
 
@@ -451,7 +460,7 @@ namespace GDGame.Scenes
 
         private void InitEvents()
         {
-            EventSystem.EventManager.RegisterListener<GameStateMessageEventInfo>(OnGameStateMessageReceived);
+            EventManager.RegisterListener<GameStateMessageEventInfo>(OnGameStateMessageReceived);
         }
 
         private void OnGameStateMessageReceived(GameStateMessageEventInfo eventInfo)
@@ -473,7 +482,7 @@ namespace GDGame.Scenes
 
         protected override void UpdateScene(GameTime gameTime)
         {
-            float angle = GetAngle(Vector3.Forward, CameraManager.ActiveCamera.Transform3D.Look);
+            float angle = MathHelperFunctions.GetAngle(Vector3.Forward, CameraManager.ActiveCamera.Transform3D.Look);
             UiSprite uiSprite = UiManager["Compass"] as UiSprite;
             uiSprite?.SetRotation(angle);
             List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
@@ -511,13 +520,12 @@ namespace GDGame.Scenes
                 SoundManager.volumeDown();
 
             //Pause/resume music
-            if(KeyboardManager.IsFirstKeyPress(Keys.P))
+            if (KeyboardManager.IsFirstKeyPress(Keys.P))
                 SoundManager.changeMusicState();
 
             //options menu
             if (KeyboardManager.IsFirstKeyPress(Keys.O))
-                this.OptionsMenu();
-
+                OptionsMenu();
         }
 
         protected override void DrawScene(GameTime gameTime)
