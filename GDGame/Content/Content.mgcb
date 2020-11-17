@@ -57,6 +57,36 @@
 /processorParam:Quality=Best
 /build:Assets/GameTracks/gameTrack04.mp3
 
+#begin Assets/GameTracks/testTrack01.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/GameTracks/testTrack01.mp3
+
+#begin Assets/GameTracks/testTrack02.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/GameTracks/testTrack02.mp3
+
+#begin Assets/GameTracks/testTrack03.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/GameTracks/testTrack03.mp3
+
+#begin Assets/GameTracks/testTrack04.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/GameTracks/testTrack04.mp3
+
+#begin Assets/GameTracks/testTrack06.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/GameTracks/testTrack06.mp3
+
 #begin Assets/Models/AttachableCube.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -351,6 +381,30 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Assets/Sound/Thud05.wav
+
+#begin Assets/sugarB.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/sugarB.png
+
+#begin Assets/sugarW.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/sugarW.png
 
 #begin Assets/Textures/Architecture/Walls/backwall.jpg
 /importer:TextureImporter
