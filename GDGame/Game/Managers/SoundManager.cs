@@ -134,6 +134,7 @@ namespace GDGame.Managers
 
             SwitchSong(next);
             this.mySoundInstance.Volume = this.masterSound;
+            this.mySoundInstance.IsLooped = true;
             this.mySoundInstance.Play();
         }
 
