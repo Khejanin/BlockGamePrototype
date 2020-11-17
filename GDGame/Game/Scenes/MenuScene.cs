@@ -34,15 +34,15 @@ namespace GDGame.Scenes
 
         private void InitialiseButtons()
         {
-            playUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X -93, Game.ScreenCentre.Y -40),"Play", textures["bStart"], Game.Fonts["UI"]);
+            playUiButton = new UiButton(StatusType.Drawn | StatusType.Update, new Vector2(Game.ScreenCentre.X -93, Game.ScreenCentre.Y -40),"Play", textures["bStart"], Game.Fonts["UI"]);
             UiManager.AddUiElement("MenuButton", playUiButton);
             playUiButton.Click += Click_PlayBtn;
 
-            optionsUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X - 93, Game.ScreenCentre.Y + 80), "Options", textures["bStart"], Game.Fonts["UI"]);
+            optionsUiButton = new UiButton(StatusType.Drawn | StatusType.Update, new Vector2(Game.ScreenCentre.X - 93, Game.ScreenCentre.Y + 80), "Options", textures["bStart"], Game.Fonts["UI"]);
             UiManager.AddUiElement("OptionsButton", optionsUiButton);
             optionsUiButton.Click += Click_OptionsBtn;
 
-            quitUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X - 93, Game.ScreenCentre.Y + 200), "Quit", textures["bStart"], Game.Fonts["UI"]);
+            quitUiButton = new UiButton(StatusType.Drawn | StatusType.Update, new Vector2(Game.ScreenCentre.X - 93, Game.ScreenCentre.Y + 200), "Quit", textures["bStart"], Game.Fonts["UI"]);
             UiManager.AddUiElement("QuitButton", quitUiButton);
             quitUiButton.Click += Click_QuitBtn;
         }

@@ -45,5 +45,21 @@ namespace GDGame.Utilities
             pitchYawRoll.Z = MathF.Round(MathHelper.ToDegrees(yaw));
             return pitchYawRoll;
         }
+        
+        public static float GetAngle(Vector3 forward, Vector3 look)
+        {
+            Vector3 noY = look * (Vector3.Forward + Vector3.Right);
+            noY.Normalize();
+
+            Vector3 cross = Vector3.Cross(forward, noY);
+            double dot = Vector3.Dot(forward, noY);
+
+            double angle = Math.Atan2(cross.Length(), dot);
+
+            double test = Vector3.Dot(Vector3.Up, cross);
+            if (test < 0.0f) angle = -angle;
+            return (float) -(angle + Math.PI);
+        }
     }
+    
 }
