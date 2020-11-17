@@ -6,7 +6,7 @@ namespace GDGame.EventSystem
      {
      }
      
-     class PlayerEventInfo : EventInfo
+     public class PlayerEventInfo : EventInfo
      {
          public PlayerEventType type;
 
@@ -23,5 +23,16 @@ namespace GDGame.EventSystem
          {
              this.gameState = gameState;
          }
+     }
+
+     public class SceneEventInfo : EventInfo
+     {
+         public SceneActionType sceneActionType;
+         public string LevelName { get; set; }
+     }
+
+     public class DataManagerEvent : EventInfo
+     {
+         
      }
  }
