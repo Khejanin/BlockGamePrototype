@@ -1,6 +1,6 @@
 ﻿namespace GDGame.Enums
 {
-    public enum ETileType
+    public enum ETileType : sbyte
     {
         None,
         Static,
@@ -9,34 +9,36 @@
         PlayerStart,
         Win,
         Enemy,
-        Button
+        Button,
+        Star,
+        MovingPlatform
     }
     
-    public enum ColliderShape
+    public enum ColliderShape : sbyte
     {
         Cube,
         Sphere
     }
 
-    public enum ColliderType
+    public enum ColliderType : sbyte
     {
         CheckOnly,
         Blocking
     }
     
-    public enum GameState
+    public enum GameState : sbyte
     {
         Won,
         Lost
     }
 
-    public enum PlayerEventType
+    public enum PlayerEventType : sbyte
     {
         Move,
         Die
     }
     
-    public enum SceneActionType
+    public enum SceneActionType : sbyte
     {
         OnSceneChange,
         OnSceneLoaded

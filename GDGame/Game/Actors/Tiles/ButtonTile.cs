@@ -1,11 +1,10 @@
-﻿using GDGame.Actors;
-using GDLibrary.Enums;
+﻿using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 
-namespace GDGame.Game.Actors.Tiles
+namespace GDGame.Actors
 {
     public class ButtonTile : BasicTile
     {

@@ -54,21 +54,21 @@ namespace GDGame.Controllers
             if (!playerTile.IsMoving)
             {
                 Vector3 moveDir = Vector3.Zero;
-                if (keyboardManager.IsKeyDown(Keys.Up))
+                if (keyboardManager.IsKeyDown(Keys.Up) || keyboardManager.IsKeyDown(Keys.W))
                     moveDir = -Vector3.UnitZ;
-                else if (keyboardManager.IsKeyDown(Keys.Down))
+                else if (keyboardManager.IsKeyDown(Keys.Down) || keyboardManager.IsKeyDown(Keys.S))
                     moveDir = Vector3.UnitZ;
 
-                if (keyboardManager.IsKeyDown(Keys.Left))
+                if (keyboardManager.IsKeyDown(Keys.Left) || keyboardManager.IsKeyDown(Keys.A))
                     moveDir = -Vector3.UnitX;
-                else if (keyboardManager.IsKeyDown(Keys.Right))
+                else if (keyboardManager.IsKeyDown(Keys.Right) || keyboardManager.IsKeyDown(Keys.D))
                     moveDir = Vector3.UnitX;
 
                 if (moveDir != Vector3.Zero)
                 {
-                    MovementComponent movementComponent = (MovementComponent) playerTile.ControllerList.Find(controller =>
-                        controller.GetType() == typeof(MovementComponent));
-                    movementComponent?.Move(moveDir, playerTile.OnMoveEnd);
+                    TileMovementComponent movementComponent = (TileMovementComponent) playerTile.ControllerList.Find(controller =>
+                        controller.GetType() == typeof(TileMovementComponent));
+                    movementComponent?.MoveInDirection(moveDir, playerTile.OnMoveEnd, playerTile.OnMoveCollisionDetected);
                 }
             }
         }

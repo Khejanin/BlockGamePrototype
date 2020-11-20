@@ -7,7 +7,6 @@ using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Managers;
 using GDLibrary.Parameters;
-using GDGame.Game.Actors.Tiles;
 
 namespace GDGame.Factory
 {
@@ -33,6 +32,7 @@ namespace GDGame.Factory
                 ETileType.Win => CreateGoal(),
                 ETileType.Enemy => CreateEnemy(),
                 ETileType.Button => CreateButton(),
+                ETileType.MovingPlatform => CreateMovingPlatform(),
                 _ => null
             };
 
@@ -92,6 +92,14 @@ namespace GDGame.Factory
             button = button.Clone() as ButtonTile;
             objectManager.Add(button);
             return button;
+        }
+
+        private BasicTile CreateMovingPlatform()
+        {
+            MovingPlatformTile platform = (MovingPlatformTile)drawnActors["MovingPlatformTile"];
+            platform = platform.Clone() as MovingPlatformTile;
+            objectManager.Add(platform);
+            return platform;
         }
     }
 }

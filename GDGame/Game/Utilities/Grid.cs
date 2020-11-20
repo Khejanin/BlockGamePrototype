@@ -3,7 +3,6 @@ using System.IO;
 using GDGame.Actors;
 using GDGame.Enums;
 using GDGame.Factory;
-using GDGame.Game.Actors.Tiles;
 using GDGame.Tiles;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
@@ -65,7 +64,7 @@ namespace GDGame.Utilities
             }
 
             CreateShapes(data, _grid);
-            SetEnemyPaths(data, _grid);
+            SetPaths(data, _grid);
             SetButtonTargets(data, _grid);
         }
 
@@ -86,21 +85,21 @@ namespace GDGame.Utilities
             }
         }
 
-        private void SetEnemyPaths(LevelData data, BasicTile[,,] grid)
+        private void SetPaths(LevelData data, BasicTile[,,] grid)
         {
-            foreach (var enemyKey in data.enemyPaths.Keys)
+            foreach (var pathTileKey in data.movingTilePaths.Keys)
             {
-                EnemyTile enemy =
-                    grid[(int) enemyKey.X, (int) enemyKey.Y, (int) data.gridSize.Z - 1 - (int) enemyKey.Z] as EnemyTile;
+                PathMoveTile moveTile =
+                    grid[(int) pathTileKey.X, (int) pathTileKey.Y, (int) data.gridSize.Z - 1 - (int) pathTileKey.Z] as PathMoveTile;
 
-                foreach (Vector3 enemyPath in data.enemyPaths[enemyKey])
+                foreach (Vector3 tilePath in data.movingTilePaths[pathTileKey])
                 {
-                    Vector3 pathPoint = new Vector3(enemyPath.X, enemyPath.Y, data.gridSize.Z - 1 - enemyPath.Z);
-                    enemy.path.Add(pathPoint);
+                    Vector3 pathPoint = new Vector3(tilePath.X, tilePath.Y, data.gridSize.Z - 1 - tilePath.Z);
+                    moveTile.path.Add(pathPoint);
                 }
 
-                if (enemy.path.Count > 0)
-                    enemy.currentPositionIndex = 0;
+                if (moveTile.path.Count > 0)
+                    moveTile.currentPositionIndex = 0;
             }
         }
 

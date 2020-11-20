@@ -5,7 +5,6 @@ using GDGame.Controllers;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Factory;
-using GDGame.Game.Actors.Tiles;
 using GDGame.Game.UI;
 using GDGame.Utilities;
 using GDLibrary.Actors;
@@ -121,17 +120,16 @@ namespace GDGame.Scenes
             AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Attachable"]);
             attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
-            attachableTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
+            attachableTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Player"], Color.White, 1);
             PlayerTile playerTile = new PlayerTile("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, models["Player"]);
             playerTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             playerTile.ControllerList.Add(new PlayerController(KeyboardManager, GamePadManager));
-            playerTile.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove",
-                "playerAttach"));
+            playerTile.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
             playerTile.ControllerList.Add(new RotationComponent());
-            playerTile.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
+            playerTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
@@ -139,21 +137,24 @@ namespace GDGame.Scenes
             goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
             EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update,
-                transform3D,
-                effectParameters, models["Box"]);
+                transform3D, effectParameters, models["Box"]);
             enemy.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
-            enemy.ControllerList.Add(new MovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
+            enemy.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
             enemy.ControllerList.Add(new RotationComponent());
 
             ButtonTile button = new ButtonTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
-                transform3D,
-                effectParameters, models["Box"]);
+                transform3D, effectParameters, models["Box"]);
             button.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+
+            MovingPlatformTile platform = new MovingPlatformTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, models["Box"]);
+            platform.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            platform.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
                 {"StaticTile", staticTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", playerTile},
-                {"GoalTile", goal}, {"EnemyTile", enemy}, {"ButtonTile", button}
+                {"GoalTile", goal}, {"EnemyTile", enemy}, {"ButtonTile", button}, {"MovingPlatformTile", platform}
             };
         }
 

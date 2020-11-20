@@ -12,7 +12,7 @@ namespace GDGame.Actors
         
         public bool IsMoving { get; set; }
         public Vector3 RotatePoint { get; set; }
-        public int CurrentMovementTime { get; set; }
+        //public int CurrentMovementTime { get; set; }
         
         public MovableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
             EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform,

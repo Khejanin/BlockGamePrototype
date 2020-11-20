@@ -1,46 +1,49 @@
-﻿using GDGame.Actors;
-using GDGame.Component;
-using GDGame.EventSystem;
+﻿using GDGame.EventSystem;
 using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 
-namespace GDGame.Game.Actors.Tiles
+namespace GDGame.Actors
 {
-    class EnemyTile : MovableTile
+    class EnemyTile : PathMoveTile
     {
-        private MovementComponent movementComponent;
-        private int pathDir = 1;
-
-        public List<Vector3> path;
-        public int currentPositionIndex;
 
         public EnemyTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform, effectParameters, model)
         {
-            path = new List<Vector3>();
         }
 
         public override void InitializeTile()
         {
             EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
-            movementComponent = (MovementComponent)ControllerList.Find(controller => controller.GetType() == typeof(MovementComponent));
+            base.InitializeTile();
         }
 
         private void HandlePlayerEvent(PlayerEventInfo info)
         {
             if(info.type == Enums.PlayerEventType.Move)
             {
-                Vector3 moveDir = GetDirection();
-                if (moveDir != Vector3.Zero)
-                {
-                    movementComponent.Move(moveDir, MoveEnd);
-                    currentPositionIndex += pathDir;
-                }
+                MoveToNextPoint();
             }
+        }
+
+        protected override void MoveToNextPoint()
+        {
+            Vector3 moveDir = GetDirection();
+            if (moveDir != Vector3.Zero)
+                movementComponent.MoveInDirection(moveDir, OnMoveEnd);
+        }
+
+        protected override void OnMoveEnd()
+        {
+            base.OnMoveEnd();
+
+            Raycaster.HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Up, true, .5f);
+
+            if (hit != null && hit.actor is PlayerTile)
+                EventManager.FireEvent(new PlayerEventInfo() { type = Enums.PlayerEventType.Die });
         }
 
         private Vector3 GetDirection()
@@ -61,23 +64,7 @@ namespace GDGame.Game.Actors.Tiles
             if (destination != dest2 && (hit == null || hit.actor is PlayerTile))
                 return dir2;
 
-           return Vector3.Zero;
-        }
-
-        private Vector3 NextPathPoint()
-        {
-            if (currentPositionIndex + pathDir == path.Count || currentPositionIndex + pathDir == -1)
-                pathDir *= -1;
-
-            return path[currentPositionIndex + pathDir];
-        }
-
-        private void MoveEnd()
-        {
-            Raycaster.HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Up, true, .5f);
-
-            if (hit != null && hit.actor is PlayerTile)
-                EventManager.FireEvent(new PlayerEventInfo() { type = Enums.PlayerEventType.Die });
+            return Vector3.Zero;
         }
 
         public new object Clone()

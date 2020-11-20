@@ -4,6 +4,7 @@ using System.Linq;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Tiles;
+using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
@@ -84,6 +85,16 @@ namespace GDGame.Actors
             UpdateAttachCandidates();
             if (CheckWinCondition()) 
                 EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Won));
+        }
+
+        public void OnMoveCollisionDetected(HitResult hit)
+        {
+            //System.Diagnostics.Debug.WriteLine(hit != null);
+            if (hit != null && hit.actor is EnemyTile)
+            {
+                System.Diagnostics.Debug.WriteLine("Enemy killed u!");
+                EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Lost));
+            }
         }
 
         public void UpdateAttachCandidates()

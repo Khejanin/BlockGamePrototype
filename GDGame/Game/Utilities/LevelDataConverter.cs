@@ -12,7 +12,7 @@ namespace GDGame.Utilities
         public Vector3 tileSize;
         public ETileType[,,] gridValues;
         public Dictionary<double, List<Vector3>> shapes;
-        public Dictionary<Vector3, List<Vector3>> enemyPaths;
+        public Dictionary<Vector3, List<Vector3>> movingTilePaths;
         public Dictionary<Vector3, List<Vector3>> buttonTargets;
     }
 
@@ -35,7 +35,7 @@ namespace GDGame.Utilities
                 tileSize = tileSize,
                 gridValues = new ETileType[(int)gridSize.X, (int)gridSize.Y, (int)gridSize.Z],
                 shapes = new Dictionary<double, List<Vector3>>(),
-                enemyPaths = new Dictionary<Vector3, List<Vector3>>(),
+                movingTilePaths = new Dictionary<Vector3, List<Vector3>>(),
                 buttonTargets = new Dictionary<Vector3, List<Vector3>>(),
             };
         
@@ -67,8 +67,8 @@ namespace GDGame.Utilities
                                 else
                                     data.shapes.Add(shapeId, new List<Vector3>() { new Vector3(x, y, z) });
 
-                            //check if enemy and add paths to data
-                            if(data.gridValues[x, y, z] == ETileType.Enemy)
+                            //check if path moving tile and add paths to data
+                            if(data.gridValues[x, y, z] == ETileType.Enemy || data.gridValues[x, y, z] == ETileType.MovingPlatform)
                             {
                                 JSONArray path = obj.GetArray("Path");
                                 List<Vector3> pathPositions = new List<Vector3>();
@@ -78,7 +78,7 @@ namespace GDGame.Utilities
                                     JSONObject pathObj = path[i].Obj;
                                     pathPositions.Add(new Vector3((int)pathObj["X"].Number, (int)pathObj["Y"].Number, (int)pathObj["Z"].Number));
                                 }
-                                data.enemyPaths.Add(new Vector3(x, y, z), pathPositions);
+                                data.movingTilePaths.Add(new Vector3(x, y, z), pathPositions);
                             }
 
                             //check if button and add targets to data
