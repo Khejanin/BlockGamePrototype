@@ -146,17 +146,26 @@ namespace GDGame.Scenes
 
             ButtonTile button = new ButtonTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, models["Box"]);
-            button.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            button.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
-            MovingPlatformTile platform = new MovingPlatformTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
+            MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, models["Box"]);
             platform.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             platform.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
+            SpikeTile spike = new SpikeTile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, models["Box"]);
+            spike.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
+
+            StarPickupTile starPickup = new StarPickupTile("Star", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, models["Box"]);
+            starPickup.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
+
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
                 {"StaticTile", staticTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", playerTile},
-                {"GoalTile", goal}, {"EnemyTile", enemy}, {"ButtonTile", button}, {"MovingPlatformTile", platform}
+                {"GoalTile", goal}, {"EnemyTile", enemy}, {"ButtonTile", button}, {"MovingPlatformTile", platform},
+                {"SpikeTile", spike}, {"StarPickupTile", starPickup}
             };
         }
 

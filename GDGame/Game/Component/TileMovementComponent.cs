@@ -128,11 +128,16 @@ namespace GDGame.Component
                 float currentStep = curve1D.Evaluate(currentMovementTime, 5);
                 Vector3 trans = startPos + diff * currentStep;
 
-                //if (onCollideCallback != null && Math.Abs(t - .5f) < 0.1f)
-                //{
-                //    onCollideCallback?.Invoke(parent.Raycast(trans, Vector3.Up, true, 1f));
-                //    onCollideCallback = null;
-                //}
+                if (onCollideCallback != null)
+                {
+                    Raycaster.HitResult hit = parent.Raycast(trans, Vector3.Up, true, 1f);
+
+                    if (hit != null)
+                    {
+                        onCollideCallback?.Invoke(hit);
+                        onCollideCallback = null;
+                    }
+                }
 
                 parent.Transform3D.Translation = trans;
                 currentMovementTime -= (int)gameTime.ElapsedGameTime.TotalMilliseconds;

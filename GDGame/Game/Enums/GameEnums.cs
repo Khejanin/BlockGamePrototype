@@ -11,7 +11,8 @@
         Enemy,
         Button,
         Star,
-        MovingPlatform
+        MovingPlatform,
+        Spike
     }
     
     public enum ColliderShape : sbyte

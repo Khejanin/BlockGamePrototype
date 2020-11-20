@@ -101,6 +101,7 @@ namespace GDGame
         private void CreateScenes()
         {
             //SceneManager.AddScene("Test", new MainScene(this, "test_Enemy_path.json"));
+            SceneManager.AddScene("Test2", new MainScene(this, "Big_Level.json"));
 
             SceneManager.AddScene("Menu", new MenuScene(this));
             SceneManager.AddScene("Tutorial", new TutorialScene(this));

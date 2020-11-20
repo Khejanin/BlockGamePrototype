@@ -90,7 +90,7 @@ namespace GDGame.Actors
         public void OnMoveCollisionDetected(HitResult hit)
         {
             //System.Diagnostics.Debug.WriteLine(hit != null);
-            if (hit != null && hit.actor is EnemyTile)
+            if (hit?.actor is EnemyTile)
             {
                 System.Diagnostics.Debug.WriteLine("Enemy killed u!");
                 EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Lost));

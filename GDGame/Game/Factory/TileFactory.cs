@@ -12,9 +12,8 @@ namespace GDGame.Factory
 {
     public class TileFactory
     {
-        private ObjectManager objectManager;
-
-        private Dictionary<string, DrawnActor3D> drawnActors;
+        private readonly ObjectManager objectManager;
+        private readonly Dictionary<string, DrawnActor3D> drawnActors;
 
         public TileFactory(ObjectManager objectManager, Dictionary<string, DrawnActor3D> drawnActors)
         {
@@ -33,6 +32,8 @@ namespace GDGame.Factory
                 ETileType.Enemy => CreateEnemy(),
                 ETileType.Button => CreateButton(),
                 ETileType.MovingPlatform => CreateMovingPlatform(),
+                ETileType.Spike => CreateSpike(),
+                ETileType.Star => CreateStarPickup(),
                 _ => null
             };
 
@@ -100,6 +101,22 @@ namespace GDGame.Factory
             platform = platform.Clone() as MovingPlatformTile;
             objectManager.Add(platform);
             return platform;
+        }
+
+        private BasicTile CreateSpike()
+        {
+            SpikeTile spikeTile = (SpikeTile)drawnActors["SpikeTile"];
+            spikeTile = spikeTile.Clone() as SpikeTile;
+            objectManager.Add(spikeTile);
+            return spikeTile;
+        }
+
+        private BasicTile CreateStarPickup()
+        {
+            StarPickupTile starPickupTile = (StarPickupTile)drawnActors["StarPickupTile"];
+            starPickupTile = starPickupTile.Clone() as StarPickupTile;
+            objectManager.Add(starPickupTile);
+            return starPickupTile;
         }
     }
 }

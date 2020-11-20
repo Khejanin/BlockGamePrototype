@@ -17,6 +17,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Game\LevelFiles\AttachTest.json" />
+    <None Remove="Game\LevelFiles\Big_Level.json" />
     <None Remove="Game\LevelFiles\Leveltest1.json" />
     <None Remove="Game\LevelFiles\LevelTest2.json" />
     <None Remove="Game\LevelFiles\Paul_Level_1.json" />
@@ -30,6 +31,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game\LevelFiles\AttachTest.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Game\LevelFiles\Big_Level.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Game\LevelFiles\LevelTest2.json">
