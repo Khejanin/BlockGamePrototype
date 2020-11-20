@@ -34,6 +34,7 @@ namespace GDGame.Scenes
 
         ////FOR SKYBOX____ TEMP
         private PrimitiveObject archetypalTexturedQuad, primitiveObject;
+        private BasicTile test;
 
         public MainScene(Main game, string levelName) : base(game)
         {
@@ -78,6 +79,7 @@ namespace GDGame.Scenes
 
             //models
             InitStaticModels();
+            testingPlatform();
 
             //grids
             InitGrid();
@@ -182,6 +184,47 @@ namespace GDGame.Scenes
 
             ObjectManager.Add(actor);
         }
+
+        //TEMP
+        private void testingPlatform()
+        {
+            EffectParameters effectParameters = new EffectParameters(ModelEffect, textures["Box"], Color.White, 1);
+            var transform3D = new Transform3D(new Vector3(5, 0,0), Vector3.UnitZ, Vector3.UnitY);
+            this.test = new BasicTile("StaticTile", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"]);
+            this.test.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            drawnActors.Add("StaticTile2", test);
+            ObjectManager.Add(test);
+        }
+
+        //private void testplatform(int lPoint, int hPoint)
+        //{
+        //    bool atHighestPoint = false;
+        //    if(this.test != null)
+        //    {
+        //        float pos = this.test.Transform3D.Translation.Y;
+        //        if (pos <= hPoint && pos >= lPoint)
+        //        {
+        //            if (atHighestPoint)
+        //            {
+        //                pos--;
+        //            }
+        //            else if (pos >= hPoint)
+        //            {
+        //                atHighestPoint = true;
+        //            }
+        //            else if (pos <= lPoint)
+        //            {
+        //                atHighestPoint = false;
+        //            }
+        //            else
+        //            {
+        //                pos++;
+        //            }
+        //        }
+        //        this.test.Transform3D.TranslateBy(new Vector3(0, pos, 0));
+        //    }
+        //}
 
 
         private void InitUi()
@@ -511,17 +554,14 @@ namespace GDGame.Scenes
             //Cycle Through Audio
             if (KeyboardManager.IsFirstKeyPress(Keys.M))
                 SoundManager.NextSong();
-
             //Stop Music
             if (KeyboardManager.IsKeyDown(Keys.N))
                 SoundManager.StopSong();
-
             //Volume Changes
             if (KeyboardManager.IsFirstKeyPress(Keys.L))
                 SoundManager.volumeUp();
             else if (KeyboardManager.IsFirstKeyPress(Keys.K))
                 SoundManager.volumeDown();
-
             //Pause/resume music
             if (KeyboardManager.IsFirstKeyPress(Keys.P))
                 SoundManager.changeMusicState();
@@ -529,6 +569,13 @@ namespace GDGame.Scenes
             //options menu
             if (KeyboardManager.IsFirstKeyPress(Keys.O))
                 OptionsMenu();
+
+            //Test
+            if (KeyboardManager.IsFirstKeyPress(Keys.G))
+                this.test.Transform3D.TranslateBy(new Vector3(0, -1, 0));
+            else if (KeyboardManager.IsFirstKeyPress(Keys.H))
+                this.test.Transform3D.TranslateBy(new Vector3(0, 1, 0));
+
         }
 
         protected override void DrawScene(GameTime gameTime)
