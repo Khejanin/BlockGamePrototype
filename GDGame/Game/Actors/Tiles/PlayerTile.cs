@@ -116,19 +116,19 @@ namespace GDGame.Actors
             surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Right, true, 1f);
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.Raycast(Transform3D.Translation, -Vector3.Right, true, 1f);
+            surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Left, true, 1f);
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Forward, true, 1f);
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.Raycast(Transform3D.Translation, -Vector3.Forward, true, 1f);
+            surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Backward, true, 1f);
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Up, true, 1f);
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.Raycast(Transform3D.Translation, -Vector3.Up, true, 1f);
+            surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Down, true, 1f);
             result.Add(surroundCheck);
 
             return result;

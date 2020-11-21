@@ -10,14 +10,20 @@ namespace GDGame.Actors
 {
     class EnemyTile : PathMoveTile
     {
+        private float movementCoolDown;
+        private float currentMovementCoolDown;
+        private bool canMove;
 
-        public EnemyTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform, effectParameters, model)
+        public EnemyTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, float movementCoolDown = 0.5f) : base(id, actorType, statusType, transform, effectParameters, model)
         {
+            this.movementCoolDown = movementCoolDown;
         }
 
         public override void InitializeTile()
         {
-            EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
+            currentMovementCoolDown = movementCoolDown;
+            canMove = true;
+            //EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
             base.InitializeTile();
         }
 
@@ -39,11 +45,12 @@ namespace GDGame.Actors
         protected override void OnMoveEnd()
         {
             base.OnMoveEnd();
+            canMove = true;
+            currentMovementCoolDown = movementCoolDown;
+            //Raycaster.HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Up, true, .5f);
 
-            Raycaster.HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Up, true, .5f);
-
-            if (hit != null && hit.actor is PlayerTile)
-                EventManager.FireEvent(new PlayerEventInfo() { type = Enums.PlayerEventType.Die });
+            //if (hit != null && hit.actor is PlayerTile)
+            //    EventManager.FireEvent(new PlayerEventInfo() { type = Enums.PlayerEventType.Die });
         }
 
         private Vector3 GetDirection()
@@ -53,7 +60,7 @@ namespace GDGame.Actors
             Vector3 direction = Vector3.Normalize(destination - origin);
 
             Raycaster.HitResult hit = this.Raycast(Transform3D.Translation, direction, true, 1f);
-            if (hit == null || hit.actor is PlayerTile)
+            if (hit == null || hit.actor is PlayerTile || hit.actor is AttachableTile)
                 return direction;
 
             pathDir *= -1;
@@ -65,6 +72,20 @@ namespace GDGame.Actors
                 return dir2;
 
             return Vector3.Zero;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (canMove && currentMovementCoolDown <= 0)
+            {
+                canMove = false;
+                MoveToNextPoint();
+                return;
+            }
+
+            currentMovementCoolDown -= (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public new object Clone()
