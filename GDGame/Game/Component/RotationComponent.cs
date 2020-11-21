@@ -65,11 +65,10 @@ namespace GDGame.Component
             forwardRotatePoint = parent.Transform3D.Translation + new Vector3(0, -.5f, -.5f);
             backwardRotatePoint = parent.Transform3D.Translation + new Vector3(0, -.5f, .5f);
 
-            PlayerTile player = parent as PlayerTile;
-            if (player == null) return;
+            if (!(parent is PlayerTile player)) return;
 
             //Loops through attached tiles to update the rotation points
-            foreach (MovableTile tile in player.AttachedTiles)
+            foreach (AttachableTile tile in player.AttachedTiles)
             {
                 Vector3 playerPos = player.Transform3D.Translation;
                 Vector3 tilePos = tile.Transform3D.Translation;
