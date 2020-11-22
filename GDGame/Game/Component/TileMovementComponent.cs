@@ -77,13 +77,8 @@ namespace GDGame.Component
                             EventManager.FireEvent(new PlayerEventInfo { type = Enums.PlayerEventType.Move });
                             //Calculate movement for each attached tile
                             if (parent is PlayerTile player)
-                                foreach (TileMovementComponent movementController in player.AttachedTiles.Select(tile =>
-                                    (TileMovementComponent)tile.ControllerList.Find(controller =>
-                                       controller.GetType() == typeof(TileMovementComponent))))
-                                {
-                                    movementController?.MoveInDirection(direction);
-                                }
-
+                                foreach (AttachableTile tile in player.AttachedTiles)
+                                    (tile.ControllerList.Find(c => c is TileMovementComponent) as TileMovementComponent)?.MoveInDirection(direction, tile.OnMoveEnd);
 
                             //Set animation time and movement flag
                             currentMovementTime = movementTime;
