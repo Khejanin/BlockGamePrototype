@@ -54,13 +54,11 @@ namespace GDGame.Actors
         {
             if (attachCandidates.Count == 0 || IsMoving) return;
 
+            AttachedTiles.Clear();
             foreach (AttachableTile tile in attachCandidates.SelectMany(shape =>  shape.AttachableTiles))
             {
-                if (!AttachedTiles.Contains(tile))
-                {
-                    AttachedTiles.Add(tile);
-                    tile.EffectParameters.DiffuseColor = Color.Green;
-                }
+                AttachedTiles.Add(tile);
+                tile.EffectParameters.DiffuseColor = Color.Green;
             }
 
             IsAttached = true;

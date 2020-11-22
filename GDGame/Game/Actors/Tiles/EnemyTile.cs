@@ -44,6 +44,8 @@ namespace GDGame.Actors
         {
             if (hitInfo?.actor is PlayerTile)
                 EventManager.FireEvent(new PlayerEventInfo { type = Enums.PlayerEventType.Die });
+            else if (hitInfo?.actor is AttachableTile)
+                System.Diagnostics.Debug.WriteLine("Attachable tile died");
         }
 
         private Vector3 GetDirection()
