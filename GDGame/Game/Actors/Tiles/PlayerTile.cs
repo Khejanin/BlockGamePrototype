@@ -52,12 +52,15 @@ namespace GDGame.Actors
 
         public void Attach()
         {
-            if (attachCandidates.Count == 0) return;
+            if (attachCandidates.Count == 0 || IsMoving) return;
 
             foreach (AttachableTile tile in attachCandidates.SelectMany(shape =>  shape.AttachableTiles))
             {
-                AttachedTiles.Add(tile);
-                tile.EffectParameters.DiffuseColor = Color.Green;
+                if (!AttachedTiles.Contains(tile))
+                {
+                    AttachedTiles.Add(tile);
+                    tile.EffectParameters.DiffuseColor = Color.Green;
+                }
             }
 
             IsAttached = true;
@@ -83,6 +86,8 @@ namespace GDGame.Actors
         public void OnMoveEnd()
         {
             UpdateAttachCandidates();
+            if(IsAttached) Attach();
+
             if (CheckWinCondition()) 
                 EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Won));
         }
@@ -101,34 +106,34 @@ namespace GDGame.Actors
         {
             attachCandidates.Clear();
 
-            foreach (PlayerSurroundCheck check in CheckSurroundings())
+            foreach (PlayerSurroundCheck check in CheckSurroundings(Transform3D.Translation))
             {
                 if (check.hit?.actor is AttachableTile tile)
                     attachCandidates.Add(tile.Shape);
             }
         }
 
-        private List<PlayerSurroundCheck> CheckSurroundings()
+        private List<PlayerSurroundCheck> CheckSurroundings(Vector3 translation)
         {
             List<PlayerSurroundCheck> result = new List<PlayerSurroundCheck>();
 
             PlayerSurroundCheck surroundCheck = new PlayerSurroundCheck();
-            surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Right, true, 1f);
+            surroundCheck.hit = this.Raycast(translation, Vector3.Right, true, 1f);
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Left, true, 1f);
+            surroundCheck.hit = this.Raycast(translation, Vector3.Left, true, 1f);
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Forward, true, 1f);
+            surroundCheck.hit = this.Raycast(translation, Vector3.Forward, true, 1f);
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Backward, true, 1f);
+            surroundCheck.hit = this.Raycast(translation, Vector3.Backward, true, 1f);
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Up, true, 1f);
+            surroundCheck.hit = this.Raycast(translation, Vector3.Up, true, 1f);
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.Raycast(Transform3D.Translation, Vector3.Down, true, 1f);
+            surroundCheck.hit = this.Raycast(translation, Vector3.Down, true, 1f);
             result.Add(surroundCheck);
 
             return result;
