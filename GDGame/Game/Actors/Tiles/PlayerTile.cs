@@ -83,6 +83,12 @@ namespace GDGame.Actors
             return hit?.actor is GoalTile;
         }
 
+        private bool CheckLoseCondition()
+        {
+            HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Down, true, 0.5f,false);
+            return hit?.actor is SpikeTile;
+        }
+
         public void OnMoveEnd()
         {
             UpdateAttachCandidates();
@@ -90,16 +96,8 @@ namespace GDGame.Actors
 
             if (CheckWinCondition()) 
                 EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Won));
-        }
-
-        public void OnMoveCollisionDetected(HitResult hit)
-        {
-            //System.Diagnostics.Debug.WriteLine(hit != null);
-            if (hit?.actor is EnemyTile)
-            {
-                System.Diagnostics.Debug.WriteLine("Enemy killed u!");
-                EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Lost));
-            }
+            else if(CheckLoseCondition())
+                EventManager.FireEvent(new PlayerEventInfo { type = PlayerEventType.Die });
         }
 
         public void UpdateAttachCandidates()

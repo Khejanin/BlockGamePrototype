@@ -23,23 +23,14 @@ namespace GDGame.Actors
         {
             currentMovementCoolDown = movementCoolDown;
             canMove = true;
-            //EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
             base.InitializeTile();
-        }
-
-        private void HandlePlayerEvent(PlayerEventInfo info)
-        {
-            if(info.type == Enums.PlayerEventType.Move)
-            {
-                MoveToNextPoint();
-            }
         }
 
         protected override void MoveToNextPoint()
         {
             Vector3 moveDir = GetDirection();
             if (moveDir != Vector3.Zero)
-                movementComponent.MoveInDirection(moveDir, OnMoveEnd);
+                movementComponent.MoveInDirection(moveDir, OnMoveEnd, OnCollide);
         }
 
         protected override void OnMoveEnd()
@@ -47,10 +38,12 @@ namespace GDGame.Actors
             base.OnMoveEnd();
             canMove = true;
             currentMovementCoolDown = movementCoolDown;
-            //Raycaster.HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Up, true, .5f);
+        }
 
-            //if (hit != null && hit.actor is PlayerTile)
-            //    EventManager.FireEvent(new PlayerEventInfo() { type = Enums.PlayerEventType.Die });
+        private void OnCollide(Raycaster.HitResult hitInfo)
+        {
+            if (hitInfo?.actor is PlayerTile)
+                EventManager.FireEvent(new PlayerEventInfo { type = Enums.PlayerEventType.Die });
         }
 
         private Vector3 GetDirection()

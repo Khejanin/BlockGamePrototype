@@ -130,7 +130,7 @@ namespace GDGame.Component
 
                 if (onCollideCallback != null)
                 {
-                    Raycaster.HitResult hit = parent.Raycast(trans, Vector3.Up, true, 1f);
+                    Raycaster.HitResult hit = parent.Raycast(trans, Vector3.Up, true, 1f, false);
 
                     if (hit != null)
                     {
