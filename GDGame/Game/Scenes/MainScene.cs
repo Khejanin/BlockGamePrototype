@@ -363,7 +363,7 @@ namespace GDGame.Scenes
 
         private void InitSkybox()
         {
-            float worldScale = 35;
+            float worldScale = 100;
 
             //Floor
             primitiveObject = archetypalTexturedQuad.Clone() as PrimitiveObject;
@@ -476,6 +476,9 @@ namespace GDGame.Scenes
             Texture2D panel4 = Content.Load<Texture2D>("Assets/Textures/Skybox/kWall4");
             Texture2D floor1 = Content.Load<Texture2D>("Assets/Textures/Skybox/tiles");
 
+            Texture2D choc1 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile");
+            Texture2D choc2 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile-white");
+
             textures = new Dictionary<string, Texture2D>
             {
                 {"Player", cubeTexture},
@@ -496,7 +499,9 @@ namespace GDGame.Scenes
                 {"kWall4", panel4},
                 {"floor2", floor1},
                 {"options", options},
-                {"optionsButton", optionsButton}
+                {"optionsButton", optionsButton},
+                {"Chocolate", choc1},
+                {"WChocolate", choc2}
             };
         }
 
