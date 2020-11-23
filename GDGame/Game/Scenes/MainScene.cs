@@ -726,7 +726,8 @@ namespace GDGame.Scenes
                 {"RedCube", redCube}, {"Player", blueCube}, {"Cube", boxModel}, {"Enemy", enemyModel},
                 {"Button", buttonModel}, {"Drop", dropWithEyesModel}, {"Fork", forkModel}, {"Knife", knifeModel},
                 {"Mug", mugModel}, {"PlateStack", plateStackModel}, {"PlayerModel", playerModel},
-                {"Pyramid", pyramidModel}, {"SinglePlate", singlePlateCube}, {"SugarBox", sugarBoxCube}
+                {"Pyramid", pyramidModel}, {"SinglePlate", singlePlateCube}, {"SugarBox", sugarBoxCube},
+                {"Table", table }, {"Cups", cups }, {"Chocolate", chocolate }
             };
         }
 
