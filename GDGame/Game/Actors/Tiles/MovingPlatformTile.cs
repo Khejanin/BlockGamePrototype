@@ -1,4 +1,6 @@
-﻿using GDGame.EventSystem;
+﻿using GDGame.Enums;
+using GDGame.EventSystem;
+using GDGame.Interfaces;
 using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
@@ -8,9 +10,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
-    public class MovingPlatformTile : PathMoveTile
+    public class MovingPlatformTile : PathMoveTile, IActivatable
     {
-        public MovingPlatformTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform, effectParameters, model)
+        public MovingPlatformTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
         }
 
@@ -46,7 +48,7 @@ namespace GDGame.Actors
         {
             MovingPlatformTile platform = new MovingPlatformTile("clone - " + ID, ActorType, StatusType,
                 Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as EffectParameters, Model);
+                EffectParameters.Clone() as EffectParameters, Model, TileType);
 
             if (ControllerList != null)
             {
@@ -57,6 +59,21 @@ namespace GDGame.Actors
             }
 
             return platform;
+        }
+
+        public void Activate()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Deactivate()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void ToggleActivation()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

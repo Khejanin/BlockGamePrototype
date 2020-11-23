@@ -3,6 +3,7 @@ using System.IO;
 using GDGame.Actors;
 using GDGame.Enums;
 using GDGame.Factory;
+using GDGame.Interfaces;
 using GDGame.Tiles;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
@@ -71,7 +72,10 @@ namespace GDGame.Utilities
 
                             BasicTile tile = tileFactory.CreateTile(data.gridValues[x, y, z],staticTileType);
                             if (tile != null)
+                            {
                                 tile.Transform3D.Translation = pos + new Vector3(0, 0, data.gridSize.Z - 1);
+                                tile.InitializeTile();
+                            }
                             _grid[x, y, (int) data.gridSize.Z - 1 - z] = tile;
                         }
                         else
@@ -133,12 +137,12 @@ namespace GDGame.Utilities
         {
             foreach (var buttonTargetKey in data.buttonTargets.Keys)
             {
-                List<BasicTile> targets = new List<BasicTile>();
+                List<IActivatable> targets = new List<IActivatable>();
                 ButtonTile button = grid[(int) buttonTargetKey.X, (int) buttonTargetKey.Y,
                     (int) data.gridSize.Z - 1 - (int) buttonTargetKey.Z] as ButtonTile;
 
                 foreach (var target in data.buttonTargets[buttonTargetKey])
-                    targets.Add(grid[(int) target.X, (int) target.Y, (int) target.Z]);
+                    targets.Add(grid[(int) target.X, (int) target.Y, (int) target.Z] as IActivatable);
 
                 button.Targets = targets;
             }

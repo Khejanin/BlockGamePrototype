@@ -12,7 +12,8 @@
         Button,
         Star,
         MovingPlatform,
-        Spike
+        Spike,
+        Checkpoint
     }
     
     public enum ColliderShape : sbyte
@@ -36,12 +37,24 @@
     public enum PlayerEventType : sbyte
     {
         Move,
-        Die
+        Die,
+        SetCheckpoint
     }
     
     public enum SceneActionType : sbyte
     {
         OnSceneChange,
         OnSceneLoaded
+    }
+
+    public enum Direction : sbyte
+    {
+        None,
+        Right,
+        Left,
+        Up,
+        Down,
+        Forward,
+        Backward
     }
 }

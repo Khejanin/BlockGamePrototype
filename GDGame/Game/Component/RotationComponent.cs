@@ -52,7 +52,7 @@ namespace GDGame.Component
             PlayerTile player = parent as PlayerTile;
             if (player == null) return;
 
-            foreach (MovableTile tile in player.AttachedTiles)
+            foreach (AttachableTile tile in player.AttachedTiles)
             {
                 tile.RotatePoint = rotatePoint;
             }
@@ -76,22 +76,22 @@ namespace GDGame.Component
 
                 //Update right rotate point
                 if (tilePos.Y <= playerPos.Y && tilePos.X > rightRotatePoint.X || tilePos.Y < rightRotatePoint.Y)
-                    if(tile.Raycast(tilePos, Vector3.Right, true, 1f) == null)
+                    //if(tile.Raycast(tilePos, Vector3.Right, true, 1f) == null)
                         rightRotatePoint = tilePos + new Vector3(.5f, -.5f, 0);
 
                 //Update left rotate point
                 if (tilePos.Y <= playerPos.Y && tilePos.X < leftRotatePoint.X || tilePos.Y < leftRotatePoint.Y)
-                    if(tile.Raycast(tilePos, Vector3.Left, true, 1f) == null)
+                    //if(tile.Raycast(tilePos, Vector3.Left, true, 1f) == null)
                         leftRotatePoint = tilePos + new Vector3(-.5f, -.5f, 0);
 
                 //Update forward rotate point
                 if (tilePos.Y <= playerPos.Y && tilePos.Z < forwardRotatePoint.Z || tilePos.Y < forwardRotatePoint.Y)
-                    if(tile.Raycast(tilePos, Vector3.Forward, true, 1f) == null)
+                    //if(tile.Raycast(tilePos, Vector3.Forward, true, 1f) == null)
                         forwardRotatePoint = tilePos + new Vector3(0, -.5f, -.5f);
 
                 //Update back rotate point
                 if (tilePos.Y <= playerPos.Y && tilePos.Z > backwardRotatePoint.Z || tilePos.Y < backwardRotatePoint.Y)
-                    if(tile.Raycast(tilePos, Vector3.Backward, true, 1f) == null)
+                    //if(tile.Raycast(tilePos, Vector3.Backward, true, 1f) == null)
                         backwardRotatePoint = tilePos + new Vector3(0, -.5f, .5f);
             }
         }

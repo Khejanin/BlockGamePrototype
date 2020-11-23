@@ -127,8 +127,13 @@ namespace GDGame.Scenes
             whiteChocolateTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f)); 
             
             effectParameters = new EffectParameters(ModelEffect, textures["DChocolate"], Color.White, 1);
+<<<<<<< HEAD
             BasicTile darkChocolateTile = new BasicTile("DarkChocolateTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"]);
+=======
+            BasicTile darkChocolateTile = new BasicTile("WhiteChocolateTile", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"], ETileType.Static);
+>>>>>>> d1a5fb503f73e59f0f170fe70a9518ffccc58726
             darkChocolateTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f)); 
             
             effectParameters = new EffectParameters(ModelEffect, textures["Ceramic"], Color.White, 1);
@@ -219,9 +224,28 @@ namespace GDGame.Scenes
 
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
+<<<<<<< HEAD
+                {"StaticTile", chocoloateTile},
+                {"WhiteChocolateTile",whiteChocolateTile},
+                {"DarkChocolateTile",darkChocolateTile},
+                {"PlateStackTile",plateStackBasicTile},
+                {"AttachableBlock", attachableTile},
+                {"PlayerBlock", playerTile},
+                {"GoalTile", goal},
+                {"EnemyTile", enemy},
+                {"ButtonTile", button},
+                {"MovingPlatformTile", platform},
+                {"Fork",forkModelObject},
+                {"Knife",knifeModelObject},
+                {"Plate",singlePlateModelObject},
+                {"PlateStack",plateModelObject},
+                {"SpikeTile", spike},
+                {"StarPickupTile", starPickup}
+=======
                 {"StaticTile", chocoloateTile},{"WhiteChocolateTile",whiteChocolateTile},{"DarkChocolateTile",darkChocolateTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", playerTile},
                 {"GoalTile", goal}, {"EnemyTile", enemy}, {"ButtonTile", button}, {"MovingPlatformTile", platform},
                 {"SpikeTile", spike}, {"StarPickupTile", starPickup}, {"CheckpointTile", checkpoint}
+>>>>>>> d1a5fb503f73e59f0f170fe70a9518ffccc58726
             };
         }
 
