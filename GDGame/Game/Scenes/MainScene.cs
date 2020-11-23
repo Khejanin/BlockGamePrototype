@@ -100,22 +100,56 @@ namespace GDGame.Scenes
         }
 
         private void InitDecoration(int n)
-        {/*
-            int min = -10;
-            int max = 10;
+        {
+            float min = -10;
+            float max = 10;
+            
+            Vector2 minBounds = new Vector2(min,0);
+            Vector2 xMaxBounds = new Vector2(levelBounds.X,levelBounds.X+max);
+            Vector2 zMaxBounds = new Vector2(levelBounds.Z, levelBounds.Z + max);
+            Vector2 yBounds = new Vector2(0,levelBounds.Y);
+
+            DrawnActor3D decoActor = null;
             for (int i = 0; i < n; i++)
             {
+                int random = MathHelperFunctions.Rnd.Next(4);
                 int x = 0;
-                if (MathHelperFunctions.rnd.Next(100) > 50)
-                    x = MathHelperFunctions.rnd.Next((int) levelBounds.X, (int) (levelBounds.X + max));
-                else x = MathHelperFunctions.rnd.Next(min, 0);
-                if (MathHelperFunctions.rnd.Next(100) > 50)
-                    y = MathHelperFunctions.rnd.Next((int) levelBounds.Y, (int) (levelBounds.Y + max));
-                else y = MathHelperFunctions.rnd.Next(min, 0);
-                if (MathHelperFunctions.rnd.Next(100) > 50)
-                    z = MathHelperFunctions.rnd.Next((int) levelBounds.Z, (int) (levelBounds.Z + max));
-                else z = MathHelperFunctions.rnd.Next(min, 0);
-            }*/
+                int y = MathHelperFunctions.Rnd.Next((int) yBounds.X, (int) yBounds.Y);
+                int z = 0;
+                switch (random)
+                {
+                    case 0:
+                        x = MathHelperFunctions.Rnd.Next((int) minBounds.X, (int) minBounds.Y);
+                        break;
+                    case 1:
+                        z = MathHelperFunctions.Rnd.Next((int) minBounds.X, (int) minBounds.Y);
+                        break;
+                    case 2:
+                        x = MathHelperFunctions.Rnd.Next((int) xMaxBounds.X, (int) xMaxBounds.Y);
+                        break;
+                    case 3:
+                        z = MathHelperFunctions.Rnd.Next((int) zMaxBounds.X, (int) zMaxBounds.Y);
+                        break;
+                }
+                
+                Vector3 pos = new Vector3(x,y,z);
+                random = MathHelperFunctions.Rnd.Next(3);
+                
+                switch (random)
+                {
+                    case 0:
+                        decoActor = drawnActors["Fork"].Clone() as DrawnActor3D;
+                        break;
+                    case 1:
+                        decoActor = drawnActors["Knife"].Clone() as DrawnActor3D;
+                        break;
+                    case 2:
+                        decoActor = drawnActors["SinglePlate"].Clone() as DrawnActor3D;
+                        break;
+                }
+
+                decoActor.Transform3D.Translation = pos;
+            }
         }
 
 
@@ -264,9 +298,20 @@ namespace GDGame.Scenes
 
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
-                {"StaticTile", chocoloateTile}, {"PlateStackTile", plateStackBasicTile} ,{"AttachableBlock", attachableTile}, {"PlayerBlock", playerTile},
-                {"GoalTile", goal}, {"EnemyTile", enemy}, {"ButtonTile", button}, {"MovingPlatformTile", platform},
-                {"SpikeTile", spike}, {"StarPickupTile", starPickup}, {"CheckpointTile", checkpoint}, {"PlateStackTile", plateStackBasicTile}
+                {"StaticTile", chocoloateTile},
+                {"PlateStackTile", plateStackBasicTile},
+                {"AttachableBlock", attachableTile},
+                {"PlayerBlock", playerTile},
+                {"GoalTile", goal},
+                {"EnemyTile", enemy},
+                {"ButtonTile", button},
+                {"MovingPlatformTile", platform},
+                {"SpikeTile", spike},
+                {"StarPickupTile", starPickup},
+                {"CheckpointTile", checkpoint},
+                {"Knife",knifeModelObject},
+                {"Fork",forkModelObject},
+                {"SinglePlate",singlePlateModelObject}
             };
         }
 
