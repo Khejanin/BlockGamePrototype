@@ -52,8 +52,7 @@ namespace GDGame.Component
                         (RotationComponent)parent.ControllerList.Find(controller =>
                            controller.GetType() == typeof(RotationComponent));
 
-                    if (rotationComponent != null)
-                        rotationComponent?.SetRotatePoint(direction);
+                    rotationComponent?.SetRotatePoint(direction);
 
                     //offset between the parent and the point to rotate around
                     Vector3 offset = parent.Transform3D.Translation - parent.RotatePoint;

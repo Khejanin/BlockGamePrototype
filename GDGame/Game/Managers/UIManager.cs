@@ -27,18 +27,15 @@ namespace GDGame.Managers
         //in game menu overlay trigger
         public void Options(bool q)
         {
-            foreach (KeyValuePair<string, UiElement> keyValuePair in elements)
+            foreach (KeyValuePair<string, UiElement> keyValuePair in elements.Where(keyValuePair => keyValuePair.Key.Contains("Options")))
             {
-                if (keyValuePair.Key.Contains("Options"))
+                if (q)
                 {
-                    if (q)
-                    {
-                        keyValuePair.Value.StatusType = StatusType.Drawn | StatusType.Update;
-                    }
-                    else
-                    {
-                        keyValuePair.Value.StatusType = StatusType.Off;
-                    }
+                    keyValuePair.Value.StatusType = StatusType.Drawn | StatusType.Update;
+                }
+                else
+                {
+                    keyValuePair.Value.StatusType = StatusType.Off;
                 }
             }
         }

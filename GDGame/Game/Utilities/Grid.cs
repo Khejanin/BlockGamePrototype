@@ -14,6 +14,12 @@ namespace GDGame.Utilities
         private TileFactory tileFactory;
         private static BasicTile[,,] _grid;
         private static Dictionary<int, Shape> _shapes;
+        private LevelData data;
+
+        public Vector3 GetGridBounds()
+        {
+            return data.gridSize;
+        }
 
         public Grid(TileFactory tileFactory)
         {
@@ -34,7 +40,7 @@ namespace GDGame.Utilities
                 throw new FileNotFoundException("The level file with the path: " + levelFilePath +
                                                 " was not found! Remember to set Build Action to 'Content' and Copy to 'Copy always' in the file properties!");
 
-            LevelData data = LevelDataConverter.ConvertJsonToLevelData(jsonString);
+            data = LevelDataConverter.ConvertJsonToLevelData(jsonString);
             _grid = new BasicTile[(int) data.gridSize.X, (int) data.gridSize.Y, (int) data.gridSize.Z];
             Vector3 pos = Vector3.Zero;
 
