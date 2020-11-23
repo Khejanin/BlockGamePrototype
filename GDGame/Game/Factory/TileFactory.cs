@@ -57,7 +57,7 @@ namespace GDGame.Factory
 
             string texStringType = "";
             string texStringTiling = "";
-            int randomN = MathHelperFunctions.rnd.Next(0, 100);
+            int randomN = MathHelperFunctions.Rnd.Next(0, 100);
             if (randomN > 70 && randomN < 90) texStringTiling = "4x";
             else if (randomN > 90) texStringTiling = "8x";
             
