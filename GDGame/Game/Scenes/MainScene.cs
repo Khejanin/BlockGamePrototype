@@ -27,6 +27,7 @@ namespace GDGame.Scenes
         private Dictionary<string, Texture2D> textures;
         private Dictionary<string, DrawnActor3D> drawnActors;
         private MouseManager mouseManager;
+        private Vector3 levelBounds;
 
         private string levelName;
         private bool optionsToggle;
@@ -89,6 +90,27 @@ namespace GDGame.Scenes
             //Skybox
             InitArchetypalQuad();
             InitSkybox();
+
+            InitDecoration(10);
+        }
+
+        private void InitDecoration(int n)
+        {/*
+            int min = -10;
+            int max = 10;
+            for (int i = 0; i < n; i++)
+            {
+                int x = 0;
+                if (MathHelperFunctions.rnd.Next(100) > 50)
+                    x = MathHelperFunctions.rnd.Next((int) levelBounds.X, (int) (levelBounds.X + max));
+                else x = MathHelperFunctions.rnd.Next(min, 0);
+                if (MathHelperFunctions.rnd.Next(100) > 50)
+                    y = MathHelperFunctions.rnd.Next((int) levelBounds.Y, (int) (levelBounds.Y + max));
+                else y = MathHelperFunctions.rnd.Next(min, 0);
+                if (MathHelperFunctions.rnd.Next(100) > 50)
+                    z = MathHelperFunctions.rnd.Next((int) levelBounds.Z, (int) (levelBounds.Z + max));
+                else z = MathHelperFunctions.rnd.Next(min, 0);
+            }*/
         }
 
 
@@ -107,6 +129,7 @@ namespace GDGame.Scenes
         private void InitGrid()
         {
             Grid grid = new Grid(new TileFactory(ObjectManager, drawnActors,textures));
+            levelBounds = grid.GetGridBounds();
             grid.GenerateGrid(levelName);
         }
 
@@ -120,20 +143,10 @@ namespace GDGame.Scenes
             BasicTile chocoloateTile = new BasicTile("ChocolateTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"], ETileType.Static);
             chocoloateTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
-            
-            effectParameters = new EffectParameters(ModelEffect, textures["WChocolate"], Color.White, 1);
-            BasicTile whiteChocolateTile = new BasicTile("WhiteChocolateTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"], ETileType.Static);
-            whiteChocolateTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f)); 
-            
-            effectParameters = new EffectParameters(ModelEffect, textures["DChocolate"], Color.White, 1);
-            BasicTile darkChocolateTile = new BasicTile("DarkChocolateTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"]);
-            darkChocolateTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f)); 
-            
+
             effectParameters = new EffectParameters(ModelEffect, textures["Ceramic"], Color.White, 1);
             BasicTile plateStackBasicTile = new BasicTile("plateStackTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["PlateStack"]);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["PlateStack"],ETileType.Static);
             plateStackBasicTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
@@ -219,7 +232,7 @@ namespace GDGame.Scenes
 
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
-                {"StaticTile", chocoloateTile},{"WhiteChocolateTile",whiteChocolateTile},{"DarkChocolateTile",darkChocolateTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", playerTile},
+                {"StaticTile", chocoloateTile}, {"PlateStackTile", plateStackBasicTile} ,{"AttachableBlock", attachableTile}, {"PlayerBlock", playerTile},
                 {"GoalTile", goal}, {"EnemyTile", enemy}, {"ButtonTile", button}, {"MovingPlatformTile", platform},
                 {"SpikeTile", spike}, {"StarPickupTile", starPickup}, {"CheckpointTile", checkpoint}
             };
@@ -502,9 +515,15 @@ namespace GDGame.Scenes
             Texture2D panel4 = Content.Load<Texture2D>("Assets/Textures/Skybox/kWall4");
             Texture2D floor1 = Content.Load<Texture2D>("Assets/Textures/Skybox/tiles");
 
-            Texture2D choc1 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile");
-            Texture2D choc2 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile-white");
-            Texture2D choc3 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/dark_choco-tile");
+            Texture2D choc = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile");
+            Texture2D choc4x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile4x");
+            Texture2D choc8x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile8x");
+            Texture2D chocW = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile-white");
+            Texture2D chocW4x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile-white4x");
+            Texture2D chocW8x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile-white8x");
+            Texture2D chocB = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/dark_choco-tile");
+            Texture2D chocB4x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/dark_choco-tile4x");
+            Texture2D chocB8x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/dark_choco-tile8x");
 
             Texture2D ceramic = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/ceramicColoring");
             Texture2D sugarWhite = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/sugar01");
@@ -513,10 +532,16 @@ namespace GDGame.Scenes
             textures = new Dictionary<string, Texture2D>
             {
                 {"Player", cubeTexture}, {"Attachable", cubeTexture}, {"Finish", cubeTexture}, {"Box", basicBgFloor}, 
-                {"WhiteSquare", whiteSquareTexture}, {"Compass", compassTexture}, {"Wall1", wall}, {"Wall", floor},
-                {"Floor", floor}, {"Circle", circle}, {"Logo", logo}, {"LogoMirror", logoMirror}, {"kWall1", panel1},
-                {"kWall2", panel2}, {"kWall3", panel3}, {"kWall4", panel4}, {"floor2", floor1}, {"options", options},
-                {"optionsButton", optionsButton}, {"Chocolate", choc1}, {"WChocolate", choc2},{"DChocolate",choc3}, {"Ceramic", ceramic},
+                {"WhiteSquare", whiteSquareTexture}, {"Compass", compassTexture},
+                {"Wall1", wall}, {"Wall", floor}, {"Floor", floor}, 
+                {"Circle", circle}, {"Logo", logo}, {"LogoMirror", logoMirror}, 
+                {"kWall1", panel1}, {"kWall2", panel2}, {"kWall3", panel3}, {"kWall4", panel4}, {"floor2", floor1},
+                {"options", options},
+                {"optionsButton", optionsButton}, 
+                {"Chocolate", choc}, {"Chocolate4x",choc4x},{"Chocolate8x",choc8x},
+                {"WhiteChocolate", chocW},{"WhiteChocolate4x",chocW4x},{"WhiteChocolate8x",chocW8x},
+                {"DarkChocolate",chocB},{"DarkChocolate4x",chocB4x},{"DarkChocolate8x",chocB8x}, 
+                {"Ceramic", ceramic},
                 {"SugarW", sugarWhite}, {"SugarB", sugarBrown},
             };
         }

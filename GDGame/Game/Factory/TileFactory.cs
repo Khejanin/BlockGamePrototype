@@ -64,18 +64,25 @@ namespace GDGame.Factory
             switch (tileType)
             {
                 case BasicTile.EStaticTileType.Chocolate:
-                    staticTile = ((BasicTile)drawnActors["StaticTile"]).Clone() as BasicTile;
+                    texStringType = "Chocolate";
                     break;
                 case BasicTile.EStaticTileType.WhiteChocolate:
-                    staticTile = ((BasicTile)drawnActors["WhiteChocolateTile"]).Clone() as BasicTile;
+                    texStringType = "WhiteChocolate";
                     break;
                 case BasicTile.EStaticTileType.DarkChocolate:
-                    staticTile = ((BasicTile)drawnActors["DarkChocolateTile"]).Clone() as BasicTile;
+                    texStringType = "DarkChocolate";
                     break;
                 case BasicTile.EStaticTileType.Plates:
                     staticTile = ((BasicTile)drawnActors["PlateStackTile"]).Clone() as BasicTile;
                     break;
             }
+
+            if (texStringType != "")
+            {
+                staticTile = ((BasicTile)drawnActors["StaticTile"]).Clone() as BasicTile;
+                staticTile.EffectParameters.Texture = textures[texStringType + texStringTiling];
+            }
+            
             objectManager.Add(staticTile);
             return staticTile;
         }
