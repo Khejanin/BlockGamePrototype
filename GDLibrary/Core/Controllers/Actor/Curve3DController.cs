@@ -15,6 +15,9 @@ namespace GDLibrary.Controllers
         #region Fields
         private Transform3DCurve transform3DCurve;
         private int elapsedTimeInMs = 0;
+
+        public int ElapsedTimeInMs => elapsedTimeInMs;
+
         #endregion Fields
 
         #region Constructors & Core

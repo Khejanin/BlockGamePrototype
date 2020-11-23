@@ -8,6 +8,7 @@ using GDGame.Factory;
 using GDGame.Game.UI;
 using GDGame.Utilities;
 using GDLibrary.Actors;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Factories;
 using GDLibrary.Interfaces;
@@ -36,6 +37,8 @@ namespace GDGame.Scenes
         ////FOR SKYBOX____ TEMP
         private PrimitiveObject archetypalTexturedQuad, primitiveObject;
         private BasicTile test;
+        private Transform3DCurve transform3DCurve;
+        private Curve3DController curve3DController;
 
         public MainScene(Main game, string levelName) : base(game)
         {
@@ -45,6 +48,7 @@ namespace GDGame.Scenes
 
         public override void Initialize()
         {
+            InitTransform3DCurve();
             InitCameras3D();
             InitLoadContent();
             InitDrawnContent();
@@ -58,8 +62,9 @@ namespace GDGame.Scenes
             List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
             if (players.Count > 0)
             {
-                RotationAroundActor cam = (RotationAroundActor) CameraManager.ActiveCamera.ControllerList[0];
-                cam.Target = players[0];
+                if (CameraManager.ActiveCamera.ControllerList[0] is RotationAroundActor cam) cam.Target = players[0];
+
+                players[0].StatusType = StatusType.Drawn | StatusType.Update;
             }
         }
 
@@ -116,14 +121,37 @@ namespace GDGame.Scenes
 
         private void InitCameras3D()
         {
-            Transform3D transform3D = new Transform3D(new Vector3(10, 10, 20), -Vector3.Forward, Vector3.Up);
+            Transform3D transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
             Camera3D camera3D = new Camera3D("cam", ActorType.Camera3D, StatusType.Update, transform3D,
                 ProjectionParameters.StandardDeepFourThree);
             camera3D.ControllerList.Add(new RotationAroundActor("main_cam", ControllerType.FlightCamera,
-                KeyboardManager, 20, 20));
+                KeyboardManager, 35, 20));
 
             CameraManager.Add(camera3D);
-            CameraManager.ActiveCameraIndex = 0; //0, 1, 2, 3
+
+            transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
+            camera3D = new Camera3D("Curve Camera", ActorType.Camera3D, StatusType.Update, transform3D,
+                ProjectionParameters.StandardDeepFourThree);
+            curve3DController = new Curve3DController("CurveCameraFlight", ControllerType.Curve, transform3DCurve);
+            camera3D.ControllerList.Add(curve3DController);
+
+            CameraManager.Add(camera3D);
+            CameraManager.ActiveCameraIndex = 1;
+        }
+
+        private void InitTransform3DCurve()
+        {
+            transform3DCurve = new Transform3DCurve(CurveLoopType.Oscillate);
+            transform3DCurve.Add(new Vector3(0, 20, 2), -Vector3.Up, Vector3.Forward, 0);
+            transform3DCurve.Add(new Vector3(0, 14, 2), -Vector3.Up, Vector3.Forward, 3000);
+            transform3DCurve.Add(new Vector3(0, 10, 2), Vector3.Right, Vector3.Up, 5000);
+            transform3DCurve.Add(new Vector3(10, 10, 2), Vector3.Right, Vector3.Up, 8000);
+            transform3DCurve.Add(new Vector3(15, 10, 2), new Vector3(0, -0.5f, 0.5f), Vector3.Up, 11000);
+            transform3DCurve.Add(new Vector3(18, 10, 10), new Vector3(0, -0.5f, 1), Vector3.Up, 14000);
+            transform3DCurve.Add(new Vector3(18, 10, 23), new Vector3(0, -1, 1), Vector3.Up, 16000);
+            transform3DCurve.Add(new Vector3(18, 10, 23), -Vector3.Right, Vector3.Up, 19000);
+            transform3DCurve.Add(new Vector3(3, 5, 23), -Vector3.Up, -Vector3.Right, 23000);
+            transform3DCurve.Add(new Vector3(3, 5, 23), -Vector3.Up, -Vector3.Right, 25000);
         }
 
         private void InitGrid()
@@ -175,25 +203,29 @@ namespace GDGame.Scenes
             checkpoint.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
-            ModelObject forkModelObject = new ModelObject("fork",ActorType.Decorator,StatusType.Drawn | StatusType.Update,transform3D,
+            ModelObject forkModelObject = new ModelObject("fork", ActorType.Decorator,
+                StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["Fork"]);
-            forkModelObject.ControllerList.Add(new RandomRotatorController("rotator",ControllerType.Curve));
+            forkModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
-            ModelObject plateModelObject = new ModelObject("plates",ActorType.Decorator,StatusType.Drawn | StatusType.Update,transform3D,
-                effectParameters,models["PlateStack"]);
-            plateModelObject.ControllerList.Add(new RandomRotatorController("rotator",ControllerType.Curve));
-            
+            ModelObject plateModelObject = new ModelObject("plates", ActorType.Decorator,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, models["PlateStack"]);
+            plateModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
+
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
-            ModelObject knifeModelObject = new ModelObject("knife",ActorType.Decorator,StatusType.Drawn | StatusType.Update,transform3D,
-                effectParameters,models["Knife"]);
-            knifeModelObject.ControllerList.Add(new RandomRotatorController("rotator",ControllerType.Curve));
-            
+            ModelObject knifeModelObject = new ModelObject("knife", ActorType.Decorator,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, models["Knife"]);
+            knifeModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
+
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
-            ModelObject singlePlateModelObject = new ModelObject("singlePlate",ActorType.Decorator,StatusType.Drawn | StatusType.Update,transform3D,
-                effectParameters,models["SinglePlate"]);
-            singlePlateModelObject.ControllerList.Add(new RandomRotatorController("rotator",ControllerType.Curve));
-            
+            ModelObject singlePlateModelObject = new ModelObject("singlePlate", ActorType.Decorator,
+                StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, models["SinglePlate"]);
+            singlePlateModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
+
             #endregion
 
             #region MovableTiles
@@ -205,7 +237,7 @@ namespace GDGame.Scenes
             attachableTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
 
             effectParameters = new EffectParameters(ModelEffect, textures["SugarW"], Color.White, 1);
-            PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn | StatusType.Update,
+            PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn,
                 transform3D, effectParameters, models["Cube"], ETileType.PlayerStart);
             playerTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             playerTile.ControllerList.Add(new PlayerController(KeyboardManager, GamePadManager));
@@ -213,7 +245,7 @@ namespace GDGame.Scenes
                 "playerAttach"));
             playerTile.ControllerList.Add(new RotationComponent());
             playerTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
-            
+
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, models["Drop"], ETileType.Enemy);
@@ -234,7 +266,7 @@ namespace GDGame.Scenes
             {
                 {"StaticTile", chocoloateTile}, {"PlateStackTile", plateStackBasicTile} ,{"AttachableBlock", attachableTile}, {"PlayerBlock", playerTile},
                 {"GoalTile", goal}, {"EnemyTile", enemy}, {"ButtonTile", button}, {"MovingPlatformTile", platform},
-                {"SpikeTile", spike}, {"StarPickupTile", starPickup}, {"CheckpointTile", checkpoint}
+                {"SpikeTile", spike}, {"StarPickupTile", starPickup}, {"CheckpointTile", checkpoint}, {"PlateStackTile", plateStackBasicTile}
             };
         }
 
@@ -600,6 +632,17 @@ namespace GDGame.Scenes
             float angle = MathHelperFunctions.GetAngle(Vector3.Forward, CameraManager.ActiveCamera.Transform3D.Look);
             UiSprite uiSprite = UiManager["Compass"] as UiSprite;
             uiSprite?.SetRotation(angle);
+
+            if (curve3DController != null && curve3DController.ElapsedTimeInMs > 25000)
+            {
+                transform3DCurve.Clear();
+                curve3DController = null;
+                EventManager.FireEvent(new CameraEvent());
+                CameraManager.ActiveCameraIndex = 0;
+                SetTargetToCamera();
+            }
+
+
             List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
             if (players.Count > 0)
             {

@@ -9,15 +9,14 @@ using SharpDX.Direct2D1.Effects;
 
 namespace GDGame.Controllers
 {
-
     public abstract class ColliderController : IDrawnController
     {
-        public ColliderType ColliderType { get; private set;}
+        public ColliderType ColliderType { get; private set; }
         protected ColliderShape colliderShape;
         protected bool drawDebug;
         protected Transform3D parentTransform;
 
-        protected ColliderController(ColliderShape colliderShape,ColliderType colliderType = ColliderType.Blocking)
+        protected ColliderController(ColliderShape colliderShape, ColliderType colliderType = ColliderType.Blocking)
         {
             this.colliderShape = colliderShape;
             ColliderType = colliderType;
@@ -41,24 +40,29 @@ namespace GDGame.Controllers
 
         private float scale;
 
-        public CustomBoxColliderController(ColliderShape colliderShape, float scale,ColliderType colliderType = ColliderType.Blocking) : base(colliderShape,colliderType)
+        public CustomBoxColliderController(ColliderShape colliderShape, float scale,
+            ColliderType colliderType = ColliderType.Blocking) : base(colliderShape, colliderType)
         {
             this.scale = scale;
         }
 
         public override object Clone()
         {
-            return new CustomBoxColliderController(colliderShape,scale,ColliderType);
+            return new CustomBoxColliderController(colliderShape, scale, ColliderType);
         }
 
         public BoundingBox GetBounds()
         {
-            Vector3 min = parent.Transform3D.Translation + new Vector3(-parent.Transform3D.Scale.X,
-                -parent.Transform3D.Scale.Y, -parent.Transform3D.Scale.Z) / 2.0f * scale;
-            Vector3 max = parent.Transform3D.Translation + new Vector3(parent.Transform3D.Scale.X,
-                parent.Transform3D.Scale.Y, parent.Transform3D.Scale.Z) / 2.0f * scale;
+            BoundingBox box = new BoundingBox(new Vector3(0f), new Vector3(0));
+            if (parent != null)
+            {
+                Vector3 min = parent.Transform3D.Translation + new Vector3(-parent.Transform3D.Scale.X,
+                    -parent.Transform3D.Scale.Y, -parent.Transform3D.Scale.Z) / 2.0f * scale;
+                Vector3 max = parent.Transform3D.Translation + new Vector3(parent.Transform3D.Scale.X,
+                    parent.Transform3D.Scale.Y, parent.Transform3D.Scale.Z) / 2.0f * scale;
+                box = new BoundingBox(min, max);
+            }
 
-            BoundingBox box = new BoundingBox(min, max);
 
             return box;
         }
@@ -100,6 +104,7 @@ namespace GDGame.Controllers
         {
         }
     }
+
 /*
     public class ModelColliderController : ColliderController
     {

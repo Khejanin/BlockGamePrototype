@@ -1,7 +1,5 @@
 ﻿using System;
-using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
-using SharpDX;
 using Quaternion = Microsoft.Xna.Framework.Quaternion;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
@@ -10,11 +8,7 @@ namespace GDGame.Utilities
     public class MathHelperFunctions
     {
         private static Random _rnd;
-        public static Random rnd
-        {
-            get { return _rnd ?? new Random(); }
-            private set { _rnd = value; }
-        }
+        public static Random Rnd => _rnd ?? new Random();
 
         public static Vector3 QuaternionToEulerAngles(Quaternion q)
         {
