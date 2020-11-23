@@ -40,6 +40,8 @@ namespace GDGame.Scenes
         private Transform3DCurve transform3DCurve;
         private Curve3DController curve3DController;
 
+        private DrawnActor3D player;
+        
         public MainScene(Main game, string levelName) : base(game)
         {
             mouseManager = new MouseManager(game, false);
@@ -52,8 +54,6 @@ namespace GDGame.Scenes
             InitCameras3D();
             InitLoadContent();
             InitDrawnContent();
-
-            SetTargetToCamera();
             InitEvents();
         }
 
@@ -64,6 +64,7 @@ namespace GDGame.Scenes
             {
                 if (CameraManager.ActiveCamera.ControllerList[0] is RotationAroundActor cam) cam.Target = players[0];
 
+                player = players[0];
                 players[0].StatusType = StatusType.Drawn | StatusType.Update;
             }
         }
@@ -86,6 +87,9 @@ namespace GDGame.Scenes
             //models
             InitStaticModels();
             TestingPlatform();
+
+            //Level Decorators
+           // InitLevelDecor();
 
             //grids
             InitGrid();
@@ -162,8 +166,15 @@ namespace GDGame.Scenes
                 ProjectionParameters.StandardDeepFourThree);
             camera3D.ControllerList.Add(new RotationAroundActor("main_cam", ControllerType.FlightCamera,
                 KeyboardManager, 35, 20));
-
             CameraManager.Add(camera3D);
+
+            transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
+            camera3D = new Camera3D("FlyCam", ActorType.Camera3D, StatusType.Update, transform3D,
+                ProjectionParameters.StandardDeepFourThree);
+            camera3D.ControllerList.Add(new FlightController("FPC", ControllerType.FlightCamera, KeyboardManager,
+                MouseManager, 0.01f, 0.01f, 0.01f));
+            CameraManager.Add(camera3D);
+
 
             transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
             camera3D = new Camera3D("Curve Camera", ActorType.Camera3D, StatusType.Update, transform3D,
@@ -172,7 +183,7 @@ namespace GDGame.Scenes
             camera3D.ControllerList.Add(curve3DController);
 
             CameraManager.Add(camera3D);
-            CameraManager.ActiveCameraIndex = 1;
+            CameraManager.ActiveCameraIndex = 2;
         }
 
         private void InitTransform3DCurve()
@@ -257,10 +268,20 @@ namespace GDGame.Scenes
             //knifeModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
+<<<<<<< Updated upstream
             ModelObject singlePlateModelObject = new ModelObject("singlePlate", ActorType.Decorator,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["SinglePlate"]);
+<<<<<<< HEAD
             //singlePlateModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
+=======
+            singlePlateModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
+=======
+            ModelObject singlePlateModelObject = new ModelObject("singlePlate",ActorType.Decorator,StatusType.Drawn | StatusType.Update,transform3D,
+                effectParameters,models["SinglePlate"]);
+            singlePlateModelObject.ControllerList.Add(new RandomRotatorController("rotator",ControllerType.Curve));
+>>>>>>> Stashed changes
+>>>>>>> 0cf0c9291d0aa96f95d7db687fa188ffaae14c3d
 
             #endregion
 
@@ -268,13 +289,13 @@ namespace GDGame.Scenes
 
             effectParameters = new EffectParameters(ModelEffect, textures["SugarB"], Color.White, 1);
             AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"], ETileType.Attachable);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"],
+                ETileType.Attachable);
             attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             attachableTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
 
             effectParameters = new EffectParameters(ModelEffect, textures["SugarW"], Color.White, 1);
-            PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn,
-                transform3D, effectParameters, models["Cube"], ETileType.PlayerStart);
+            PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn, transform3D, effectParameters, models["Cube"], ETileType.PlayerStart);
             playerTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             playerTile.ControllerList.Add(new PlayerController(KeyboardManager, GamePadManager));
             playerTile.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove",
@@ -342,6 +363,46 @@ namespace GDGame.Scenes
             ObjectManager.Add(actor);
         }
 
+
+        private void InitLevelDecor()
+        {
+
+            float size = 1.5f;
+            Vector3 scale = new Vector3(size, size, size);
+            EffectParameters effectParameters = new EffectParameters(ModelEffect, textures["Box"], Color.White, 1);
+            var transform3D = new Transform3D(new Vector3(10, -15, 15), Vector3.UnitZ, Vector3.UnitY);
+
+            BasicTile table = new BasicTile("Table", ActorType.Primitive,
+                StatusType.Drawn, transform3D, effectParameters, models["Table"]);
+            table.Transform3D.Scale = scale;
+            ObjectManager.Add(table);
+
+           // effectParameters = new EffectParameters(ModelEffect, textures["Wood"], Color.White, 1);
+            BasicTile cups = new BasicTile("Cups", ActorType.Primitive,
+                StatusType.Drawn, transform3D, effectParameters, models["Cups"]);
+            cups.Transform3D.Scale = scale;
+            drawnActors.Add("Cups", cups);
+            ObjectManager.Add(cups);
+
+           // effectParameters = new EffectParameters(ModelEffect, textures["WChocolate"], Color.White, 1);
+            BasicTile Choco = new BasicTile("Chocolate", ActorType.Primitive,
+                StatusType.Drawn, transform3D, effectParameters, models["Chocolate"]);
+            Choco.Transform3D.Scale = scale;
+            ObjectManager.Add(Choco);
+
+
+            //BasicTile Cat = new BasicTile("Cat", ActorType.Primitive,
+            //    StatusType.Drawn, transform3D, effectParameters, models["Cat"]);
+            //ObjectManager.Add(Cat);
+            //BasicTile catBed = new BasicTile("CatBed", ActorType.Primitive,
+            //    StatusType.Drawn, transform3D, effectParameters, models["CatBed"]);
+            //ObjectManager.Add(catBed);
+
+
+            //Model cat = Content.Load<Model>("Assets/Models/Decor/cat02");
+            //Model catbed = Content.Load<Model>("Assets/Models/Decor/catbed02");
+            //, { "Cat", cat }, { "CatBed", catbed }
+        }
         //TEMP
         private void TestingPlatform()
         {
@@ -594,6 +655,7 @@ namespace GDGame.Scenes
             Texture2D panel4 = Content.Load<Texture2D>("Assets/Textures/Skybox/kWall4");
             Texture2D floor1 = Content.Load<Texture2D>("Assets/Textures/Skybox/tiles");
 
+<<<<<<< Updated upstream
             Texture2D choc = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile");
             Texture2D choc4x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile4x");
             Texture2D choc8x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile8x");
@@ -605,12 +667,22 @@ namespace GDGame.Scenes
             Texture2D chocB8x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/dark_choco-tile8x");
 
             Texture2D ceramic = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/ceramicColoring");
+=======
+            Texture2D choc1 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile");
+            Texture2D choc2 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile-white");
+            Texture2D choc3 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/dark_choco-tile");
+
+            Texture2D ceramic = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/ceramicColoringBaked");
+>>>>>>> Stashed changes
             Texture2D sugarWhite = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/sugar01");
             Texture2D sugarBrown = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/sugar02");
+
+            Texture2D wood = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/wood");
 
             textures = new Dictionary<string, Texture2D>
             {
                 {"Player", cubeTexture}, {"Attachable", cubeTexture}, {"Finish", cubeTexture}, {"Box", basicBgFloor}, 
+<<<<<<< Updated upstream
                 {"WhiteSquare", whiteSquareTexture}, {"Compass", compassTexture},
                 {"Wall1", wall}, {"Wall", floor}, {"Floor", floor}, 
                 {"Circle", circle}, {"Logo", logo}, {"LogoMirror", logoMirror}, 
@@ -622,6 +694,13 @@ namespace GDGame.Scenes
                 {"DarkChocolate",chocB},{"DarkChocolate4x",chocB4x},{"DarkChocolate8x",chocB8x}, 
                 {"Ceramic", ceramic},
                 {"SugarW", sugarWhite}, {"SugarB", sugarBrown},
+=======
+                {"WhiteSquare", whiteSquareTexture}, {"Compass", compassTexture}, {"Wall1", wall}, {"Wall", floor},
+                {"Floor", floor}, {"Circle", circle}, {"Logo", logo}, {"LogoMirror", logoMirror}, {"kWall1", panel1},
+                {"kWall2", panel2}, {"kWall3", panel3}, {"kWall4", panel4}, {"floor2", floor1}, {"options", options},
+                {"optionsButton", optionsButton}, {"Chocolate", choc1}, {"WChocolate", choc2}, {"Ceramic", ceramic},
+                {"SugarW", sugarWhite}, {"SugarB", sugarBrown}, {"Wood", wood }, {"DChocolate", choc3}
+>>>>>>> Stashed changes
             };
         }
 
@@ -641,6 +720,9 @@ namespace GDGame.Scenes
             Model redCube = Content.Load<Model>("Assets/Models/RedCube");
             Model singlePlateCube = Content.Load<Model>("Assets/Models/SinglePlate");
             Model sugarBoxCube = Content.Load<Model>("Assets/Models/SugarBox");
+            Model table = Content.Load<Model>("Assets/Models/Decor/table02");
+            Model cups = Content.Load<Model>("Assets/Models/Decor/cups02");
+            Model chocolate = Content.Load<Model>("Assets/Models/Decor/choco02");
 
 
             models = new Dictionary<string, Model>
@@ -648,7 +730,8 @@ namespace GDGame.Scenes
                 {"RedCube", redCube}, {"Player", blueCube}, {"Cube", boxModel}, {"Enemy", enemyModel},
                 {"Button", buttonModel}, {"Drop", dropWithEyesModel}, {"Fork", forkModel}, {"Knife", knifeModel},
                 {"Mug", mugModel}, {"PlateStack", plateStackModel}, {"PlayerModel", playerModel},
-                {"Pyramid", pyramidModel}, {"SinglePlate", singlePlateCube}, {"SugarBox", sugarBoxCube}
+                {"Pyramid", pyramidModel}, {"SinglePlate", singlePlateCube}, {"SugarBox", sugarBoxCube},
+                {"Table", table }, {"Cups", cups }, {"Chocolate", chocolate }
             };
         }
 
@@ -682,26 +765,29 @@ namespace GDGame.Scenes
 
             if (curve3DController != null && curve3DController.ElapsedTimeInMs > 25000)
             {
-                transform3DCurve.Clear();
-                curve3DController = null;
-                EventManager.FireEvent(new CameraEvent());
+                CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Curve Camera");
                 CameraManager.ActiveCameraIndex = 0;
                 SetTargetToCamera();
+                transform3DCurve.Clear();
+                curve3DController = null;
             }
 
-
+            if (player != null)
+            {
+                player.StatusType = CameraManager.ActiveCameraIndex switch
+                {
+                    0 => StatusType.Drawn | StatusType.Update,
+                    1 => StatusType.Drawn,
+                    _ => player.StatusType
+                };
+            }
+            
             List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
             if (players.Count > 0)
             {
                 PlayerTile playerTile = players[0] as PlayerTile;
                 UiManager["ToolTip"].StatusType =
                     playerTile?.AttachCandidates.Count > 0 ? StatusType.Drawn : StatusType.Off;
-            }
-
-            if (KeyboardManager.IsFirstKeyPress(Keys.C))
-            {
-                CameraManager.CycleActiveCamera();
-                // this.cameraManager.ActiveCameraIndex++;
             }
 
             if (KeyboardManager.IsFirstKeyPress(Keys.C))
