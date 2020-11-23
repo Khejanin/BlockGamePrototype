@@ -128,12 +128,12 @@ namespace GDGame.Scenes
             
             effectParameters = new EffectParameters(ModelEffect, textures["DChocolate"], Color.White, 1);
             BasicTile darkChocolateTile = new BasicTile("DarkChocolateTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"]);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"], ETileType.Static);
             darkChocolateTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f)); 
             
             effectParameters = new EffectParameters(ModelEffect, textures["Ceramic"], Color.White, 1);
             BasicTile plateStackBasicTile = new BasicTile("plateStackTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["PlateStack"]);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["PlateStack"], ETileType.Static);
             plateStackBasicTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
@@ -221,7 +221,7 @@ namespace GDGame.Scenes
             {
                 {"StaticTile", chocoloateTile},{"WhiteChocolateTile",whiteChocolateTile},{"DarkChocolateTile",darkChocolateTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", playerTile},
                 {"GoalTile", goal}, {"EnemyTile", enemy}, {"ButtonTile", button}, {"MovingPlatformTile", platform},
-                {"SpikeTile", spike}, {"StarPickupTile", starPickup}, {"CheckpointTile", checkpoint}
+                {"SpikeTile", spike}, {"StarPickupTile", starPickup}, {"CheckpointTile", checkpoint}, {"PlateStackTile", plateStackBasicTile}
             };
         }
 
