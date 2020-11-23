@@ -7,16 +7,18 @@ namespace GDGame.EventSystem
      public abstract class EventInfo
      {
      }
+
+     public class TileEventInfo : EventInfo
+     {
+         public ETileType targetedTileType;
+         public TileEventType type;
+     }
      
      public class PlayerEventInfo : EventInfo
      {
          public PlayerEventType type;
          public Vector3? position;
          public AttachableTile attachedTile;
-
-         public PlayerEventInfo()
-         {
-         }
      }
 
      public class ActivatorEventInfo : EventInfo

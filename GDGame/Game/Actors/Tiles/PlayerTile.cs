@@ -47,8 +47,6 @@ namespace GDGame.Actors
             switch(info.type)
             {
                 case PlayerEventType.Die:
-                    //System.Diagnostics.Debug.WriteLine("Player ded");
-                    //EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Lost));
                     RespawnAtLastCheckpoint();
                     break;
                 case PlayerEventType.SetCheckpoint:
@@ -188,6 +186,7 @@ namespace GDGame.Actors
 
         private void RespawnAtLastCheckpoint()
         {
+            EventManager.FireEvent(new TileEventInfo { type = TileEventType.Reset, targetedTileType = ETileType.Attachable });
             Transform3D.Translation = lastCheckpoint;
         }
 

@@ -1,5 +1,6 @@
 using System;
 using GDGame.Enums;
+using GDGame.EventSystem;
 using GDGame.Tiles;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
@@ -35,6 +36,20 @@ namespace GDGame.Actors
         public virtual void InitializeTile()
         {
             spawnPos = Transform3D.Translation;
+            EventManager.RegisterListener<TileEventInfo>(HandleTileEvent);
+        }
+
+        private void HandleTileEvent(TileEventInfo info)
+        {
+            if (info.targetedTileType != ETileType.None && info.targetedTileType != TileType) 
+                return;
+
+            switch (info.type)
+            {
+                case TileEventType.Reset:
+                    Respawn();
+                    break;
+            }
         }
 
         public void Respawn()

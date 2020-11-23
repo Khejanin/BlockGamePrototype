@@ -10,6 +10,8 @@ namespace GDGame.Actors
 {
     public class MovingPlatformTile : PathMoveTile, IActivatable
     {
+        private bool isActivated;
+
         public MovingPlatformTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
         }
@@ -62,17 +64,22 @@ namespace GDGame.Actors
 
         public void Activate()
         {
-            throw new System.NotImplementedException();
+            System.Diagnostics.Debug.WriteLine("Moving Platform activate (doesn't work yet)");
+            isActivated = true;
         }
 
         public void Deactivate()
         {
-            throw new System.NotImplementedException();
+            System.Diagnostics.Debug.WriteLine("Moving Platform deactivate (doesn't work yet)");
+            isActivated = false;
         }
 
         public void ToggleActivation()
         {
-            throw new System.NotImplementedException();
+            if(isActivated)
+                Deactivate();
+            else
+                Activate();
         }
     }
 }

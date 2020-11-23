@@ -42,6 +42,11 @@
         SetCheckpoint
     }
 
+    public enum TileEventType : sbyte
+    {
+        Reset
+    }
+
     public enum ActivatorEventType : sbyte
     {
         Activate,
