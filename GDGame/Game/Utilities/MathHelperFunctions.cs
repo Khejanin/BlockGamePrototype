@@ -9,10 +9,11 @@ namespace GDGame.Utilities
 {
     public class MathHelperFunctions
     {
+        private static Random _rnd;
         public static Random rnd
         {
-            get { return rnd ?? new Random(); }
-            private set { rnd = value; }
+            get { return _rnd ?? new Random(); }
+            private set { _rnd = value; }
         }
 
         public static Vector3 QuaternionToEulerAngles(Quaternion q)

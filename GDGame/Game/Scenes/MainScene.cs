@@ -153,8 +153,24 @@ namespace GDGame.Scenes
             goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
-            ModelObject forkModelObject = new ModelObject("fork",ActorType.Decorator,StatusType.Drawn | StatusType.Update,transform3D,effectParameters,models["Fork"]);
+            ModelObject forkModelObject = new ModelObject("fork",ActorType.Decorator,StatusType.Drawn | StatusType.Update,transform3D,
+                effectParameters, models["Fork"]);
             forkModelObject.ControllerList.Add(new RandomRotatorController("rotator",ControllerType.Curve));
+
+            effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
+            ModelObject plateModelObject = new ModelObject("plates",ActorType.Decorator,StatusType.Drawn | StatusType.Update,transform3D,
+                effectParameters,models["PlateStack"]);
+            plateModelObject.ControllerList.Add(new RandomRotatorController("rotator",ControllerType.Curve));
+            
+            effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
+            ModelObject knifeModelObject = new ModelObject("knife",ActorType.Decorator,StatusType.Drawn | StatusType.Update,transform3D,
+                effectParameters,models["Knife"]);
+            knifeModelObject.ControllerList.Add(new RandomRotatorController("rotator",ControllerType.Curve));
+            
+            effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
+            ModelObject singlePlateModelObject = new ModelObject("singlePlate",ActorType.Decorator,StatusType.Drawn | StatusType.Update,transform3D,
+                effectParameters,models["SinglePlate"]);
+            singlePlateModelObject.ControllerList.Add(new RandomRotatorController("rotator",ControllerType.Curve));
             
             #endregion
 
