@@ -1,4 +1,5 @@
 ﻿using System;
+using GDGame.Enums;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
@@ -14,8 +15,8 @@ namespace GDGame.Actors
         public Vector3 RotatePoint { get; set; }
 
         public MovableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
-            EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform,
-            effectParameters, model)
+            EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform,
+            effectParameters, model, tileType)
         {
         }
 
@@ -32,7 +33,7 @@ namespace GDGame.Actors
         {
             MovableTile movableTile = new MovableTile("clone - " + ID, ActorType, StatusType,
                 Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as EffectParameters, Model);
+                EffectParameters.Clone() as EffectParameters, Model, TileType);
 
             if (ControllerList != null)
             {

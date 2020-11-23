@@ -1,10 +1,10 @@
 ﻿using GDGame.Component;
-using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using GDGame.Enums;
 
 namespace GDGame.Actors
 {
@@ -16,7 +16,7 @@ namespace GDGame.Actors
         public List<Vector3> path;
         public int currentPositionIndex;
 
-        public PathMoveTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform, effectParameters, model)
+        protected PathMoveTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
             path = new List<Vector3>();
         }

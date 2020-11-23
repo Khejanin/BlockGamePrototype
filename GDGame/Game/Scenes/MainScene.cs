@@ -115,18 +115,18 @@ namespace GDGame.Scenes
             EffectParameters effectParameters = new EffectParameters(ModelEffect, textures["Box"], Color.White, 1);
             var transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
             BasicTile staticTile = new BasicTile("StaticTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"]);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"], ETileType.Static);
             staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Attachable"], Color.White, 1);
             AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Attachable"]);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Attachable"], ETileType.Attachable);
             attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             attachableTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Player"], Color.White, 1);
             PlayerTile playerTile = new PlayerTile("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Player"]);
+                transform3D, effectParameters, models["Player"], ETileType.PlayerStart);
             playerTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             playerTile.ControllerList.Add(new PlayerController(KeyboardManager, GamePadManager));
             playerTile.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
@@ -135,37 +135,41 @@ namespace GDGame.Scenes
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, models["Box"]);
+                effectParameters, models["Box"], ETileType.Win);
             goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
             EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Box"]);
+                transform3D, effectParameters, models["Box"], ETileType.Enemy);
             enemy.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
             enemy.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
             enemy.ControllerList.Add(new RotationComponent());
 
             ButtonTile button = new ButtonTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Box"]);
+                transform3D, effectParameters, models["Box"], ETileType.Button);
             button.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
             MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Box"]);
+                transform3D, effectParameters, models["Box"], ETileType.MovingPlatform);
             platform.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             platform.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
             SpikeTile spike = new SpikeTile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Box"]);
+                transform3D, effectParameters, models["Box"], ETileType.Spike);
             spike.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
-            StarPickupTile starPickup = new StarPickupTile("Star", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Box"]);
-            starPickup.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
+            PickupTile pickup = new PickupTile("Star", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, models["Box"], ETileType.Star);
+            pickup.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
+
+            CheckpointTile checkpoint = new CheckpointTile("Checkpoint", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, models["Box"], ETileType.Checkpoint);
+            checkpoint.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
                 {"StaticTile", staticTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", playerTile},
                 {"GoalTile", goal}, {"EnemyTile", enemy}, {"ButtonTile", button}, {"MovingPlatformTile", platform},
-                {"SpikeTile", spike}, {"StarPickupTile", starPickup}
+                {"SpikeTile", spike}, {"PickupTile", pickup}, {"CheckpointTile", checkpoint}
             };
         }
 
@@ -200,7 +204,7 @@ namespace GDGame.Scenes
             EffectParameters effectParameters = new EffectParameters(ModelEffect, textures["Box"], Color.White, 1);
             var transform3D = new Transform3D(new Vector3(5, 0,0), Vector3.UnitZ, Vector3.UnitY);
             this.test = new BasicTile("StaticTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"]);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"], ETileType.Static);
             this.test.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             drawnActors.Add("StaticTile2", test);
             ObjectManager.Add(test);

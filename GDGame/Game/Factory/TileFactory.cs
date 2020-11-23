@@ -34,10 +34,10 @@ namespace GDGame.Factory
                 ETileType.MovingPlatform => CreateMovingPlatform(),
                 ETileType.Spike => CreateSpike(),
                 ETileType.Star => CreateStarPickup(),
+                ETileType.Checkpoint => CreateCheckpoint(),
                 _ => null
             };
 
-            tile.InitializeTile();
             return tile;
         }
 
@@ -113,10 +113,18 @@ namespace GDGame.Factory
 
         private BasicTile CreateStarPickup()
         {
-            StarPickupTile starPickupTile = (StarPickupTile)drawnActors["StarPickupTile"];
-            starPickupTile = starPickupTile.Clone() as StarPickupTile;
-            objectManager.Add(starPickupTile);
-            return starPickupTile;
+            PickupTile pickupTile = (PickupTile)drawnActors["PickupTile"];
+            pickupTile = pickupTile.Clone() as PickupTile;
+            objectManager.Add(pickupTile);
+            return pickupTile;
+        }
+
+        private BasicTile CreateCheckpoint()
+        {
+            CheckpointTile checkpointTile = (CheckpointTile)drawnActors["CheckpointTile"];
+            checkpointTile = checkpointTile.Clone() as CheckpointTile;
+            objectManager.Add(checkpointTile);
+            return checkpointTile;
         }
     }
 }

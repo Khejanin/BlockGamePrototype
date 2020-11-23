@@ -1,4 +1,5 @@
 ﻿using GDGame.Actors;
+using GDGame.Enums;
 using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
@@ -10,7 +11,7 @@ namespace GDGame.Actors
 {
     public class AttachableTile : MovableTile
     {
-        public AttachableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform, effectParameters, model)
+        public AttachableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
         }
 
@@ -25,7 +26,7 @@ namespace GDGame.Actors
         {
             AttachableTile enemyTile = new AttachableTile("clone - " + ID, ActorType, StatusType,
                 Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as EffectParameters, Model);
+                EffectParameters.Clone() as EffectParameters, Model, TileType);
 
             if (ControllerList != null)
             {

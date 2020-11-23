@@ -1,4 +1,5 @@
-﻿using GDGame.EventSystem;
+﻿using GDGame.Enums;
+using GDGame.EventSystem;
 using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
@@ -14,7 +15,7 @@ namespace GDGame.Actors
         private float currentMovementCoolDown;
         private bool canMove;
 
-        public EnemyTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, float movementCoolDown = 0.5f) : base(id, actorType, statusType, transform, effectParameters, model)
+        public EnemyTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType, float movementCoolDown = 0.5f) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
             this.movementCoolDown = movementCoolDown;
         }
@@ -87,7 +88,7 @@ namespace GDGame.Actors
         {
             EnemyTile enemyTile = new EnemyTile("clone - " + ID, ActorType, StatusType,
                 Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as EffectParameters, Model);
+                EffectParameters.Clone() as EffectParameters, Model, TileType);
 
             if (ControllerList != null)
             {
