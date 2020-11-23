@@ -96,7 +96,7 @@ namespace GDGame.Scenes
             InitArchetypalQuad();
             InitSkybox();
 
-            InitDecoration(10);
+            //InitDecoration(1010);
         }
 
         private void InitDecoration(int n)
@@ -104,15 +104,15 @@ namespace GDGame.Scenes
             float min = -10;
             float max = 10;
             
-            Vector2 minBounds = new Vector2(min,0);
+            Vector2 minBounds = new Vector2(-10,10);
             Vector2 xMaxBounds = new Vector2(levelBounds.X,levelBounds.X+max);
             Vector2 zMaxBounds = new Vector2(levelBounds.Z, levelBounds.Z + max);
-            Vector2 yBounds = new Vector2(0,levelBounds.Y);
+            Vector2 yBounds = new Vector2(0,5);
 
             DrawnActor3D decoActor = null;
             for (int i = 0; i < n; i++)
             {
-                int random = MathHelperFunctions.Rnd.Next(4);
+                int random = MathHelperFunctions.Rnd.Next(2);
                 int x = 0;
                 int y = MathHelperFunctions.Rnd.Next((int) yBounds.X, (int) yBounds.Y);
                 int z = 0;
@@ -149,6 +149,8 @@ namespace GDGame.Scenes
                 }
 
                 decoActor.Transform3D.Translation = pos;
+                
+                ObjectManager.Add(decoActor);
             }
         }
 
@@ -233,32 +235,32 @@ namespace GDGame.Scenes
             goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
             CheckpointTile checkpoint = new CheckpointTile("Checkpoint", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, models["SugarBox"], ETileType.Checkpoint);
+                effectParameters, models["Knife"], ETileType.Checkpoint);
             checkpoint.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             ModelObject forkModelObject = new ModelObject("fork", ActorType.Decorator,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["Fork"]);
-            forkModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
+            //forkModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             ModelObject plateModelObject = new ModelObject("plates", ActorType.Decorator,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["PlateStack"]);
-            plateModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
+            //plateModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             ModelObject knifeModelObject = new ModelObject("knife", ActorType.Decorator,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["Knife"]);
-            knifeModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
+            //knifeModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             ModelObject singlePlateModelObject = new ModelObject("singlePlate", ActorType.Decorator,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["SinglePlate"]);
-            singlePlateModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
+            //singlePlateModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
 
             #endregion
 
