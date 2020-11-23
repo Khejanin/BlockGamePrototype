@@ -327,6 +327,17 @@ namespace GDGame.Scenes
                 {"Fork",forkModelObject},
                 {"SinglePlate",singlePlateModelObject}
             };
+
+            InitCoffee();
+        }
+
+        private void InitCoffee()
+        {
+            EffectParameters staticColorEffect = new EffectParameters(ModelEffect, textures["Chocolate"], /*new Color(111, 78, 55)*/Color.White, .8f);
+            Transform3D transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up);
+            ModelObject coffee = new ModelObject("coffee - plane", ActorType.Primitive, StatusType.Update | StatusType.Drawn, transform3D, staticColorEffect, models["CoffeePlane"]);
+
+            ObjectManager.Add(coffee);
         }
 
         private void InitHelpers()
@@ -689,6 +700,7 @@ namespace GDGame.Scenes
             Model table = Content.Load<Model>("Assets/Models/Decor/table02");
             Model cups = Content.Load<Model>("Assets/Models/Decor/cups02");
             Model chocolate = Content.Load<Model>("Assets/Models/Decor/choco02");
+            Model coffeePlane = Content.Load<Model>("Assets/Models/plane");
 
 
             models = new Dictionary<string, Model>
@@ -697,7 +709,7 @@ namespace GDGame.Scenes
                 {"Button", buttonModel}, {"Drop", dropWithEyesModel}, {"Fork", forkModel}, {"Knife", knifeModel},
                 {"Mug", mugModel}, {"PlateStack", plateStackModel}, {"PlayerModel", playerModel},
                 {"Pyramid", pyramidModel}, {"SinglePlate", singlePlateCube}, {"SugarBox", sugarBoxCube},
-                {"Table", table }, {"Cups", cups }, {"Chocolate", chocolate }
+                {"Table", table }, {"Cups", cups }, {"Chocolate", chocolate }, {"CoffeePlane", coffeePlane}
             };
         }
 

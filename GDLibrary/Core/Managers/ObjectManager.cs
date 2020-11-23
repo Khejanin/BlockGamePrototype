@@ -6,6 +6,7 @@ using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace GDLibrary.Managers
 {
@@ -120,11 +121,15 @@ namespace GDLibrary.Managers
                     actor.Draw(gameTime, cameraManager.ActiveCamera, GraphicsDevice);
             }
 
+            GraphicsDevice.BlendState = BlendState.AlphaBlend;
+
             foreach (DrawnActor3D actor in transparentList)
             {
                 if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
                     actor.Draw(gameTime, cameraManager.ActiveCamera, GraphicsDevice);
             }
+
+            GraphicsDevice.BlendState = BlendState.Opaque;
         }
 
         #endregion Constructors & Core
