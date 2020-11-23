@@ -106,7 +106,7 @@ namespace GDGame.Scenes
 
         private void InitGrid()
         {
-            Grid grid = new Grid(new TileFactory(ObjectManager, drawnActors));
+            Grid grid = new Grid(new TileFactory(ObjectManager, drawnActors,textures));
             grid.GenerateGrid(levelName);
         }
 
@@ -134,7 +134,7 @@ namespace GDGame.Scenes
             effectParameters = new EffectParameters(ModelEffect, textures["Ceramic"], Color.White, 1);
             BasicTile plateStackBasicTile = new BasicTile("plateStackTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["PlateStack"]);
-            plateStackBasicTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f)); 
+            plateStackBasicTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             ButtonTile button = new ButtonTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update,

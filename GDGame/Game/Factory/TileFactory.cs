@@ -3,10 +3,12 @@ using GDGame.Actors;
 using Microsoft.Xna.Framework;
 using GDGame.Tiles;
 using GDGame.Enums;
+using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Managers;
 using GDLibrary.Parameters;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Factory
 {
@@ -14,11 +16,13 @@ namespace GDGame.Factory
     {
         private readonly ObjectManager objectManager;
         private readonly Dictionary<string, DrawnActor3D> drawnActors;
+        private readonly Dictionary<string, Texture2D> textures;
 
-        public TileFactory(ObjectManager objectManager, Dictionary<string, DrawnActor3D> drawnActors)
+        public TileFactory(ObjectManager objectManager, Dictionary<string, DrawnActor3D> drawnActors, Dictionary<string, Texture2D> textures)
         {
             this.objectManager = objectManager;
             this.drawnActors = drawnActors;
+            this.textures = textures;
         }
 
         public BasicTile CreateTile(ETileType type,BasicTile.EStaticTileType staticTileType)
@@ -50,22 +54,28 @@ namespace GDGame.Factory
         private BasicTile CreateStatic(BasicTile.EStaticTileType tileType)
         {
             BasicTile staticTile = null;
+
+            string texStringType = "";
+            string texStringTiling = "";
+            int randomN = MathHelperFunctions.rnd.Next(0, 100);
+            if (randomN > 70 && randomN < 90) texStringTiling = "4x";
+            else if (randomN > 90) texStringTiling = "8x";
+            
             switch (tileType)
             {
                 case BasicTile.EStaticTileType.Chocolate:
-                    staticTile = (BasicTile) drawnActors["StaticTile"];
+                    staticTile = ((BasicTile)drawnActors["StaticTile"]).Clone() as BasicTile;
                     break;
                 case BasicTile.EStaticTileType.WhiteChocolate:
-                    staticTile = (BasicTile) drawnActors["WhiteChocolateTile"];
+                    staticTile = ((BasicTile)drawnActors["WhiteChocolateTile"]).Clone() as BasicTile;
                     break;
                 case BasicTile.EStaticTileType.DarkChocolate:
-                    staticTile = (BasicTile) drawnActors["DarkChocolateTile"];
+                    staticTile = ((BasicTile)drawnActors["DarkChocolateTile"]).Clone() as BasicTile;
                     break;
                 case BasicTile.EStaticTileType.Plates:
-                    staticTile = (BasicTile) drawnActors["PlateStackTile"];
+                    staticTile = ((BasicTile)drawnActors["PlateStackTile"]).Clone() as BasicTile;
                     break;
             }
-            staticTile = staticTile.Clone() as BasicTile;
             objectManager.Add(staticTile);
             return staticTile;
         }
