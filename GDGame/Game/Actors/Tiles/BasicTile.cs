@@ -13,8 +13,9 @@ namespace GDGame.Actors
     public class BasicTile : ModelObject, ICloneable
     {
         private Vector3 spawnPos;
-        public ETileType TileType { get; private set; }
+        public ETileType TileType { get; }
         public Shape Shape { get; set; }
+        public int activatorId = -1;
 
         public enum EStaticTileType
         {

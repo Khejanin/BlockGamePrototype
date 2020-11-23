@@ -1,5 +1,6 @@
 ﻿using GDGame.Actors;
 using GDGame.Enums;
+using GDGame.EventSystem;
 using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
@@ -17,9 +18,28 @@ namespace GDGame.Actors
 
         public void OnMoveEnd()
         {
+            CheckCollision(this.Raycast(Transform3D.Translation, Vector3.Down, true, 0.5f,false));
             Raycaster.HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Down, true, 0.5f,false);
             if(hit?.actor is SpikeTile)
                 System.Diagnostics.Debug.WriteLine(ID + " is ded!");
+        }
+
+        private void CheckCollision(Raycaster.HitResult hit)
+        {
+            if (hit?.actor == null) return;
+
+            switch (hit.actor)
+            {
+                case SpikeTile t:
+                    EventManager.FireEvent(new PlayerEventInfo { type = PlayerEventType.AttachedTileDie, attachedTile = this });
+                    break;
+                case CheckpointTile t:
+                    EventManager.FireEvent(new PlayerEventInfo { type = PlayerEventType.SetCheckpoint, position = t.Transform3D.Translation });
+                    break;
+                case ButtonTile t:
+                    t.Activate();
+                    break;
+            }
         }
 
         public new object Clone()

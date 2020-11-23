@@ -44,9 +44,9 @@ namespace GDGame.Actors
         private void OnCollide(Raycaster.HitResult hitInfo)
         {
             if (hitInfo?.actor is PlayerTile)
-                EventManager.FireEvent(new PlayerEventInfo { type = Enums.PlayerEventType.Die });
-            else if (hitInfo?.actor is AttachableTile)
-                System.Diagnostics.Debug.WriteLine("Attachable tile died");
+                EventManager.FireEvent(new PlayerEventInfo { type = PlayerEventType.Die });
+            else if (hitInfo?.actor is AttachableTile tile)
+                EventManager.FireEvent(new PlayerEventInfo { type = PlayerEventType.AttachedTileDie, attachedTile = tile});
         }
 
         private Vector3 GetDirection()

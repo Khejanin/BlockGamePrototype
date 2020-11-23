@@ -4,6 +4,7 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using GDGame.Enums;
+using GDGame.EventSystem;
 using GDGame.Interfaces;
 
 namespace GDGame.Actors
@@ -11,35 +12,37 @@ namespace GDGame.Actors
     public class ButtonTile : BasicTile, IActivatable
     {
         private bool isActivated;
-        public List<IActivatable> Targets { get; set; }
+        //public List<IActivatable> Targets { get; set; }
 
         public ButtonTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
-            Targets = new List<IActivatable>();
+            //Targets = new List<IActivatable>();
         }
 
         public void Activate()
         {
+            EventManager.FireEvent(new ActivatorEventInfo { type = ActivatorEventType.Activate, id = activatorId });
             //foreach (IActivatable target in Targets)
             //    target.Activate();
 
-            //isActivated = true;
+            isActivated = true;
         }
 
         public void Deactivate()
         {
+            EventManager.FireEvent(new ActivatorEventInfo { type = ActivatorEventType.Deactivate, id = activatorId });
             //foreach (IActivatable target in Targets)
             //    target.Activate();
 
-            //isActivated = false;
+            isActivated = false;
         }
 
         public void ToggleActivation()
         {
-            //if(isActivated)
-            //    Deactivate();
-            //else
-            //    Activate();
+            if (isActivated)
+                Deactivate();
+            else
+                Activate();
         }
 
         public new object Clone()

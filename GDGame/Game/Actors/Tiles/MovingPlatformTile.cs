@@ -1,11 +1,9 @@
 ﻿using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Interfaces;
-using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
@@ -18,15 +16,20 @@ namespace GDGame.Actors
 
         public override void InitializeTile()
         {
-            EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
+            EventManager.RegisterListener<ActivatorEventInfo>(HandleActivatorEvent);
             base.InitializeTile();
         }
 
-        private void HandlePlayerEvent(PlayerEventInfo info)
+        private void HandleActivatorEvent(ActivatorEventInfo info)
         {
-            if (info.type == Enums.PlayerEventType.Move)
+            switch (info.type)
             {
-                MoveToNextPoint();
+                case ActivatorEventType.Activate:
+                    Activate();
+                    break;
+                case ActivatorEventType.Deactivate:
+                    Deactivate();
+                    break;
             }
         }
 
@@ -38,10 +41,6 @@ namespace GDGame.Actors
         protected override void OnMoveEnd()
         {
             base.OnMoveEnd();
-            Raycaster.HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Up, true, .5f);
-
-            if (hit != null && hit.actor is PlayerTile)
-                EventManager.FireEvent(new PlayerEventInfo() { type = Enums.PlayerEventType.Die });
         }
 
         public new object Clone()

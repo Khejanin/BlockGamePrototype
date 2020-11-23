@@ -94,7 +94,7 @@ namespace GDGame.Utilities
 
             CreateShapes(data, _grid);
             SetPaths(data, _grid);
-            SetButtonTargets(data, _grid);
+            SetActivatorIds(data, _grid);
         }
 
         private void CreateShapes(LevelData data, BasicTile[,,] grid)
@@ -133,18 +133,22 @@ namespace GDGame.Utilities
             }
         }
 
-        private void SetButtonTargets(LevelData data, BasicTile[,,] grid)
+        private void SetActivatorIds(LevelData data, BasicTile[,,] grid)
         {
-            foreach (var buttonTargetKey in data.buttonTargets.Keys)
+            foreach (var targetKey in data.activatorTargets.Keys)
             {
-                List<IActivatable> targets = new List<IActivatable>();
-                ButtonTile button = grid[(int) buttonTargetKey.X, (int) buttonTargetKey.Y,
-                    (int) data.gridSize.Z - 1 - (int) buttonTargetKey.Z] as ButtonTile;
+                //List<IActivatable> targets = new List<IActivatable>();
+                //ButtonTile button = grid[(int)targetKey.X, (int)targetKey.Y,
+                //    (int)data.gridSize.Z - 1 - (int)targetKey.Z] as ButtonTile;
 
-                foreach (var target in data.buttonTargets[buttonTargetKey])
-                    targets.Add(grid[(int) target.X, (int) target.Y, (int) target.Z] as IActivatable);
 
-                button.Targets = targets;
+                //foreach (var target in data.activatorTargets[buttonTargetKey])
+                //    targets.Add(grid[(int)target.X, (int)target.Y, (int)target.Z] as IActivatable);
+
+                //button.Targets = targets;
+
+                grid[(int) targetKey.X, (int) targetKey.Y, (int) data.gridSize.Z - 1 - (int) targetKey.Z].activatorId =
+                    data.activatorTargets[targetKey];
             }
         }
     }

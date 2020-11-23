@@ -78,8 +78,6 @@ namespace GDGame.Managers
                     break;
                 case PlayerEventType.Die:
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
     }

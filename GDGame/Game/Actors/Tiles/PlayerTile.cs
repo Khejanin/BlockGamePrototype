@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using GDGame.Enums;
 using GDGame.EventSystem;
-using GDGame.Interfaces;
 using GDGame.Tiles;
 using GDGame.Utilities;
 using GDLibrary.Enums;
@@ -55,6 +54,10 @@ namespace GDGame.Actors
                 case PlayerEventType.SetCheckpoint:
                     SetCheckpoint(info.position);
                     break;
+                case PlayerEventType.AttachedTileDie:
+                    AttachedTiles.Remove(info.attachedTile);
+                    info.attachedTile.Respawn();
+                    break;
             }
         }
 
@@ -99,7 +102,7 @@ namespace GDGame.Actors
                 case CheckpointTile t:
                     EventManager.FireEvent(new PlayerEventInfo { type = PlayerEventType.SetCheckpoint, position = t.Transform3D.Translation });
                     break;
-                case IActivatable t:
+                case ButtonTile t:
                     t.Activate();
                     break;
             }

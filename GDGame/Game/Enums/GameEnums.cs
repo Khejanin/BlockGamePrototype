@@ -38,7 +38,14 @@
     {
         Move,
         Die,
+        AttachedTileDie,
         SetCheckpoint
+    }
+
+    public enum ActivatorEventType : sbyte
+    {
+        Activate,
+        Deactivate
     }
     
     public enum SceneActionType : sbyte
