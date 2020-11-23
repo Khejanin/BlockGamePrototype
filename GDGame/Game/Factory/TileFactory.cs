@@ -21,12 +21,12 @@ namespace GDGame.Factory
             this.drawnActors = drawnActors;
         }
 
-        public BasicTile CreateTile(ETileType type,bool test = false)
+        public BasicTile CreateTile(ETileType type,BasicTile.EStaticTileType staticTileType)
         {
             BasicTile tile = type switch
             {
                 ETileType.PlayerStart => CreatePlayer(),
-                ETileType.Static => CreateStatic(test),
+                ETileType.Static => CreateStatic(staticTileType),
                 ETileType.Attachable => CreateAttachable(),
                 ETileType.Win => CreateGoal(),
                 ETileType.Enemy => CreateEnemy(),
@@ -47,11 +47,24 @@ namespace GDGame.Factory
                 new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY));
         }
 
-        private BasicTile CreateStatic(bool black)
+        private BasicTile CreateStatic(BasicTile.EStaticTileType tileType)
         {
-            BasicTile staticTile;
-            if (black) staticTile = (BasicTile) drawnActors["StaticTile"];
-            else staticTile = (BasicTile) drawnActors["WhiteChocolateTile"];
+            BasicTile staticTile = null;
+            switch (tileType)
+            {
+                case BasicTile.EStaticTileType.Chocolate:
+                    staticTile = (BasicTile) drawnActors["StaticTile"];
+                    break;
+                case BasicTile.EStaticTileType.WhiteChocolate:
+                    staticTile = (BasicTile) drawnActors["WhiteChocolateTile"];
+                    break;
+                case BasicTile.EStaticTileType.DarkChocolate:
+                    staticTile = (BasicTile) drawnActors["DarkChocolateTile"];
+                    break;
+                case BasicTile.EStaticTileType.Plates:
+                    staticTile = (BasicTile) drawnActors["PlateStackTile"];
+                    break;
+            }
             staticTile = staticTile.Clone() as BasicTile;
             objectManager.Add(staticTile);
             return staticTile;

@@ -45,7 +45,10 @@ namespace GDGame.Utilities
                     {
                         if (data.gridValues[x, y, z] != ETileType.None)
                         {
+                            //Super duper algorithm to determine what the current tile looks like!
+                            BasicTile.EStaticTileType staticTileType = BasicTile.EStaticTileType.DarkChocolate;
                             int count = 0;
+                            
                             for (int i = -1; i <= 1; i += 2)
                             {
                                 if (x + i >= 0 && x + i < data.gridSize.X)
@@ -56,7 +59,17 @@ namespace GDGame.Utilities
                                     count += data.gridValues[x, y, z + i] == ETileType.Static ? 1 : 0;
                             }
 
-                            BasicTile tile = tileFactory.CreateTile(data.gridValues[x, y, z], count < 5);
+                            if (y - 1 >= 0 && count == 1 && data.gridValues[x, y - 1, z] == ETileType.Static)
+                            {
+                                staticTileType = BasicTile.EStaticTileType.Plates;
+                            }
+                            else
+                            {
+                                if (count > 4) staticTileType = BasicTile.EStaticTileType.WhiteChocolate;
+                                else if (count > 3) staticTileType = BasicTile.EStaticTileType.Chocolate;
+                            }
+
+                            BasicTile tile = tileFactory.CreateTile(data.gridValues[x, y, z],staticTileType);
                             if (tile != null)
                                 tile.Transform3D.Translation = pos + new Vector3(0, 0, data.gridSize.Z - 1);
                             _grid[x, y, (int) data.gridSize.Z - 1 - z] = tile;

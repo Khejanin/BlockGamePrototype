@@ -127,9 +127,14 @@ namespace GDGame.Scenes
             whiteChocolateTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f)); 
             
             effectParameters = new EffectParameters(ModelEffect, textures["DChocolate"], Color.White, 1);
-            BasicTile darkChocolateTile = new BasicTile("WhiteChocolateTile", ActorType.Primitive,
+            BasicTile darkChocolateTile = new BasicTile("DarkChocolateTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"]);
             darkChocolateTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f)); 
+            
+            effectParameters = new EffectParameters(ModelEffect, textures["Ceramic"], Color.White, 1);
+            BasicTile plateStackBasicTile = new BasicTile("plateStackTile", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["PlateStack"]);
+            plateStackBasicTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f)); 
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             ButtonTile button = new ButtonTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
@@ -210,9 +215,22 @@ namespace GDGame.Scenes
 
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
-                {"StaticTile", chocoloateTile},{"WhiteChocolateTile",whiteChocolateTile},{"DarkChocolateTile",darkChocolateTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", playerTile},
-                {"GoalTile", goal}, {"EnemyTile", enemy}, {"ButtonTile", button}, {"MovingPlatformTile", platform},
-                {"SpikeTile", spike}, {"StarPickupTile", starPickup}
+                {"StaticTile", chocoloateTile},
+                {"WhiteChocolateTile",whiteChocolateTile},
+                {"DarkChocolateTile",darkChocolateTile},
+                {"PlateStackTile",plateStackBasicTile},
+                {"AttachableBlock", attachableTile},
+                {"PlayerBlock", playerTile},
+                {"GoalTile", goal},
+                {"EnemyTile", enemy},
+                {"ButtonTile", button},
+                {"MovingPlatformTile", platform},
+                {"Fork",forkModelObject},
+                {"Knife",knifeModelObject},
+                {"Plate",singlePlateModelObject},
+                {"PlateStack",plateModelObject},
+                {"SpikeTile", spike},
+                {"StarPickupTile", starPickup}
             };
         }
 
@@ -495,8 +513,9 @@ namespace GDGame.Scenes
 
             Texture2D choc1 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile");
             Texture2D choc2 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile-white");
+            Texture2D choc3 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/dark_choco-tile");
 
-            Texture2D ceramic = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/ceramicColoringBaked");
+            Texture2D ceramic = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/ceramicColoring");
             Texture2D sugarWhite = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/sugar01");
             Texture2D sugarBrown = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/sugar02");
 
@@ -506,7 +525,7 @@ namespace GDGame.Scenes
                 {"WhiteSquare", whiteSquareTexture}, {"Compass", compassTexture}, {"Wall1", wall}, {"Wall", floor},
                 {"Floor", floor}, {"Circle", circle}, {"Logo", logo}, {"LogoMirror", logoMirror}, {"kWall1", panel1},
                 {"kWall2", panel2}, {"kWall3", panel3}, {"kWall4", panel4}, {"floor2", floor1}, {"options", options},
-                {"optionsButton", optionsButton}, {"Chocolate", choc1}, {"WChocolate", choc2}, {"Ceramic", ceramic},
+                {"optionsButton", optionsButton}, {"Chocolate", choc1}, {"WChocolate", choc2},{"DChocolate",choc3}, {"Ceramic", ceramic},
                 {"SugarW", sugarWhite}, {"SugarB", sugarBrown},
             };
         }

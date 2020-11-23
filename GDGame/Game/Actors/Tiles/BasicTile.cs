@@ -14,6 +14,14 @@ namespace GDGame.Actors
         public Shape Shape { get; set; }
         public bool CanMoveInto { get; set; }
 
+        public enum EStaticTileType
+        {
+            Chocolate,
+            DarkChocolate,
+            WhiteChocolate,
+            Plates
+        }
+        
         public BasicTile(string id, ActorType actorType, StatusType statusType,
             Transform3D transform, EffectParameters effectParameters, Model model)
             : base(id, actorType, statusType, transform, effectParameters, model)
