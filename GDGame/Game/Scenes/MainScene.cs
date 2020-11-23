@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using GDGame.Actors;
 using GDGame.Component;
@@ -138,23 +139,21 @@ namespace GDGame.Scenes
                 
                 Vector3 pos = new Vector3(x,y,z);
                 random = MathHelperFunctions.Rnd.Next(3);
-                
-                switch (random)
-                {
-                    case 0:
-                        decoActor = drawnActors["Fork"].Clone() as DrawnActor3D;
-                        break;
-                    case 1:
-                        decoActor = drawnActors["Knife"].Clone() as DrawnActor3D;
-                        break;
-                    case 2:
-                        decoActor = drawnActors["SinglePlate"].Clone() as DrawnActor3D;
-                        break;
-                }
 
-                decoActor.Transform3D.Translation = pos;
-                
-                ObjectManager.Add(decoActor);
+                decoActor = random switch
+                {
+                    0 => drawnActors["Fork"].Clone() as DrawnActor3D,
+                    1 => drawnActors["Knife"].Clone() as DrawnActor3D,
+                    2 => drawnActors["SinglePlate"].Clone() as DrawnActor3D,
+                    _ => decoActor
+                };
+
+                if (decoActor != null)
+                {
+                    decoActor.Transform3D.Translation = pos;
+
+                    ObjectManager.Add(decoActor);
+                }
             }
         }
 
@@ -289,7 +288,7 @@ namespace GDGame.Scenes
             effectParameters = new EffectParameters(ModelEffect, textures["SugarW"], Color.White, 1);
             PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn, transform3D, effectParameters, models["Cube"], ETileType.PlayerStart);
             playerTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
-            playerTile.ControllerList.Add(new PlayerController(KeyboardManager, GamePadManager));
+            playerTile.ControllerList.Add(new PlayerController(KeyboardManager, GamePadManager, CameraManager));
             playerTile.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove",
                 "playerAttach"));
             playerTile.ControllerList.Add(new RotationComponent());
@@ -430,17 +429,6 @@ namespace GDGame.Scenes
             uiSprite = new UiSprite(StatusType.Drawn, textures["WhiteSquare"], pos, Color.White);
             UiManager.AddUiElement("WhiteBarBottomMiddle", uiSprite);
 
-            int border = 10;
-            location = new Point((int) (screenWidth - 50) - border, border + 50);
-            size = new Point(100);
-            pos = new Rectangle(location, size);
-
-            uiSprite = new UiSprite(StatusType.Drawn, textures["Circle"], pos, Color.White);
-            UiManager.AddUiElement("Circle", uiSprite);
-
-            uiSprite = new UiSprite(StatusType.Drawn, textures["Compass"], pos, Color.White);
-            UiManager.AddUiElement("Compass", uiSprite);
-
             heightFromBottom = 75;
             string text = "Moves";
             Vector2 position = new Vector2(halfWidth, screenHeight - heightFromBottom);
@@ -448,7 +436,8 @@ namespace GDGame.Scenes
             UiManager.AddUiElement("Moves", uiText);
 
             heightFromBottom = 25;
-            text = "Current Level";
+            
+            text = SceneName;
             position = new Vector2(x: halfWidth / 2f, screenHeight - heightFromBottom);
             uiText = new UiText(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("Current Level", uiText);
@@ -458,7 +447,7 @@ namespace GDGame.Scenes
             uiText = new UiText(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("Time", uiText);
 
-            text = "5";
+            text = "0";
             position = new Vector2(halfWidth, screenHeight - heightFromBottom);
             uiText = new UiText(StatusType.Drawn, text, Game.Fonts["UI"], position, Color.Black);
             UiManager.AddUiElement("MovesNumeric", uiText);
@@ -632,7 +621,6 @@ namespace GDGame.Scenes
             Texture2D cubeTexture = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/TextureCube");
             Texture2D basicBgFloor = Content.Load<Texture2D>("Assets/Textures/Block/BlockTextureBlue");
             Texture2D whiteSquareTexture = Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare");
-            Texture2D compassTexture = Content.Load<Texture2D>("Assets/Textures/Base/BasicCompass");
             Texture2D circle = Content.Load<Texture2D>("Assets/Textures/circle");
             Texture2D logo = Content.Load<Texture2D>("Assets/Textures/Menu/logo");
             Texture2D logoMirror = Content.Load<Texture2D>("Assets/Textures/Menu/logo_mirror");
@@ -649,14 +637,14 @@ namespace GDGame.Scenes
             Texture2D floor1 = Content.Load<Texture2D>("Assets/Textures/Skybox/tiles");
 
             Texture2D choc = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile");
-            Texture2D choc4x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile4x");
-            Texture2D choc8x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile8x");
+            Texture2D choc4X = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile4x");
+            Texture2D choc8X = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile8x");
             Texture2D chocW = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile-white");
-            Texture2D chocW4x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile-white4x");
-            Texture2D chocW8x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile-white8x");
+            Texture2D chocW4X = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile-white4x");
+            Texture2D chocW8X = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile-white8x");
             Texture2D chocB = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/dark_choco-tile");
-            Texture2D chocB4x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/dark_choco-tile4x");
-            Texture2D chocB8x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/dark_choco-tile8x");
+            Texture2D chocB4X = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/dark_choco-tile4x");
+            Texture2D chocB8X = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/dark_choco-tile8x");
 
             Texture2D ceramic = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/ceramicColoring");
 
@@ -668,15 +656,15 @@ namespace GDGame.Scenes
             textures = new Dictionary<string, Texture2D>
             {
                 {"Player", cubeTexture}, {"Attachable", cubeTexture}, {"Finish", cubeTexture}, {"Box", basicBgFloor}, 
-                {"WhiteSquare", whiteSquareTexture}, {"Compass", compassTexture},
+                {"WhiteSquare", whiteSquareTexture},
                 {"Wall1", wall}, {"Wall", floor}, {"Floor", floor}, 
                 {"Circle", circle}, {"Logo", logo}, {"LogoMirror", logoMirror}, 
                 {"kWall1", panel1}, {"kWall2", panel2}, {"kWall3", panel3}, {"kWall4", panel4}, {"floor2", floor1},
                 {"options", options},
                 {"optionsButton", optionsButton}, 
-                {"Chocolate", choc}, {"Chocolate4x",choc4x},{"Chocolate8x",choc8x},
-                {"WhiteChocolate", chocW},{"WhiteChocolate4x",chocW4x},{"WhiteChocolate8x",chocW8x},
-                {"DarkChocolate",chocB},{"DarkChocolate4x",chocB4x},{"DarkChocolate8x",chocB8x},
+                {"Chocolate", choc}, {"Chocolate4x",choc4X},{"Chocolate8x",choc8X},
+                {"WhiteChocolate", chocW},{"WhiteChocolate4x",chocW4X},{"WhiteChocolate8x",chocW8X},
+                {"DarkChocolate",chocB},{"DarkChocolate4x",chocB4X},{"DarkChocolate8x",chocB8X},
                 {"SugarW", sugarWhite}, {"SugarB", sugarBrown},
                 {"Ceramic", ceramic}, {"Wood", wood }
             };
@@ -716,8 +704,15 @@ namespace GDGame.Scenes
         private void InitEvents()
         {
             EventManager.RegisterListener<GameStateMessageEventInfo>(OnGameStateMessageReceived);
+            EventManager.RegisterListener<DataManagerEvent>(HandleDataManagerEvent);
         }
 
+        private void HandleDataManagerEvent(DataManagerEvent obj)
+        {
+            if (UiManager["MovesNumeric"] is UiText uiText)
+                uiText.Text = Game.LevelDataManager.CurrentMovesCount.ToString();
+        }
+        
         private void OnGameStateMessageReceived(GameStateMessageEventInfo eventInfo)
         {
             switch (eventInfo.gameState)
@@ -728,6 +723,8 @@ namespace GDGame.Scenes
                 case GameState.Lost:
                     //You know how it is on this bitch of an earth
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -737,10 +734,6 @@ namespace GDGame.Scenes
 
         protected override void UpdateScene(GameTime gameTime)
         {
-            float angle = MathHelperFunctions.GetAngle(Vector3.Forward, CameraManager.ActiveCamera.Transform3D.Look);
-            UiSprite uiSprite = UiManager["Compass"] as UiSprite;
-            uiSprite?.SetRotation(angle);
-
             if (curve3DController != null && curve3DController.ElapsedTimeInMs > 25000)
             {
                 CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Curve Camera");
@@ -758,14 +751,6 @@ namespace GDGame.Scenes
                     1 => StatusType.Drawn,
                     _ => player.StatusType
                 };
-            }
-            
-            List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
-            if (players.Count > 0)
-            {
-                PlayerTile playerTile = players[0] as PlayerTile;
-                UiManager["ToolTip"].StatusType =
-                    playerTile?.AttachCandidates.Count > 0 ? StatusType.Drawn : StatusType.Off;
             }
 
             if (KeyboardManager.IsFirstKeyPress(Keys.C))

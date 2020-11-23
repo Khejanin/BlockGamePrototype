@@ -78,6 +78,8 @@ namespace GDGame.Managers
                     break;
                 case PlayerEventType.Die:
                     break;
+                case PlayerEventType.SetCheckpoint:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
