@@ -40,6 +40,8 @@ namespace GDGame.Scenes
         private Transform3DCurve transform3DCurve;
         private Curve3DController curve3DController;
 
+        private DrawnActor3D player;
+        
         public MainScene(Main game, string levelName) : base(game)
         {
             mouseManager = new MouseManager(game, false);
@@ -62,6 +64,7 @@ namespace GDGame.Scenes
             {
                 if (CameraManager.ActiveCamera.ControllerList[0] is RotationAroundActor cam) cam.Target = players[0];
 
+                player = players[0];
                 players[0].StatusType = StatusType.Drawn | StatusType.Update;
             }
         }
@@ -163,7 +166,7 @@ namespace GDGame.Scenes
             transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
             camera3D = new Camera3D("FlyCam", ActorType.Camera3D, StatusType.Update, transform3D,
                 ProjectionParameters.StandardDeepFourThree);
-            camera3D.ControllerList.Add(new FirstPersonController("FPC", ControllerType.FlightCamera, KeyboardManager,
+            camera3D.ControllerList.Add(new FlightController("FPC", ControllerType.FlightCamera, KeyboardManager,
                 MouseManager, 0.01f, 0.01f, 0.01f));
             CameraManager.Add(camera3D);
 
@@ -687,7 +690,6 @@ namespace GDGame.Scenes
 
             if (curve3DController != null && curve3DController.ElapsedTimeInMs > 25000)
             {
-                
                 CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Curve Camera");
                 CameraManager.ActiveCameraIndex = 0;
                 SetTargetToCamera();
@@ -695,7 +697,16 @@ namespace GDGame.Scenes
                 curve3DController = null;
             }
 
-
+            if (player != null)
+            {
+                player.StatusType = CameraManager.ActiveCameraIndex switch
+                {
+                    0 => StatusType.Drawn | StatusType.Update,
+                    1 => StatusType.Drawn,
+                    _ => player.StatusType
+                };
+            }
+            
             List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
             if (players.Count > 0)
             {
