@@ -25,7 +25,11 @@ namespace GDGame.Factory
             this.textures = textures;
         }
 
+<<<<<<< HEAD
         public BasicTile CreateTile(ETileType type,BasicTile.EStaticTileType staticTileType)
+=======
+        public BasicTile CreateTile(ETileType type, bool test = false)
+>>>>>>> d1a5fb503f73e59f0f170fe70a9518ffccc58726
         {
             BasicTile tile = type switch
             {

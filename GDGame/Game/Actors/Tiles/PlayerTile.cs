@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Interfaces;
 using GDGame.Tiles;
 using GDGame.Utilities;
 using GDLibrary.Enums;
@@ -16,6 +17,7 @@ namespace GDGame.Actors
 {
     public class PlayerTile : MovableTile, ICloneable
     {
+        private Vector3 lastCheckpoint;
         private List<Shape> attachCandidates;
         public List<Shape> AttachCandidates => attachCandidates;
         public List<AttachableTile> AttachedTiles { get; }
@@ -24,11 +26,12 @@ namespace GDGame.Actors
         private struct PlayerSurroundCheck
         {
             public HitResult hit;
+            public Direction direction;
         }
 
         public PlayerTile(string id, ActorType actorType, StatusType statusType,
-            Transform3D transform, EffectParameters effectParameters, Model model)
-            : base(id, actorType, statusType, transform, effectParameters, model)
+            Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType)
+            : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
             AttachedTiles = new List<AttachableTile>();
             attachCandidates = new List<Shape>();
@@ -37,20 +40,21 @@ namespace GDGame.Actors
         public override void InitializeTile()
         {
             EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
+            lastCheckpoint = Transform3D.Translation;
         }
 
         private void HandlePlayerEvent(PlayerEventInfo info)
         {
-            switch (info.type)
+            switch(info.type)
             {
                 case PlayerEventType.Die:
-                    System.Diagnostics.Debug.WriteLine("Player ded");
-                    EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Lost));
+                    //System.Diagnostics.Debug.WriteLine("Player ded");
+                    //EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Lost));
+                    RespawnAtLastCheckpoint();
                     break;
-                case PlayerEventType.Move:
+                case PlayerEventType.SetCheckpoint:
+                    SetCheckpoint(info.position);
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -59,7 +63,7 @@ namespace GDGame.Actors
             if (attachCandidates.Count == 0 || IsMoving) return;
 
             AttachedTiles.Clear();
-            foreach (AttachableTile tile in attachCandidates.SelectMany(shape => shape.AttachableTiles))
+            foreach (AttachableTile tile in attachCandidates.SelectMany(shape =>  shape.AttachableTiles))
             {
                 AttachedTiles.Add(tile);
                 tile.EffectParameters.DiffuseColor = Color.DarkGray;
@@ -79,71 +83,116 @@ namespace GDGame.Actors
             IsAttached = false;
         }
 
-        private bool CheckWinCondition()
+        //replace with proper collision detection
+        private void CheckCollision(HitResult hit)
         {
-            HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Up, true, 0.5f, false);
-            return hit?.actor is GoalTile;
-        }
+            if (hit?.actor == null) return;
 
-        private bool CheckLoseCondition()
-        {
-            HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Down, true, 0.5f, false);
-            return hit?.actor is SpikeTile;
+            switch (hit.actor)
+            {
+                case GoalTile t:
+                    EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Won));
+                    break;
+                case SpikeTile t:
+                    EventManager.FireEvent(new PlayerEventInfo { type = PlayerEventType.Die });
+                    break;
+                case CheckpointTile t:
+                    EventManager.FireEvent(new PlayerEventInfo { type = PlayerEventType.SetCheckpoint, position = t.Transform3D.Translation });
+                    break;
+                case IActivatable t:
+                    t.Activate();
+                    break;
+            }
         }
 
         public void OnMoveEnd()
         {
-            UpdateAttachCandidates();
-            if (IsAttached) Attach();
+            CheckAndProcessSurroundings(GetSurroundings(Transform3D.Translation));
+            if(IsAttached) Attach();
 
-            if (CheckWinCondition())
-                EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Won));
-            else if (CheckLoseCondition())
-                EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.Die});
+            CheckCollision(this.Raycast(Transform3D.Translation, Vector3.Down, true, 0.5f,false));
         }
 
-        public void UpdateAttachCandidates()
+        private void CheckAndProcessSurroundings(List<PlayerSurroundCheck> surroundings)
+        {
+            List<AttachableTile> detectedAttachableTiles = new List<AttachableTile>();
+
+            foreach (PlayerSurroundCheck check in surroundings)
+            {
+                if (check.hit == null) 
+                    continue;
+
+                switch (check.hit.actor)
+                {
+                    case AttachableTile t:
+                        detectedAttachableTiles.Add(t);
+                        break;
+                }
+            }
+
+            UpdateAttachCandidates(detectedAttachableTiles);
+        }
+
+        private void UpdateAttachCandidates(List<AttachableTile> detectedAttachableTiles)
         {
             attachCandidates.Clear();
 
-            foreach (PlayerSurroundCheck check in CheckSurroundings(Transform3D.Translation))
-            {
-                if (check.hit?.actor is AttachableTile tile)
-                    attachCandidates.Add(tile.Shape);
-            }
+            foreach (AttachableTile tile in detectedAttachableTiles)
+                attachCandidates.Add(tile.Shape);
         }
 
-        private List<PlayerSurroundCheck> CheckSurroundings(Vector3 translation)
+        private List<PlayerSurroundCheck> GetSurroundings(Vector3 translation)
         {
             List<PlayerSurroundCheck> result = new List<PlayerSurroundCheck>();
 
             PlayerSurroundCheck surroundCheck = new PlayerSurroundCheck();
             surroundCheck.hit = this.Raycast(translation, Vector3.Right, true, 1f);
+            surroundCheck.direction = Direction.Right;
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(translation, Vector3.Left, true, 1f);
+            surroundCheck.direction = Direction.Left;
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(translation, Vector3.Forward, true, 1f);
+            surroundCheck.direction = Direction.Forward;
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(translation, Vector3.Backward, true, 1f);
+            surroundCheck.direction = Direction.Backward;
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(translation, Vector3.Up, true, 1f);
+            surroundCheck.direction = Direction.Up;
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(translation, Vector3.Down, true, 1f);
+            surroundCheck.direction = Direction.Down;
+            result.Add(surroundCheck);
+
+            surroundCheck.hit = this.Raycast(translation, Vector3.Down, true, 0.5f);
+            surroundCheck.direction = Direction.None;
             result.Add(surroundCheck);
 
             return result;
+        }
+
+        private void SetCheckpoint(Vector3? position)
+        {
+            if (position != null)
+                lastCheckpoint = (Vector3)position;
+        }
+
+        private void RespawnAtLastCheckpoint()
+        {
+            Transform3D.Translation = lastCheckpoint;
         }
 
         public new object Clone()
         {
             PlayerTile playerTile = new PlayerTile("clone - " + ID, ActorType, StatusType,
                 Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as EffectParameters, Model);
+                EffectParameters.Clone() as EffectParameters, Model, TileType);
             if (ControllerList != null)
             {
                 foreach (IController controller in ControllerList)

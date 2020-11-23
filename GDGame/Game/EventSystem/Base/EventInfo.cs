@@ -1,4 +1,5 @@
 ﻿using GDGame.Enums;
+using Microsoft.Xna.Framework;
 
 namespace GDGame.EventSystem
  {
@@ -9,6 +10,7 @@ namespace GDGame.EventSystem
      public class PlayerEventInfo : EventInfo
      {
          public PlayerEventType type;
+         public Vector3? position;
 
          public PlayerEventInfo()
          {

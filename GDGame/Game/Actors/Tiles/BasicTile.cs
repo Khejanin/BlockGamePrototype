@@ -1,4 +1,5 @@
 using System;
+using GDGame.Enums;
 using GDGame.Tiles;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
@@ -11,21 +12,39 @@ namespace GDGame.Actors
 {
     public class BasicTile : ModelObject, ICloneable
     {
+        private Vector3 spawnPos;
+        public ETileType TileType { get; private set; }
         public Shape Shape { get; set; }
-        public bool CanMoveInto { get; set; }
 
-        public BasicTile(string id, ActorType actorType, StatusType statusType,
-            Transform3D transform, EffectParameters effectParameters, Model model)
-            : base(id, actorType, statusType, transform, effectParameters, model)
+        public enum EStaticTileType
         {
+            Chocolate,
+            DarkChocolate,
+            WhiteChocolate,
+            Plates
         }
         
-        public virtual void InitializeTile() { }
+        public BasicTile(string id, ActorType actorType, StatusType statusType,
+            Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType)
+            : base(id, actorType, statusType, transform, effectParameters, model)
+        {
+            TileType = tileType;
+        }
+
+        public virtual void InitializeTile()
+        {
+            spawnPos = Transform3D.Translation;
+        }
+
+        public void Respawn()
+        {
+            Transform3D.Translation = spawnPos;
+        }
 
         public new object Clone()
         {
             BasicTile basicTile = new BasicTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as EffectParameters, Model);
+                EffectParameters.Clone() as EffectParameters, Model, TileType);
             if (ControllerList != null)
             {
                 foreach (IController controller in ControllerList)
