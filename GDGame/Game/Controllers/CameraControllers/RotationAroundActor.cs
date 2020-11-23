@@ -13,7 +13,7 @@ namespace GDGame.Controllers
         #region Fields
 
         private KeyboardManager keyboardManager;
-        private float angle;
+        private float angle = -15;
         private IActor target;
         private float elevationAngle;
         private float distance;

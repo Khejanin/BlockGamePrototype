@@ -35,4 +35,9 @@ namespace GDGame.EventSystem
      {
          
      }
+     
+     public class CameraEvent : EventInfo
+     {
+         
+     }
  }
