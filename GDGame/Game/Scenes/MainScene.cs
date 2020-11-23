@@ -472,30 +472,12 @@ namespace GDGame.Scenes
 
             textures = new Dictionary<string, Texture2D>
             {
-                {"Player", cubeTexture},
-                {"Attachable", cubeTexture},
-                {"Finish", cubeTexture},
-                {"Box", basicBgFloor},
-                {"WhiteSquare", whiteSquareTexture},
-                {"Compass", compassTexture},
-                {"Wall1", wall},
-                {"Wall", floor},
-                {"Floor", floor},
-                {"Circle", circle},
-                {"Logo", logo},
-                {"LogoMirror", logoMirror},
-                {"kWall1", panel1},
-                {"kWall2", panel2},
-                {"kWall3", panel3},
-                {"kWall4", panel4},
-                {"floor2", floor1},
-                {"options", options},
-                {"optionsButton", optionsButton},
-                {"Chocolate", choc1},
-                {"WChocolate", choc2},
-                {"Ceramic", ceramic},
-                {"SugarW", sugarWhite},
-                {"SugarB", sugarBrown},
+                {"Player", cubeTexture}, {"Attachable", cubeTexture}, {"Finish", cubeTexture}, {"Box", basicBgFloor}, 
+                {"WhiteSquare", whiteSquareTexture}, {"Compass", compassTexture}, {"Wall1", wall}, {"Wall", floor},
+                {"Floor", floor}, {"Circle", circle}, {"Logo", logo}, {"LogoMirror", logoMirror}, {"kWall1", panel1},
+                {"kWall2", panel2}, {"kWall3", panel3}, {"kWall4", panel4}, {"floor2", floor1}, {"options", options},
+                {"optionsButton", optionsButton}, {"Chocolate", choc1}, {"WChocolate", choc2}, {"Ceramic", ceramic},
+                {"SugarW", sugarWhite}, {"SugarB", sugarBrown},
             };
         }
 
