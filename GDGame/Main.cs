@@ -26,10 +26,13 @@ namespace GDGame
         public BasicEffect UnlitTexturedEffect { get; private set; }
 
         public BasicEffect UnlitWireframeEffect { get; private set; }
+        
+        public BasicEffect ModelEffectColor { get; private set; }
 
         public CameraManager<Camera3D> CameraManager { get; private set; }
 
-        public ObjectManager ObjectManager { get; private set; }
+        public ObjectManager ObjectManagerOLD { get; private set; }
+        public OurObjectManager ObjectManager { get; private set; }
 
         public KeyboardManager KeyboardManager { get; private set; }
 
@@ -150,7 +153,10 @@ namespace GDGame
             Components.Add(SoundManager);
 
             //Object
-            ObjectManager = new ObjectManager(this, StatusType.Update | StatusType.Drawn, 6, 10, CameraManager);
+            ObjectManagerOLD = new ObjectManager(this, StatusType.Update | StatusType.Drawn, 6, 10, CameraManager);
+            Components.Add(ObjectManagerOLD);
+            
+            ObjectManager = new OurObjectManager(this,StatusType.Update | StatusType.Drawn,6,10,CameraManager);
             Components.Add(ObjectManager);
 
             UiManager = new UiManager(this);
@@ -181,6 +187,10 @@ namespace GDGame
             ModelEffect.TextureEnabled = true;
             //this.modelEffect.LightingEnabled = true;
             //this.modelEffect.EnableDefaultLighting();
+
+            //Model without texture
+            ModelEffectColor = new BasicEffect(Graphics.GraphicsDevice);
+            ModelEffectColor.TextureEnabled = false;
 
             WireframeModelEffect = new BasicEffect(Graphics.GraphicsDevice);
             WireframeModelEffect.TextureEnabled = false;

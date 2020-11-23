@@ -136,7 +136,7 @@ namespace GDLibrary.Parameters
                 Texture = texture;
             }
 
-            DiffuseColor = diffuseColor;
+            DiffuseColor = diffusecolor;
 
             //use Property to ensure values are inside correct ranges
             Alpha = alpha;

@@ -8,16 +8,17 @@ using GDLibrary.Enums;
 using GDLibrary.Managers;
 using GDLibrary.Parameters;
 using GDGame.Game.Actors.Tiles;
+using GDGame.Managers;
 
 namespace GDGame.Factory
 {
     public class TileFactory
     {
-        private ObjectManager objectManager;
+        private OurObjectManager objectManager;
 
         private Dictionary<string, DrawnActor3D> drawnActors;
 
-        public TileFactory(ObjectManager objectManager, Dictionary<string, DrawnActor3D> drawnActors)
+        public TileFactory(OurObjectManager objectManager, Dictionary<string, DrawnActor3D> drawnActors)
         {
             this.objectManager = objectManager;
             this.drawnActors = drawnActors;

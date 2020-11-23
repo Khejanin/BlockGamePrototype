@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GDGame.Actors;
 using GDGame.Controllers;
 using GDGame.Enums;
+using GDGame.Managers;
 using GDLibrary.Actors;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
@@ -49,7 +50,7 @@ namespace GDGame.Utilities
         {
             if(maxDist <= 0) throw new ArgumentException("You can't set a max cast distance to zero or negative!");
             
-            List<DrawnActor3D> allObjects = ObjectManager.GetAllObjects();
+            List<DrawnActor3D> allObjects = OurObjectManager.GetAllObjects();
             if(ignoreList != null) allObjects.RemoveAll(actor3D => ignoreList.Contains(actor3D));
             Ray ray = new Ray(position, direction);
             foreach (DrawnActor3D drawnActor3D in allObjects)

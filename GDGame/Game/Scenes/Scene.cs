@@ -35,13 +35,15 @@ namespace GDGame.Scenes
         protected GraphicsDevice GraphicsDevice => game.GraphicsDevice;
         protected GraphicsDeviceManager Graphics => game.Graphics;
         protected ContentManager Content => game.Content;
-        protected ObjectManager ObjectManager => game.ObjectManager;
+        protected ObjectManager ObjectManagerOLD => game.ObjectManagerOLD;
+        protected OurObjectManager ObjectManager => game.ObjectManager;
         protected KeyboardManager KeyboardManager => game.KeyboardManager;
         protected GamePadManager GamePadManager => game.GamePadManager;
         protected CameraManager<Camera3D> CameraManager => game.CameraManager;
         protected MouseManager MouseManager => game.MouseManager;
         protected SoundManager SoundManager => game.SoundManager;
         protected BasicEffect ModelEffect => game.ModelEffect;
+        protected BasicEffect ModelEffectColor => game.ModelEffectColor;
         protected BasicEffect UnlitWireframeEffect => game.UnlitWireframeEffect;
         protected BasicEffect UnlitTexturedEffect => game.UnlitTexturedEffect;
         protected RasterizerState WireframeRasterizerState => game.WireframeRasterizerState;
