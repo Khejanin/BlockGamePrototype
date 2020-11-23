@@ -21,19 +21,19 @@ namespace GDGame.Factory
             this.drawnActors = drawnActors;
         }
 
-        public BasicTile CreateTile(ETileType type)
+        public BasicTile CreateTile(ETileType type, bool test = false)
         {
             BasicTile tile = type switch
             {
                 ETileType.PlayerStart => CreatePlayer(),
-                ETileType.Static => CreateStatic(),
+                ETileType.Static => CreateStatic(test),
                 ETileType.Attachable => CreateAttachable(),
                 ETileType.Win => CreateGoal(),
                 ETileType.Enemy => CreateEnemy(),
                 ETileType.Button => CreateButton(),
                 ETileType.MovingPlatform => CreateMovingPlatform(),
                 ETileType.Spike => CreateSpike(),
-                ETileType.Star => CreateStarPickup(),
+                ETileType.Star => CreatePickup(),
                 ETileType.Checkpoint => CreateCheckpoint(),
                 _ => null
             };
@@ -47,9 +47,11 @@ namespace GDGame.Factory
                 new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY));
         }
 
-        private BasicTile CreateStatic()
+        private BasicTile CreateStatic(bool black)
         {
-            BasicTile staticTile = (BasicTile) drawnActors["StaticTile"];
+            BasicTile staticTile;
+            if (black) staticTile = (BasicTile) drawnActors["StaticTile"];
+            else staticTile = (BasicTile) drawnActors["WhiteChocolateTile"];
             staticTile = staticTile.Clone() as BasicTile;
             objectManager.Add(staticTile);
             return staticTile;
@@ -111,9 +113,9 @@ namespace GDGame.Factory
             return spikeTile;
         }
 
-        private BasicTile CreateStarPickup()
+        private BasicTile CreatePickup()
         {
-            PickupTile pickupTile = (PickupTile)drawnActors["PickupTile"];
+            PickupTile pickupTile = (PickupTile)drawnActors["StarPickupTile"];
             pickupTile = pickupTile.Clone() as PickupTile;
             objectManager.Add(pickupTile);
             return pickupTile;
@@ -121,10 +123,10 @@ namespace GDGame.Factory
 
         private BasicTile CreateCheckpoint()
         {
-            CheckpointTile checkpointTile = (CheckpointTile)drawnActors["CheckpointTile"];
-            checkpointTile = checkpointTile.Clone() as CheckpointTile;
-            objectManager.Add(checkpointTile);
-            return checkpointTile;
+            CheckpointTile checkpoint = (CheckpointTile)drawnActors["CheckpointTile"];
+            checkpoint = checkpoint.Clone() as CheckpointTile;
+            objectManager.Add(checkpoint);
+            return checkpoint;
         }
     }
 }

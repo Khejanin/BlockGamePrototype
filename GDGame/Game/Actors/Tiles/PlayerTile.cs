@@ -66,7 +66,7 @@ namespace GDGame.Actors
             foreach (AttachableTile tile in attachCandidates.SelectMany(shape =>  shape.AttachableTiles))
             {
                 AttachedTiles.Add(tile);
-                tile.EffectParameters.DiffuseColor = Color.Green;
+                tile.EffectParameters.DiffuseColor = Color.DarkGray;
             }
 
             IsAttached = true;

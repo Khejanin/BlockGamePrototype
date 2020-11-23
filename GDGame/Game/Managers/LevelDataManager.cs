@@ -76,6 +76,10 @@ namespace GDGame.Managers
                      currentMovesCount++;
                      EventManager.FireEvent(new DataManagerEvent());
                     break;
+                case PlayerEventType.Die:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }
