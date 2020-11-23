@@ -268,20 +268,12 @@ namespace GDGame.Scenes
             //knifeModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
-<<<<<<< Updated upstream
+
             ModelObject singlePlateModelObject = new ModelObject("singlePlate", ActorType.Decorator,
                 StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["SinglePlate"]);
-<<<<<<< HEAD
             //singlePlateModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
-=======
-            singlePlateModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
-=======
-            ModelObject singlePlateModelObject = new ModelObject("singlePlate",ActorType.Decorator,StatusType.Drawn | StatusType.Update,transform3D,
-                effectParameters,models["SinglePlate"]);
-            singlePlateModelObject.ControllerList.Add(new RandomRotatorController("rotator",ControllerType.Curve));
->>>>>>> Stashed changes
->>>>>>> 0cf0c9291d0aa96f95d7db687fa188ffaae14c3d
+
 
             #endregion
 
@@ -373,20 +365,20 @@ namespace GDGame.Scenes
             var transform3D = new Transform3D(new Vector3(10, -15, 15), Vector3.UnitZ, Vector3.UnitY);
 
             BasicTile table = new BasicTile("Table", ActorType.Primitive,
-                StatusType.Drawn, transform3D, effectParameters, models["Table"]);
+                StatusType.Drawn, transform3D, effectParameters, models["Table"],ETileType.Static);
             table.Transform3D.Scale = scale;
             ObjectManager.Add(table);
 
            // effectParameters = new EffectParameters(ModelEffect, textures["Wood"], Color.White, 1);
             BasicTile cups = new BasicTile("Cups", ActorType.Primitive,
-                StatusType.Drawn, transform3D, effectParameters, models["Cups"]);
+                StatusType.Drawn, transform3D, effectParameters, models["Cups"],ETileType.Static);
             cups.Transform3D.Scale = scale;
             drawnActors.Add("Cups", cups);
             ObjectManager.Add(cups);
 
            // effectParameters = new EffectParameters(ModelEffect, textures["WChocolate"], Color.White, 1);
             BasicTile Choco = new BasicTile("Chocolate", ActorType.Primitive,
-                StatusType.Drawn, transform3D, effectParameters, models["Chocolate"]);
+                StatusType.Drawn, transform3D, effectParameters, models["Chocolate"],ETileType.Static);
             Choco.Transform3D.Scale = scale;
             ObjectManager.Add(Choco);
 
@@ -403,6 +395,7 @@ namespace GDGame.Scenes
             //Model catbed = Content.Load<Model>("Assets/Models/Decor/catbed02");
             //, { "Cat", cat }, { "CatBed", catbed }
         }
+        
         //TEMP
         private void TestingPlatform()
         {
@@ -655,7 +648,6 @@ namespace GDGame.Scenes
             Texture2D panel4 = Content.Load<Texture2D>("Assets/Textures/Skybox/kWall4");
             Texture2D floor1 = Content.Load<Texture2D>("Assets/Textures/Skybox/tiles");
 
-<<<<<<< Updated upstream
             Texture2D choc = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile");
             Texture2D choc4x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile4x");
             Texture2D choc8x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile8x");
@@ -667,13 +659,7 @@ namespace GDGame.Scenes
             Texture2D chocB8x = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/dark_choco-tile8x");
 
             Texture2D ceramic = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/ceramicColoring");
-=======
-            Texture2D choc1 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile");
-            Texture2D choc2 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile-white");
-            Texture2D choc3 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/dark_choco-tile");
 
-            Texture2D ceramic = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/ceramicColoringBaked");
->>>>>>> Stashed changes
             Texture2D sugarWhite = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/sugar01");
             Texture2D sugarBrown = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/sugar02");
 
@@ -682,7 +668,6 @@ namespace GDGame.Scenes
             textures = new Dictionary<string, Texture2D>
             {
                 {"Player", cubeTexture}, {"Attachable", cubeTexture}, {"Finish", cubeTexture}, {"Box", basicBgFloor}, 
-<<<<<<< Updated upstream
                 {"WhiteSquare", whiteSquareTexture}, {"Compass", compassTexture},
                 {"Wall1", wall}, {"Wall", floor}, {"Floor", floor}, 
                 {"Circle", circle}, {"Logo", logo}, {"LogoMirror", logoMirror}, 
@@ -691,16 +676,9 @@ namespace GDGame.Scenes
                 {"optionsButton", optionsButton}, 
                 {"Chocolate", choc}, {"Chocolate4x",choc4x},{"Chocolate8x",choc8x},
                 {"WhiteChocolate", chocW},{"WhiteChocolate4x",chocW4x},{"WhiteChocolate8x",chocW8x},
-                {"DarkChocolate",chocB},{"DarkChocolate4x",chocB4x},{"DarkChocolate8x",chocB8x}, 
-                {"Ceramic", ceramic},
+                {"DarkChocolate",chocB},{"DarkChocolate4x",chocB4x},{"DarkChocolate8x",chocB8x},
                 {"SugarW", sugarWhite}, {"SugarB", sugarBrown},
-=======
-                {"WhiteSquare", whiteSquareTexture}, {"Compass", compassTexture}, {"Wall1", wall}, {"Wall", floor},
-                {"Floor", floor}, {"Circle", circle}, {"Logo", logo}, {"LogoMirror", logoMirror}, {"kWall1", panel1},
-                {"kWall2", panel2}, {"kWall3", panel3}, {"kWall4", panel4}, {"floor2", floor1}, {"options", options},
-                {"optionsButton", optionsButton}, {"Chocolate", choc1}, {"WChocolate", choc2}, {"Ceramic", ceramic},
-                {"SugarW", sugarWhite}, {"SugarB", sugarBrown}, {"Wood", wood }, {"DChocolate", choc3}
->>>>>>> Stashed changes
+                {"Ceramic", ceramic}, {"Wood", wood }
             };
         }
 
