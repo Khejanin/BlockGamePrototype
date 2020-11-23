@@ -52,8 +52,6 @@ namespace GDGame.Scenes
             InitCameras3D();
             InitLoadContent();
             InitDrawnContent();
-
-            SetTargetToCamera();
             InitEvents();
         }
 
@@ -160,8 +158,15 @@ namespace GDGame.Scenes
                 ProjectionParameters.StandardDeepFourThree);
             camera3D.ControllerList.Add(new RotationAroundActor("main_cam", ControllerType.FlightCamera,
                 KeyboardManager, 35, 20));
-
             CameraManager.Add(camera3D);
+
+            transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
+            camera3D = new Camera3D("FlyCam", ActorType.Camera3D, StatusType.Update, transform3D,
+                ProjectionParameters.StandardDeepFourThree);
+            camera3D.ControllerList.Add(new FirstPersonController("FPC", ControllerType.FlightCamera, KeyboardManager,
+                MouseManager, 0.01f, 0.01f, 0.01f));
+            CameraManager.Add(camera3D);
+
 
             transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
             camera3D = new Camera3D("Curve Camera", ActorType.Camera3D, StatusType.Update, transform3D,
@@ -170,7 +175,7 @@ namespace GDGame.Scenes
             camera3D.ControllerList.Add(curve3DController);
 
             CameraManager.Add(camera3D);
-            CameraManager.ActiveCameraIndex = 1;
+            CameraManager.ActiveCameraIndex = 2;
         }
 
         private void InitTransform3DCurve()
@@ -232,9 +237,11 @@ namespace GDGame.Scenes
                 effectParameters, models["SugarBox"], ETileType.Win);
             goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
-            CheckpointTile checkpoint = new CheckpointTile("Checkpoint", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
+            CheckpointTile checkpoint = new CheckpointTile("Checkpoint", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, models["SugarBox"], ETileType.Checkpoint);
-            checkpoint.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
+            checkpoint.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f,
+                ColliderType.CheckOnly));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             ModelObject forkModelObject = new ModelObject("fork", ActorType.Decorator,
@@ -266,13 +273,13 @@ namespace GDGame.Scenes
 
             effectParameters = new EffectParameters(ModelEffect, textures["SugarB"], Color.White, 1);
             AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"], ETileType.Attachable);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"],
+                ETileType.Attachable);
             attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             attachableTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
 
             effectParameters = new EffectParameters(ModelEffect, textures["SugarW"], Color.White, 1);
-            PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn,
-                transform3D, effectParameters, models["Cube"], ETileType.PlayerStart);
+            PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn, transform3D, effectParameters, models["Cube"], ETileType.PlayerStart);
             playerTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             playerTile.ControllerList.Add(new PlayerController(KeyboardManager, GamePadManager));
             playerTile.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove",
@@ -680,11 +687,12 @@ namespace GDGame.Scenes
 
             if (curve3DController != null && curve3DController.ElapsedTimeInMs > 25000)
             {
-                transform3DCurve.Clear();
-                curve3DController = null;
-                EventManager.FireEvent(new CameraEvent());
+                
+                CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Curve Camera");
                 CameraManager.ActiveCameraIndex = 0;
                 SetTargetToCamera();
+                transform3DCurve.Clear();
+                curve3DController = null;
             }
 
 
@@ -694,12 +702,6 @@ namespace GDGame.Scenes
                 PlayerTile playerTile = players[0] as PlayerTile;
                 UiManager["ToolTip"].StatusType =
                     playerTile?.AttachCandidates.Count > 0 ? StatusType.Drawn : StatusType.Off;
-            }
-
-            if (KeyboardManager.IsFirstKeyPress(Keys.C))
-            {
-                CameraManager.CycleActiveCamera();
-                // this.cameraManager.ActiveCameraIndex++;
             }
 
             if (KeyboardManager.IsFirstKeyPress(Keys.C))
