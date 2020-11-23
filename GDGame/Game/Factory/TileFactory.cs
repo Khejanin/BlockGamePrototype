@@ -37,7 +37,7 @@ namespace GDGame.Factory
                 _ => null
             };
 
-            tile.InitializeTile();
+            tile?.InitializeTile();
             return tile;
         }
 

@@ -41,12 +41,16 @@ namespace GDGame.Actors
 
         private void HandlePlayerEvent(PlayerEventInfo info)
         {
-            switch(info.type)
+            switch (info.type)
             {
                 case PlayerEventType.Die:
                     System.Diagnostics.Debug.WriteLine("Player ded");
                     EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Lost));
                     break;
+                case PlayerEventType.Move:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -55,7 +59,7 @@ namespace GDGame.Actors
             if (attachCandidates.Count == 0 || IsMoving) return;
 
             AttachedTiles.Clear();
-            foreach (AttachableTile tile in attachCandidates.SelectMany(shape =>  shape.AttachableTiles))
+            foreach (AttachableTile tile in attachCandidates.SelectMany(shape => shape.AttachableTiles))
             {
                 AttachedTiles.Add(tile);
                 tile.EffectParameters.DiffuseColor = Color.Green;
@@ -77,25 +81,25 @@ namespace GDGame.Actors
 
         private bool CheckWinCondition()
         {
-            HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Up, true, 0.5f,false);
+            HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Up, true, 0.5f, false);
             return hit?.actor is GoalTile;
         }
 
         private bool CheckLoseCondition()
         {
-            HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Down, true, 0.5f,false);
+            HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Down, true, 0.5f, false);
             return hit?.actor is SpikeTile;
         }
 
         public void OnMoveEnd()
         {
             UpdateAttachCandidates();
-            if(IsAttached) Attach();
+            if (IsAttached) Attach();
 
-            if (CheckWinCondition()) 
+            if (CheckWinCondition())
                 EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Won));
-            else if(CheckLoseCondition())
-                EventManager.FireEvent(new PlayerEventInfo { type = PlayerEventType.Die });
+            else if (CheckLoseCondition())
+                EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.Die});
         }
 
         public void UpdateAttachCandidates()

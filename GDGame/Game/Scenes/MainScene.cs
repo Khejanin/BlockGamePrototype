@@ -79,7 +79,7 @@ namespace GDGame.Scenes
 
             //models
             InitStaticModels();
-            testingPlatform();
+            TestingPlatform();
 
             //grids
             InitGrid();
@@ -112,54 +112,71 @@ namespace GDGame.Scenes
 
         private void InitStaticModels()
         {
-            EffectParameters effectParameters = new EffectParameters(ModelEffect, textures["Box"], Color.White, 1);
-            var transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
+            Transform3D transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
+
+            #region StaticTiles
+
+            var effectParameters = new EffectParameters(ModelEffect, textures["Ceramic"], Color.White, 1);
             BasicTile staticTile = new BasicTile("StaticTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"]);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["PlateStack"]);
             staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
-            effectParameters = new EffectParameters(ModelEffect, textures["Attachable"], Color.White, 1);
-            AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Attachable"]);
-            attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
-            attachableTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
+            effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
+            ButtonTile button = new ButtonTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, models["Button"]);
+            button.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
-            effectParameters = new EffectParameters(ModelEffect, textures["Player"], Color.White, 1);
-            PlayerTile playerTile = new PlayerTile("Player1", ActorType.Player, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Player"]);
-            playerTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
-            playerTile.ControllerList.Add(new PlayerController(KeyboardManager, GamePadManager));
-            playerTile.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
-            playerTile.ControllerList.Add(new RotationComponent());
-            playerTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
+            effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
+            SpikeTile spike = new SpikeTile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, models["Pyramid"]);
+            spike.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
+
+            effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
+            StarPickupTile starPickup = new StarPickupTile("Star", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Mug"]);
+            starPickup.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f,
+                ColliderType.CheckOnly));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, models["Box"]);
+                effectParameters, models["SugarBox"]);
             goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
+            #endregion
+
+            #region MovableTiles
+
+            effectParameters = new EffectParameters(ModelEffect, textures["SugarB"], Color.White, 1);
+            AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"]);
+            attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            attachableTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
+
+            effectParameters = new EffectParameters(ModelEffect, textures["SugarW"], Color.White, 1);
+            PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, models["Cube"]);
+            playerTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            playerTile.ControllerList.Add(new PlayerController(KeyboardManager, GamePadManager));
+            playerTile.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove",
+                "playerAttach"));
+            playerTile.ControllerList.Add(new RotationComponent());
+            playerTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
+            
+            effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Box"]);
+                transform3D, effectParameters, models["Drop"]);
             enemy.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
             enemy.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
             enemy.ControllerList.Add(new RotationComponent());
 
-            ButtonTile button = new ButtonTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Box"]);
-            button.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
-
-            MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Box"]);
+            effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
+            MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, models["SinglePlate"]);
             platform.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             platform.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
-            SpikeTile spike = new SpikeTile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Box"]);
-            spike.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
-
-            StarPickupTile starPickup = new StarPickupTile("Star", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Box"]);
-            starPickup.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
+            #endregion
 
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
@@ -195,45 +212,16 @@ namespace GDGame.Scenes
         }
 
         //TEMP
-        private void testingPlatform()
+        private void TestingPlatform()
         {
             EffectParameters effectParameters = new EffectParameters(ModelEffect, textures["Box"], Color.White, 1);
-            var transform3D = new Transform3D(new Vector3(5, 0,0), Vector3.UnitZ, Vector3.UnitY);
+            var transform3D = new Transform3D(new Vector3(5, 0, 0), Vector3.UnitZ, Vector3.UnitY);
             this.test = new BasicTile("StaticTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Box"]);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Knife"]);
             this.test.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             drawnActors.Add("StaticTile2", test);
             ObjectManager.Add(test);
         }
-
-        //private void testplatform(int lPoint, int hPoint)
-        //{
-        //    bool atHighestPoint = false;
-        //    if(this.test != null)
-        //    {
-        //        float pos = this.test.Transform3D.Translation.Y;
-        //        if (pos <= hPoint && pos >= lPoint)
-        //        {
-        //            if (atHighestPoint)
-        //            {
-        //                pos--;
-        //            }
-        //            else if (pos >= hPoint)
-        //            {
-        //                atHighestPoint = true;
-        //            }
-        //            else if (pos <= lPoint)
-        //            {
-        //                atHighestPoint = false;
-        //            }
-        //            else
-        //            {
-        //                pos++;
-        //            }
-        //        }
-        //        this.test.Transform3D.TranslateBy(new Vector3(0, pos, 0));
-        //    }
-        //}
 
 
         private void InitUi()
@@ -355,7 +343,8 @@ namespace GDGame.Scenes
             EffectParameters effectParameters =
                 new EffectParameters(unlitTexturedEffect, textures["Wall"], Color.White, 1);
 
-            IVertexData vertexData = new VertexData<VertexPositionColorTexture>(vertices, PrimitiveType.TriangleStrip, 2);
+            IVertexData vertexData =
+                new VertexData<VertexPositionColorTexture>(vertices, PrimitiveType.TriangleStrip, 2);
 
             archetypalTexturedQuad = new PrimitiveObject("original texture quad", ActorType.Decorator,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, vertexData);
@@ -426,8 +415,6 @@ namespace GDGame.Scenes
             }
         }
 
-        
-
         #endregion
 
 
@@ -479,6 +466,10 @@ namespace GDGame.Scenes
             Texture2D choc1 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile");
             Texture2D choc2 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/choco-tile-white");
 
+            Texture2D ceramic = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/ceramicColoringBaked");
+            Texture2D sugarWhite = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/sugar01");
+            Texture2D sugarBrown = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/sugar02");
+
             textures = new Dictionary<string, Texture2D>
             {
                 {"Player", cubeTexture},
@@ -501,20 +492,37 @@ namespace GDGame.Scenes
                 {"options", options},
                 {"optionsButton", optionsButton},
                 {"Chocolate", choc1},
-                {"WChocolate", choc2}
+                {"WChocolate", choc2},
+                {"Ceramic", ceramic},
+                {"SugarW", sugarWhite},
+                {"SugarB", sugarBrown},
             };
         }
 
         private void LoadModels()
         {
-            Model redCube = Content.Load<Model>("Assets/Models/RedCube");
             Model blueCube = Content.Load<Model>("Assets/Models/blueCube");
             Model boxModel = Content.Load<Model>("Assets/Models/box2");
+            Model buttonModel = Content.Load<Model>("Assets/Models/Button");
+            Model dropWithEyesModel = Content.Load<Model>("Assets/Models/DropWithEyes");
             Model enemyModel = Content.Load<Model>("Assets/Models/Enemy");
+            Model forkModel = Content.Load<Model>("Assets/Models/Fork");
+            Model knifeModel = Content.Load<Model>("Assets/Models/Knife");
+            Model mugModel = Content.Load<Model>("Assets/Models/Mug");
+            Model plateStackModel = Content.Load<Model>("Assets/Models/PlateStack");
+            Model playerModel = Content.Load<Model>("Assets/Models/Player");
+            Model pyramidModel = Content.Load<Model>("Assets/Models/Pyramid");
+            Model redCube = Content.Load<Model>("Assets/Models/RedCube");
+            Model singlePlateCube = Content.Load<Model>("Assets/Models/SinglePlate");
+            Model sugarBoxCube = Content.Load<Model>("Assets/Models/SugarBox");
+
 
             models = new Dictionary<string, Model>
             {
-                {"Attachable", redCube}, {"Player", blueCube}, {"Box", boxModel}, {"Enemy", enemyModel}
+                {"RedCube", redCube}, {"Player", blueCube}, {"Cube", boxModel}, {"Enemy", enemyModel},
+                {"Button", buttonModel}, {"Drop", dropWithEyesModel}, {"Fork", forkModel}, {"Knife", knifeModel},
+                {"Mug", mugModel}, {"PlateStack", plateStackModel}, {"PlayerModel", playerModel},
+                {"Pyramid", pyramidModel}, {"SinglePlate", singlePlateCube}, {"SugarBox", sugarBoxCube}
             };
         }
 
@@ -589,7 +597,6 @@ namespace GDGame.Scenes
                 this.test.Transform3D.TranslateBy(new Vector3(0, -1, 0));
             else if (KeyboardManager.IsFirstKeyPress(Keys.H))
                 this.test.Transform3D.TranslateBy(new Vector3(0, 1, 0));
-
         }
 
         protected override void DrawScene(GameTime gameTime)
