@@ -45,8 +45,20 @@ namespace GDGame.Utilities
                     {
                         if (data.gridValues[x, y, z] != ETileType.None)
                         {
-                            BasicTile tile = tileFactory.CreateTile(data.gridValues[x, y, z]);
-                            if(tile != null ) tile.Transform3D.Translation = pos + new Vector3(0, 0, data.gridSize.Z - 1);
+                            int count = 0;
+                            for (int i = -1; i <= 1; i += 2)
+                            {
+                                if (x + i >= 0 && x + i < data.gridSize.X)
+                                    count += data.gridValues[x + i, y, z] == ETileType.Static ? 1 : 0;
+                                if (y + i >= 0 && y + i < data.gridSize.Y)
+                                    count += data.gridValues[x, y + i, z] == ETileType.Static ? 1 : 0;
+                                if (z + i >= 0 && z + i < data.gridSize.Z)
+                                    count += data.gridValues[x, y, z + i] == ETileType.Static ? 1 : 0;
+                            }
+
+                            BasicTile tile = tileFactory.CreateTile(data.gridValues[x, y, z], count < 5);
+                            if (tile != null)
+                                tile.Transform3D.Translation = pos + new Vector3(0, 0, data.gridSize.Z - 1);
                             _grid[x, y, (int) data.gridSize.Z - 1 - z] = tile;
                         }
                         else
@@ -90,7 +102,8 @@ namespace GDGame.Utilities
             foreach (var pathTileKey in data.movingTilePaths.Keys)
             {
                 PathMoveTile moveTile =
-                    grid[(int) pathTileKey.X, (int) pathTileKey.Y, (int) data.gridSize.Z - 1 - (int) pathTileKey.Z] as PathMoveTile;
+                    grid[(int) pathTileKey.X, (int) pathTileKey.Y,
+                        (int) data.gridSize.Z - 1 - (int) pathTileKey.Z] as PathMoveTile;
 
                 foreach (Vector3 tilePath in data.movingTilePaths[pathTileKey])
                 {
@@ -108,10 +121,11 @@ namespace GDGame.Utilities
             foreach (var buttonTargetKey in data.buttonTargets.Keys)
             {
                 List<BasicTile> targets = new List<BasicTile>();
-                ButtonTile button = grid[(int)buttonTargetKey.X, (int)buttonTargetKey.Y, (int)data.gridSize.Z - 1 - (int)buttonTargetKey.Z] as ButtonTile;
+                ButtonTile button = grid[(int) buttonTargetKey.X, (int) buttonTargetKey.Y,
+                    (int) data.gridSize.Z - 1 - (int) buttonTargetKey.Z] as ButtonTile;
 
                 foreach (var target in data.buttonTargets[buttonTargetKey])
-                    targets.Add(grid[(int)target.X, (int)target.Y, (int)target.Z]);
+                    targets.Add(grid[(int) target.X, (int) target.Y, (int) target.Z]);
 
                 button.Targets = targets;
             }

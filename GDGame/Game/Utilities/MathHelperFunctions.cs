@@ -1,10 +1,20 @@
 ﻿using System;
+using Microsoft.VisualBasic;
 using Microsoft.Xna.Framework;
+using SharpDX;
+using Quaternion = Microsoft.Xna.Framework.Quaternion;
+using Vector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace GDGame.Utilities
 {
     public class MathHelperFunctions
     {
+        public static Random rnd
+        {
+            get { return rnd ?? new Random(); }
+            private set { rnd = value; }
+        }
+
         public static Vector3 QuaternionToEulerAngles(Quaternion q)
         {
             Vector3 pitchYawRoll = Vector3.Zero;

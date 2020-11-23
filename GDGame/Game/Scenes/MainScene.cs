@@ -116,10 +116,20 @@ namespace GDGame.Scenes
 
             #region StaticTiles
 
-            var effectParameters = new EffectParameters(ModelEffect, textures["Ceramic"], Color.White, 1);
-            BasicTile staticTile = new BasicTile("StaticTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["PlateStack"]);
-            staticTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            var effectParameters = new EffectParameters(ModelEffect, textures["Chocolate"], Color.White, 1);
+            BasicTile chocoloateTile = new BasicTile("ChocolateTile", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"]);
+            chocoloateTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
+            
+            effectParameters = new EffectParameters(ModelEffect, textures["WChocolate"], Color.White, 1);
+            BasicTile whiteChocolateTile = new BasicTile("WhiteChocolateTile", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"]);
+            whiteChocolateTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f)); 
+            
+            effectParameters = new EffectParameters(ModelEffect, textures["DChocolate"], Color.White, 1);
+            BasicTile darkChocolateTile = new BasicTile("WhiteChocolateTile", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"]);
+            darkChocolateTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f)); 
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             ButtonTile button = new ButtonTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
@@ -142,6 +152,10 @@ namespace GDGame.Scenes
                 effectParameters, models["SugarBox"]);
             goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
+            effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
+            ModelObject forkModelObject = new ModelObject("fork",ActorType.Decorator,StatusType.Drawn | StatusType.Update,transform3D,effectParameters,models["Fork"]);
+            forkModelObject.ControllerList.Add(new RandomRotatorController("rotator",ControllerType.Curve));
+            
             #endregion
 
             #region MovableTiles
@@ -180,7 +194,7 @@ namespace GDGame.Scenes
 
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
-                {"StaticTile", staticTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", playerTile},
+                {"StaticTile", chocoloateTile},{"WhiteChocolateTile",whiteChocolateTile},{"DarkChocolateTile",darkChocolateTile}, {"AttachableBlock", attachableTile}, {"PlayerBlock", playerTile},
                 {"GoalTile", goal}, {"EnemyTile", enemy}, {"ButtonTile", button}, {"MovingPlatformTile", platform},
                 {"SpikeTile", spike}, {"StarPickupTile", starPickup}
             };
