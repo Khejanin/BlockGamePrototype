@@ -144,7 +144,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Models/Button.fbx
 
-#begin Assets/Models/Decor/cat02.FBX
+#begin Assets/Models/Decor/cat03.FBX
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -161,9 +161,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Decor/cat02.FBX
+/build:Assets/Models/Decor/cat03.FBX
 
-#begin Assets/Models/Decor/catbed02.FBX
+#begin Assets/Models/Decor/catbed03.FBX
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -180,9 +180,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Decor/catbed02.FBX
+/build:Assets/Models/Decor/catbed03.FBX
 
-#begin Assets/Models/Decor/choco02.FBX
+#begin Assets/Models/Decor/choco03.FBX
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -199,9 +199,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Decor/choco02.FBX
+/build:Assets/Models/Decor/choco03.FBX
 
-#begin Assets/Models/Decor/cups02.FBX
+#begin Assets/Models/Decor/cups03.FBX
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -218,9 +218,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Decor/cups02.FBX
+/build:Assets/Models/Decor/cups03.FBX
 
-#begin Assets/Models/Decor/table02.FBX
+#begin Assets/Models/Decor/table03.FBX
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -237,7 +237,7 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Decor/table02.FBX
+/build:Assets/Models/Decor/table03.FBX
 
 #begin Assets/Models/DropWithEyes.fbx
 /importer:FbxImporter
@@ -1012,6 +1012,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Props/Crates/crate5.jpg
+
+#begin Assets/Textures/Props/GameTextures/blackTile.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Props/GameTextures/blackTile.png
 
 #begin Assets/Textures/Props/GameTextures/ceramicColoring.png
 /importer:TextureImporter

@@ -90,7 +90,7 @@ namespace GDGame.Scenes
             TestingPlatform();
 
             //Level Decorators
-            // InitLevelDecor();
+             InitLevelDecor();
 
             //grids
             InitGrid();
@@ -390,7 +390,8 @@ namespace GDGame.Scenes
         {
             float size = 1.5f;
             Vector3 scale = new Vector3(size, size, size);
-            EffectParameters effectParameters = new EffectParameters(ModelEffect, textures["Box"], Color.White, 1);
+
+            EffectParameters effectParameters = new EffectParameters(ModelEffect, textures["Wood"], Color.White, 1);
             var transform3D = new Transform3D(new Vector3(10, -15, 15), Vector3.UnitZ, Vector3.UnitY);
 
             BasicTile table = new BasicTile("Table", ActorType.Primitive,
@@ -400,7 +401,7 @@ namespace GDGame.Scenes
             };
             ObjectManager.Add(table);
 
-            // effectParameters = new EffectParameters(ModelEffect, textures["Wood"], Color.White, 1);
+             effectParameters = new EffectParameters(ModelEffect, textures["Ceramic"], Color.White, 1);
             BasicTile cups = new BasicTile("Cups", ActorType.Primitive,
                 StatusType.Drawn, transform3D, effectParameters, models["Cups"], ETileType.Static)
             {
@@ -409,7 +410,7 @@ namespace GDGame.Scenes
             drawnActors.Add("Cups", cups);
             ObjectManager.Add(cups);
 
-            // effectParameters = new EffectParameters(ModelEffect, textures["WChocolate"], Color.White, 1);
+             effectParameters = new EffectParameters(ModelEffect, textures["WhiteChocolate"], Color.White, 1);
             BasicTile choco = new BasicTile("Chocolate", ActorType.Primitive,
                 StatusType.Drawn, transform3D, effectParameters, models["Chocolate"], ETileType.Static)
             {
@@ -417,18 +418,21 @@ namespace GDGame.Scenes
             };
             ObjectManager.Add(choco);
 
+            effectParameters = new EffectParameters(ModelEffect, textures["Checkers"], Color.White, 1);
+            BasicTile Cat = new BasicTile("Cat", ActorType.Primitive,
+                StatusType.Drawn, transform3D, effectParameters, models["Cat"], ETileType.Static)
+            {
+                Transform3D = { Scale = scale }
+            };
+            ObjectManager.Add(Cat);
 
-            //BasicTile Cat = new BasicTile("Cat", ActorType.Primitive,
-            //    StatusType.Drawn, transform3D, effectParameters, models["Cat"]);
-            //ObjectManager.Add(Cat);
-            //BasicTile catBed = new BasicTile("CatBed", ActorType.Primitive,
-            //    StatusType.Drawn, transform3D, effectParameters, models["CatBed"]);
-            //ObjectManager.Add(catBed);
-
-
-            //Model cat = Content.Load<Model>("Assets/Models/Decor/cat02");
-            //Model catbed = Content.Load<Model>("Assets/Models/Decor/catbed02");
-            //, { "Cat", cat }, { "CatBed", catbed }
+            effectParameters = new EffectParameters(ModelEffect, textures["blackTile"], Color.White, 1);
+            BasicTile Catbed = new BasicTile("Catbed", ActorType.Primitive,
+                StatusType.Drawn, transform3D, effectParameters, models["CatBed"], ETileType.Static)
+            {
+                Transform3D = { Scale = scale }
+            };
+            ObjectManager.Add(Catbed);
         }
 
         //TEMP
@@ -689,6 +693,9 @@ namespace GDGame.Scenes
             Texture2D sugarBrown = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/sugar02");
 
             Texture2D wood = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/wood");
+            Texture2D blackTile = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/blackTile");
+            Texture2D checkers = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/checkers");
+
 
             textures = new Dictionary<string, Texture2D>
             {
@@ -703,7 +710,7 @@ namespace GDGame.Scenes
                 {"WhiteChocolate", chocW}, {"WhiteChocolate4x", chocW4X}, {"WhiteChocolate8x", chocW8X},
                 {"DarkChocolate", chocB}, {"DarkChocolate4x", chocB4X}, {"DarkChocolate8x", chocB8X},
                 {"SugarW", sugarWhite}, {"SugarB", sugarBrown},
-                {"Ceramic", ceramic}, {"Wood", wood}
+                {"Ceramic", ceramic}, {"Wood", wood}, {"blackTile", blackTile }, {"Checkers", checkers }
             };
         }
 
@@ -723,9 +730,11 @@ namespace GDGame.Scenes
             Model redCube = Content.Load<Model>("Assets/Models/RedCube");
             Model singlePlateCube = Content.Load<Model>("Assets/Models/SinglePlate");
             Model sugarBoxCube = Content.Load<Model>("Assets/Models/SugarBox");
-            Model table = Content.Load<Model>("Assets/Models/Decor/table02");
-            Model cups = Content.Load<Model>("Assets/Models/Decor/cups02");
-            Model chocolate = Content.Load<Model>("Assets/Models/Decor/choco02");
+            Model table = Content.Load<Model>("Assets/Models/Decor/table03");
+            Model cups = Content.Load<Model>("Assets/Models/Decor/cups03");
+            Model chocolate = Content.Load<Model>("Assets/Models/Decor/choco03");
+            Model cat = Content.Load<Model>("Assets/Models/Decor/cat03");
+            Model catbed = Content.Load<Model>("Assets/Models/Decor/catbed03");
             Model coffeePlane = Content.Load<Model>("Assets/Models/plane");
 
 
@@ -735,7 +744,8 @@ namespace GDGame.Scenes
                 {"Button", buttonModel}, {"Drop", dropWithEyesModel}, {"Fork", forkModel}, {"Knife", knifeModel},
                 {"Mug", mugModel}, {"PlateStack", plateStackModel}, {"PlayerModel", playerModel},
                 {"Pyramid", pyramidModel}, {"SinglePlate", singlePlateCube}, {"SugarBox", sugarBoxCube},
-                {"Table", table}, {"Cups", cups}, {"Chocolate", chocolate}, {"CoffeePlane", coffeePlane}
+                {"Table", table}, {"Cups", cups}, {"Chocolate", chocolate}, {"Cat", cat }, {"CatBed", catbed},
+                {"CoffeePlane", coffeePlane}
             };
         }
 
