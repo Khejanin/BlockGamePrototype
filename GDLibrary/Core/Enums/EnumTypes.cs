@@ -58,7 +58,12 @@ namespace GDLibrary.Enums
         Curve,
 
         AlphaCycle,
-        SinTranslation
+        SinTranslation,
+        Collider,
+        Player,
+        Movement,
+        Sound,
+        Rotation
     }
 
     /// <summary>

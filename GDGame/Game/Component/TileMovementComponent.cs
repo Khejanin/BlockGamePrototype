@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Linq;
 using GDGame.Actors;
 using GDGame.Controllers;
 using GDGame.EventSystem;
 using GDGame.Utilities;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Component
 {
-    public class TileMovementComponent : IController
+    public class TileMovementComponent : Controller
     {
         private MovableTile parent;
 
@@ -27,17 +27,21 @@ namespace GDGame.Component
         private Action endMoveCallback;
         private Action<Raycaster.HitResult> onCollideCallback;
 
-        public TileMovementComponent(int movementTime, Curve1D curve1D, bool useFlipMovement = false)
+
+        public TileMovementComponent(string id, ControllerType controllerType, int movementTime, Curve1D curve1D,
+            bool useFlipMovement = false) : base(id, controllerType)
         {
             this.movementTime = movementTime;
-            this.curve1D = curve1D;
             this.useFlipMovement = useFlipMovement;
+            this.curve1D = curve1D;
+
             this.curve1D.Add(1, 0);
             this.curve1D.Add(0, movementTime);
             startRotation = rotationQuaternion = Quaternion.Identity;
         }
 
-        public void MoveInDirection(Vector3 direction, Action onMoveEndCallback = null, Action<Raycaster.HitResult> onCollideCallback = null)
+        public void MoveInDirection(Vector3 direction, Action onMoveEndCallback = null,
+            Action<Raycaster.HitResult> onCollideCallback = null)
         {
             if (parent != null && !parent.IsMoving)
             {
@@ -49,15 +53,16 @@ namespace GDGame.Component
                 if (useFlipMovement)
                 {
                     RotationComponent rotationComponent =
-                        (RotationComponent)parent.ControllerList.Find(controller =>
-                           controller.GetType() == typeof(RotationComponent));
+                        (RotationComponent) parent.ControllerList.Find(controller =>
+                            controller.GetType() == typeof(RotationComponent));
 
                     rotationComponent?.SetRotatePoint(direction);
 
                     //offset between the parent and the point to rotate around
                     Vector3 offset = parent.Transform3D.Translation - parent.RotatePoint;
                     //The rotation to apply
-                    var rot = Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, Vector3.Up), MathHelper.ToRadians(-90));
+                    var rot = Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, Vector3.Up),
+                        MathHelper.ToRadians(-90));
                     //Rotate around the offset point
                     Vector3 translation = Vector3.Transform(offset, rot);
 
@@ -68,16 +73,17 @@ namespace GDGame.Component
                     if (parent.ActorType == ActorType.Player)
                     {
                         PlayerController playerController =
-                            (PlayerController)parent.ControllerList.Find(controller =>
-                               controller.GetType() == typeof(PlayerController));
+                            (PlayerController) parent.ControllerList.Find(controller =>
+                                controller.GetType() == typeof(PlayerController));
                         if (playerController != null &&
                             playerController.IsMoveValid(rot, parent.RotatePoint, endPos, offset))
                         {
-                            EventManager.FireEvent(new PlayerEventInfo { type = Enums.PlayerEventType.Move });
+                            EventManager.FireEvent(new PlayerEventInfo {type = Enums.PlayerEventType.Move});
                             //Calculate movement for each attached tile
                             if (parent is PlayerTile player)
                                 foreach (AttachableTile tile in player.AttachedTiles)
-                                    (tile.ControllerList.Find(c => c is TileMovementComponent) as TileMovementComponent)?.MoveInDirection(direction, tile.OnMoveEnd);
+                                    (tile.ControllerList.Find(c => c is TileMovementComponent) as TileMovementComponent)
+                                        ?.MoveInDirection(direction, tile.OnMoveEnd);
 
                             //Set animation time and movement flag
                             currentMovementTime = movementTime;
@@ -98,7 +104,7 @@ namespace GDGame.Component
             }
         }
 
-        public void Update(GameTime gameTime, IActor actor)
+        public override void Update(GameTime gameTime, IActor actor)
         {
             parent ??= actor as MovableTile;
 
@@ -114,7 +120,7 @@ namespace GDGame.Component
 
                 if (useFlipMovement)
                 {
-                    float t = 1 - (float)currentMovementTime / movementTime;
+                    float t = 1 - (float) currentMovementTime / movementTime;
                     Quaternion quaternion = Quaternion.Slerp(startRotation, rotationQuaternion, t);
                     parent.Transform3D.RotationInDegrees = MathHelperFunctions.QuaternionToEulerAngles(quaternion);
                 }
@@ -134,18 +140,14 @@ namespace GDGame.Component
                 }
 
                 parent.Transform3D.Translation = trans;
-                currentMovementTime -= (int)gameTime.ElapsedGameTime.TotalMilliseconds;
+                currentMovementTime -= (int) gameTime.ElapsedGameTime.TotalMilliseconds;
             }
         }
 
-        public object Clone()
+        public new object Clone()
         {
-            return new TileMovementComponent(movementTime, new Curve1D(curve1D.CurveLookType), useFlipMovement);
-        }
-
-        public ControllerType GetControllerType()
-        {
-            throw new System.NotImplementedException();
+            return new TileMovementComponent(ID, ControllerType, movementTime, new Curve1D(curve1D.CurveLookType),
+                useFlipMovement);
         }
     }
 }

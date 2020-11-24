@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GDGame.Actors;
-using GDGame.Enums;
 using GDLibrary.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -11,7 +11,7 @@ namespace GDGame.Managers
     public class SoundManager : GameComponent
     {
         private List<Sounds> list;
-        private int activeSongIndex = 0;
+        private int activeSongIndex;
         private Sounds currentSong;
         private SoundEffectInstance mySoundInstance;
         private float masterSound = 0.2f;
@@ -24,54 +24,40 @@ namespace GDGame.Managers
         /// See <see href="www."/> for more info
         public Sounds this[int index]
         {
-            get
-            {
-                return this.list[index];
-            }
-            set
-            {
-                this.list[index] = value;
-            }
+            get => list[index];
+            set => list[index] = value;
         }
 
-        public Sounds ActiveSong
-        {
-            get
-            {
-                return this.list[this.activeSongIndex];
-            }
-        }
+        public Sounds ActiveSong => list[activeSongIndex];
+
         public int ActiveSongIndex
         {
-            get
-            {
-                return this.activeSongIndex;
-            }
+            get => activeSongIndex;
             set
             {
-                value = value % this.list.Count;
-                this.activeSongIndex = value; //bug!!! [0, list.size()-1]
+                value %= list.Count;
+                activeSongIndex = value;
             }
         }
 
         public SoundManager(Microsoft.Xna.Framework.Game game) : base(game)
         {
-            this.list = new List<Sounds>();
+            list = new List<Sounds>();
         }
 
         public void Add(Sounds newSong)
         {
             if(FindSound(newSong.ID) == null)
-                this.list.Add(newSong);
+                list.Add(newSong);
         }
 
         public bool RemoveIf(Predicate<Sounds> predicate)
         {
-            int position = this.list.FindIndex(predicate);
+            int position = list.FindIndex(predicate);
 
             if (position != -1)
             {
-                this.list.RemoveAt(position);
+                list.RemoveAt(position);
                 return true;
             }
             return false;
@@ -79,39 +65,40 @@ namespace GDGame.Managers
 
         public Sounds FindSound(string id)
         {
-            foreach (Sounds s in this.list)
-            {
-                if (s.ID == id)
-                    return s;
-            }
-            return null;
+            return list.FirstOrDefault(s => s.ID == id);
         }
 
-        public void playSoundEffect(string id)
+        public void PlaySoundEffect(string id)
         {
             Sounds s = FindSound(id);
             currentSong = s;
             if (s != null)
             {
-                if (s.ActorType == ActorType.MusicTrack)
+                switch (s.ActorType)
                 {
-                    if (this.currentSong != null)
+                    case ActorType.MusicTrack:
                     {
-                        if (s.ID != currentSong.ID)
+                        if (currentSong != null)
                         {
-                            this.mySoundInstance = s.GetSfx().CreateInstance();
-                            this.mySoundInstance.IsLooped = true;
-                            this.mySoundInstance.Volume = this.masterSound;
-                            this.mySoundInstance.Play();
+                            if (s.ID != currentSong.ID)
+                            {
+                                mySoundInstance = s.GetSfx().CreateInstance();
+                                mySoundInstance.IsLooped = true;
+                                mySoundInstance.Volume = masterSound;
+                                mySoundInstance.Play();
+                            }
                         }
+
+                        break;
                     }
+                    case ActorType.SoundEffect:
+                        PlaySfx(s);
+                        break;
                 }
-                else if (s.ActorType == ActorType.SoundEffect)
-                    playSFX(s);
             }
         }
 
-        public void playSFX(Sounds s)
+        private void PlaySfx(Sounds s)
         {
             if (s.ActorType == ActorType.SoundEffect)
             {
@@ -124,7 +111,7 @@ namespace GDGame.Managers
         public void NextSong()
         {
             int next = activeSongIndex + 1;
-            if (next >= this.list.Count)
+            if (next >= list.Count)
                 next = 0;
 
             while(list[next].ActorType != ActorType.MusicTrack)
@@ -133,82 +120,77 @@ namespace GDGame.Managers
             }
 
             SwitchSong(next);
-            this.mySoundInstance.Volume = this.masterSound;
-            this.mySoundInstance.IsLooped = true;
-            this.mySoundInstance.Play();
+            mySoundInstance.Volume = masterSound;
+            mySoundInstance.IsLooped = true;
+            mySoundInstance.Play();
         }
 
         private void SwitchSong(int next)
         {
-            this.activeSongIndex = next;
+            activeSongIndex = next;
 
             StopSong();
 
-            this.currentSong = list[next];
-            this.mySoundInstance = currentSong.GetSfx().CreateInstance();
+            currentSong = list[next];
+            mySoundInstance = currentSong.GetSfx().CreateInstance();
         }
 
         public void StopSong()
         {
-            if (this.mySoundInstance != null && this.mySoundInstance.State == SoundState.Playing)
-                this.mySoundInstance.Stop();
+            if (mySoundInstance != null && mySoundInstance.State == SoundState.Playing)
+                mySoundInstance.Stop();
         }
 
-        public void changeMusicState()
+        public void ChangeMusicState()
         {
-            if (this.mySoundInstance.State == SoundState.Playing)
-                pauseSong();
-            else if (this.mySoundInstance.State == SoundState.Paused)
-                resumeSong();
+            switch (mySoundInstance.State)
+            {
+                case SoundState.Playing:
+                    PauseSong();
+                    break;
+                case SoundState.Paused:
+                    ResumeSong();
+                    break;
+            }
         }
 
-        public void pauseSong()
+        private void PauseSong()
         {
-            if (this.mySoundInstance != null && this.mySoundInstance.State == SoundState.Playing)
-                this.mySoundInstance.Pause();
+            if (mySoundInstance != null && mySoundInstance.State == SoundState.Playing)
+                mySoundInstance.Pause();
         }
 
-        public void resumeSong()
+        private void ResumeSong()
         {
-            if (this.mySoundInstance != null && this.mySoundInstance.State == SoundState.Paused)
-                this.mySoundInstance.Resume();
+            if (mySoundInstance != null && mySoundInstance.State == SoundState.Paused)
+                mySoundInstance.Resume();
         }
 
 
-        public void volumeUp()
+        public void VolumeUp()
         {
-            pauseSong();
+            PauseSong();
 
-            this.masterSound = this.masterSound + 0.2f;
+            masterSound += 0.2f;
 
-            if (this.masterSound >= 1.0)
-                this.masterSound = 1;
+            if (masterSound >= 1.0)
+                masterSound = 1;
             
-            this.mySoundInstance.Volume = this.masterSound;
-            resumeSong();
+            mySoundInstance.Volume = masterSound;
+            ResumeSong();
         }
 
-        public void volumeDown()
+        public void VolumeDown()
         {
-            pauseSong();
+            PauseSong();
 
-            this.masterSound = this.masterSound - 0.2f;
+            masterSound -= 0.2f;
 
-            if (this.masterSound <= 0)
-                this.masterSound = 0;
+            if (masterSound <= 0)
+                masterSound = 0;
 
-            this.mySoundInstance.Volume = this.masterSound;
-            resumeSong();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            //if(this.mySoundInstance.State == SoundState.Stopped)
-            //{
-            //    this.mySoundInstance.Play();
-            //}
-
-            base.Update(gameTime);
+            mySoundInstance.Volume = masterSound;
+            ResumeSong();
         }
     }
 }

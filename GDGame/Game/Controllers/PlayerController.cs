@@ -6,6 +6,7 @@ using GDGame.Component;
 using GDGame.Utilities;
 using GDLibrary;
 using GDLibrary.Actors;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
@@ -14,31 +15,26 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GDGame.Controllers
 {
-    public class PlayerController : IController
+    public class PlayerController : Controller
     {
         private KeyboardManager keyboardManager;
         private GamePadManager gamePadManager;
         private PlayerTile playerTile;
         private CameraManager<Camera3D> cameraManager;
 
-        public PlayerController(KeyboardManager keyboardManager, GamePadManager gamePadManager,
-            CameraManager<Camera3D> cameraManager)
+        public PlayerController(string id, ControllerType controllerType, KeyboardManager keyboardManager,
+            GamePadManager gamePadManager, CameraManager<Camera3D> cameraManager) : base(id, controllerType)
         {
             this.keyboardManager = keyboardManager;
             this.gamePadManager = gamePadManager;
             this.cameraManager = cameraManager;
         }
 
-        public void Update(GameTime gameTime, IActor actor)
+        public override void Update(GameTime gameTime, IActor actor)
         {
             playerTile ??= (PlayerTile) actor;
-            if (keyboardManager.IsKeyPressed())
+            if (keyboardManager.IsKeyPressed()) 
                 HandleKeyboardInput(gameTime);
-        }
-
-        public ControllerType GetControllerType()
-        {
-            throw new NotImplementedException();
         }
 
         private void HandleKeyboardInput(GameTime gameTime)
@@ -100,9 +96,9 @@ namespace GDGame.Controllers
             return results.Count == 0 && floorHitResults.Count > 0;
         }
 
-        public object Clone()
+        public new object Clone()
         {
-            return new PlayerController(keyboardManager, gamePadManager, cameraManager);
+            return new PlayerController(ID, ControllerType, keyboardManager, gamePadManager, cameraManager);
         }
     }
 }

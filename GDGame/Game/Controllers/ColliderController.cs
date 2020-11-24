@@ -1,6 +1,7 @@
 ﻿using GDGame.Enums;
 using GDGame.Interfaces;
 using GDLibrary.Actors;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
@@ -9,27 +10,23 @@ using SharpDX.Direct2D1.Effects;
 
 namespace GDGame.Controllers
 {
-    public abstract class ColliderController : IDrawnController
+    public abstract class ColliderController : Controller
     {
         public ColliderType ColliderType { get; private set; }
         protected ColliderShape colliderShape;
         protected bool drawDebug;
         protected Transform3D parentTransform;
 
-        protected ColliderController(ColliderShape colliderShape, ColliderType colliderType = ColliderType.Blocking)
+        protected ColliderController(string id, ControllerType controllerType, ColliderShape colliderShape,
+            ColliderType colliderType = ColliderType.Blocking) : base(id, controllerType)
         {
             this.colliderShape = colliderShape;
             ColliderType = colliderType;
         }
 
-        public abstract object Clone();
+        public new abstract object Clone();
 
-        public abstract void Update(GameTime gameTime, IActor actor);
-
-        public ControllerType GetControllerType()
-        {
-            throw new System.NotImplementedException();
-        }
+        public abstract override void Update(GameTime gameTime, IActor actor);
 
         public abstract void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice);
     }
@@ -40,15 +37,16 @@ namespace GDGame.Controllers
 
         private float scale;
 
-        public CustomBoxColliderController(ColliderShape colliderShape, float scale,
-            ColliderType colliderType = ColliderType.Blocking) : base(colliderShape, colliderType)
+        public CustomBoxColliderController(string id, ControllerType controllerType, ColliderShape colliderShape,
+            float scale, ColliderType colliderType = ColliderType.Blocking) : base(id, controllerType, colliderShape,
+            colliderType)
         {
             this.scale = scale;
         }
 
         public override object Clone()
         {
-            return new CustomBoxColliderController(colliderShape, scale, ColliderType);
+            return new CustomBoxColliderController(ID, ControllerType, colliderShape, scale, ColliderType);
         }
 
         public BoundingBox GetBounds()
@@ -81,13 +79,14 @@ namespace GDGame.Controllers
     {
         private PrimitiveObject parent;
 
-        public PrimitiveColliderController(ColliderShape colliderShape) : base(colliderShape)
+        public PrimitiveColliderController(string id, ControllerType controllerType, ColliderShape colliderShape,
+            ColliderType colliderType = ColliderType.Blocking) : base(id, controllerType, colliderShape, colliderType)
         {
         }
 
         public override object Clone()
         {
-            return new PrimitiveColliderController(colliderShape);
+            return new PrimitiveColliderController(ID, ControllerType, colliderShape, ColliderType);
         }
 
         public BoundingBox GetBounds()

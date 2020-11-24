@@ -118,7 +118,7 @@ namespace GDGame.Scenes
         {
             SoundEffect mainTheme = Content.Load<SoundEffect>("Assets/GameTracks/testTrack04");
             SoundManager.Add(new Sounds(mainTheme, "mainTheme", ActorType.specialTrack, StatusType.Update));
-            SoundManager.playSoundEffect("mainTheme");
+            SoundManager.PlaySoundEffect("mainTheme");
         }
 
         private void LoadTextures()
