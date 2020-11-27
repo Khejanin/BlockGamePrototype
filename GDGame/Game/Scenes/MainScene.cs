@@ -696,6 +696,10 @@ namespace GDGame.Scenes
             Texture2D blackTile = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/blackTile");
             Texture2D checkers = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/checkers");
 
+            Texture2D newChoco1 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/big-choco");
+            Texture2D newChoco2 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/big-choco-white");
+            Texture2D newChoco3 = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/big-choco-dark");
+
 
             textures = new Dictionary<string, Texture2D>
             {
@@ -710,7 +714,8 @@ namespace GDGame.Scenes
                 {"WhiteChocolate", chocW}, {"WhiteChocolate4x", chocW4X}, {"WhiteChocolate8x", chocW8X},
                 {"DarkChocolate", chocB}, {"DarkChocolate4x", chocB4X}, {"DarkChocolate8x", chocB8X},
                 {"SugarW", sugarWhite}, {"SugarB", sugarBrown},
-                {"Ceramic", ceramic}, {"Wood", wood}, {"blackTile", blackTile }, {"Checkers", checkers }
+                {"Ceramic", ceramic}, {"Wood", wood}, {"blackTile", blackTile }, {"Checkers", checkers },
+                {"DChocolateLarge", newChoco3}, {"WChocolateLarge", newChoco2 }, {"ChocolateLarge", newChoco1 }
             };
         }
 
