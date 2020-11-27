@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Interfaces;
+using GDLibrary.Controllers;
 
 namespace GDGame.Actors
 {
@@ -53,9 +54,9 @@ namespace GDGame.Actors
 
             if (ControllerList != null)
             {
-                foreach (IController controller in ControllerList)
+                foreach (Controller controller in ControllerList)
                 {
-                    buttonTile.ControllerList.Add(controller.Clone() as IController);
+                    buttonTile.ControllerList.Add(controller.Clone() as Controller);
                 }
             }
 

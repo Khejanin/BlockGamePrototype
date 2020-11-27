@@ -38,7 +38,7 @@ namespace GDGame.Controllers
 
         public new object Clone()
         {
-            return new SoundController(ID, ControllerType, keyboardManager, soundManager, moveSfx, attachSfx);
+            return new SoundController(Id, ControllerType, keyboardManager, soundManager, moveSfx, attachSfx);
         }
 
         public override void Update(GameTime gameTime, IActor actor)

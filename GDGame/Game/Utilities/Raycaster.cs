@@ -4,6 +4,7 @@ using GDGame.Actors;
 using GDGame.Controllers;
 using GDGame.Enums;
 using GDLibrary.Actors;
+using GDLibrary.Enums;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 
@@ -19,8 +20,7 @@ namespace GDGame.Utilities
 
         #region Public Methods
 
-        public static void PlayerCastAll(this PlayerTile player, Vector3 offset, List<Vector3> initialPositions,
-            List<Vector3> endPositions, ref List<HitResult> blockingObjectsResult, ref List<FloorHitResult> floorResult)
+        public static void PlayerCastAll(this PlayerTile player, Vector3 offset, List<Vector3> initialPositions, List<Vector3> endPositions, ref List<HitResult> blockingObjectsResult, ref List<FloorHitResult> floorResult)
         {
             List<Actor3D> ignore = new List<Actor3D>();
             ignore.AddRange(player.AttachedTiles);
@@ -52,24 +52,20 @@ namespace GDGame.Utilities
             if (maxDist <= 0) throw new ArgumentException("You can't set a max cast distance to zero or negative!");
 
             List<DrawnActor3D> allObjects = ObjectManager.GetAllObjects();
-            if (ignoreList != null) allObjects.RemoveAll(actor3D => ignoreList.Contains(actor3D));
+            if (ignoreList != null) allObjects.RemoveAll(ignoreList.Contains);
             Ray ray = new Ray(position, direction);
             foreach (DrawnActor3D drawnActor3D in allObjects)
             {
                 float? dist = -1f;
 
-                PrimitiveColliderController pcc =
-                    drawnActor3D.ControllerList.Find(c => c is PrimitiveColliderController)
-                        as PrimitiveColliderController;
+                PrimitiveColliderController pcc = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as PrimitiveColliderController;
 
                 CustomBoxColliderController cbcc = null;
-                if (pcc == null)
-                    cbcc = drawnActor3D.ControllerList.Find(c => c is CustomBoxColliderController)
-                        as CustomBoxColliderController;
+                if (pcc == null) cbcc = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as CustomBoxColliderController;
 
-                bool pccCheck = pcc != null && (dist = ray.Intersects(pcc.GetBounds())) != null &&
+                bool pccCheck = pcc != null && (dist = ray.Intersects(pcc.GetBounds(drawnActor3D as PrimitiveObject))) != null &&
                                 (pcc.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
-                bool cbccCheck = cbcc != null && (dist = ray.Intersects(cbcc.GetBounds())) != null &&
+                bool cbccCheck = cbcc != null && (dist = ray.Intersects(cbcc.GetBounds(drawnActor3D))) != null &&
                                  (cbcc.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
 
                 if ((pccCheck || cbccCheck) && dist < maxDist)

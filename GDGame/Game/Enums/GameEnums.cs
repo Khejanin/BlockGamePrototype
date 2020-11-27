@@ -15,7 +15,7 @@
         Spike,
         Checkpoint
     }
-    
+
     public enum ColliderShape : sbyte
     {
         Cube,
@@ -27,7 +27,7 @@
         CheckOnly,
         Blocking
     }
-    
+
     public enum GameState : sbyte
     {
         Won,
@@ -39,7 +39,9 @@
         Move,
         Die,
         AttachedTileDie,
-        SetCheckpoint
+        SetCheckpoint,
+        OnMove,
+        OnEnemyMove
     }
 
     public enum TileEventType : sbyte
@@ -52,7 +54,7 @@
         Activate,
         Deactivate
     }
-    
+
     public enum SceneActionType : sbyte
     {
         OnSceneChange,
@@ -68,5 +70,14 @@
         Down,
         Forward,
         Backward
+    }
+
+    public enum MovementType
+    {
+        Rotation,
+        OnMove,
+        OnEnemyMove,
+        OnPlayerMoved,
+        OnAttachedMove
     }
 }

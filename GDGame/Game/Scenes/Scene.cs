@@ -53,8 +53,7 @@ namespace GDGame.Scenes
 
         public virtual void Initialize()
         {
-            EventManager.FireEvent(new SceneEventInfo()
-                {sceneActionType = SceneActionType.OnSceneLoaded, LevelName = SceneName});
+            EventManager.FireEvent(new SceneEventInfo() {sceneActionType = SceneActionType.OnSceneLoaded, LevelName = SceneName});
         }
 
         private void PreUpdate()

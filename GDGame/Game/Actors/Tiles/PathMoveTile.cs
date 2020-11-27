@@ -1,5 +1,4 @@
-﻿using GDGame.Component;
-using GDLibrary.Enums;
+﻿using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,20 +9,15 @@ namespace GDGame.Actors
 {
     public abstract class PathMoveTile : MovableTile
     {
-        protected TileMovementComponent movementComponent;
         protected int pathDir = 1;
 
         public List<Vector3> path;
         public int currentPositionIndex;
 
-        protected PathMoveTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
+        protected PathMoveTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType,
+            statusType, transform, effectParameters, model, tileType)
         {
             path = new List<Vector3>();
-        }
-
-        public override void InitializeTile()
-        {
-            movementComponent = (TileMovementComponent)ControllerList.Find(controller => controller is TileMovementComponent);
         }
 
         protected abstract void MoveToNextPoint();

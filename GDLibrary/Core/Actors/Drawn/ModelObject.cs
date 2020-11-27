@@ -4,6 +4,7 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using GDLibrary.Controllers;
 
 namespace GDLibrary.Actors
 {
@@ -113,9 +114,9 @@ namespace GDLibrary.Actors
             if (ControllerList != null)
             {
                 //clone each of the (behavioural) controllers
-                foreach (IController controller in ControllerList)
+                foreach (Controller controller in ControllerList)
                 {
-                    actor.ControllerList.Add(controller.Clone() as IController);
+                    actor.ControllerList.Add(controller.Clone() as Controller);
                 }
             }
 

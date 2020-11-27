@@ -1,33 +1,23 @@
-﻿using GDGame.Actors;
-using GDGame.Utilities;
+﻿using System;
+using GDGame.Actors;
+using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
-using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Component
 {
     public class RotationComponent : Controller
     {
-        private MovableTile parent;
         private Vector3 rightRotatePoint;
         private Vector3 leftRotatePoint;
         private Vector3 forwardRotatePoint;
         private Vector3 backwardRotatePoint;
 
-        public new object Clone()
+        public void SetRotatePoint(Vector3 direction, MovableTile actor)
         {
-            return new RotationComponent(ID, ControllerType);
-        }
-
-        public override void Update(GameTime gameTime, IActor actor)
-        {
-            parent ??= actor as MovableTile;
-        }
-
-        public void SetRotatePoint(Vector3 direction)
-        {
-            UpdateRotatePoints();
+            MovableTile movableTile = actor;
+            UpdateRotatePoints(movableTile);
 
             Vector3 rotatePoint;
 
@@ -40,28 +30,26 @@ namespace GDGame.Component
             else if (direction == Vector3.UnitZ)
                 rotatePoint = backwardRotatePoint;
             else
-                throw new System.ArgumentException("Invalid direction!");
+                throw new ArgumentException("Invalid direction!");
 
-            parent.RotatePoint = rotatePoint;
+            movableTile.RotatePoint = rotatePoint;
 
-            PlayerTile player = parent as PlayerTile;
-            if (player == null) return;
-
+            if (!(movableTile is PlayerTile player)) return;
             foreach (AttachableTile tile in player.AttachedTiles)
             {
                 tile.RotatePoint = rotatePoint;
             }
         }
 
-        public void UpdateRotatePoints()
+        private void UpdateRotatePoints(Actor3D movableTile)
         {
             //Set all rotation points to the edges of the player cube
-            rightRotatePoint = parent.Transform3D.Translation + new Vector3(.5f, -.5f, 0);
-            leftRotatePoint = parent.Transform3D.Translation + new Vector3(-.5f, -.5f, 0);
-            forwardRotatePoint = parent.Transform3D.Translation + new Vector3(0, -.5f, -.5f);
-            backwardRotatePoint = parent.Transform3D.Translation + new Vector3(0, -.5f, .5f);
+            rightRotatePoint = movableTile.Transform3D.Translation + new Vector3(.5f, -.5f, 0);
+            leftRotatePoint = movableTile.Transform3D.Translation + new Vector3(-.5f, -.5f, 0);
+            forwardRotatePoint = movableTile.Transform3D.Translation + new Vector3(0, -.5f, -.5f);
+            backwardRotatePoint = movableTile.Transform3D.Translation + new Vector3(0, -.5f, .5f);
 
-            if (!(parent is PlayerTile player)) return;
+            if (!(movableTile is PlayerTile player)) return;
 
             //Loops through attached tiles to update the rotation points
             foreach (AttachableTile tile in player.AttachedTiles)
@@ -93,6 +81,11 @@ namespace GDGame.Component
 
         public RotationComponent(string id, ControllerType controllerType) : base(id, controllerType)
         {
+        }
+
+        public override object Clone()
+        {
+            return new RotationComponent(Id, ControllerType);
         }
     }
 }

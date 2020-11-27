@@ -52,7 +52,7 @@ namespace GDLibrary.Controllers
 
         public new object Clone()
         {
-            return new PanController(ID, ControllerType, rotationAxis, trigonometricParameters.Clone() as TrigonometricParameters);
+            return new PanController(Id, ControllerType, rotationAxis, trigonometricParameters.Clone() as TrigonometricParameters);
         }
 
         #endregion Constructors & Core

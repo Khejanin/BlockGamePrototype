@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Utilities;
 
 namespace GDGame.Managers
 {
@@ -55,14 +56,14 @@ namespace GDGame.Managers
             }
 
             LevelStats levelStat = LevelStats[currentLevel];
-            if (levelStat.moveCount > currentMovesCount)
+            if (levelStat.MoveCount > currentMovesCount)
             {
-                levelStat.moveCount = currentMovesCount;
+                levelStat.MoveCount = currentMovesCount;
             }
 
-            if (levelStat.time > currentTime)
+            if (levelStat.Time > currentTime)
             {
-                levelStat.time = currentTime;
+                levelStat.Time = currentTime;
             }
 
             LevelStats[currentLevel] = levelStat;

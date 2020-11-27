@@ -25,29 +25,106 @@ namespace GDGame.Scenes
 {
     public class MainScene : Scene
     {
+        #region Variables
+
         private Dictionary<string, Model> models;
         private Dictionary<string, Texture2D> textures;
         private Dictionary<string, DrawnActor3D> drawnActors;
         private MouseManager mouseManager;
         private Vector3 levelBounds;
-
         private string levelName;
-        private bool optionsToggle;
 
+        private bool optionsToggle;
 
         ////FOR SKYBOX____ TEMP
         private PrimitiveObject archetypalTexturedQuad, primitiveObject;
         private BasicTile test;
         private Transform3DCurve transform3DCurve;
         private Curve3DController curve3DController;
-
         private DrawnActor3D player;
+
+        #endregion
+
+        #region Constructor - Update - Draw
 
         public MainScene(Main game, string levelName) : base(game)
         {
             mouseManager = new MouseManager(game, false);
             this.levelName = @"Game\LevelFiles\" + levelName;
         }
+
+        protected override void UpdateScene(GameTime gameTime)
+        {
+            if (curve3DController != null && curve3DController.ElapsedTimeInMs > 25000)
+            {
+                CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Curve Camera");
+                CameraManager.ActiveCameraIndex = 0;
+                transform3DCurve.Clear();
+                curve3DController = null;
+            }
+
+            if (player == null)
+            {
+                List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
+                if (players.Count > 0)
+                {
+                    if (CameraManager.ActiveCamera.ControllerList[0] is RotationAroundActor cam)
+                        cam.Target = players[0];
+
+                    player = players[0];
+                    players[0].StatusType = StatusType.Drawn | StatusType.Update;
+                }
+            }
+
+            if (player != null)
+            {
+                player.StatusType = CameraManager.ActiveCameraIndex switch
+                {
+                    0 => StatusType.Drawn | StatusType.Update,
+                    1 => StatusType.Drawn,
+                    _ => player.StatusType
+                };
+            }
+
+            if (KeyboardManager.IsFirstKeyPress(Keys.C))
+            {
+                CameraManager.CycleActiveCamera();
+                // this.cameraManager.ActiveCameraIndex++;
+            }
+
+            //Cycle Through Audio
+            if (KeyboardManager.IsFirstKeyPress(Keys.M))
+                SoundManager.NextSong();
+            //Stop Music
+            if (KeyboardManager.IsKeyDown(Keys.N))
+                SoundManager.StopSong();
+            //Volume Changes
+            if (KeyboardManager.IsFirstKeyPress(Keys.L))
+                SoundManager.VolumeUp();
+            else if (KeyboardManager.IsFirstKeyPress(Keys.K))
+                SoundManager.VolumeDown();
+            //Pause/resume music
+            if (KeyboardManager.IsFirstKeyPress(Keys.P))
+                SoundManager.ChangeMusicState();
+
+            //options menu
+            if (KeyboardManager.IsFirstKeyPress(Keys.O))
+                OptionsMenu();
+
+            //Test
+            if (KeyboardManager.IsFirstKeyPress(Keys.G))
+                this.test.Transform3D.TranslateBy(new Vector3(0, -1, 0));
+            else if (KeyboardManager.IsFirstKeyPress(Keys.H))
+                this.test.Transform3D.TranslateBy(new Vector3(0, 1, 0));
+        }
+
+        protected override void DrawScene(GameTime gameTime)
+        {
+        }
+
+        #endregion
+
+        #region Initialization
 
         public override void Initialize()
         {
@@ -56,21 +133,8 @@ namespace GDGame.Scenes
             InitLoadContent();
             InitDrawnContent();
             InitEvents();
+            base.Initialize();
         }
-
-        private void SetTargetToCamera()
-        {
-            List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
-            if (players.Count > 0)
-            {
-                if (CameraManager.ActiveCamera.ControllerList[0] is RotationAroundActor cam) cam.Target = players[0];
-
-                player = players[0];
-                players[0].StatusType = StatusType.Drawn | StatusType.Update;
-            }
-        }
-
-        #region Initialization - Vertices, Archetypes, Helpers, Drawn Content(e.g. Skybox)
 
         private void InitLoadContent()
         {
@@ -78,7 +142,6 @@ namespace GDGame.Scenes
             LoadSounds();
             LoadModels();
         }
-
 
         private void InitDrawnContent() //formerly InitPrimitives
         {
@@ -90,7 +153,7 @@ namespace GDGame.Scenes
             TestingPlatform();
 
             //Level Decorators
-             InitLevelDecor();
+            InitLevelDecor();
 
             //grids
             InitGrid();
@@ -157,32 +220,32 @@ namespace GDGame.Scenes
             }
         }
 
-
         private void InitCameras3D()
         {
             Transform3D transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
-            Camera3D camera3D = new Camera3D("cam", ActorType.Camera3D, StatusType.Update, transform3D,
-                ProjectionParameters.StandardDeepFourThree);
-            camera3D.ControllerList.Add(new RotationAroundActor("main_cam", ControllerType.FlightCamera,
-                KeyboardManager, 35, 20));
-            CameraManager.Add(camera3D);
+            Camera3D mainCamera = new Camera3D("cam", ActorType.Camera3D, StatusType.Update, transform3D, ProjectionParameters.StandardDeepFourThree);
+            mainCamera.ControllerList.Add(new RotationAroundActor("main_cam", ControllerType.FlightCamera, KeyboardManager, 35, 20));
+            CameraManager.Add(mainCamera);
 
-            transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
-            camera3D = new Camera3D("FlyCam", ActorType.Camera3D, StatusType.Update, transform3D,
-                ProjectionParameters.StandardDeepFourThree);
-            camera3D.ControllerList.Add(new FlightController("FPC", ControllerType.FlightCamera, KeyboardManager,
-                MouseManager, 0.01f, 0.01f, 0.01f));
-            CameraManager.Add(camera3D);
+            if (mainCamera.Clone() is Camera3D camera3D)
+            {
+                camera3D.ID = "FlightCamera";
+                camera3D.ControllerList.Clear();
+                camera3D.ControllerList.Add(new FlightController("FPC", ControllerType.FlightCamera, KeyboardManager, MouseManager, 0.01f, 0.01f, 0.01f));
+                CameraManager.Add(camera3D);
+            }
 
+            /*camera3D = mainCamera.Clone() as Camera3D;
+            if (camera3D != null)
+            {
+                camera3D.ID = "Curve Camera";
+                camera3D.ControllerList.Clear();
+                curve3DController = new Curve3DController("CurveCameraFlight", ControllerType.Curve, transform3DCurve);
+                camera3D.ControllerList.Add(curve3DController);
+                CameraManager.Add(camera3D);
+            }*/
 
-            transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
-            camera3D = new Camera3D("Curve Camera", ActorType.Camera3D, StatusType.Update, transform3D,
-                ProjectionParameters.StandardDeepFourThree);
-            curve3DController = new Curve3DController("CurveCameraFlight", ControllerType.Curve, transform3DCurve);
-            camera3D.ControllerList.Add(curve3DController);
-
-            CameraManager.Add(camera3D);
-            CameraManager.ActiveCameraIndex = 2;
+            CameraManager.ActiveCameraIndex = 0;
         }
 
         private void InitTransform3DCurve()
@@ -214,9 +277,9 @@ namespace GDGame.Scenes
             #region StaticTiles
 
             var effectParameters = new EffectParameters(ModelEffect, textures["Chocolate"], Color.White, 1);
-            BasicTile chocoloateTile = new BasicTile("ChocolateTile", ActorType.Primitive,
+            BasicTile chocolateTile = new BasicTile("ChocolateTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"], ETileType.Static);
-            chocoloateTile.ControllerList.Add(new CustomBoxColliderController("BasicTileBCC", ControllerType.Collider,
+            chocolateTile.ControllerList.Add(new CustomBoxColliderController("BasicTileBCC", ControllerType.Collider,
                 ColliderShape.Cube, 1f));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Ceramic"], Color.White, 1);
@@ -286,51 +349,34 @@ namespace GDGame.Scenes
             #region MovableTiles
 
             effectParameters = new EffectParameters(ModelEffect, textures["SugarB"], Color.White, 1);
-            AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"],
-                ETileType.Attachable);
-            attachableTile.ControllerList.Add(new CustomBoxColliderController("AttachableTileBCC",
-                ControllerType.Collider, ColliderShape.Cube, 1f));
-            attachableTile.ControllerList.Add(new TileMovementComponent("AttachableTileMC", ControllerType.Movement,
-                300,
-                new Curve1D(CurveLoopType.Cycle), true));
+            AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"], ETileType.Attachable);
+            attachableTile.ControllerList.Add(new CustomBoxColliderController("AttachableTileBCC", ControllerType.Collider, ColliderShape.Cube, 1f));
+            attachableTile.ControllerList.Add(new TileMovementComponent("AttachableTileMC", ControllerType.Movement, 300, new Curve1D(CurveLoopType.Cycle), true));
 
             effectParameters = new EffectParameters(ModelEffect, textures["SugarW"], Color.White, 1);
-            PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn, transform3D,
-                effectParameters, models["Cube"], ETileType.PlayerStart);
-            playerTile.ControllerList.Add(new CustomBoxColliderController("PlayerBCC", ControllerType.Collider,
-                ColliderShape.Cube, 1f));
-            playerTile.ControllerList.Add(new PlayerController("PlayerPC", ControllerType.Player, KeyboardManager,
-                GamePadManager, CameraManager));
-            playerTile.ControllerList.Add(new SoundController("PlayerSC", ControllerType.Sound, KeyboardManager,
-                SoundManager, "playerMove", "playerAttach"));
+            PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn, transform3D, effectParameters, models["Cube"], ETileType.PlayerStart);
+            playerTile.ControllerList.Add(new CustomBoxColliderController("PlayerBCC", ControllerType.Collider, ColliderShape.Cube, 1f));
+            playerTile.ControllerList.Add(new PlayerController("PlayerPC", ControllerType.Player, KeyboardManager, GamePadManager, CameraManager));
+            playerTile.ControllerList.Add(new SoundController("PlayerSC", ControllerType.Sound, KeyboardManager, SoundManager, "playerMove", "playerAttach"));
+            playerTile.ControllerList.Add(new TileMovementComponent("PlayerMC", ControllerType.Movement, 300, new Curve1D(CurveLoopType.Cycle), true));
             playerTile.ControllerList.Add(new RotationComponent("PlayerRC", ControllerType.Rotation));
-            playerTile.ControllerList.Add(new TileMovementComponent("PlayerMC", ControllerType.Movement, 300,
-                new Curve1D(CurveLoopType.Cycle), true));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
-            EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Drop"], ETileType.Enemy);
-            enemy.ControllerList.Add(new CustomBoxColliderController("EnemyBCC", ControllerType.Collider,
-                ColliderShape.Cube, 1f, ColliderType.CheckOnly));
-            enemy.ControllerList.Add(new TileMovementComponent("EnemyMC", ControllerType.Movement, 300,
-                new Curve1D(CurveLoopType.Cycle), true));
+            EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Drop"], ETileType.Enemy);
+            enemy.ControllerList.Add(new CustomBoxColliderController("EnemyBCC", ControllerType.Collider, ColliderShape.Cube, 1f, ColliderType.CheckOnly));
+            enemy.ControllerList.Add(new TileMovementComponent("EnemyMC", ControllerType.Movement, 300, new Curve1D(CurveLoopType.Cycle), true));
             enemy.ControllerList.Add(new RotationComponent("EnemyRC", ControllerType.Rotation));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
-            MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["SinglePlate"],
-                ETileType.MovingPlatform);
-            platform.ControllerList.Add(new CustomBoxColliderController("PlatformBCC", ControllerType.Collider,
-                ColliderShape.Cube, 1f));
-            platform.ControllerList.Add(new TileMovementComponent("PlatformMC", ControllerType.Movement, 300,
-                new Curve1D(CurveLoopType.Cycle)));
+            MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["SinglePlate"], ETileType.MovingPlatform);
+            platform.ControllerList.Add(new CustomBoxColliderController("PlatformBCC", ControllerType.Collider, ColliderShape.Cube, 1f));
+            platform.ControllerList.Add(new TileMovementComponent("PlatformMC", ControllerType.Movement, 300, new Curve1D(CurveLoopType.Cycle)));
 
             #endregion
 
             drawnActors = new Dictionary<string, DrawnActor3D>
             {
-                {"StaticTile", chocoloateTile},
+                {"StaticTile", chocolateTile},
                 {"PlateStackTile", plateStackBasicTile},
                 {"AttachableBlock", attachableTile},
                 {"PlayerBlock", playerTile},
@@ -385,7 +431,6 @@ namespace GDGame.Scenes
             ObjectManager.Add(actor);
         }
 
-
         private void InitLevelDecor()
         {
             float size = 1.5f;
@@ -401,7 +446,7 @@ namespace GDGame.Scenes
             };
             ObjectManager.Add(table);
 
-             effectParameters = new EffectParameters(ModelEffect, textures["Ceramic"], Color.White, 1);
+            effectParameters = new EffectParameters(ModelEffect, textures["Ceramic"], Color.White, 1);
             BasicTile cups = new BasicTile("Cups", ActorType.Primitive,
                 StatusType.Drawn, transform3D, effectParameters, models["Cups"], ETileType.Static)
             {
@@ -410,7 +455,7 @@ namespace GDGame.Scenes
             drawnActors.Add("Cups", cups);
             ObjectManager.Add(cups);
 
-             effectParameters = new EffectParameters(ModelEffect, textures["WhiteChocolate"], Color.White, 1);
+            effectParameters = new EffectParameters(ModelEffect, textures["WhiteChocolate"], Color.White, 1);
             BasicTile choco = new BasicTile("Chocolate", ActorType.Primitive,
                 StatusType.Drawn, transform3D, effectParameters, models["Chocolate"], ETileType.Static)
             {
@@ -422,7 +467,7 @@ namespace GDGame.Scenes
             BasicTile Cat = new BasicTile("Cat", ActorType.Primitive,
                 StatusType.Drawn, transform3D, effectParameters, models["Cat"], ETileType.Static)
             {
-                Transform3D = { Scale = scale }
+                Transform3D = {Scale = scale}
             };
             ObjectManager.Add(Cat);
 
@@ -430,7 +475,7 @@ namespace GDGame.Scenes
             BasicTile Catbed = new BasicTile("Catbed", ActorType.Primitive,
                 StatusType.Drawn, transform3D, effectParameters, models["CatBed"], ETileType.Static)
             {
-                Transform3D = { Scale = scale }
+                Transform3D = {Scale = scale}
             };
             ObjectManager.Add(Catbed);
         }
@@ -447,7 +492,6 @@ namespace GDGame.Scenes
             drawnActors.Add("StaticTile2", test);
             ObjectManager.Add(test);
         }
-
 
         private void InitUi()
         {
@@ -632,7 +676,6 @@ namespace GDGame.Scenes
 
         #endregion
 
-
         #region LoadContent
 
         private void LoadSounds()
@@ -710,7 +753,7 @@ namespace GDGame.Scenes
                 {"WhiteChocolate", chocW}, {"WhiteChocolate4x", chocW4X}, {"WhiteChocolate8x", chocW8X},
                 {"DarkChocolate", chocB}, {"DarkChocolate4x", chocB4X}, {"DarkChocolate8x", chocB8X},
                 {"SugarW", sugarWhite}, {"SugarB", sugarBrown},
-                {"Ceramic", ceramic}, {"Wood", wood}, {"blackTile", blackTile }, {"Checkers", checkers }
+                {"Ceramic", ceramic}, {"Wood", wood}, {"blackTile", blackTile}, {"Checkers", checkers}
             };
         }
 
@@ -744,7 +787,7 @@ namespace GDGame.Scenes
                 {"Button", buttonModel}, {"Drop", dropWithEyesModel}, {"Fork", forkModel}, {"Knife", knifeModel},
                 {"Mug", mugModel}, {"PlateStack", plateStackModel}, {"PlayerModel", playerModel},
                 {"Pyramid", pyramidModel}, {"SinglePlate", singlePlateCube}, {"SugarBox", sugarBoxCube},
-                {"Table", table}, {"Cups", cups}, {"Chocolate", chocolate}, {"Cat", cat }, {"CatBed", catbed},
+                {"Table", table}, {"Cups", cups}, {"Chocolate", chocolate}, {"Cat", cat}, {"CatBed", catbed},
                 {"CoffeePlane", coffeePlane}
             };
         }
@@ -779,63 +822,6 @@ namespace GDGame.Scenes
         #endregion
 
         #region Override Methodes
-
-        protected override void UpdateScene(GameTime gameTime)
-        {
-            if (curve3DController != null && curve3DController.ElapsedTimeInMs > 25000)
-            {
-                CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Curve Camera");
-                CameraManager.ActiveCameraIndex = 0;
-                SetTargetToCamera();
-                transform3DCurve.Clear();
-                curve3DController = null;
-            }
-
-            if (player != null)
-            {
-                player.StatusType = CameraManager.ActiveCameraIndex switch
-                {
-                    0 => StatusType.Drawn | StatusType.Update,
-                    1 => StatusType.Drawn,
-                    _ => player.StatusType
-                };
-            }
-
-            if (KeyboardManager.IsFirstKeyPress(Keys.C))
-            {
-                CameraManager.CycleActiveCamera();
-                // this.cameraManager.ActiveCameraIndex++;
-            }
-
-            //Cycle Through Audio
-            if (KeyboardManager.IsFirstKeyPress(Keys.M))
-                SoundManager.NextSong();
-            //Stop Music
-            if (KeyboardManager.IsKeyDown(Keys.N))
-                SoundManager.StopSong();
-            //Volume Changes
-            if (KeyboardManager.IsFirstKeyPress(Keys.L))
-                SoundManager.VolumeUp();
-            else if (KeyboardManager.IsFirstKeyPress(Keys.K))
-                SoundManager.VolumeDown();
-            //Pause/resume music
-            if (KeyboardManager.IsFirstKeyPress(Keys.P))
-                SoundManager.ChangeMusicState();
-
-            //options menu
-            if (KeyboardManager.IsFirstKeyPress(Keys.O))
-                OptionsMenu();
-
-            //Test
-            if (KeyboardManager.IsFirstKeyPress(Keys.G))
-                this.test.Transform3D.TranslateBy(new Vector3(0, -1, 0));
-            else if (KeyboardManager.IsFirstKeyPress(Keys.H))
-                this.test.Transform3D.TranslateBy(new Vector3(0, 1, 0));
-        }
-
-        protected override void DrawScene(GameTime gameTime)
-        {
-        }
 
         protected override void PreTerminate()
         {

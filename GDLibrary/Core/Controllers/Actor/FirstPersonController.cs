@@ -83,7 +83,7 @@ namespace GDLibrary.Controllers
 
         public new object Clone()
         {
-            return new FirstPersonController(ID, ControllerType, keyboardManager,
+            return new FirstPersonController(Id, ControllerType, keyboardManager,
                 mouseManager, moveSpeed, strafeSpeed, rotationSpeed);
         }
     }

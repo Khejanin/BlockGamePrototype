@@ -77,7 +77,7 @@ namespace GDLibrary.Controllers
 
         public new object Clone()
         {
-            return new FlightCameraController(ID, ControllerType, moveParameters.Clone() as MoveParameters);
+            return new FlightCameraController(Id, ControllerType, moveParameters.Clone() as MoveParameters);
         }
 
         #endregion Constructors & Core

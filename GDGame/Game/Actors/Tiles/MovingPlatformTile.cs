@@ -1,6 +1,7 @@
 ﻿using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Interfaces;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
@@ -53,9 +54,9 @@ namespace GDGame.Actors
 
             if (ControllerList != null)
             {
-                foreach (IController controller in ControllerList)
+                foreach (Controller controller in ControllerList)
                 {
-                    platform.ControllerList.Add(controller.Clone() as IController);
+                    platform.ControllerList.Add(controller.Clone() as Controller);
                 }
             }
 

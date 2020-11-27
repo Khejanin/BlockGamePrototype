@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using GDGame.Actors;
+using GDGame.Component;
 using Microsoft.Xna.Framework;
 using GDGame.Tiles;
 using GDGame.Enums;
@@ -25,7 +26,7 @@ namespace GDGame.Factory
             this.textures = textures;
         }
 
-        public BasicTile CreateTile(ETileType type,BasicTile.EStaticTileType staticTileType)
+        public BasicTile CreateTile(ETileType type, BasicTile.EStaticTileType staticTileType)
         {
             BasicTile tile = type switch
             {
@@ -60,7 +61,7 @@ namespace GDGame.Factory
             int randomN = MathHelperFunctions.Rnd.Next(0, 100);
             if (randomN > 70 && randomN < 90) texStringTiling = "4x";
             else if (randomN > 90) texStringTiling = "8x";
-            
+
             switch (tileType)
             {
                 case BasicTile.EStaticTileType.Chocolate:
@@ -73,16 +74,16 @@ namespace GDGame.Factory
                     texStringType = "DarkChocolate";
                     break;
                 case BasicTile.EStaticTileType.Plates:
-                    staticTile = ((BasicTile)drawnActors["PlateStackTile"]).Clone() as BasicTile;
+                    staticTile = ((BasicTile) drawnActors["PlateStackTile"]).Clone() as BasicTile;
                     break;
             }
 
             if (texStringType != "")
             {
-                staticTile = ((BasicTile)drawnActors["StaticTile"]).Clone() as BasicTile;
-                staticTile.EffectParameters.Texture = textures[texStringType + texStringTiling];
+                staticTile = ((BasicTile) drawnActors["StaticTile"]).Clone() as BasicTile;
+                if (staticTile != null) staticTile.EffectParameters.Texture = textures[texStringType + texStringTiling];
             }
-            
+
             objectManager.Add(staticTile);
             return staticTile;
         }
@@ -91,6 +92,8 @@ namespace GDGame.Factory
         {
             AttachableTile attachableTile = (AttachableTile) drawnActors["AttachableBlock"];
             attachableTile = attachableTile.Clone() as AttachableTile;
+            if (attachableTile?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent) tileMovementComponent.Tile = attachableTile;
+
             objectManager.Add(attachableTile);
             return attachableTile;
         }
@@ -99,13 +102,15 @@ namespace GDGame.Factory
         {
             PlayerTile playerTile = (PlayerTile) drawnActors["PlayerBlock"];
             playerTile = playerTile.Clone() as PlayerTile;
+            if (playerTile?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent) tileMovementComponent.Tile = playerTile;
+
             objectManager.Add(playerTile);
             return playerTile;
         }
 
         private BasicTile CreateGoal()
         {
-            GoalTile goal = (GoalTile)drawnActors["GoalTile"];
+            GoalTile goal = (GoalTile) drawnActors["GoalTile"];
             goal = goal.Clone() as GoalTile;
             objectManager.Add(goal);
             return goal;
@@ -113,15 +118,16 @@ namespace GDGame.Factory
 
         private BasicTile CreateEnemy()
         {
-            EnemyTile enemy = (EnemyTile)drawnActors["EnemyTile"];
+            EnemyTile enemy = (EnemyTile) drawnActors["EnemyTile"];
             enemy = enemy.Clone() as EnemyTile;
+            if (enemy?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent) tileMovementComponent.Tile = enemy;
             objectManager.Add(enemy);
             return enemy;
         }
 
         private BasicTile CreateButton()
         {
-            ButtonTile button = (ButtonTile)drawnActors["ButtonTile"];
+            ButtonTile button = (ButtonTile) drawnActors["ButtonTile"];
             button = button.Clone() as ButtonTile;
             objectManager.Add(button);
             return button;
@@ -129,15 +135,16 @@ namespace GDGame.Factory
 
         private BasicTile CreateMovingPlatform()
         {
-            MovingPlatformTile platform = (MovingPlatformTile)drawnActors["MovingPlatformTile"];
+            MovingPlatformTile platform = (MovingPlatformTile) drawnActors["MovingPlatformTile"];
             platform = platform.Clone() as MovingPlatformTile;
+            if (platform?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent) tileMovementComponent.Tile = platform;
             objectManager.Add(platform);
             return platform;
         }
 
         private BasicTile CreateSpike()
         {
-            SpikeTile spikeTile = (SpikeTile)drawnActors["SpikeTile"];
+            SpikeTile spikeTile = (SpikeTile) drawnActors["SpikeTile"];
             spikeTile = spikeTile.Clone() as SpikeTile;
             objectManager.Add(spikeTile);
             return spikeTile;
@@ -145,7 +152,7 @@ namespace GDGame.Factory
 
         private BasicTile CreatePickup()
         {
-            PickupTile pickupTile = (PickupTile)drawnActors["StarPickupTile"];
+            PickupTile pickupTile = (PickupTile) drawnActors["StarPickupTile"];
             pickupTile = pickupTile.Clone() as PickupTile;
             objectManager.Add(pickupTile);
             return pickupTile;
@@ -153,7 +160,7 @@ namespace GDGame.Factory
 
         private BasicTile CreateCheckpoint()
         {
-            CheckpointTile checkpoint = (CheckpointTile)drawnActors["CheckpointTile"];
+            CheckpointTile checkpoint = (CheckpointTile) drawnActors["CheckpointTile"];
             checkpoint = checkpoint.Clone() as CheckpointTile;
             objectManager.Add(checkpoint);
             return checkpoint;

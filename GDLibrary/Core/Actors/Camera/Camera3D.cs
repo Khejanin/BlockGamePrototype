@@ -73,8 +73,7 @@ namespace GDLibrary.Actors
 
         public new object Clone()
         {
-            return new Camera3D(ID, ActorType, StatusType, Transform3D.Clone() as Transform3D,
-                projectionParameters.Clone() as ProjectionParameters);
+            return new Camera3D(ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, projectionParameters.Clone() as ProjectionParameters);
         }
 
         public override bool Equals(object obj)

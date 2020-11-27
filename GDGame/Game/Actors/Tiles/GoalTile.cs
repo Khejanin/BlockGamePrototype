@@ -1,4 +1,5 @@
 ﻿using GDGame.Enums;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
@@ -20,9 +21,9 @@ namespace GDGame.Actors
                 EffectParameters.Clone() as EffectParameters, Model, TileType);
             if (ControllerList != null)
             {
-                foreach (IController controller in ControllerList)
+                foreach (Controller controller in ControllerList)
                 {
-                    goalTile.ControllerList.Add(controller.Clone() as IController);
+                    goalTile.ControllerList.Add(controller.Clone() as Controller);
                 }
             }
 

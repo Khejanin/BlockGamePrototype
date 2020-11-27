@@ -1,5 +1,8 @@
-﻿using GDGame.Actors;
+﻿using System;
+using GDGame.Actors;
 using GDGame.Enums;
+using GDGame.Utilities;
+using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.EventSystem
@@ -19,6 +22,7 @@ namespace GDGame.EventSystem
          public PlayerEventType type;
          public Vector3? position;
          public AttachableTile attachedTile;
+         
      }
 
      public class ActivatorEventInfo : EventInfo
@@ -56,5 +60,14 @@ namespace GDGame.EventSystem
      public class CameraEvent : EventInfo
      {
          
+     }
+     
+     public class MovementEvent : EventInfo
+     {
+         public MovementType type;
+         public Vector3 direction;
+         public Action onMoveEnd;
+         public Action<Raycaster.HitResult> onCollideCallback;
+         public MovableTile tile;
      }
  }

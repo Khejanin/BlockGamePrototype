@@ -5,8 +5,8 @@ using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Tiles;
 using GDGame.Utilities;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
-using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -18,14 +18,12 @@ namespace GDGame.Actors
     {
         private Vector3 lastCheckpoint;
         private List<Shape> attachCandidates;
-        public List<Shape> AttachCandidates => attachCandidates;
         public List<AttachableTile> AttachedTiles { get; }
         public bool IsAttached { get; private set; }
 
         private struct PlayerSurroundCheck
         {
             public HitResult hit;
-            public Direction direction;
         }
 
         public PlayerTile(string id, ActorType actorType, StatusType statusType,
@@ -39,7 +37,19 @@ namespace GDGame.Actors
         public override void InitializeTile()
         {
             EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
+            EventManager.RegisterListener<MovementEvent>(HandleMovementEvent);
             lastCheckpoint = Transform3D.Translation;
+        }
+
+        private void HandleMovementEvent(MovementEvent movementEvent)
+        {
+            if (movementEvent.type == MovementType.OnPlayerMoved)
+            {
+                foreach (AttachableTile attachedTile in AttachedTiles)
+                {
+                    EventManager.FireEvent(new MovementEvent{type = MovementType.OnMove, direction = movementEvent.direction, onMoveEnd = OnMoveEnd, tile = attachedTile});
+                }
+            }
         }
 
         private void HandlePlayerEvent(PlayerEventInfo info)
@@ -148,31 +158,24 @@ namespace GDGame.Actors
 
             PlayerSurroundCheck surroundCheck = new PlayerSurroundCheck();
             surroundCheck.hit = this.Raycast(translation, Vector3.Right, true, 1f);
-            surroundCheck.direction = Direction.Right;
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(translation, Vector3.Left, true, 1f);
-            surroundCheck.direction = Direction.Left;
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(translation, Vector3.Forward, true, 1f);
-            surroundCheck.direction = Direction.Forward;
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(translation, Vector3.Backward, true, 1f);
-            surroundCheck.direction = Direction.Backward;
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(translation, Vector3.Up, true, 1f);
-            surroundCheck.direction = Direction.Up;
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(translation, Vector3.Down, true, 1f);
-            surroundCheck.direction = Direction.Down;
             result.Add(surroundCheck);
 
             surroundCheck.hit = this.Raycast(translation, Vector3.Down, true, 0.5f);
-            surroundCheck.direction = Direction.None;
             result.Add(surroundCheck);
 
             return result;
@@ -192,18 +195,19 @@ namespace GDGame.Actors
 
         public new object Clone()
         {
-            PlayerTile playerTile = new PlayerTile("clone - " + ID, ActorType, StatusType,
-                Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as EffectParameters, Model, TileType);
+            PlayerTile playerTile = new PlayerTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as EffectParameters, Model, TileType);
+            
             if (ControllerList != null)
             {
-                foreach (IController controller in ControllerList)
+                foreach (Controller controller in ControllerList)
                 {
-                    playerTile.ControllerList.Add(controller.Clone() as IController);
+                    playerTile.ControllerList.Add(controller.Clone() as Controller);
                 }
             }
 
             return playerTile;
         }
+        
+        
     }
 }

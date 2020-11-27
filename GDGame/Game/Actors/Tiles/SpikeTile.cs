@@ -1,4 +1,5 @@
 ﻿using GDGame.Enums;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
@@ -20,9 +21,9 @@ namespace GDGame.Actors
 
             if (ControllerList != null)
             {
-                foreach (IController controller in ControllerList)
+                foreach (Controller controller in ControllerList)
                 {
-                    spikeTile.ControllerList.Add(controller.Clone() as IController);
+                    spikeTile.ControllerList.Add(controller.Clone() as Controller);
                 }
             }
 

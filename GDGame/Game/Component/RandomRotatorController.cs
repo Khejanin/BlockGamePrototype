@@ -16,14 +16,14 @@ namespace GDGame.Component
         
         public RandomRotatorController(string id, ControllerType controllerType) : base(id, controllerType)
         {
-            SharpDX.Vector3 vec = RandomUtil.NextVector3(MathHelperFunctions.Rnd,SharpDX.Vector3.Zero, SharpDX.Vector3.One);
+            SharpDX.Vector3 vec = MathHelperFunctions.Rnd.NextVector3(SharpDX.Vector3.Zero, SharpDX.Vector3.One);
             rotation = new Vector3(vec.X,vec.Y,vec.Z);
         }
 
         public override void Update(GameTime gameTime, IActor actor)
         {
             Actor3D actor3D = actor as Actor3D;
-            actor3D.Transform3D.RotateBy(rotation * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            actor3D?.Transform3D.RotateBy(rotation * (float) gameTime.ElapsedGameTime.TotalSeconds);
         }
     }
 }

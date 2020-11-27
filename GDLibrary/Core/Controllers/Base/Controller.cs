@@ -19,19 +19,19 @@ namespace GDLibrary.Controllers
 
         #region Properties
 
-        public string ID { get => id; set => id = value.Trim(); }
-        public ControllerType ControllerType { get => controllerType; set => controllerType = value; }
+        protected string Id { get => id; set => id = value.Trim(); }
+        protected ControllerType ControllerType { get => controllerType; set => controllerType = value; }
 
         public ControllerType GetControllerType()
         {
-            throw new NotImplementedException();
+            return ControllerType;
         }
 
         #endregion Properties
 
-        public Controller(string id, ControllerType controllerType)
+        protected Controller(string id, ControllerType controllerType)
         {
-            ID = id;
+            Id = id;
             ControllerType = controllerType;
         }
 
@@ -40,7 +40,7 @@ namespace GDLibrary.Controllers
             //does nothing - see child classes
         }
 
-        public object Clone()
+        public virtual object Clone()
         {
             return new Controller(id, controllerType);
         }
