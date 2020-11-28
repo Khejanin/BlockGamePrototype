@@ -369,8 +369,8 @@ namespace GDGame.Scenes
             enemy.ControllerList.Add(new RotationComponent("EnemyRC", ControllerType.Rotation));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
-            MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
-                models["SinglePlate"], ETileType.MovingPlatform);
+            MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Platform, StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
+                models["SinglePlate"], ETileType.MovingPlatform, new Vector3(3, 0, 0));
             platform.ControllerList.Add(new CustomBoxColliderController("PlatformBCC", ControllerType.Collider, ColliderShape.Cube, 1f));
             platform.ControllerList.Add(new TileMovementComponent("PlatformMC", ControllerType.Movement, 300, new Curve1D(CurveLoopType.Cycle)));
 

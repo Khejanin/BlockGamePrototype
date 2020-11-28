@@ -20,6 +20,7 @@
         Player,    //hero (rendered using Max/Maya file)
         Decorator, //architecture, obstacle (rendered using Max/Maya file)
         Primitive, //make this type using IVertexData
+        Platform,
 
         Camera2D,
         Camera3D,
