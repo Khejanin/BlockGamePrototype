@@ -3,6 +3,7 @@ using GDGame.Enums;
 using GDGame.Utilities;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
+using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -46,9 +47,9 @@ namespace GDGame.Actors
 
             if (ControllerList != null)
             {
-                foreach (Controller controller in ControllerList)
+                foreach (IController controller in ControllerList)
                 {
-                    movableTile.ControllerList.Add(controller.Clone() as Controller);
+                    movableTile.ControllerList.Add(controller.Clone() as IController);
                 }
             }
 

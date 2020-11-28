@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GDGame.EventSystem;
 using GDGame.Managers;
 using GDGame.Scenes;
@@ -12,11 +11,14 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MenuScene = GDGame.Scenes.MenuScene;
 
 namespace GDGame
 {
     public class Main : Microsoft.Xna.Framework.Game
     {
+        
+
         #region Fields
 
         public GraphicsDeviceManager Graphics { get; }
@@ -36,6 +38,8 @@ namespace GDGame
         public UiManager UiManager { get; private set; }
         public Dictionary<string, SpriteFont> Fonts { get; private set; }
         public ProjectionParameters GlobalProjectionParameters => ProjectionParameters.StandardDeepSixteenTen;
+        private PhysicsManager PhysicsManager { get; set; }
+        private RenderManager RenderManager { get; set; }
 
         #endregion
 
@@ -68,8 +72,11 @@ namespace GDGame
 
             Components.Add(new EventDispatcher(this));
 
+            PhysicsManager = new PhysicsManager(this, StatusType.Off);
+            Components.Add(PhysicsManager);
+
             //Camera
-            CameraManager = new CameraManager<Camera3D>(this);
+            CameraManager = new CameraManager<Camera3D>(this, StatusType.Update);
             Components.Add(CameraManager);
 
             //Scene
@@ -80,12 +87,8 @@ namespace GDGame
             KeyboardManager = new KeyboardManager(this);
             Components.Add(KeyboardManager);
 
-            //Gamepad
-            GamePadManager = new GamePadManager(this, 1);
-            Components.Add(GamePadManager);
-
             //Mouse
-            MouseManager = new MouseManager(this, false);
+            MouseManager = new MouseManager(this, true, PhysicsManager);
             Components.Add(MouseManager);
 
             //Sound
@@ -93,11 +96,17 @@ namespace GDGame
             Components.Add(SoundManager);
 
             //Object
-            ObjectManager = new ObjectManager(this, StatusType.Update | StatusType.Drawn, 6, 10, CameraManager);
+            ObjectManager = new ObjectManager(this, StatusType.Update, 6, 10);
             Components.Add(ObjectManager);
+            
+            //render
+            RenderManager = new RenderManager(this, StatusType.Drawn, ScreenLayoutType.Single, ObjectManager, CameraManager);
+            Components.Add(RenderManager);
 
             UiManager = new UiManager(this);
             Components.Add(UiManager);
+
+            RaycastManager.Instance.ObjectManager = ObjectManager;
 
             LevelDataManager = new LevelDataManager();
         }
@@ -108,15 +117,14 @@ namespace GDGame
             //SceneManager.AddScene("Test", new MainScene(this, "test_Enemy_path.json"));
             SceneManager.AddScene("Level 7", new MainScene(this, "Big_Level.json"));
 
-            /*
-            SceneManager.AddScene("Tutorial", new TutorialScene(this));
-            SceneManager.AddScene("Level1", new MainScene(this, "Paul_Level_1.json"));
-            SceneManager.AddScene("Level2", new MainScene(this, "Paul_Level_2.json"));
-            SceneManager.AddScene("Level3", new MainScene(this, "Paul_Level_3.json"));
-            SceneManager.AddScene("Level4", new MainScene(this, "Paul_Level_4.json"));
-            SceneManager.AddScene("Level5", new MainScene(this, "Paul_Level_5.json"));
-            SceneManager.AddScene("Level6", new MainScene(this, "Paul_Level_6.json"));
-            */
+
+            //SceneManager.AddScene("Tutorial", new TutorialScene(this));
+            //SceneManager.AddScene("Level1", new MainScene(this, "Paul_Level_1.json"));
+            //SceneManager.AddScene("Level2", new MainScene(this, "Paul_Level_2.json"));
+            //SceneManager.AddScene("Level3", new MainScene(this, "Paul_Level_3.json"));
+            //SceneManager.AddScene("Level4", new MainScene(this, "Paul_Level_4.json"));
+            //SceneManager.AddScene("Level5", new MainScene(this, "Paul_Level_5.json"));
+            //SceneManager.AddScene("Level6", new MainScene(this, "Paul_Level_6.json"));
             //throws back to menu eventually
             SceneManager.AddScene("End", new EndScene(this));
 

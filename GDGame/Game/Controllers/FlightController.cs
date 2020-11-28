@@ -1,4 +1,5 @@
-﻿using GDLibrary.Actors;
+﻿using System;
+using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
@@ -8,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GDGame.Controllers
 {
-    public class FlightController : Controller
+    public class FlightController : Controller, ICloneable
     {
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
@@ -74,7 +75,7 @@ namespace GDGame.Controllers
 
         public new object Clone()
         {
-            return new FirstPersonController(Id, ControllerType, keyboardManager,
+            return new FirstPersonController(ID, ControllerType, keyboardManager,
                 mouseManager, moveSpeed, strafeSpeed, rotationSpeed);
         }
     }

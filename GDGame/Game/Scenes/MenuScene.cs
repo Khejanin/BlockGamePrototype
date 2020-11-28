@@ -20,7 +20,7 @@ namespace GDGame.Scenes
 
         public MenuScene(Main game, bool unloadsContent = false) : base(game, unloadsContent)
         {
-            MouseManager mouseManager = new MouseManager(game, true);
+            MouseManager mouseManager = game.MouseManager;
             backgroundColor = Color.LightCyan;
         }
 
@@ -76,8 +76,8 @@ namespace GDGame.Scenes
 
         private void InitializeCamera()
         {
-            Camera3D camera3D = new Camera3D("Menu_Camera", ActorType.Camera3D, StatusType.Update,
-                new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up), Game.GlobalProjectionParameters);
+            Camera3D camera3D = new Camera3D("Menu_Camera", ActorType.Camera3D, StatusType.Update, new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up),
+                Game.GlobalProjectionParameters, new Viewport(0, 0, 1024, 768));
             CameraManager.Add(camera3D);
         }
 
@@ -108,7 +108,7 @@ namespace GDGame.Scenes
         protected override void Terminate()
         {
             UiManager.Clear();
-            CameraManager.Clear();
+            CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Menu_Camera");
         }
 
 
@@ -117,7 +117,7 @@ namespace GDGame.Scenes
         private void LoadSounds()
         {
             SoundEffect mainTheme = Content.Load<SoundEffect>("Assets/GameTracks/testTrack04");
-            SoundManager.Add(new Sounds(mainTheme, "mainTheme", ActorType.specialTrack, StatusType.Update));
+            SoundManager.Add(new Sounds(mainTheme, "mainTheme", ActorType.SpecialTrack, StatusType.Update));
             SoundManager.PlaySoundEffect("mainTheme");
         }
 

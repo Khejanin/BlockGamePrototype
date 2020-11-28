@@ -1,8 +1,10 @@
 ﻿using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Managers;
 using GDGame.Utilities;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
+using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -19,8 +21,8 @@ namespace GDGame.Actors
 
         public void OnMoveEnd()
         {
-            CheckCollision(this.Raycast(Transform3D.Translation, Vector3.Down, true, 0.5f, false));
-            Raycaster.HitResult hit = this.Raycast(Transform3D.Translation, Vector3.Down, true, 0.5f, false);
+            CheckCollision(RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f));
+            Raycaster.HitResult hit = RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f);
             if (hit?.actor is SpikeTile)
                 System.Diagnostics.Debug.WriteLine(ID + " is ded!");
         }
@@ -31,7 +33,7 @@ namespace GDGame.Actors
 
             switch (hit.actor)
             {
-                case SpikeTile spikeTile:
+                case SpikeTile _:
                     EventManager.FireEvent(new PlayerEventInfo
                         {type = PlayerEventType.AttachedTileDie, attachedTile = this});
                     break;
@@ -47,15 +49,15 @@ namespace GDGame.Actors
 
         public new object Clone()
         {
-            AttachableTile enemyTile = new AttachableTile("clone - " + ID , ActorType, StatusType,
+            AttachableTile enemyTile = new AttachableTile("clone - " + ID, ActorType, StatusType,
                 Transform3D.Clone() as Transform3D,
                 EffectParameters.Clone() as EffectParameters, Model, TileType);
 
             if (ControllerList != null)
             {
-                foreach (Controller controller in ControllerList)
+                foreach (IController controller in ControllerList)
                 {
-                    enemyTile.ControllerList.Add(controller.Clone() as Controller);
+                    enemyTile.ControllerList.Add(controller.Clone() as IController);
                 }
             }
 

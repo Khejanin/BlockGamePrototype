@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using GDGame.Actors;
 using GDGame.Controllers;
 using GDGame.Enums;
@@ -20,7 +21,8 @@ namespace GDGame.Utilities
 
         #region Public Methods
 
-        public static void PlayerCastAll(this PlayerTile player, Vector3 offset, List<Vector3> initialPositions, List<Vector3> endPositions, ref List<HitResult> blockingObjectsResult, ref List<FloorHitResult> floorResult)
+        public static void PlayerCastAll(this PlayerTile player, ObjectManager objectManager, Vector3 offset, List<Vector3> initialPositions, List<Vector3> endPositions,
+            ref List<HitResult> blockingObjectsResult, ref List<FloorHitResult> floorResult)
         {
             List<Actor3D> ignore = new List<Actor3D>();
             ignore.AddRange(player.AttachedTiles);
@@ -33,25 +35,28 @@ namespace GDGame.Utilities
                 //Check if this block's trajectory is blocked by anything in its path
                 Vector3 maxDist = (endPositions[i]) - (initialPositions[i]);
                 Vector3 dir = Vector3.Normalize(maxDist);
-                blockingObjectsResult.AddRange(RaycastAll(initialPositions[i] + offset, dir, maxDist.Length(), ignore));
+                blockingObjectsResult.AddRange(RaycastAll(objectManager, initialPositions[i] + offset, dir, maxDist.Length(), ignore));
 
                 //If there's anything directly above this block and the block moves in Y, it's an illegal move
                 if (dir.Y > 0)
-                    blockingObjectsResult.AddRange(RaycastAll(initialPositions[i], Vector3.Up, 1f, ignore));
+                    blockingObjectsResult.AddRange(RaycastAll(objectManager, initialPositions[i], Vector3.Up, 1f, ignore));
 
                 //Check if this block will be on a floor tile after moving
-                HitResult hit = Raycast(endPositions[i], Vector3.Down, 1f, ignore);
+                HitResult hit = Raycast(objectManager, endPositions[i], Vector3.Down, 1f, ignore);
                 if (hit != null)
-                    floorResult.Add(new FloorHitResult() {hitResult = hit, actor3D = ignore[i]});
+                    floorResult.Add(new FloorHitResult {hitResult = hit, actor3D = ignore[i]});
             }
         }
 
-        public static void Raycast(Vector3 position, Vector3 direction, ref List<HitResult> hit,
-            float maxDist = float.MaxValue, List<Actor3D> ignoreList = null, bool onlyCheckBlocking = true)
+        private static void Raycast(ObjectManager objectManager, Vector3 position, Vector3 direction, ref List<HitResult> hit, float maxDist = float.MaxValue,
+            ICollection<Actor3D> ignoreList = null, bool onlyCheckBlocking = true)
         {
             if (maxDist <= 0) throw new ArgumentException("You can't set a max cast distance to zero or negative!");
 
-            List<DrawnActor3D> allObjects = ObjectManager.GetAllObjects();
+
+            List<DrawnActor3D> allObjects = new List<DrawnActor3D>();
+            allObjects.AddRange(objectManager.OpaqueList);
+            allObjects.AddRange(objectManager.TransparentList);
             if (ignoreList != null) allObjects.RemoveAll(ignoreList.Contains);
             Ray ray = new Ray(position, direction);
             foreach (DrawnActor3D drawnActor3D in allObjects)
@@ -60,66 +65,57 @@ namespace GDGame.Utilities
 
                 PrimitiveColliderController pcc = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as PrimitiveColliderController;
 
-                CustomBoxColliderController cbcc = null;
-                if (pcc == null) cbcc = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as CustomBoxColliderController;
+                CustomBoxColliderController customBoxColliderController = null;
+                if (pcc == null)
+                    customBoxColliderController = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as CustomBoxColliderController;
 
                 bool pccCheck = pcc != null && (dist = ray.Intersects(pcc.GetBounds(drawnActor3D as PrimitiveObject))) != null &&
                                 (pcc.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
-                bool cbccCheck = cbcc != null && (dist = ray.Intersects(cbcc.GetBounds(drawnActor3D))) != null &&
-                                 (cbcc.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
+                bool customBoxColliderCheck = customBoxColliderController != null && (dist = ray.Intersects(customBoxColliderController.GetBounds(drawnActor3D))) != null &&
+                                              (customBoxColliderController.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
 
-                if ((pccCheck || cbccCheck) && dist < maxDist)
+                if ((pccCheck || customBoxColliderCheck) && dist < maxDist)
                 {
-                    HitResult result = new HitResult();
-                    result.actor = drawnActor3D;
-                    result.distance = (float) dist;
-                    result.hitPosition = position + direction * result.distance;
+                    HitResult result = new HitResult {actor = drawnActor3D, distance = (float) dist};
                     hit.Add(result);
                 }
             }
         }
 
-        private static HitResult Raycast(Vector3 position, Vector3 direction, float maxDist = float.MaxValue,
-            List<Actor3D> ignoreList = null, bool onlyCheckBlocking = true)
+        private static HitResult Raycast(ObjectManager objectManager, Vector3 position, Vector3 direction, float maxDist = float.MaxValue, List<Actor3D> ignoreList = null,
+            bool onlyCheckBlocking = true)
         {
-            List<HitResult> all = RaycastAll(position, direction, maxDist, ignoreList, onlyCheckBlocking);
+            List<HitResult> all = RaycastAll(objectManager, position, direction, maxDist, ignoreList, onlyCheckBlocking);
             all.Sort();
 
-            if (all.Count == 0)
-                return null;
-
-            return all[0];
+            return all.Count == 0 ? null : all[0];
         }
 
-        public static HitResult Raycast(this DrawnActor3D callingDrawnActor3D, Vector3 position, Vector3 direction,
-            bool ignoreSelf, float maxDist = Single.MaxValue, bool onlyCheckBlocking = true)
+        public static HitResult Raycast(this DrawnActor3D callingDrawnActor3D, ObjectManager objectManager, Vector3 position, Vector3 direction, bool ignoreSelf,
+            float maxDist = float.MaxValue, bool onlyCheckBlocking = true)
         {
-            List<HitResult> all = RaycastAll(callingDrawnActor3D, position, direction, ignoreSelf, maxDist,
-                onlyCheckBlocking);
+            List<HitResult> all = RaycastAll(callingDrawnActor3D, objectManager, position, direction, ignoreSelf, maxDist, onlyCheckBlocking);
             all.Sort();
 
-            if (all.Count == 0)
-                return null;
-
-            return all[0];
+            return all.Count == 0 ? null : all[0];
         }
 
-        public static List<HitResult> RaycastAll(Vector3 position, Vector3 direction, float maxDist = float.MaxValue,
+        public static List<HitResult> RaycastAll(ObjectManager objectManager, Vector3 position, Vector3 direction, float maxDist = float.MaxValue,
             List<Actor3D> ignoreList = null, bool onlyCheckBlocking = true)
         {
             List<HitResult> result = new List<HitResult>();
-            Raycast(position, direction, ref result, maxDist, ignoreList, onlyCheckBlocking);
+            Raycast(objectManager, position, direction, ref result, maxDist, ignoreList, onlyCheckBlocking);
             return result;
         }
 
 
-        public static List<HitResult> RaycastAll(this DrawnActor3D callingDrawnActor3D, Vector3 position,
-            Vector3 direction, bool ignoreSelf, float maxDist = Single.MaxValue, bool onlyCheckBlocking = true)
+        public static List<HitResult> RaycastAll(this DrawnActor3D callingDrawnActor3D, ObjectManager objectManager, Vector3 position, Vector3 direction, bool ignoreSelf,
+            float maxDist = float.MaxValue, bool onlyCheckBlocking = true)
         {
             List<Actor3D> ignoreList = new List<Actor3D>();
             if (ignoreSelf) ignoreList.Add(callingDrawnActor3D);
 
-            return RaycastAll(position, direction, maxDist, ignoreList, onlyCheckBlocking);
+            return RaycastAll(objectManager, position, direction, maxDist, ignoreList, onlyCheckBlocking);
         }
 
         #endregion
@@ -129,9 +125,7 @@ namespace GDGame.Utilities
             #region Public variables
 
             public Actor3D actor;
-            public ColliderController collider;
             public float distance;
-            public Vector3 hitPosition;
 
             #endregion
 

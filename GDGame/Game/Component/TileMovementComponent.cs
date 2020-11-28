@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using GDGame.Actors;
 using GDGame.Controllers;
 using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Managers;
 using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
@@ -13,14 +15,15 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Component
 {
-    public class TileMovementComponent : Controller
+    public class TileMovementComponent : Controller, ICloneable
     {
         private int movementTime;
         private bool useFlipMovement;
         private Curve1D curve1D;
 
 
-        public TileMovementComponent(string id, ControllerType controllerType, int movementTime, Curve1D curve1D, bool useFlipMovement = false, MovableTile movableTile = null) : base(id, controllerType)
+        public TileMovementComponent(string id, ControllerType controllerType, int movementTime, Curve1D curve1D, bool useFlipMovement = false, MovableTile movableTile = null) :
+            base(id, controllerType)
         {
             this.movementTime = movementTime;
             this.useFlipMovement = useFlipMovement;
@@ -46,8 +49,9 @@ namespace GDGame.Component
             }
         }
 
-        private void MoveInDirection(MovableTile movableTile, Vector3 direction, Action onMoveEndCallback = null, Action<Raycaster.HitResult> onCollideCallback = null)
+        private void MoveInDirection(Actor movableTile, Vector3 direction, Action onMoveEndCallback = null, Action<Raycaster.HitResult> onCollideCallback = null)
         {
+            
             if (Equals(Tile, movableTile) && !Tile.IsMoving)
             {
                 Tile.EndMoveCallback = onMoveEndCallback;
@@ -75,10 +79,6 @@ namespace GDGame.Component
                         if (playerController != null && playerController.IsMoveValid(Tile as PlayerTile, rot, Tile.RotatePoint, Tile.EndPos, offset))
                         {
                             EventManager.FireEvent(new MovementEvent {type = MovementType.OnPlayerMoved, direction = direction});
-
-                            //Calculate movement for each attached tile
-                            Tile.CurrentMovementTime = movementTime;
-                            Tile.IsMoving = true;
                         }
                         else
                         {
@@ -121,7 +121,7 @@ namespace GDGame.Component
 
                 if (Tile.OnCollideCallback != null)
                 {
-                    Raycaster.HitResult hit = Tile.Raycast(trans, Vector3.Up, true, 1f, false);
+                    Raycaster.HitResult hit = RaycastManager.Instance.Raycast(Tile, trans, Vector3.Up, true, 1f);
 
                     if (hit != null)
                     {
@@ -135,9 +135,9 @@ namespace GDGame.Component
             }
         }
 
-        public override object Clone()
+        public new object Clone()
         {
-            TileMovementComponent tileMovementComponent = new TileMovementComponent(Id, ControllerType, movementTime, new Curve1D(curve1D.CurveLookType), useFlipMovement, Tile);
+            TileMovementComponent tileMovementComponent = new TileMovementComponent(ID, ControllerType, movementTime, new Curve1D(curve1D.CurveLookType), useFlipMovement, Tile);
             tileMovementComponent.Init();
             return tileMovementComponent;
         }

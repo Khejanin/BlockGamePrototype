@@ -38,16 +38,6 @@ namespace GDLibrary.Containers
             return count;
         }
 
-        //public virtual void Update(GameTime gameTime, IActor parent)
-        //{
-        //    //calls update on all controllers
-        //    foreach (IEventHandler controller in this)
-        //    {
-        //        controller.Update(gameTime, parent);
-        //    }
-        //}
-
-
         #endregion Constructors & Core
     }
 }

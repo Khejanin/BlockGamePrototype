@@ -4,6 +4,7 @@ using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace GDGame.Scenes
@@ -24,8 +25,8 @@ namespace GDGame.Scenes
 
         private void InitializeCamera()
         {
-            Camera3D camera3D = new Camera3D("Menu_Camera", ActorType.Camera3D, StatusType.Update,
-                new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up), Game.GlobalProjectionParameters);
+            Camera3D camera3D = new Camera3D("Menu_Camera", ActorType.Camera3D, StatusType.Update, new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up),
+                Game.GlobalProjectionParameters, new Viewport(0, 0, 1024, 768));
             CameraManager.Add(camera3D);
         }
 

@@ -21,9 +21,9 @@ namespace GDGame.Actors
 
             if (ControllerList != null)
             {
-                foreach (Controller controller in ControllerList)
+                foreach (IController controller in ControllerList)
                 {
-                    spikeTile.ControllerList.Add(controller.Clone() as Controller);
+                    spikeTile.ControllerList.Add(controller.Clone() as IController);
                 }
             }
 

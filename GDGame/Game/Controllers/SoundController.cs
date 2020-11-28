@@ -1,4 +1,5 @@
-﻿using GDGame.Actors;
+﻿using System;
+using GDGame.Actors;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
@@ -10,7 +11,7 @@ using GDLibrary.Managers;
 
 namespace GDGame.Controllers
 {
-    internal class SoundController : Controller
+    internal class SoundController : Controller, ICloneable
     {
         private KeyboardManager keyboardManager;
         private PlayerTile playerTile;
@@ -38,17 +39,17 @@ namespace GDGame.Controllers
 
         public new object Clone()
         {
-            return new SoundController(Id, ControllerType, keyboardManager, soundManager, moveSfx, attachSfx);
+            return new SoundController(ID, ControllerType, keyboardManager, soundManager, moveSfx, attachSfx);
         }
 
         public override void Update(GameTime gameTime, IActor actor)
         {
             playerTile ??= actor as PlayerTile;
             if (keyboardManager.IsKeyPressed())
-                HandleKeyboardInput(gameTime);
+                HandleKeyboardInput();
         }
 
-        private void HandleKeyboardInput(GameTime gameTime)
+        private void HandleKeyboardInput()
         {
             HandlePlayerMovement();
         }

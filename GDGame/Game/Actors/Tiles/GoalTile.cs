@@ -21,9 +21,9 @@ namespace GDGame.Actors
                 EffectParameters.Clone() as EffectParameters, Model, TileType);
             if (ControllerList != null)
             {
-                foreach (Controller controller in ControllerList)
+                foreach (IController controller in ControllerList)
                 {
-                    goalTile.ControllerList.Add(controller.Clone() as Controller);
+                    goalTile.ControllerList.Add(controller.Clone() as IController);
                 }
             }
 

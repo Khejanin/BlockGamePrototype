@@ -101,9 +101,6 @@ namespace GDGame.Scenes
             onUnloadedCallback = cb;
             if (unloadsContent)
                 Content.Unload();
-
-            CameraManager.Clear();
-
             terminateOnNextTick = true;
             PreTerminate();
         }

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Component
 {
-    public class RotationComponent : Controller
+    public class RotationComponent : Controller, ICloneable
     {
         private Vector3 rightRotatePoint;
         private Vector3 leftRotatePoint;
@@ -83,9 +83,9 @@ namespace GDGame.Component
         {
         }
 
-        public override object Clone()
+        public new object Clone()
         {
-            return new RotationComponent(Id, ControllerType);
+            return new RotationComponent(ID, ControllerType);
         }
     }
 }

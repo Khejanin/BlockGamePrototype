@@ -4,8 +4,8 @@ using System.Linq;
 using GDGame.Actors;
 using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Managers;
 using GDGame.Utilities;
-using GDLibrary;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
@@ -16,16 +16,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GDGame.Controllers
 {
-    public class PlayerController : Controller
+    public class PlayerController : Controller, ICloneable
     {
         private KeyboardManager keyboardManager;
-        private GamePadManager gamePadManager;
         private CameraManager<Camera3D> cameraManager;
 
-        public PlayerController(string id, ControllerType controllerType, KeyboardManager keyboardManager, GamePadManager gamePadManager, CameraManager<Camera3D> cameraManager) : base(id, controllerType)
+        public PlayerController(string id, ControllerType controllerType, KeyboardManager keyboardManager, CameraManager<Camera3D> cameraManager) : base(id, controllerType)
         {
             this.keyboardManager = keyboardManager;
-            this.gamePadManager = gamePadManager;
             this.cameraManager = cameraManager;
         }
 
@@ -74,13 +72,13 @@ namespace GDGame.Controllers
             ends.Insert(0, playerTargetPos);
             List<Raycaster.HitResult> results = new List<Raycaster.HitResult>();
             List<Raycaster.FloorHitResult> floorHitResults = new List<Raycaster.FloorHitResult>();
-            playerTile.PlayerCastAll(offset, initials, ends, ref results, ref floorHitResults);
+            RaycastManager.Instance.RaycastAll(playerTile, offset, initials, ends, ref results, ref floorHitResults);
             return results.Count == 0 && floorHitResults.Count > 0;
         }
 
-        public override object Clone()
+        public new object Clone()
         {
-            return new PlayerController(Id, ControllerType, keyboardManager, gamePadManager, cameraManager);
+            return new PlayerController(ID, ControllerType, keyboardManager, cameraManager);
         }
     }
 }

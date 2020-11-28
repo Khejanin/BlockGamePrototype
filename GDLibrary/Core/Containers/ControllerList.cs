@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using GDLibrary.Controllers;
 
 namespace GDLibrary.Containers
 {
@@ -10,7 +9,7 @@ namespace GDLibrary.Containers
     /// Used to store controllers to be applied to an actor
     /// </summary>
     /// <see cref="GDLibrary.Actors.Actor"/>
-    public class ControllerList : List<Controller>
+    public class ControllerList : List<IController>
     {
         #region Constructors & Core
 
@@ -25,10 +24,11 @@ namespace GDLibrary.Containers
             return false;
         }
 
-        public virtual int Transform(Predicate<IController> filter, Action<IController> transform)
+        public virtual int Transform(Predicate<IController> filter,
+                                            Action<IController> transform)
         {
             int count = 0;
-            foreach (Controller obj in this)
+            foreach (IController obj in this)
             {
                 if (filter(obj))
                 {
@@ -42,7 +42,7 @@ namespace GDLibrary.Containers
         public virtual void Update(GameTime gameTime, IActor parent)
         {
             //calls update on all controllers
-            foreach (Controller controller in this)
+            foreach (IController controller in this)
             {
                 controller.Update(gameTime, parent);
             }

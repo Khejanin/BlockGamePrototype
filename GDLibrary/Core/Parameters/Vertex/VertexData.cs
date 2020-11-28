@@ -37,6 +37,20 @@ namespace GDLibrary.Parameters
             this.primitiveCount = primitiveCount;
         }
 
+        public IEnumerable<Vector3> GetPrimitivePositions()
+        {
+            Vector3[] result = new Vector3[primitiveCount];
+            
+            for (int i = 0; i < primitiveCount; i++)
+            {
+                T copy = vertices[i];
+                VertexPosition c = (VertexPosition) (object) copy;
+                result[i] = c.Position;
+            }
+
+            return result;
+        }
+
         public void SetPrimitiveType(PrimitiveType primitiveType)
         {
             this.primitiveType = primitiveType;
@@ -83,19 +97,5 @@ namespace GDLibrary.Parameters
         }
 
         #endregion Constructors & Core
-        
-        public Vector3[] GetPrimitivePositions()
-        {
-            Vector3[] result = new Vector3[primitiveCount];
-            
-            for (int i = 0; i < primitiveCount; i++)
-            {
-                T copy = vertices[i];
-                VertexPosition c = (VertexPosition) (object) copy;
-                result[i] = c.Position;
-            }
-
-            return result;
-        }
     }
 }

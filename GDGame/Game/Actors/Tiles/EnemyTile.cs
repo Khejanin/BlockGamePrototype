@@ -1,8 +1,9 @@
 ﻿using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Managers;
 using GDGame.Utilities;
-using GDLibrary.Controllers;
 using GDLibrary.Enums;
+using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,7 +36,6 @@ namespace GDGame.Actors
             {
                 EventManager.FireEvent(new MovementEvent {type = MovementType.OnEnemyMove, tile = this, direction = moveDir, onMoveEnd = OnMoveEnd, onCollideCallback = OnCollide});
             }
-                
         }
 
         protected override void OnMoveEnd()
@@ -59,7 +59,7 @@ namespace GDGame.Actors
             Vector3 destination = NextPathPoint();
             Vector3 direction = Vector3.Normalize(destination - origin);
 
-            Raycaster.HitResult hit = this.Raycast(Transform3D.Translation, direction, true, 1f);
+            Raycaster.HitResult hit = RaycastManager.Instance.Raycast(this, Transform3D.Translation, direction, true, 1f);
             if (hit == null || hit.actor is PlayerTile || hit.actor is AttachableTile)
                 return direction;
 
@@ -67,7 +67,7 @@ namespace GDGame.Actors
             Vector3 dest2 = NextPathPoint();
             Vector3 dir2 = Vector3.Normalize(dest2 - origin);
 
-            hit = this.Raycast(Transform3D.Translation, dir2, true, 1f);
+            hit = RaycastManager.Instance.Raycast(this, Transform3D.Translation, dir2, true, 1f);
             if (destination != dest2 && (hit == null || hit.actor is PlayerTile))
                 return dir2;
 
@@ -89,13 +89,14 @@ namespace GDGame.Actors
 
         public new object Clone()
         {
-            EnemyTile enemyTile = new EnemyTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as EffectParameters, Model, TileType);
+            EnemyTile enemyTile = new EnemyTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as EffectParameters, Model,
+                TileType);
 
             if (ControllerList != null)
             {
-                foreach (Controller controller in ControllerList)
+                foreach (IController controller in ControllerList)
                 {
-                    enemyTile.ControllerList.Add(controller.Clone() as Controller);
+                    enemyTile.ControllerList.Add(controller.Clone() as IController);
                 }
             }
 

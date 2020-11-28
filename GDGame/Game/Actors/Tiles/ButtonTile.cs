@@ -54,9 +54,9 @@ namespace GDGame.Actors
 
             if (ControllerList != null)
             {
-                foreach (Controller controller in ControllerList)
+                foreach (IController controller in ControllerList)
                 {
-                    buttonTile.ControllerList.Add(controller.Clone() as Controller);
+                    buttonTile.ControllerList.Add(controller.Clone() as IController);
                 }
             }
 

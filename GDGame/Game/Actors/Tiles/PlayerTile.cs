@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Managers;
 using GDGame.Tiles;
-using GDGame.Utilities;
-using GDLibrary.Controllers;
 using GDLibrary.Enums;
+using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -47,14 +47,14 @@ namespace GDGame.Actors
             {
                 foreach (AttachableTile attachedTile in AttachedTiles)
                 {
-                    EventManager.FireEvent(new MovementEvent{type = MovementType.OnMove, direction = movementEvent.direction, onMoveEnd = OnMoveEnd, tile = attachedTile});
+                    EventManager.FireEvent(new MovementEvent {type = MovementType.OnMove, direction = movementEvent.direction, onMoveEnd = OnMoveEnd, tile = attachedTile});
                 }
             }
         }
 
         private void HandlePlayerEvent(PlayerEventInfo info)
         {
-            switch(info.type)
+            switch (info.type)
             {
                 case PlayerEventType.Die:
                     RespawnAtLastCheckpoint();
@@ -74,7 +74,7 @@ namespace GDGame.Actors
             if (attachCandidates.Count == 0 || IsMoving) return;
 
             AttachedTiles.Clear();
-            foreach (AttachableTile tile in attachCandidates.SelectMany(shape =>  shape.AttachableTiles))
+            foreach (AttachableTile tile in attachCandidates.SelectMany(shape => shape.AttachableTiles))
             {
                 AttachedTiles.Add(tile);
                 tile.EffectParameters.DiffuseColor = Color.DarkGray;
@@ -101,14 +101,14 @@ namespace GDGame.Actors
 
             switch (hit.actor)
             {
-                case GoalTile t:
+                case GoalTile _:
                     EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Won));
                     break;
-                case SpikeTile t:
-                    EventManager.FireEvent(new PlayerEventInfo { type = PlayerEventType.Die });
+                case SpikeTile _:
+                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.Die});
                     break;
                 case CheckpointTile t:
-                    EventManager.FireEvent(new PlayerEventInfo { type = PlayerEventType.SetCheckpoint, position = t.Transform3D.Translation });
+                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.SetCheckpoint, position = t.Transform3D.Translation});
                     break;
                 case ButtonTile t:
                     t.Activate();
@@ -119,20 +119,17 @@ namespace GDGame.Actors
         public void OnMoveEnd()
         {
             CheckAndProcessSurroundings(GetSurroundings(Transform3D.Translation));
-            if(IsAttached) Attach();
+            if (IsAttached) Attach();
 
-            CheckCollision(this.Raycast(Transform3D.Translation, Vector3.Down, true, 0.5f,false));
+            CheckCollision(RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f));
         }
 
-        private void CheckAndProcessSurroundings(List<PlayerSurroundCheck> surroundings)
+        private void CheckAndProcessSurroundings(IEnumerable<PlayerSurroundCheck> surroundings)
         {
             List<AttachableTile> detectedAttachableTiles = new List<AttachableTile>();
 
-            foreach (PlayerSurroundCheck check in surroundings)
+            foreach (PlayerSurroundCheck check in surroundings.Where(check => check.hit != null))
             {
-                if (check.hit == null) 
-                    continue;
-
                 switch (check.hit.actor)
                 {
                     case AttachableTile t:
@@ -152,30 +149,29 @@ namespace GDGame.Actors
                 attachCandidates.Add(tile.Shape);
         }
 
-        private List<PlayerSurroundCheck> GetSurroundings(Vector3 translation)
+        private IEnumerable<PlayerSurroundCheck> GetSurroundings(Vector3 translation)
         {
             List<PlayerSurroundCheck> result = new List<PlayerSurroundCheck>();
 
-            PlayerSurroundCheck surroundCheck = new PlayerSurroundCheck();
-            surroundCheck.hit = this.Raycast(translation, Vector3.Right, true, 1f);
+            PlayerSurroundCheck surroundCheck = new PlayerSurroundCheck {hit = RaycastManager.Instance.Raycast(this, translation, Vector3.Right, true, 1f)};
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.Raycast(translation, Vector3.Left, true, 1f);
+            surroundCheck.hit = RaycastManager.Instance.Raycast(this, translation, Vector3.Left, true, 1f);
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.Raycast(translation, Vector3.Forward, true, 1f);
+            surroundCheck.hit = RaycastManager.Instance.Raycast(this, translation, Vector3.Forward, true, 1f);
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.Raycast(translation, Vector3.Backward, true, 1f);
+            surroundCheck.hit = RaycastManager.Instance.Raycast(this, translation, Vector3.Backward, true, 1f);
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.Raycast(translation, Vector3.Up, true, 1f);
+            surroundCheck.hit = RaycastManager.Instance.Raycast(this, translation, Vector3.Up, true, 1f);
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.Raycast(translation, Vector3.Down, true, 1f);
+            surroundCheck.hit = RaycastManager.Instance.Raycast(this, translation, Vector3.Down, true, 1f);
             result.Add(surroundCheck);
 
-            surroundCheck.hit = this.Raycast(translation, Vector3.Down, true, 0.5f);
+            surroundCheck.hit = RaycastManager.Instance.Raycast(this, translation, Vector3.Down, true, 0.5f);
             result.Add(surroundCheck);
 
             return result;
@@ -184,30 +180,29 @@ namespace GDGame.Actors
         private void SetCheckpoint(Vector3? position)
         {
             if (position != null)
-                lastCheckpoint = (Vector3)position;
+                lastCheckpoint = (Vector3) position;
         }
 
         private void RespawnAtLastCheckpoint()
         {
-            EventManager.FireEvent(new TileEventInfo { type = TileEventType.Reset, targetedTileType = ETileType.Attachable });
+            EventManager.FireEvent(new TileEventInfo {type = TileEventType.Reset, targetedTileType = ETileType.Attachable});
             Transform3D.Translation = lastCheckpoint;
         }
 
         public new object Clone()
         {
-            PlayerTile playerTile = new PlayerTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as EffectParameters, Model, TileType);
-            
+            PlayerTile playerTile = new PlayerTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as EffectParameters, Model,
+                TileType);
+
             if (ControllerList != null)
             {
-                foreach (Controller controller in ControllerList)
+                foreach (IController controller in ControllerList)
                 {
-                    playerTile.ControllerList.Add(controller.Clone() as Controller);
+                    playerTile.ControllerList.Add(controller.Clone() as IController);
                 }
             }
 
             return playerTile;
         }
-        
-        
     }
 }
