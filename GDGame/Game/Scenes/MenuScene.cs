@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using GDLibrary.Managers;
+using System;
 
 namespace GDGame.Scenes
 {
@@ -17,11 +18,14 @@ namespace GDGame.Scenes
     {
         private Dictionary<string, Texture2D> textures;
         UiButton playUiButton, optionsUiButton, quitUiButton;
+        MouseManager mouseManager;
 
         public MenuScene(Main game, bool unloadsContent = false) : base(game, unloadsContent)
         {
-            MouseManager mouseManager = game.MouseManager;
-            backgroundColor = Color.LightCyan;
+            mouseManager = game.MouseManager;
+            //backgroundColor = Color.LightCyan;
+            
+
         }
 
         public override void Initialize()
@@ -29,25 +33,34 @@ namespace GDGame.Scenes
             InitializeLoadContent();
             InitializeCamera();
             //InitializeText();
+            InitialiseBackground();
             InitialiseButtons();
+            
+        }
+
+        private void InitialiseBackground()
+        {
+            UiSprite bg = new UiSprite(StatusType.Drawn, textures["bg"], new Rectangle(0, 0, (int)(Game.ScreenCentre.X * 2), (int)(Game.ScreenCentre.Y * 2)), Color.White, false);
+            UiManager.AddUiElement("bg",bg);
         }
 
         private void InitialiseButtons()
         {
+            mouseManager.MouseVisible = true;
             playUiButton = new UiButton(StatusType.Drawn | StatusType.Update,
-                new Vector2(Game.ScreenCentre.X - 93, Game.ScreenCentre.Y - 40), "Play", textures["bStart"],
+                new Vector2(Game.ScreenCentre.X+100, Game.ScreenCentre.Y-200), "Play", textures["bStart"],
                 Game.Fonts["UI"]);
             UiManager.AddUiElement("MenuButton", playUiButton);
             playUiButton.Click += Click_PlayBtn;
 
             optionsUiButton = new UiButton(StatusType.Drawn | StatusType.Update,
-                new Vector2(Game.ScreenCentre.X - 93, Game.ScreenCentre.Y + 80), "Options", textures["bStart"],
+                new Vector2(Game.ScreenCentre.X +100, Game.ScreenCentre.Y + 80), "Options", textures["bStart"],
                 Game.Fonts["UI"]);
             UiManager.AddUiElement("OptionsButton", optionsUiButton);
             optionsUiButton.Click += Click_OptionsBtn;
 
             quitUiButton = new UiButton(StatusType.Drawn | StatusType.Update,
-                new Vector2(Game.ScreenCentre.X - 93, Game.ScreenCentre.Y + 200), "Quit", textures["bStart"],
+                new Vector2(Game.ScreenCentre.X +100, Game.ScreenCentre.Y + 200), "Quit", textures["bStart"],
                 Game.Fonts["UI"]);
             UiManager.AddUiElement("QuitButton", quitUiButton);
             quitUiButton.Click += Click_QuitBtn;
@@ -102,6 +115,7 @@ namespace GDGame.Scenes
 
         protected override void DrawScene(GameTime gameTime)
         {
+            
         }
 
 
@@ -126,7 +140,7 @@ namespace GDGame.Scenes
             Texture2D cursor = Content.Load<Texture2D>("Assets/Textures/Block/block_red");
             Texture2D buttonStart = Content.Load<Texture2D>("Assets/Textures/Menu/button");
             Texture2D buttonBasic = Content.Load<Texture2D>("Assets/Textures/Block/block_yellow");
-            Texture2D background = Content.Load<Texture2D>("Assets/Textures/Block/block_green");
+            Texture2D background = Content.Load<Texture2D>("Assets/Textures/Menu/menubaseres");
             Texture2D panel = Content.Load<Texture2D>("Assets/Textures/Skybox/floor_neon");
 
             textures = new Dictionary<string, Texture2D>
