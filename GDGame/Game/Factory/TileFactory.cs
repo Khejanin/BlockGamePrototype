@@ -37,6 +37,7 @@ namespace GDGame.Factory
                 ETileType.Enemy => CreateEnemy(),
                 ETileType.Button => CreateButton(),
                 ETileType.MovingPlatform => CreateMovingPlatform(),
+                ETileType.FallingPlatform => CreateFallingPlatform(),
                 ETileType.Spike => CreateSpike(),
                 ETileType.Star => CreatePickup(),
                 ETileType.Checkpoint => CreateCheckpoint(),
@@ -140,6 +141,15 @@ namespace GDGame.Factory
             if (platform?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent) tileMovementComponent.Tile = platform;
             objectManager.Add(platform);
             return platform;
+        }
+
+        private BasicTile CreateFallingPlatform()
+        {
+            FallingTile fallingTile = (FallingTile)drawnActors["FallingTile"];
+            fallingTile = fallingTile.Clone() as FallingTile;
+            if (fallingTile?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent) tileMovementComponent.Tile = fallingTile;
+            objectManager.Add(fallingTile);
+            return fallingTile;
         }
 
         private BasicTile CreateSpike()
