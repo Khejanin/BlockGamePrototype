@@ -10,7 +10,7 @@ namespace GDGame.Utilities
     {
         public Vector3 gridSize;
         public Vector3 tileSize;
-        public ETileType[,,] gridValues;
+        public TileType[,,] gridValues;
         public Dictionary<double, List<Vector3>> shapes;
         public Dictionary<Vector3, List<Vector3>> movingTilePaths;
         public Dictionary<Vector3, int> activatorTargets;
@@ -33,7 +33,7 @@ namespace GDGame.Utilities
             {
                 gridSize = gridSize,
                 tileSize = tileSize,
-                gridValues = new ETileType[(int)gridSize.X, (int)gridSize.Y, (int)gridSize.Z],
+                gridValues = new TileType[(int)gridSize.X, (int)gridSize.Y, (int)gridSize.Z],
                 shapes = new Dictionary<double, List<Vector3>>(),
                 movingTilePaths = new Dictionary<Vector3, List<Vector3>>(),
                 activatorTargets = new Dictionary<Vector3, int>(),
@@ -52,12 +52,12 @@ namespace GDGame.Utilities
                     {
                         if (jsonZ[z].Obj == null)
                         {
-                            data.gridValues[x, y, z] = ETileType.None;
+                            data.gridValues[x, y, z] = TileType.None;
                         }
                         else
                         {
                             JSONObject obj = jsonZ[z].Obj;
-                            data.gridValues[x, y, z] = (ETileType) obj.GetNumber("TileType");
+                            data.gridValues[x, y, z] = (TileType) obj.GetNumber("TileType");
                         
                             //check if part of shape and store it separately
                             double shapeId = obj.GetNumber("ShapeId");
@@ -68,7 +68,7 @@ namespace GDGame.Utilities
                                     data.shapes.Add(shapeId, new List<Vector3>() { new Vector3(x, y, z) });
 
                             //check if path moving tile and add paths to data
-                            if(data.gridValues[x, y, z] == ETileType.Enemy || data.gridValues[x, y, z] == ETileType.MovingPlatform)
+                            if(data.gridValues[x, y, z] == TileType.Enemy || data.gridValues[x, y, z] == TileType.MovingPlatform)
                             {
                                 JSONArray path = obj.GetArray("Path");
                                 List<Vector3> pathPositions = new List<Vector3>();
@@ -82,7 +82,7 @@ namespace GDGame.Utilities
                             }
 
                             //check if button and add targets to data
-                            if (data.gridValues[x, y, z] == ETileType.Button)
+                            if (data.gridValues[x, y, z] == TileType.Button)
                             {
                                 //JSONArray targets = obj.GetArray("TargetGridPositions");
                                 //List<Vector3> targetGridPositions = targets.Select(t => t.Obj).Select(pathObj => new Vector3((int)pathObj["X"].Number, (int)pathObj["Y"].Number, (int)pathObj["Z"].Number)).ToList();

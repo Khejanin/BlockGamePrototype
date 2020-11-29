@@ -215,37 +215,37 @@ namespace GDGame.Scenes
 
             var effectParameters = new EffectParameters(ModelEffect, textures["Chocolate"], Color.White, 1);
             BasicTile chocoloateTile = new BasicTile("ChocolateTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"], ETileType.Static);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"], TileType.Static);
             chocoloateTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Ceramic"], Color.White, 1);
             BasicTile plateStackBasicTile = new BasicTile("plateStackTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["PlateStack"],ETileType.Static);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["PlateStack"],TileType.Static);
             plateStackBasicTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             ButtonTile button = new ButtonTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Button"], ETileType.Button);
+                transform3D, effectParameters, models["Button"], TileType.Button);
             button.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             SpikeTile spike = new SpikeTile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Pyramid"], ETileType.Spike);
+                transform3D, effectParameters, models["Pyramid"], TileType.Spike);
             spike.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             PickupTile starPickup = new PickupTile("Star", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Mug"], ETileType.Star);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Mug"], TileType.Star);
             starPickup.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f,
                 ColliderType.CheckOnly));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, models["SugarBox"], ETileType.Win);
+                effectParameters, models["SugarBox"], TileType.Win);
             goal.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
             CheckpointTile checkpoint = new CheckpointTile("Checkpoint", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, models["Knife"], ETileType.Checkpoint);
+                effectParameters, models["Knife"], TileType.Checkpoint);
             checkpoint.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
@@ -281,30 +281,29 @@ namespace GDGame.Scenes
             effectParameters = new EffectParameters(ModelEffect, textures["SugarB"], Color.White, 1);
             AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Cube"],
-                ETileType.Attachable);
+                TileType.Attachable);
             attachableTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
-            attachableTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
+            attachableTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), MovementType.Flip));
 
             effectParameters = new EffectParameters(ModelEffect, textures["SugarW"], Color.White, 1);
-            PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn, transform3D, effectParameters, models["Cube"], ETileType.PlayerStart);
+            PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn, transform3D, effectParameters, models["Cube"], TileType.PlayerStart);
             playerTile.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             playerTile.ControllerList.Add(new PlayerController(KeyboardManager, GamePadManager, CameraManager));
-            playerTile.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove",
-                "playerAttach"));
+            //playerTile.ControllerList.Add(new SoundController(KeyboardManager, SoundManager, "playerMove", "playerAttach"));
             playerTile.ControllerList.Add(new RotationComponent());
-            playerTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
+            playerTile.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), MovementType.Flip));
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["Drop"], ETileType.Enemy);
+                transform3D, effectParameters, models["Drop"], TileType.Enemy);
             enemy.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f, ColliderType.CheckOnly));
-            enemy.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), true));
+            enemy.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle), MovementType.Jump));
             enemy.ControllerList.Add(new RotationComponent());
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, models["SinglePlate"], ETileType.MovingPlatform);
+                transform3D, effectParameters, models["SinglePlate"], TileType.MovingPlatform);
             platform.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             platform.ControllerList.Add(new TileMovementComponent(300, new Curve1D(CurveLoopType.Cycle)));
 
@@ -375,20 +374,20 @@ namespace GDGame.Scenes
             var transform3D = new Transform3D(new Vector3(10, -15, 15), Vector3.UnitZ, Vector3.UnitY);
 
             BasicTile table = new BasicTile("Table", ActorType.Primitive,
-                StatusType.Drawn, transform3D, effectParameters, models["Table"],ETileType.Static);
+                StatusType.Drawn, transform3D, effectParameters, models["Table"],TileType.Static);
             table.Transform3D.Scale = scale;
             ObjectManager.Add(table);
 
            // effectParameters = new EffectParameters(ModelEffect, textures["Wood"], Color.White, 1);
             BasicTile cups = new BasicTile("Cups", ActorType.Primitive,
-                StatusType.Drawn, transform3D, effectParameters, models["Cups"],ETileType.Static);
+                StatusType.Drawn, transform3D, effectParameters, models["Cups"],TileType.Static);
             cups.Transform3D.Scale = scale;
             drawnActors.Add("Cups", cups);
             ObjectManager.Add(cups);
 
            // effectParameters = new EffectParameters(ModelEffect, textures["WChocolate"], Color.White, 1);
             BasicTile Choco = new BasicTile("Chocolate", ActorType.Primitive,
-                StatusType.Drawn, transform3D, effectParameters, models["Chocolate"],ETileType.Static);
+                StatusType.Drawn, transform3D, effectParameters, models["Chocolate"],TileType.Static);
             Choco.Transform3D.Scale = scale;
             ObjectManager.Add(Choco);
 
@@ -412,7 +411,7 @@ namespace GDGame.Scenes
             EffectParameters effectParameters = new EffectParameters(ModelEffect, textures["Box"], Color.White, 1);
             var transform3D = new Transform3D(new Vector3(5, 0, 0), Vector3.UnitZ, Vector3.UnitY);
             this.test = new BasicTile("StaticTile", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Knife"], ETileType.Static);
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, models["Knife"], TileType.Static);
             this.test.ControllerList.Add(new CustomBoxColliderController(ColliderShape.Cube, 1f));
             drawnActors.Add("StaticTile2", test);
             ObjectManager.Add(test);
@@ -607,7 +606,7 @@ namespace GDGame.Scenes
 
         private void LoadSounds()
         {
-            SoundManager.StopSong();
+            //SoundManager.StopSong();
             //step 1 - load songs
             SoundEffect track01 = Content.Load<SoundEffect>("Assets/GameTracks/testTrack01");
             SoundEffect track02 = Content.Load<SoundEffect>("Assets/GameTracks/testTrack02");
@@ -617,14 +616,22 @@ namespace GDGame.Scenes
             SoundEffect track06 = Content.Load<SoundEffect>("Assets/GameTracks/testTrack06");
 
             //Step 2- Make into sounds
-            SoundManager.Add(new Sounds(track01, "gameTrack01", ActorType.MusicTrack, StatusType.Update));
-            SoundManager.Add(new Sounds(track02, "gameTrack02", ActorType.MusicTrack, StatusType.Update));
-            SoundManager.Add(new Sounds(track03, "gameTrack03", ActorType.MusicTrack, StatusType.Update));
-            SoundManager.Add(new Sounds(track04, "playerMove", ActorType.SoundEffect, StatusType.Update));
-            SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
-            SoundManager.Add(new Sounds(track06, "endTheme", ActorType.specialTrack, StatusType.Update));
+            //SoundManager.Add(new Sounds(track01, "gameTrack01", ActorType.MusicTrack, StatusType.Update));
+            //SoundManager.Add(new Sounds(track02, "gameTrack02", ActorType.MusicTrack, StatusType.Update));
+            //SoundManager.Add(new Sounds(track03, "gameTrack03", ActorType.MusicTrack, StatusType.Update));
+            //SoundManager.Add(new Sounds(track04, "playerMove", ActorType.SoundEffect, StatusType.Update));
+            //SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
+            //SoundManager.Add(new Sounds(track06, "endTheme", ActorType.specialTrack, StatusType.Update));
 
-            SoundManager.NextSong();
+            SoundManager.AddMusic("gameTrack01", Content.Load<SoundEffect>("Assets/GameTracks/testTrack01"));
+            SoundManager.AddMusic("gameTrack02", Content.Load<SoundEffect>("Assets/GameTracks/testTrack02"));
+            SoundManager.AddMusic("gameTrack03", Content.Load<SoundEffect>("Assets/GameTracks/testTrack03"));
+            SoundManager.AddSoundEffect(SfxType.PlayerMove, Content.Load<SoundEffect>("Assets/Sound/Knock04"));
+            SoundManager.AddSoundEffect(SfxType.PlayerAttach, Content.Load<SoundEffect>("Assets/Sound/Click02"));
+
+            SoundManager.StartMusicQueue();
+
+            //SoundManager.NextSong();
         }
 
         private void LoadTextures()
@@ -773,18 +780,21 @@ namespace GDGame.Scenes
 
             //Cycle Through Audio
             if (KeyboardManager.IsFirstKeyPress(Keys.M))
-                SoundManager.NextSong();
+                //SoundManager.NextSong();
+                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.PlayNextMusic });
             //Stop Music
             if (KeyboardManager.IsKeyDown(Keys.N))
-                SoundManager.StopSong();
+                //SoundManager.StopSong();
+                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.MuteVolume });
             //Volume Changes
             if (KeyboardManager.IsFirstKeyPress(Keys.L))
-                SoundManager.volumeUp();
+                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.IncreaseVolume });
             else if (KeyboardManager.IsFirstKeyPress(Keys.K))
-                SoundManager.volumeDown();
+                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.DecreaseVolume });
             //Pause/resume music
             if (KeyboardManager.IsFirstKeyPress(Keys.P))
-                SoundManager.changeMusicState();
+                //SoundManager.changeMusicState();
+                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.ToggleMusicPlayback });
 
             //options menu
             if (KeyboardManager.IsFirstKeyPress(Keys.O))
@@ -813,7 +823,7 @@ namespace GDGame.Scenes
             UiManager.Clear();
 
             ObjectManager.RemoveAll(actor3D => actor3D != null);
-            SoundManager.RemoveIf(s => s != null);
+            SoundManager.RemoveAll();
 
             ObjectManager.Enabled = true;
         }

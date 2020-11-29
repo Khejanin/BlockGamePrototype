@@ -42,11 +42,6 @@ namespace GDGame.Actors
             this.soundFx = sfx;
             this.isPlaying = false;
         }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        }
     }
 }
 

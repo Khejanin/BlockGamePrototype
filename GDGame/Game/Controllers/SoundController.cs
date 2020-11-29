@@ -24,13 +24,13 @@ namespace GDGame.Controllers
             this.moveSFX = moveSFX;
             this.attachSFX = attachSFX;
 
-            SoundEffect temp = soundManager.FindSound(moveSFX).GetSfx();
-            if (temp != null)
-                this.playerMove = temp.CreateInstance();
+            //SoundEffect temp = soundManager.FindSound(moveSFX).GetSfx();
+            //if (temp != null)
+            //    this.playerMove = temp.CreateInstance();
 
-            SoundEffect temp2 = soundManager.FindSound(attachSFX).GetSfx();
-            if (temp2 != null)
-                this.playerAttach = temp2.CreateInstance();
+            //SoundEffect temp2 = soundManager.FindSound(attachSFX).GetSfx();
+            //if (temp2 != null)
+            //    this.playerAttach = temp2.CreateInstance();
         }
 
         public object Clone()

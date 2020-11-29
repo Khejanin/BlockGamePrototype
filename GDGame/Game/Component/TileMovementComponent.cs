@@ -2,6 +2,7 @@
 using System.Linq;
 using GDGame.Actors;
 using GDGame.Controllers;
+using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Utilities;
 using GDLibrary.Enums;
@@ -13,28 +14,42 @@ namespace GDGame.Component
 {
     public class TileMovementComponent : IController
     {
+        //TODO: Refactor this class. Use a State pattern for the different movement types.
+
         private MovableTile parent;
 
         private int movementTime;
         private int currentMovementTime;
-        private bool useFlipMovement;
-        private Curve1D curve1D;
+        private MovementType movementType;
+        private Curve1D moveCurve1D;
+        private Curve1D jumpCurve1D;
         private Vector3 diff;
         private Quaternion rotationQuaternion;
         private Vector3 startPos;
         private Vector3 endPos;
+        private float jumpHeight;
         private Quaternion startRotation;
         private Action endMoveCallback;
         private Action<Raycaster.HitResult> onCollideCallback;
 
-        public TileMovementComponent(int movementTime, Curve1D curve1D, bool useFlipMovement = false)
+        public TileMovementComponent(int movementTime, Curve1D moveCurve1D, MovementType movementType = MovementType.Slide)
         {
             this.movementTime = movementTime;
-            this.curve1D = curve1D;
-            this.useFlipMovement = useFlipMovement;
-            this.curve1D.Add(1, 0);
-            this.curve1D.Add(0, movementTime);
+            this.moveCurve1D = moveCurve1D;
+            this.movementType = movementType;
+            this.moveCurve1D.Add(1, 0);
+            this.moveCurve1D.Add(0, movementTime);
+
             startRotation = rotationQuaternion = Quaternion.Identity;
+
+            if (movementType == MovementType.Jump)
+            {
+                jumpHeight = .5f;
+                jumpCurve1D = new Curve1D(CurveLoopType.Cycle);
+                jumpCurve1D.Add(0, 0);
+                jumpCurve1D.Add(1, movementTime / 2);
+                jumpCurve1D.Add(0, movementTime);
+            }
         }
 
         public void MoveInDirection(Vector3 direction, Action onMoveEndCallback = null, Action<Raycaster.HitResult> onCollideCallback = null)
@@ -46,7 +61,7 @@ namespace GDGame.Component
 
                 startPos = parent.Transform3D.Translation;
 
-                if (useFlipMovement)
+                if (movementType == MovementType.Flip)
                 {
                     RotationComponent rotationComponent =
                         (RotationComponent)parent.ControllerList.Find(controller =>
@@ -74,6 +89,7 @@ namespace GDGame.Component
                             playerController.IsMoveValid(rot, parent.RotatePoint, endPos, offset))
                         {
                             EventManager.FireEvent(new PlayerEventInfo { type = Enums.PlayerEventType.Move });
+                            EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerMove });
                             //Calculate movement for each attached tile
                             if (parent is PlayerTile player)
                                 foreach (AttachableTile tile in player.AttachedTiles)
@@ -112,15 +128,16 @@ namespace GDGame.Component
                     endMoveCallback?.Invoke();
                 }
 
-                if (useFlipMovement)
+                if (movementType == MovementType.Flip)
                 {
                     float t = 1 - (float)currentMovementTime / movementTime;
                     Quaternion quaternion = Quaternion.Slerp(startRotation, rotationQuaternion, t);
                     parent.Transform3D.RotationInDegrees = MathHelperFunctions.QuaternionToEulerAngles(quaternion);
                 }
 
-                float currentStep = curve1D.Evaluate(currentMovementTime, 5);
-                Vector3 trans = startPos + diff * currentStep;
+                Vector3 trans = startPos + diff * moveCurve1D.Evaluate(currentMovementTime, 5);
+                if(jumpHeight != 0)
+                    trans.Y += jumpHeight * jumpCurve1D.Evaluate(currentMovementTime, 5);
 
                 if (onCollideCallback != null)
                 {
@@ -140,7 +157,7 @@ namespace GDGame.Component
 
         public object Clone()
         {
-            return new TileMovementComponent(movementTime, new Curve1D(curve1D.CurveLookType), useFlipMovement);
+            return new TileMovementComponent(movementTime, new Curve1D(moveCurve1D.CurveLookType), movementType);
         }
 
         public ControllerType GetControllerType()

@@ -9,7 +9,7 @@ namespace GDGame.Actors
 {
     class CheckpointTile : BasicTile
     {
-        public CheckpointTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
+        public CheckpointTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, TileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
         }
 

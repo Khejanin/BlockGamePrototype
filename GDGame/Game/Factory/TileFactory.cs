@@ -25,20 +25,20 @@ namespace GDGame.Factory
             this.textures = textures;
         }
 
-        public BasicTile CreateTile(ETileType type,BasicTile.EStaticTileType staticTileType)
+        public BasicTile CreateTile(TileType type,BasicTile.EStaticTileType staticTileType)
         {
             BasicTile tile = type switch
             {
-                ETileType.PlayerStart => CreatePlayer(),
-                ETileType.Static => CreateStatic(staticTileType),
-                ETileType.Attachable => CreateAttachable(),
-                ETileType.Win => CreateGoal(),
-                ETileType.Enemy => CreateEnemy(),
-                ETileType.Button => CreateButton(),
-                ETileType.MovingPlatform => CreateMovingPlatform(),
-                ETileType.Spike => CreateSpike(),
-                ETileType.Star => CreatePickup(),
-                ETileType.Checkpoint => CreateCheckpoint(),
+                TileType.PlayerStart => CreatePlayer(),
+                TileType.Static => CreateStatic(staticTileType),
+                TileType.Attachable => CreateAttachable(),
+                TileType.Win => CreateGoal(),
+                TileType.Enemy => CreateEnemy(),
+                TileType.Button => CreateButton(),
+                TileType.MovingPlatform => CreateMovingPlatform(),
+                TileType.Spike => CreateSpike(),
+                TileType.Star => CreatePickup(),
+                TileType.Checkpoint => CreateCheckpoint(),
                 _ => null
             };
 

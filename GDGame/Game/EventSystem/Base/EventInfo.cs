@@ -10,7 +10,7 @@ namespace GDGame.EventSystem
 
      public class TileEventInfo : EventInfo
      {
-         public ETileType targetedTileType;
+         public TileType targetedTileType;
          public TileEventType type;
      }
      
@@ -25,11 +25,6 @@ namespace GDGame.EventSystem
      {
          public ActivatorEventType type;
          public int id;
-
-         public ActivatorEventInfo()
-         {
-
-         }
      }
      
      public class GameStateMessageEventInfo : EventInfo
@@ -56,5 +51,12 @@ namespace GDGame.EventSystem
      public class CameraEvent : EventInfo
      {
          
+     }
+
+     public class SoundEventInfo : EventInfo
+     {
+         public SoundEventType soundEventType;
+         public SfxType sfxType;
+         public SoundVolumeType soundVolumeType;
      }
  }

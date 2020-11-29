@@ -15,7 +15,7 @@ namespace GDGame.Actors
         private float currentMovementCoolDown;
         private bool canMove;
 
-        public EnemyTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType, float movementCoolDown = 0.5f) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
+        public EnemyTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, TileType tileType, float movementCoolDown = 0.5f) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
             this.movementCoolDown = movementCoolDown;
         }

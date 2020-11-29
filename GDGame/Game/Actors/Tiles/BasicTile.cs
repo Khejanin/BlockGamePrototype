@@ -14,7 +14,7 @@ namespace GDGame.Actors
     public class BasicTile : ModelObject, ICloneable
     {
         private Vector3 spawnPos;
-        public ETileType TileType { get; }
+        public TileType TileType { get; }
         public Shape Shape { get; set; }
         public int activatorId = -1;
 
@@ -27,7 +27,7 @@ namespace GDGame.Actors
         }
         
         public BasicTile(string id, ActorType actorType, StatusType statusType,
-            Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType)
+            Transform3D transform, EffectParameters effectParameters, Model model, TileType tileType)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
             TileType = tileType;
@@ -41,7 +41,7 @@ namespace GDGame.Actors
 
         private void HandleTileEvent(TileEventInfo info)
         {
-            if (info.targetedTileType != ETileType.None && info.targetedTileType != TileType) 
+            if (info.targetedTileType != TileType.None && info.targetedTileType != TileType) 
                 return;
 
             switch (info.type)

@@ -9,7 +9,7 @@ namespace GDGame.Actors
     public class GoalTile : BasicTile
     {
         public GoalTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
-            EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform,
+            EffectParameters effectParameters, Model model, TileType tileType) : base(id, actorType, statusType, transform,
             effectParameters, model, tileType)
         {
         }

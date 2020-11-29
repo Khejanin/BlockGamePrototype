@@ -16,7 +16,7 @@ namespace GDGame.Actors
         public List<Vector3> path;
         public int currentPositionIndex;
 
-        protected PathMoveTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
+        protected PathMoveTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, TileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
             path = new List<Vector3>();
         }

@@ -14,7 +14,7 @@ namespace GDGame.Actors
         private bool isActivated;
         //public List<IActivatable> Targets { get; set; }
 
-        public ButtonTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
+        public ButtonTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, TileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
             //Targets = new List<IActivatable>();
         }

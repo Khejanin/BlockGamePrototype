@@ -8,7 +8,7 @@ namespace GDGame.Actors
 {
     class SpikeTile : BasicTile
     {
-        public SpikeTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
+        public SpikeTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, TileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
         }
 

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using GDGame.Enums;
 using GDLibrary.Managers;
 using GDGame.Scenes;
 
@@ -104,8 +105,10 @@ namespace GDGame.Scenes
         #region Load Content
         private void LoadSounds()
         {
-            SoundEffect track01 = Content.Load<SoundEffect>("Assets/GameTracks/GameTrack02");
-            SoundManager.Add(new Sounds(track01, "gameTrack01", ActorType.MusicTrack, StatusType.Update));
+            //SoundEffect track01 = Content.Load<SoundEffect>("Assets/GameTracks/GameTrack02");
+            //SoundManager.Add(new Sounds(track01, "gameTrack01", ActorType.MusicTrack, StatusType.Update));
+            SoundManager.AddMusic("gameTrack01" ,Content.Load<SoundEffect>("Assets/GameTracks/GameTrack02"));
+            SoundManager.StartMusicQueue();
             //SoundManager.NextSong();
         }
 

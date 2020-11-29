@@ -29,7 +29,7 @@ namespace GDGame.Actors
         }
 
         public PlayerTile(string id, ActorType actorType, StatusType statusType,
-            Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType)
+            Transform3D transform, EffectParameters effectParameters, Model model, TileType tileType)
             : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
             AttachedTiles = new List<AttachableTile>();
@@ -68,6 +68,8 @@ namespace GDGame.Actors
             {
                 AttachedTiles.Add(tile);
                 tile.EffectParameters.DiffuseColor = Color.DarkGray;
+                if(!IsAttached)
+                    EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach });
             }
 
             IsAttached = true;
@@ -186,7 +188,7 @@ namespace GDGame.Actors
 
         private void RespawnAtLastCheckpoint()
         {
-            EventManager.FireEvent(new TileEventInfo { type = TileEventType.Reset, targetedTileType = ETileType.Attachable });
+            EventManager.FireEvent(new TileEventInfo { type = TileEventType.Reset, targetedTileType = Enums.TileType.Attachable });
             Transform3D.Translation = lastCheckpoint;
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace GDGame.Enums
 {
-    public enum ETileType : sbyte
+    public enum TileType : sbyte
     {
         None,
         Static,
@@ -68,5 +68,39 @@
         Down,
         Forward,
         Backward
+    }
+
+    public enum MovementType : sbyte
+    {
+        Slide,
+        Flip,
+        Jump
+    }
+
+    public enum SfxType : sbyte
+    {
+        PlayerMove,
+        PlayerAttach,
+        EnemyMove
+    }
+
+    public enum SoundEventType : sbyte
+    {
+        PlaySfx,
+        PlayMusic,
+        PauseMusic,
+        ResumeMusic,
+        ToggleMusicPlayback,
+        PlayNextMusic,
+        IncreaseVolume,
+        DecreaseVolume,
+        MuteVolume
+    }
+
+    public enum SoundVolumeType : sbyte
+    {
+        Master,
+        Sfx,
+        Music
     }
 }

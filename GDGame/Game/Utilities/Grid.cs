@@ -50,7 +50,7 @@ namespace GDGame.Utilities
                 {
                     for (int z = 0; z < data.gridSize.Z; z++)
                     {
-                        if (data.gridValues[x, y, z] != ETileType.None)
+                        if (data.gridValues[x, y, z] != TileType.None)
                         {
                             //Super duper algorithm to determine what the current tile looks like!
                             BasicTile.EStaticTileType staticTileType = BasicTile.EStaticTileType.DarkChocolate;
@@ -59,14 +59,14 @@ namespace GDGame.Utilities
                             for (int i = -1; i <= 1; i += 2)
                             {
                                 if (x + i >= 0 && x + i < data.gridSize.X)
-                                    count += data.gridValues[x + i, y, z] == ETileType.Static ? 1 : 0;
+                                    count += data.gridValues[x + i, y, z] == TileType.Static ? 1 : 0;
                                 if (y + i >= 0 && y + i < data.gridSize.Y)
-                                    count += data.gridValues[x, y + i, z] == ETileType.Static ? 1 : 0;
+                                    count += data.gridValues[x, y + i, z] == TileType.Static ? 1 : 0;
                                 if (z + i >= 0 && z + i < data.gridSize.Z)
-                                    count += data.gridValues[x, y, z + i] == ETileType.Static ? 1 : 0;
+                                    count += data.gridValues[x, y, z + i] == TileType.Static ? 1 : 0;
                             }
 
-                            if (y - 1 >= 0 && count == 1 && data.gridValues[x, y - 1, z] == ETileType.Static)
+                            if (y - 1 >= 0 && count == 1 && data.gridValues[x, y - 1, z] == TileType.Static)
                             {
                                 staticTileType = BasicTile.EStaticTileType.Plates;
                             }
