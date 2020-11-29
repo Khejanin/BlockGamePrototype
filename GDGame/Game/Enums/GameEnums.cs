@@ -13,8 +13,7 @@
         Star,
         MovingPlatform,
         Spike,
-        Checkpoint,
-        FallingPlatform
+        Checkpoint
     }
 
     public enum ColliderShape : sbyte
