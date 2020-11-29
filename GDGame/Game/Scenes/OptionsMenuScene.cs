@@ -1,5 +1,4 @@
-﻿using System.Net.NetworkInformation;
-using GDGame.Actors;
+﻿using GDGame.Actors;
 using GDGame.Actors.Drawn;
 using GDLibrary.Actors;
 using GDLibrary.Enums;

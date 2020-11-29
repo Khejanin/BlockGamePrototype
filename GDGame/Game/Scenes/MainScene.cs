@@ -119,11 +119,9 @@ namespace GDGame.Scenes
 
         private void InitCoffee()
         {
-            EffectParameters staticColorEffect =
-                new EffectParameters(Game.ModelEffect, Game.Textures["Chocolate"], Color.White, .8f);
+            EffectParameters staticColorEffect = new EffectParameters(Game.ModelEffect, Game.Textures["Chocolate"], Color.White, .8f);
             Transform3D transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up);
-            ModelObject coffee = new ModelObject("coffee - plane", ActorType.Primitive, StatusType.Update | StatusType.Drawn,
-                transform3D, staticColorEffect,
+            ModelObject coffee = new ModelObject("coffee - plane", ActorType.Primitive, StatusType.Update | StatusType.Drawn, transform3D, staticColorEffect,
                 Game.Models["CoffeePlane"]);
             Game.ObjectManager.Add(coffee);
         }
@@ -199,7 +197,7 @@ namespace GDGame.Scenes
             //grids
             InitGrid();
 
-            InitUi();
+            //InitUi();
 
             //Skybox
             InitArchetypalQuad();
@@ -490,13 +488,10 @@ namespace GDGame.Scenes
             enemy.ControllerList.Add(new RotationComponent("EnemyRC", ControllerType.Rotation));
 
             effectParameters = new EffectParameters(Game.ModelEffect, Game.Textures["Finish"], Color.White, 1);
-            MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Platform,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
-                Game.Models["SinglePlate"], ETileType.MovingPlatform, new Vector3(3, 0, 0));
-            platform.ControllerList.Add(new CustomBoxColliderController("PlatformBCC", ControllerType.Collider,
-                ColliderShape.Cube, 1f));
-            platform.ControllerList.Add(new TileMovementComponent("PlatformMC", ControllerType.Movement, 300,
-                new Curve1D(CurveLoopType.Cycle)));
+            MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Platform, StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
+                Game.Models["SinglePlate"], ETileType.MovingPlatform, 3, -1); //-1 = X, 1 = Y, 0 = Z
+            platform.ControllerList.Add(new CustomBoxColliderController("PlatformBCC", ControllerType.Collider, ColliderShape.Cube, 1f));
+            platform.ControllerList.Add(new TileMovementComponent("PlatformMC", ControllerType.Movement, 300, new Curve1D(CurveLoopType.Cycle)));
 
             #endregion MovableTiles
 
@@ -809,7 +804,7 @@ namespace GDGame.Scenes
         private void HandleDataManagerEvent(DataManagerEvent obj)
         {
             //if (Game.UiManager["MovesNumeric"] is UiText uiText)
-              //  uiText.Text = Game.LevelDataManager.CurrentMovesCount.ToString();
+            //  uiText.Text = Game.LevelDataManager.CurrentMovesCount.ToString();
         }
 
         private void OnGameStateMessageReceived(GameStateMessageEventInfo eventInfo)
