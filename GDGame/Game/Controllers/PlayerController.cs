@@ -18,8 +18,14 @@ namespace GDGame.Controllers
 {
     public class PlayerController : Controller, ICloneable
     {
-        private KeyboardManager keyboardManager;
+        #region 05. Private variables
+
         private CameraManager<Camera3D> cameraManager;
+        private KeyboardManager keyboardManager;
+
+        #endregion
+
+        #region 06. Constructors
 
         public PlayerController(string id, ControllerType controllerType, KeyboardManager keyboardManager, CameraManager<Camera3D> cameraManager) : base(id, controllerType)
         {
@@ -27,11 +33,40 @@ namespace GDGame.Controllers
             this.cameraManager = cameraManager;
         }
 
+        #endregion
+
+        #region 09. Override Methode
+
         public override void Update(GameTime gameTime, IActor actor)
         {
             if (keyboardManager.IsKeyPressed())
                 HandleKeyboardInput(actor as PlayerTile);
         }
+
+        #endregion
+
+        #region 11. Methods
+
+        public new object Clone()
+        {
+            return new PlayerController(ID, ControllerType, keyboardManager, cameraManager);
+        }
+
+        public bool IsMoveValid(PlayerTile playerTile, Quaternion rotationToApply, Vector3 rotatePoint, Vector3 playerTargetPos, Vector3 offset)
+        {
+            List<Vector3> initials = playerTile.AttachedTiles.Select(i => i.Transform3D.Translation).ToList();
+            initials.Insert(0, playerTile.Transform3D.Translation);
+            List<Vector3> ends = playerTile.AttachedTiles.Select(i => i.CalculateTargetPosition(rotatePoint, rotationToApply)).ToList();
+            ends.Insert(0, playerTargetPos);
+            List<Raycaster.HitResult> results = new List<Raycaster.HitResult>();
+            List<Raycaster.FloorHitResult> floorHitResults = new List<Raycaster.FloorHitResult>();
+            RaycastManager.Instance.RaycastAll(playerTile, offset, initials, ends, ref results, ref floorHitResults);
+            return results.Count == 0 && floorHitResults.Count > 0;
+        }
+
+        #endregion
+
+        #region 12. Events
 
         private void HandleKeyboardInput(PlayerTile actor)
         {
@@ -58,27 +93,10 @@ namespace GDGame.Controllers
                 else if (keyboardManager.IsKeyDown(Keys.Right) || keyboardManager.IsKeyDown(Keys.D)) moveDir = right;
 
                 if (moveDir != Vector3.Zero)
-                {
                     EventManager.FireEvent(new MovementEvent {type = MovementType.OnMove, tile = playerTile, direction = moveDir, onMoveEnd = playerTile.OnMoveEnd});
-                }
             }
         }
 
-        public bool IsMoveValid(PlayerTile playerTile, Quaternion rotationToApply, Vector3 rotatePoint, Vector3 playerTargetPos, Vector3 offset)
-        {
-            List<Vector3> initials = playerTile.AttachedTiles.Select(i => i.Transform3D.Translation).ToList();
-            initials.Insert(0, playerTile.Transform3D.Translation);
-            List<Vector3> ends = playerTile.AttachedTiles.Select(i => i.CalculateTargetPosition(rotatePoint, rotationToApply)).ToList();
-            ends.Insert(0, playerTargetPos);
-            List<Raycaster.HitResult> results = new List<Raycaster.HitResult>();
-            List<Raycaster.FloorHitResult> floorHitResults = new List<Raycaster.FloorHitResult>();
-            RaycastManager.Instance.RaycastAll(playerTile, offset, initials, ends, ref results, ref floorHitResults);
-            return results.Count == 0 && floorHitResults.Count > 0;
-        }
-
-        public new object Clone()
-        {
-            return new PlayerController(ID, ControllerType, keyboardManager, cameraManager);
-        }
+        #endregion
     }
 }

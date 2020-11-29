@@ -1,5 +1,4 @@
 ﻿using GDGame.Enums;
-using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
@@ -7,11 +6,18 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
-    class SpikeTile : BasicTile
+    internal class SpikeTile : BasicTile
     {
-        public SpikeTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
+        #region 06. Constructors
+
+        public SpikeTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(
+            id, actorType, statusType, transform, effectParameters, model, tileType)
         {
         }
+
+        #endregion
+
+        #region 11. Methods
 
         public new object Clone()
         {
@@ -20,14 +26,12 @@ namespace GDGame.Actors
                 EffectParameters.Clone() as EffectParameters, Model, TileType);
 
             if (ControllerList != null)
-            {
                 foreach (IController controller in ControllerList)
-                {
                     spikeTile.ControllerList.Add(controller.Clone() as IController);
-                }
-            }
 
             return spikeTile;
         }
+
+        #endregion
     }
 }

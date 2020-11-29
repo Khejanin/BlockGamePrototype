@@ -8,9 +8,7 @@ namespace GDGame.Actors
 {
     public class PickupCollidableObject : CollidableObject
     {
-        private int value;
-
-        public int Value { get => value; set => this.value = value; }
+        #region 06. Constructors
 
         public PickupCollidableObject(string id, ActorType actorType, StatusType statusType,
             Transform3D transform, EffectParameters effectParameters, Model model, int value)
@@ -19,8 +17,33 @@ namespace GDGame.Actors
             Value = value;
 
             //step 1 - add code to listen for CDCR event
-            this.Body.CollisionSkin.callbackFn += HandleCollision;
+            Body.CollisionSkin.callbackFn += HandleCollision;
         }
+
+        #endregion
+
+        #region 07. Properties, Indexers
+
+        public int Value { get; set; }
+
+        #endregion
+
+        #region 11. Methods
+
+        public new object Clone()
+        {
+            return new PickupCollidableObject("clone - " + ID, //deep
+                ActorType, //deep
+                StatusType,
+                Transform3D.Clone() as Transform3D, //deep
+                EffectParameters.Clone() as EffectParameters, //hybrid - shallow (texture and effect) and deep (all other fields)
+                Model,
+                Value); //shallow i.e. a reference
+        }
+
+        #endregion
+
+        #region 12. Events
 
         //step 2 - add a handler
         private bool HandleCollision(CollisionSkin collider, CollisionSkin collidee)
@@ -36,15 +59,6 @@ namespace GDGame.Actors
             return true;
         }
 
-        public new object Clone()
-        {
-            return new PickupCollidableObject("clone - " + ID, //deep
-                ActorType,   //deep
-                StatusType,
-                Transform3D.Clone() as Transform3D,  //deep
-                EffectParameters.Clone() as EffectParameters, //hybrid - shallow (texture and effect) and deep (all other fields)
-                Model,
-                this.value); //shallow i.e. a reference
-        }
+        #endregion
     }
 }

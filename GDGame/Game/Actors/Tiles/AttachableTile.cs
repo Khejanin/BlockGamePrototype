@@ -1,8 +1,8 @@
-﻿using GDGame.Enums;
+﻿using System.Diagnostics;
+using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Managers;
 using GDGame.Utilities;
-using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
@@ -13,19 +13,17 @@ namespace GDGame.Actors
 {
     public class AttachableTile : MovableTile
     {
+        #region 06. Constructors
+
         public AttachableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
             EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType,
             transform, effectParameters, model, tileType)
         {
         }
 
-        public void OnMoveEnd()
-        {
-            CheckCollision(RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f));
-            Raycaster.HitResult hit = RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f);
-            if (hit?.actor is SpikeTile)
-                System.Diagnostics.Debug.WriteLine(ID + " is ded!");
-        }
+        #endregion
+
+        #region 11. Methods
 
         private void CheckCollision(Raycaster.HitResult hit)
         {
@@ -54,14 +52,24 @@ namespace GDGame.Actors
                 EffectParameters.Clone() as EffectParameters, Model, TileType);
 
             if (ControllerList != null)
-            {
                 foreach (IController controller in ControllerList)
-                {
                     enemyTile.ControllerList.Add(controller.Clone() as IController);
-                }
-            }
 
             return enemyTile;
         }
+
+        #endregion
+
+        #region 12. Events
+
+        public void OnMoveEnd()
+        {
+            CheckCollision(RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f));
+            Raycaster.HitResult hit = RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f);
+            if (hit?.actor is SpikeTile)
+                Debug.WriteLine(ID + " is ded!");
+        }
+
+        #endregion
     }
 }

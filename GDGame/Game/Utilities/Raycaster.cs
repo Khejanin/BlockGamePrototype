@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using GDGame.Actors;
 using GDGame.Controllers;
 using GDGame.Enums;
@@ -13,13 +12,7 @@ namespace GDGame.Utilities
 {
     public static class Raycaster
     {
-        public struct FloorHitResult
-        {
-            public HitResult hitResult;
-            public Actor3D actor3D;
-        }
-
-        #region Public Methods
+        #region 11. Methods
 
         public static void PlayerCastAll(this PlayerTile player, ObjectManager objectManager, Vector3 offset, List<Vector3> initialPositions, List<Vector3> endPositions,
             ref List<HitResult> blockingObjectsResult, ref List<FloorHitResult> floorResult)
@@ -33,7 +26,7 @@ namespace GDGame.Utilities
             for (int i = 0; i < initialPositions.Count; i++)
             {
                 //Check if this block's trajectory is blocked by anything in its path
-                Vector3 maxDist = (endPositions[i]) - (initialPositions[i]);
+                Vector3 maxDist = endPositions[i] - initialPositions[i];
                 Vector3 dir = Vector3.Normalize(maxDist);
                 blockingObjectsResult.AddRange(RaycastAll(objectManager, initialPositions[i] + offset, dir, maxDist.Length(), ignore));
 
@@ -120,16 +113,24 @@ namespace GDGame.Utilities
 
         #endregion
 
+        #region 14. Nested Types
+
+        public struct FloorHitResult
+        {
+            public HitResult hitResult;
+            public Actor3D actor3D;
+        }
+
         public class HitResult : IComparable<HitResult>
         {
-            #region Public variables
+            #region 04. Public variables
 
             public Actor3D actor;
             public float distance;
 
             #endregion
 
-            #region Public Methods
+            #region 11. Methods
 
             public int CompareTo(HitResult other)
             {
@@ -138,5 +139,7 @@ namespace GDGame.Utilities
 
             #endregion
         }
+
+        #endregion
     }
 }

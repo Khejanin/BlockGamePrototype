@@ -11,9 +11,15 @@ namespace GDGame.Controllers
 {
     public class FlightController : Controller, ICloneable
     {
+        #region 05. Private variables
+
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
         private float moveSpeed, strafeSpeed, rotationSpeed;
+
+        #endregion
+
+        #region 06. Constructors
 
         public FlightController(string id, ControllerType controllerType,
             KeyboardManager keyboardManager,
@@ -28,6 +34,10 @@ namespace GDGame.Controllers
             this.rotationSpeed = rotationSpeed;
         }
 
+        #endregion
+
+        #region 09. Override Methode
+
         public override void Update(GameTime gameTime, IActor actor)
         {
             if (actor is Actor3D parent)
@@ -37,27 +47,31 @@ namespace GDGame.Controllers
             }
         }
 
+        #endregion
+
+        #region 11. Methods
+
+        public new object Clone()
+        {
+            return new FirstPersonController(ID, ControllerType, keyboardManager,
+                mouseManager, moveSpeed, strafeSpeed, rotationSpeed);
+        }
+
+        #endregion
+
+        #region 12. Events
+
         private void HandleKeyboardInput(GameTime gameTime, Actor3D parent)
         {
             Vector3 moveVector = Vector3.Zero;
 
             if (keyboardManager.IsKeyDown(Keys.W))
-            {
                 moveVector = parent.Transform3D.Look * moveSpeed;
-            }
-            else if (keyboardManager.IsKeyDown(Keys.S))
-            {
-                moveVector = -1 * parent.Transform3D.Look * moveSpeed;
-            }
+            else if (keyboardManager.IsKeyDown(Keys.S)) moveVector = -1 * parent.Transform3D.Look * moveSpeed;
 
             if (keyboardManager.IsKeyDown(Keys.A))
-            {
                 moveVector -= parent.Transform3D.Right * strafeSpeed;
-            }
-            else if (keyboardManager.IsKeyDown(Keys.D))
-            {
-                moveVector += parent.Transform3D.Right * strafeSpeed;
-            }
+            else if (keyboardManager.IsKeyDown(Keys.D)) moveVector += parent.Transform3D.Right * strafeSpeed;
 
             parent.Transform3D.TranslateBy(moveVector * gameTime.ElapsedGameTime.Milliseconds);
         }
@@ -67,16 +81,9 @@ namespace GDGame.Controllers
             Vector2 mouseDelta = mouseManager.GetDeltaFromCentre(new Vector2(512, 384));
             mouseDelta *= rotationSpeed * gameTime.ElapsedGameTime.Milliseconds;
 
-            if (mouseDelta.Length() != 0)
-            {
-                parent.Transform3D.RotateBy(new Vector3(-1 * mouseDelta, 0));
-            }
+            if (mouseDelta.Length() != 0) parent.Transform3D.RotateBy(new Vector3(-1 * mouseDelta, 0));
         }
 
-        public new object Clone()
-        {
-            return new FirstPersonController(ID, ControllerType, keyboardManager,
-                mouseManager, moveSpeed, strafeSpeed, rotationSpeed);
-        }
+        #endregion
     }
 }

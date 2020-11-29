@@ -2,72 +2,96 @@
 using GDGame.Actors;
 using GDGame.Enums;
 using GDGame.Utilities;
-using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.EventSystem
- {
-     public abstract class EventInfo
-     {
-     }
+{
+    public abstract class EventInfo
+    {
+    }
 
-     public class TileEventInfo : EventInfo
-     {
-         public ETileType targetedTileType;
-         public TileEventType type;
-     }
-     
-     public class PlayerEventInfo : EventInfo
-     {
-         public PlayerEventType type;
-         public Vector3? position;
-         public AttachableTile attachedTile;
-         
-     }
+    public class TileEventInfo : EventInfo
+    {
+        #region 04. Public variables
 
-     public class ActivatorEventInfo : EventInfo
-     {
-         public ActivatorEventType type;
-         public int id;
+        public ETileType targetedTileType;
+        public TileEventType type;
 
-         public ActivatorEventInfo()
-         {
+        #endregion
+    }
 
-         }
-     }
-     
-     public class GameStateMessageEventInfo : EventInfo
-     {
-         public GameState gameState;
+    public class PlayerEventInfo : EventInfo
+    {
+        #region 04. Public variables
 
-         public GameStateMessageEventInfo(GameState gameState)
-         {
-             this.gameState = gameState;
-         }
-     }
+        public AttachableTile attachedTile;
+        public Vector3? position;
+        public PlayerEventType type;
 
-     public class SceneEventInfo : EventInfo
-     {
-         public SceneActionType sceneActionType;
-         public string LevelName { get; set; }
-     }
+        #endregion
+    }
 
-     public class DataManagerEvent : EventInfo
-     {
-         
-     }
-     
-     public class CameraEvent : EventInfo
-     {
-         
-     }
-     
-     public class MovementEvent : EventInfo
-     {
-         public MovementType type;
-         public Vector3 direction;
-         public Action onMoveEnd;
-         public Action<Raycaster.HitResult> onCollideCallback;
-         public MovableTile tile;
-     }
- }
+    public class ActivatorEventInfo : EventInfo
+    {
+        #region 04. Public variables
+
+        public int id;
+        public ActivatorEventType type;
+
+        #endregion
+    }
+
+    public class GameStateMessageEventInfo : EventInfo
+    {
+        #region 04. Public variables
+
+        public GameState gameState;
+
+        #endregion
+
+        #region 06. Constructors
+
+        public GameStateMessageEventInfo(GameState gameState)
+        {
+            this.gameState = gameState;
+        }
+
+        #endregion
+    }
+
+    public class SceneEventInfo : EventInfo
+    {
+        #region 04. Public variables
+
+        public SceneActionType sceneActionType;
+
+        #endregion
+
+        #region 07. Properties, Indexers
+
+        public string LevelName { get; set; }
+
+        #endregion
+    }
+
+    public class DataManagerEvent : EventInfo
+    {
+    }
+
+    public class CameraEvent : EventInfo
+    {
+    }
+
+    public class MovementEvent : EventInfo
+    {
+        #region 04. Public variables
+
+        public Vector3 direction;
+        public Action<Raycaster.HitResult> onCollideCallback;
+        public Action onMoveEnd;
+        public MovableTile tile;
+        public MovementType type;
+
+        #endregion
+    }
+}

@@ -12,10 +12,15 @@ namespace GDGame.Controllers
 {
     public abstract class ColliderController : Controller
     {
-        public ColliderType ColliderType { get; private set; }
+        #region 05. Private variables
+
         protected ColliderShape colliderShape;
         protected bool drawDebug;
         protected Transform3D parentTransform;
+
+        #endregion
+
+        #region 06. Constructors
 
         protected ColliderController(string id, ControllerType controllerType, ColliderShape colliderShape,
             ColliderType colliderType = ColliderType.Blocking) : base(id, controllerType)
@@ -24,17 +29,52 @@ namespace GDGame.Controllers
             ColliderType = colliderType;
         }
 
+        #endregion
+
+        #region 07. Properties, Indexers
+
+        public ColliderType ColliderType { get; }
+
+        #endregion
+
+        #region 11. Methods
+
         public abstract void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice);
+
+        #endregion
     }
 
     public class CustomBoxColliderController : ColliderController, ICloneable
     {
+        #region 05. Private variables
+
         private float scale;
 
-        public CustomBoxColliderController(string id, ControllerType controllerType, ColliderShape colliderShape, float scale, ColliderType colliderType = ColliderType.Blocking) : base(id, controllerType, colliderShape, colliderType)
+        #endregion
+
+        #region 06. Constructors
+
+        public CustomBoxColliderController(string id, ControllerType controllerType, ColliderShape colliderShape, float scale, ColliderType colliderType = ColliderType.Blocking) :
+            base(id, controllerType, colliderShape, colliderType)
         {
             this.scale = scale;
         }
+
+        #endregion
+
+        #region 09. Override Methode
+
+        public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
+        {
+        }
+
+        public override void Update(GameTime gameTime, IActor actor)
+        {
+        }
+
+        #endregion
+
+        #region 11. Methods
 
         public new object Clone()
         {
@@ -49,20 +89,33 @@ namespace GDGame.Controllers
             return box;
         }
 
-        public override void Update(GameTime gameTime, IActor actor)
-        {
-        }
-
-        public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
-        {
-        }
+        #endregion
     }
 
     public class PrimitiveColliderController : ColliderController, ICloneable
     {
-        private PrimitiveColliderController(string id, ControllerType controllerType, ColliderShape colliderShape, ColliderType colliderType = ColliderType.Blocking) : base(id, controllerType, colliderShape, colliderType)
+        #region 06. Constructors
+
+        private PrimitiveColliderController(string id, ControllerType controllerType, ColliderShape colliderShape, ColliderType colliderType = ColliderType.Blocking) : base(id,
+            controllerType, colliderShape, colliderType)
         {
         }
+
+        #endregion
+
+        #region 09. Override Methode
+
+        public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
+        {
+        }
+
+        public override void Update(GameTime gameTime, IActor actor)
+        {
+        }
+
+        #endregion
+
+        #region 11. Methods
 
         public new object Clone()
         {
@@ -74,12 +127,6 @@ namespace GDGame.Controllers
             return parent.GetDrawnBoundingBox();
         }
 
-        public override void Update(GameTime gameTime, IActor actor)
-        {
-        }
-
-        public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
-        {
-        }
+        #endregion
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using GDGame.Actors.Drawn;
 using GDGame.EventSystem;
 using GDGame.Managers;
 using GDGame.Scenes;
-using GDLibrary;
 using GDLibrary.Actors;
+using GDLibrary.Containers;
 using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.Managers;
@@ -11,39 +12,12 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MenuScene = GDGame.Scenes.MenuScene;
 
 namespace GDGame
 {
     public class Main : Microsoft.Xna.Framework.Game
     {
-        
-
-        #region Fields
-
-        public GraphicsDeviceManager Graphics { get; }
-        public LevelDataManager LevelDataManager { get; private set; }
-        public BasicEffect ModelEffect { get; private set; }
-        public BasicEffect UnlitTexturedEffect { get; private set; }
-        public BasicEffect UnlitWireframeEffect { get; private set; }
-        public CameraManager<Camera3D> CameraManager { get; private set; }
-        public ObjectManager ObjectManager { get; private set; }
-        public KeyboardManager KeyboardManager { get; private set; }
-        public GamePadManager GamePadManager { get; private set; }
-        public MouseManager MouseManager { get; private set; }
-        public RasterizerState WireframeRasterizerState { get; private set; }
-        public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
-        public SoundManager SoundManager { get; private set; }
-        public SceneManager SceneManager { get; private set; }
-        public UiManager UiManager { get; private set; }
-        public Dictionary<string, SpriteFont> Fonts { get; private set; }
-        public ProjectionParameters GlobalProjectionParameters => ProjectionParameters.StandardDeepSixteenTen;
-        private PhysicsManager PhysicsManager { get; set; }
-        private RenderManager RenderManager { get; set; }
-
-        #endregion
-
-        #region Initialization
+        #region 06. Constructors
 
         public Main()
         {
@@ -52,112 +26,42 @@ namespace GDGame
             IsMouseVisible = true;
         }
 
-        protected override void Initialize()
-        {
-            Window.Title = "My Amazing Game";
+        #endregion
 
-            InitManagers();
-            CreateScenes();
-            InitEffect();
-            LoadFonts();
+        #region 07. Properties, Indexers
 
-            InitGraphics(1024, 768);
-            base.Initialize();
-        }
+        public CameraManager<Camera3D> CameraManager { get; private set; }
+        public ContentDictionary<SpriteFont> Fonts { get; private set; }
+        public ProjectionParameters GlobalProjectionParameters => ProjectionParameters.StandardDeepSixteenTen;
+        public GraphicsDeviceManager Graphics { get; }
+        public KeyboardManager KeyboardManager { get; private set; }
+        public LevelDataManager LevelDataManager { get; private set; }
+        public BasicEffect ModelEffect { get; private set; }
+        public ContentDictionary<Model> Models { get; private set; }
+        public MouseManager MouseManager { get; private set; }
+        public ObjectManager ObjectManager { get; private set; }
+        private PhysicsManager PhysicsManager { get; set; }
+        private RenderManager RenderManager { get; set; }
+        public SceneManager SceneManager { get; private set; }
+        public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
+        public SoundManager SoundManager { get; private set; }
+        public ContentDictionary<Texture2D> Textures { get; private set; }
+        public UIManager UiManager { get; private set; }
+        public BasicEffect UnlitWireframeEffect { get; private set; }
 
-        private void InitManagers()
-        {
-            //Events
-            Components.Add(new EventManager(this));
+        #endregion
 
-            Components.Add(new EventDispatcher(this));
-
-            PhysicsManager = new PhysicsManager(this, StatusType.Off);
-            Components.Add(PhysicsManager);
-
-            //Camera
-            CameraManager = new CameraManager<Camera3D>(this, StatusType.Update);
-            Components.Add(CameraManager);
-
-            //Scene
-            SceneManager = new SceneManager(this);
-            Components.Add(SceneManager);
-
-            //Keyboard
-            KeyboardManager = new KeyboardManager(this);
-            Components.Add(KeyboardManager);
-
-            //Mouse
-            MouseManager = new MouseManager(this, true, PhysicsManager);
-            Components.Add(MouseManager);
-
-            //Sound
-            SoundManager = new SoundManager(this);
-            Components.Add(SoundManager);
-
-            //Object
-            ObjectManager = new ObjectManager(this, StatusType.Update, 6, 10);
-            Components.Add(ObjectManager);
-            
-            //render
-            RenderManager = new RenderManager(this, StatusType.Drawn, ScreenLayoutType.Single, ObjectManager, CameraManager);
-            Components.Add(RenderManager);
-
-            UiManager = new UiManager(this);
-            Components.Add(UiManager);
-
-            RaycastManager.Instance.ObjectManager = ObjectManager;
-
-            LevelDataManager = new LevelDataManager();
-        }
-
-        private void CreateScenes()
-        {
-            SceneManager.AddScene("Menu", new MenuScene(this));
-            //SceneManager.AddScene("Test", new MainScene(this, "test_Enemy_path.json"));
-            SceneManager.AddScene("Level 7", new MainScene(this, "Big_Level.json"));
-
-
-            //SceneManager.AddScene("Tutorial", new TutorialScene(this));
-            //SceneManager.AddScene("Level1", new MainScene(this, "Paul_Level_1.json"));
-            //SceneManager.AddScene("Level2", new MainScene(this, "Paul_Level_2.json"));
-            //SceneManager.AddScene("Level3", new MainScene(this, "Paul_Level_3.json"));
-            //SceneManager.AddScene("Level4", new MainScene(this, "Paul_Level_4.json"));
-            //SceneManager.AddScene("Level5", new MainScene(this, "Paul_Level_5.json"));
-            //SceneManager.AddScene("Level6", new MainScene(this, "Paul_Level_6.json"));
-            //throws back to menu eventually
-            SceneManager.AddScene("End", new EndScene(this));
-
-            //shouldn't be able to "next scene" to this
-            SceneManager.AddScene("Options", new OptionsMenuScene(this));
-        }
+        #region 08. Initialization
 
         private void InitEffect()
         {
-            //to do...
-            UnlitTexturedEffect = new BasicEffect(Graphics.GraphicsDevice)
-            {
-                VertexColorEnabled = true, TextureEnabled = true
-            };
-            //otherwise we wont see RGB
-
             //wireframe primitives with no lighting and no texture
             UnlitWireframeEffect = new BasicEffect(Graphics.GraphicsDevice) {VertexColorEnabled = true};
 
             //model effect
-            //add a ModelObject
             ModelEffect = new BasicEffect(Graphics.GraphicsDevice) {TextureEnabled = true};
             //this.modelEffect.LightingEnabled = true;
             //this.modelEffect.EnableDefaultLighting();
-
-            WireframeRasterizerState = new RasterizerState {FillMode = FillMode.WireFrame};
-        }
-
-        private void LoadFonts()
-        {
-            SpriteFont uiFont = Content.Load<SpriteFont>("Assets/Fonts/Arial");
-
-            Fonts = new Dictionary<string, SpriteFont> {{"UI", uiFont}};
         }
 
         private void InitGraphics(int width, int height)
@@ -184,9 +88,87 @@ namespace GDGame
             Graphics.GraphicsDevice.SamplerStates[0] = samplerState;
         }
 
+        protected override void Initialize()
+        {
+            Window.Title = "B_Logic";
+
+            InitManagers();
+            InitializeDictionaries();
+
+            CreateScenes();
+            InitEffect();
+            LoadFonts();
+            LoadBasicTextures();
+
+            InitUiArchetypes();
+
+            InitGraphics(1024, 768);
+            base.Initialize();
+        }
+
+        private void InitializeDictionaries()
+        {
+            UiArchetypes = new Dictionary<string, DrawnActor2D>();
+
+            Fonts = new ContentDictionary<SpriteFont>("fonts", Content);
+            Textures = new ContentDictionary<Texture2D>("textures", Content);
+            Models = new ContentDictionary<Model>("models", Content);
+        }
+
+        public Dictionary<string, DrawnActor2D> UiArchetypes { get; set; }
+
+        private void InitManagers()
+        {
+            //Events
+            Components.Add(new EventManager(this));
+            Components.Add(new EventDispatcher(this));
+
+            //Physics
+            PhysicsManager = new PhysicsManager(this, StatusType.Off);
+            Components.Add(PhysicsManager);
+
+            //Camera
+            CameraManager = new CameraManager<Camera3D>(this, StatusType.Update);
+            Components.Add(CameraManager);
+
+            //Scene
+            SceneManager = new SceneManager(this);
+            Components.Add(SceneManager);
+
+            //Keyboard
+            KeyboardManager = new KeyboardManager(this);
+            Components.Add(KeyboardManager);
+
+            //Mouse
+            MouseManager = new MouseManager(this, true, PhysicsManager);
+            Components.Add(MouseManager);
+
+            //Sound
+            SoundManager = new SoundManager(this);
+            Components.Add(SoundManager);
+
+            //Object
+            ObjectManager = new ObjectManager(this, StatusType.Update, 6, 10);
+            Components.Add(ObjectManager);
+
+            //Render
+            RenderManager = new RenderManager(this, StatusType.Drawn, ScreenLayoutType.Single, ObjectManager, CameraManager);
+            Components.Add(RenderManager);
+
+            //UI
+            UiManager = new UIManager(this, StatusType.Update | StatusType.Drawn, new SpriteBatch(GraphicsDevice), 10);
+            Components.Add(UiManager);
+
+            //Raycast
+            RaycastManager.Instance.ObjectManager = ObjectManager;
+
+            //LevelData
+            LevelDataManager = new LevelDataManager();
+        }
+
         #endregion
 
-        #region Override Methodes
+        #region 09. Override Methode
 
         protected override void Update(GameTime gameTime)
         {
@@ -197,5 +179,58 @@ namespace GDGame
         }
 
         #endregion
+
+        #region 10. Load Methods
+
+        private void LoadFonts()
+        {
+            Fonts.Load("Assets/Fonts/Arial");
+        }
+
+        #endregion
+
+        #region 11. Methods
+
+        private void CreateScenes()
+        {
+            // SceneManager.AddScene("Menu", new Scenes.MenuScene(this));
+            //SceneManager.AddScene("Test", new MainScene(this, "test_Enemy_path.json"));
+            SceneManager.AddScene("Level 7", new MainScene(this, "Big_Level.json"));
+
+
+            //SceneManager.AddScene("Tutorial", new TutorialScene(this));
+            // SceneManager.AddScene("Level1", new MainScene(this, "Paul_Level_1.json"));
+            // SceneManager.AddScene("Level2", new MainScene(this, "Paul_Level_2.json"));
+            //SceneManager.AddScene("Level3", new MainScene(this, "Paul_Level_3.json"));
+            //SceneManager.AddScene("Level4", new MainScene(this, "Paul_Level_4.json"));
+            //SceneManager.AddScene("Level5", new MainScene(this, "Paul_Level_5.json"));
+            //SceneManager.AddScene("Level6", new MainScene(this, "Paul_Level_6.json"));
+            //throws back to menu eventually
+            // SceneManager.AddScene("End", new EndScene(this));
+
+            //shouldn't be able to "next scene" to this
+            // SceneManager.AddScene("Options", new OptionsMenuScene(this));
+        }
+
+        #endregion
+
+
+        private void LoadBasicTextures()
+        {
+            Textures.Load("Assets/Textures/Menu/button", "bStart");
+        }
+
+        private void InitUiArchetypes()
+        {
+            string text = "Hello";
+            Texture2D texture = Textures["bStart"];
+            Vector2 origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
+            Integer2 dimensions = new Integer2(texture.Width, texture.Height);
+            Transform2D transform2D = new Transform2D(Vector2.Zero, 0, Vector2.One, origin, dimensions);
+            UiButtonObject button = new UiButtonObject("backButton", ActorType.UIButtonObject, StatusType.Update | StatusType.Drawn, transform2D, Color.White, 0.5f,
+                SpriteEffects.None, texture, new Rectangle(0, 0, texture.Width, texture.Height), text, Fonts["Arial"], Color.Black, Vector2.Zero);
+
+            UiArchetypes.Add("button", button);
+        }
     }
 }
