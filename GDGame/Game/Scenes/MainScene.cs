@@ -370,7 +370,7 @@ namespace GDGame.Scenes
 
             effectParameters = new EffectParameters(ModelEffect, textures["Finish"], Color.White, 1);
             MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Platform, StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
-                models["SinglePlate"], ETileType.MovingPlatform, new Vector3(3, 0, 0));
+                models["SinglePlate"], ETileType.MovingPlatform, 3, -1);//-1 = X, 1 = Y, 0 = Z
             platform.ControllerList.Add(new CustomBoxColliderController("PlatformBCC", ControllerType.Collider, ColliderShape.Cube, 1f));
             platform.ControllerList.Add(new TileMovementComponent("PlatformMC", ControllerType.Movement, 300, new Curve1D(CurveLoopType.Cycle)));
 
