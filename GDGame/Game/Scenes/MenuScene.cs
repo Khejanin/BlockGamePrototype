@@ -32,8 +32,8 @@ namespace GDGame.Scenes
         {
             InitializeLoadContent();
             InitializeCamera();
-            //InitializeText();
             InitialiseBackground();
+            InitializeText();
             InitialiseButtons();
             
         }
@@ -48,19 +48,19 @@ namespace GDGame.Scenes
         {
             mouseManager.MouseVisible = true;
             playUiButton = new UiButton(StatusType.Drawn | StatusType.Update,
-                new Vector2(Game.ScreenCentre.X+100, Game.ScreenCentre.Y-200), "Play", textures["bStart"],
+                new Vector2(Game.ScreenCentre.X+100, Game.ScreenCentre.Y-160), "Play", textures["bStart"],
                 Game.Fonts["UI"]);
-            UiManager.AddUiElement("MenuButton", playUiButton);
+            UiManager.AddUiElement("PlayButton", playUiButton);
             playUiButton.Click += Click_PlayBtn;
 
             optionsUiButton = new UiButton(StatusType.Drawn | StatusType.Update,
-                new Vector2(Game.ScreenCentre.X +100, Game.ScreenCentre.Y + 80), "Options", textures["bStart"],
+                new Vector2(Game.ScreenCentre.X +100, Game.ScreenCentre.Y + 0), "Options", textures["bStart"],
                 Game.Fonts["UI"]);
             UiManager.AddUiElement("OptionsButton", optionsUiButton);
             optionsUiButton.Click += Click_OptionsBtn;
 
             quitUiButton = new UiButton(StatusType.Drawn | StatusType.Update,
-                new Vector2(Game.ScreenCentre.X +100, Game.ScreenCentre.Y + 200), "Quit", textures["bStart"],
+                new Vector2(Game.ScreenCentre.X +100, Game.ScreenCentre.Y + 160), "Quit", textures["bStart"],
                 Game.Fonts["UI"]);
             UiManager.AddUiElement("QuitButton", quitUiButton);
             quitUiButton.Click += Click_QuitBtn;
@@ -96,9 +96,12 @@ namespace GDGame.Scenes
 
         private void InitializeText()
         {
-            UiText menuUiText = new UiText(StatusType.Drawn, "Press SPACEBAR to start the Game!", Game.Fonts["UI"],
-                Game.ScreenCentre, Color.Wheat);
-            UiManager.AddUiElement("MenuText", menuUiText);
+            UiText titleUiText = new UiText(StatusType.Drawn, "B_Logic", Game.Fonts["UI"],
+                new Vector2(Game.ScreenCentre.X -275, Game.ScreenCentre.Y - 25), Color.SaddleBrown);
+            UiManager.AddUiElement("TitleText", titleUiText);
+            UiText subTitleUiText = new UiText(StatusType.Drawn, "Caffeine Edition!", Game.Fonts["UI"],
+                new Vector2(Game.ScreenCentre.X - 275, Game.ScreenCentre.Y + 50), Color.SaddleBrown);
+            UiManager.AddUiElement("SubTitleText", subTitleUiText);
         }
 
         protected override void UpdateScene(GameTime gameTime)
