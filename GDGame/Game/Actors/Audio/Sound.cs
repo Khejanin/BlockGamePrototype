@@ -7,47 +7,56 @@ namespace GDGame.Actors
 {
     public class Sounds : Actor
     {
-        #region Fields
+        #region 05. Private variables
+
+        private bool isPlaying;
 
         private SoundEffect soundFx;
-        private bool isPlaying;
 
         #endregion
 
-        #region Properties
-
-        public SoundEffect GetSfx()
-        {
-            return this.soundFx;
-        }
-
-        public void SetSfx(SoundEffect sfx)
-        {
-            this.soundFx = sfx;
-        }
-
-        public bool IsSongPlaying()
-        {
-            return this.isPlaying;
-        }
-
-        public void SetPlaying(bool playing)
-        {
-            this.isPlaying = playing;
-        }
+        #region 06. Constructors
 
         public Sounds(SoundEffect sfx, string id, ActorType actorType, StatusType statusType) : base(id, actorType,
             statusType)
         {
-            this.soundFx = sfx;
-            this.isPlaying = false;
+            soundFx = sfx;
+            isPlaying = false;
         }
+
+        #endregion
+
+        #region 09. Override Methode
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
         }
+
+        #endregion
+
+        #region 11. Methods
+
+        public SoundEffect GetSfx()
+        {
+            return soundFx;
+        }
+
+        public bool IsSongPlaying()
+        {
+            return isPlaying;
+        }
+
+        public void SetPlaying(bool playing)
+        {
+            isPlaying = playing;
+        }
+
+        public void SetSfx(SoundEffect sfx)
+        {
+            soundFx = sfx;
+        }
+
+        #endregion
     }
 }
-
-#endregion

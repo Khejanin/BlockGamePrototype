@@ -1,4 +1,3 @@
-using System;
 using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
@@ -12,18 +11,30 @@ namespace GDGame.Component
 {
     public class RandomRotatorController : Controller
     {
+        #region 05. Private variables
+
         private Vector3 rotation;
-        
+
+        #endregion
+
+        #region 06. Constructors
+
         public RandomRotatorController(string id, ControllerType controllerType) : base(id, controllerType)
         {
             SharpDX.Vector3 vec = MathHelperFunctions.Rnd.NextVector3(SharpDX.Vector3.Zero, SharpDX.Vector3.One);
-            rotation = new Vector3(vec.X,vec.Y,vec.Z);
+            rotation = new Vector3(vec.X, vec.Y, vec.Z);
         }
+
+        #endregion
+
+        #region 09. Override Methode
 
         public override void Update(GameTime gameTime, IActor actor)
         {
             Actor3D actor3D = actor as Actor3D;
             actor3D?.Transform3D.RotateBy(rotation * (float) gameTime.ElapsedGameTime.TotalSeconds);
         }
+
+        #endregion
     }
 }

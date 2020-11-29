@@ -10,23 +10,26 @@ namespace GDGame.Managers
 {
     public class SoundManager : GameComponent
     {
-        private List<Sounds> list;
+        #region 05. Private variables
+
         private int activeSongIndex;
         private Sounds currentSong;
-        private SoundEffectInstance mySoundInstance;
+        private List<Sounds> list;
         private float masterSound = 0.2f;
+        private SoundEffectInstance mySoundInstance;
 
-        /// <summary>
-        /// Indexer for the camera manager
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        /// See <see href="www."/> for more info
-        public Sounds this[int index]
+        #endregion
+
+        #region 06. Constructors
+
+        public SoundManager(Microsoft.Xna.Framework.Game game) : base(game)
         {
-            get => list[index];
-            set => list[index] = value;
+            list = new List<Sounds>();
         }
+
+        #endregion
+
+        #region 07. Properties, Indexers
 
         public Sounds ActiveSong => list[activeSongIndex];
 
@@ -40,105 +43,28 @@ namespace GDGame.Managers
             }
         }
 
-        public SoundManager(Microsoft.Xna.Framework.Game game) : base(game)
+        /// <summary>
+        ///     Indexer for the camera manager
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        /// See
+        /// <see href="www." />
+        /// for more info
+        public Sounds this[int index]
         {
-            list = new List<Sounds>();
+            get => list[index];
+            set => list[index] = value;
         }
+
+        #endregion
+
+        #region 11. Methods
 
         public void Add(Sounds newSong)
         {
-            if(FindSound(newSong.ID) == null)
+            if (FindSound(newSong.ID) == null)
                 list.Add(newSong);
-        }
-
-        public bool RemoveIf(Predicate<Sounds> predicate)
-        {
-            int position = list.FindIndex(predicate);
-
-            if (position != -1)
-            {
-                list.RemoveAt(position);
-                return true;
-            }
-            return false;
-        }
-
-        public Sounds FindSound(string id)
-        {
-            return list.FirstOrDefault(s => s.ID == id);
-        }
-
-        public void PlaySoundEffect(string id)
-        {
-            Sounds s = FindSound(id);
-            currentSong = s;
-            if (s != null)
-            {
-                switch (s.ActorType)
-                {
-                    case ActorType.MusicTrack:
-                    {
-                        if (currentSong != null)
-                        {
-                            if (s.ID != currentSong.ID)
-                            {
-                                mySoundInstance = s.GetSfx().CreateInstance();
-                                mySoundInstance.IsLooped = true;
-                                mySoundInstance.Volume = masterSound;
-                                mySoundInstance.Play();
-                            }
-                        }
-
-                        break;
-                    }
-                    case ActorType.SoundEffect:
-                        PlaySfx(s);
-                        break;
-                }
-            }
-        }
-
-        private void PlaySfx(Sounds s)
-        {
-            if (s.ActorType == ActorType.SoundEffect)
-            {
-                var instance = s.GetSfx().CreateInstance();
-                instance.IsLooped = false;
-                instance.Play();
-            }
-        }
-
-        public void NextSong()
-        {
-            int next = activeSongIndex + 1;
-            if (next >= list.Count)
-                next = 0;
-
-            while(list[next].ActorType != ActorType.MusicTrack)
-            {
-                next = (next + 1) % list.Count;
-            }
-
-            SwitchSong(next);
-            mySoundInstance.Volume = masterSound;
-            mySoundInstance.IsLooped = true;
-            mySoundInstance.Play();
-        }
-
-        private void SwitchSong(int next)
-        {
-            activeSongIndex = next;
-
-            StopSong();
-
-            currentSong = list[next];
-            mySoundInstance = currentSong.GetSfx().CreateInstance();
-        }
-
-        public void StopSong()
-        {
-            if (mySoundInstance != null && mySoundInstance.State == SoundState.Playing)
-                mySoundInstance.Stop();
         }
 
         public void ChangeMusicState()
@@ -154,10 +80,78 @@ namespace GDGame.Managers
             }
         }
 
+        public Sounds FindSound(string id)
+        {
+            return list.FirstOrDefault(s => s.ID == id);
+        }
+
+        public void NextSong()
+        {
+            int next = activeSongIndex + 1;
+            if (next >= list.Count)
+                next = 0;
+
+            while (list[next].ActorType != ActorType.MusicTrack) next = (next + 1) % list.Count;
+
+            SwitchSong(next);
+            mySoundInstance.Volume = masterSound;
+            mySoundInstance.IsLooped = true;
+            mySoundInstance.Play();
+        }
+
         private void PauseSong()
         {
             if (mySoundInstance != null && mySoundInstance.State == SoundState.Playing)
                 mySoundInstance.Pause();
+        }
+
+        private void PlaySfx(Sounds s)
+        {
+            if (s.ActorType == ActorType.SoundEffect)
+            {
+                SoundEffectInstance instance = s.GetSfx().CreateInstance();
+                instance.IsLooped = false;
+                instance.Play();
+            }
+        }
+
+        public void PlaySoundEffect(string id)
+        {
+            Sounds s = FindSound(id);
+            currentSong = s;
+            if (s != null)
+                switch (s.ActorType)
+                {
+                    case ActorType.MusicTrack:
+                    {
+                        if (currentSong != null)
+                            if (s.ID != currentSong.ID)
+                            {
+                                mySoundInstance = s.GetSfx().CreateInstance();
+                                mySoundInstance.IsLooped = true;
+                                mySoundInstance.Volume = masterSound;
+                                mySoundInstance.Play();
+                            }
+
+                        break;
+                    }
+                    case ActorType.SoundEffect:
+                        PlaySfx(s);
+                        break;
+                }
+        }
+
+        public bool RemoveIf(Predicate<Sounds> predicate)
+        {
+            int position = list.FindIndex(predicate);
+
+            if (position != -1)
+            {
+                list.RemoveAt(position);
+                return true;
+            }
+
+            return false;
         }
 
         private void ResumeSong()
@@ -166,18 +160,20 @@ namespace GDGame.Managers
                 mySoundInstance.Resume();
         }
 
-
-        public void VolumeUp()
+        public void StopSong()
         {
-            PauseSong();
+            if (mySoundInstance != null && mySoundInstance.State == SoundState.Playing)
+                mySoundInstance.Stop();
+        }
 
-            masterSound += 0.2f;
+        private void SwitchSong(int next)
+        {
+            activeSongIndex = next;
 
-            if (masterSound >= 1.0)
-                masterSound = 1;
-            
-            mySoundInstance.Volume = masterSound;
-            ResumeSong();
+            StopSong();
+
+            currentSong = list[next];
+            mySoundInstance = currentSong.GetSfx().CreateInstance();
         }
 
         public void VolumeDown()
@@ -192,5 +188,21 @@ namespace GDGame.Managers
             mySoundInstance.Volume = masterSound;
             ResumeSong();
         }
+
+
+        public void VolumeUp()
+        {
+            PauseSong();
+
+            masterSound += 0.2f;
+
+            if (masterSound >= 1.0)
+                masterSound = 1;
+
+            mySoundInstance.Volume = masterSound;
+            ResumeSong();
+        }
+
+        #endregion
     }
 }

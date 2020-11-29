@@ -8,18 +8,28 @@ namespace GDGame.Tiles
 {
     public class Shape : Actor3D
     {
-        private List<AttachableTile> attachableTiles;
-
-        public List<AttachableTile> AttachableTiles { get => attachableTiles; set => attachableTiles = value; }
+        #region 06. Constructors
 
         public Shape(string id, ActorType actorType, StatusType statusType, Transform3D transform3D) : base(id, actorType, statusType, transform3D)
         {
             AttachableTiles = new List<AttachableTile>();
         }
 
+        #endregion
+
+        #region 07. Properties, Indexers
+
+        public List<AttachableTile> AttachableTiles { get; set; }
+
+        #endregion
+
+        #region 11. Methods
+
         public void AddTile(AttachableTile tile)
         {
             AttachableTiles.Add(tile);
         }
+
+        #endregion
     }
 }

@@ -1,14 +1,38 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Quaternion = Microsoft.Xna.Framework.Quaternion;
-using Vector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace GDGame.Utilities
 {
     public class MathHelperFunctions
     {
+        #region 03. Static Fields and Constants
+
         private static Random _rnd;
+
+        #endregion
+
+        #region 07. Properties, Indexers
+
         public static Random Rnd => _rnd ?? new Random();
+
+        #endregion
+
+        #region 11. Methods
+
+        public static float GetAngle(Vector3 forward, Vector3 look)
+        {
+            Vector3 noY = look * (Vector3.Forward + Vector3.Right);
+            noY.Normalize();
+
+            Vector3 cross = Vector3.Cross(forward, noY);
+            double dot = Vector3.Dot(forward, noY);
+
+            double angle = Math.Atan2(cross.Length(), dot);
+
+            double test = Vector3.Dot(Vector3.Up, cross);
+            if (test < 0.0f) angle = -angle;
+            return (float) -(angle + Math.PI);
+        }
 
         public static Vector3 QuaternionToEulerAngles(Quaternion q)
         {
@@ -50,21 +74,7 @@ namespace GDGame.Utilities
             pitchYawRoll.Z = MathF.Round(MathHelper.ToDegrees(yaw));
             return pitchYawRoll;
         }
-        
-        public static float GetAngle(Vector3 forward, Vector3 look)
-        {
-            Vector3 noY = look * (Vector3.Forward + Vector3.Right);
-            noY.Normalize();
 
-            Vector3 cross = Vector3.Cross(forward, noY);
-            double dot = Vector3.Dot(forward, noY);
-
-            double angle = Math.Atan2(cross.Length(), dot);
-
-            double test = Vector3.Dot(Vector3.Up, cross);
-            if (test < 0.0f) angle = -angle;
-            return (float) -(angle + Math.PI);
-        }
+        #endregion
     }
-    
 }

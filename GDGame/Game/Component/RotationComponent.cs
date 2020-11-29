@@ -9,10 +9,29 @@ namespace GDGame.Component
 {
     public class RotationComponent : Controller, ICloneable
     {
-        private Vector3 rightRotatePoint;
-        private Vector3 leftRotatePoint;
-        private Vector3 forwardRotatePoint;
+        #region 05. Private variables
+
         private Vector3 backwardRotatePoint;
+        private Vector3 forwardRotatePoint;
+        private Vector3 leftRotatePoint;
+        private Vector3 rightRotatePoint;
+
+        #endregion
+
+        #region 06. Constructors
+
+        public RotationComponent(string id, ControllerType controllerType) : base(id, controllerType)
+        {
+        }
+
+        #endregion
+
+        #region 11. Methods
+
+        public new object Clone()
+        {
+            return new RotationComponent(ID, ControllerType);
+        }
 
         public void SetRotatePoint(Vector3 direction, MovableTile actor)
         {
@@ -35,10 +54,7 @@ namespace GDGame.Component
             movableTile.RotatePoint = rotatePoint;
 
             if (!(movableTile is PlayerTile player)) return;
-            foreach (AttachableTile tile in player.AttachedTiles)
-            {
-                tile.RotatePoint = rotatePoint;
-            }
+            foreach (AttachableTile tile in player.AttachedTiles) tile.RotatePoint = rotatePoint;
         }
 
         private void UpdateRotatePoints(Actor3D movableTile)
@@ -79,13 +95,6 @@ namespace GDGame.Component
             }
         }
 
-        public RotationComponent(string id, ControllerType controllerType) : base(id, controllerType)
-        {
-        }
-
-        public new object Clone()
-        {
-            return new RotationComponent(ID, ControllerType);
-        }
+        #endregion
     }
 }
