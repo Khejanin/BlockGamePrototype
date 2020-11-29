@@ -2,27 +2,78 @@
 using System.Collections.Generic;
 using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Utilities;
 
 namespace GDGame.Managers
 {
     public class LevelDataManager
     {
-        private int currentMovesCount;
+        #region 05. Private variables
 
-        public int CurrentMovesCount => currentMovesCount;
+        private string currentLevel;
 
         private int currentTime;
-        private string currentLevel;
-        private Dictionary<string, LevelStats> LevelStats { get; }
+
+        #endregion
+
+        #region 06. Constructors
 
         public LevelDataManager()
         {
             LevelStats = new Dictionary<string, LevelStats>();
             EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
             EventManager.RegisterListener<SceneEventInfo>(HandleSceneEvent);
-            currentMovesCount = 0;
+            CurrentMovesCount = 0;
             currentTime = 0;
             currentLevel = "";
+        }
+
+        #endregion
+
+        #region 07. Properties, Indexers
+
+        public int CurrentMovesCount { get; private set; }
+
+        private Dictionary<string, LevelStats> LevelStats { get; }
+
+        #endregion
+
+        #region 11. Methods
+
+        private void HandelSceneEventInfoOnSceneChange()
+        {
+            if (!LevelStats.ContainsKey(currentLevel)) LevelStats.Add(currentLevel, new LevelStats());
+
+            LevelStats levelStat = LevelStats[currentLevel];
+            if (levelStat.MoveCount > CurrentMovesCount) levelStat.MoveCount = CurrentMovesCount;
+
+            if (levelStat.Time > currentTime) levelStat.Time = currentTime;
+
+            LevelStats[currentLevel] = levelStat;
+        }
+
+        private void HandelSceneEventInfoOnSceneLoaded(string levelName)
+        {
+            currentTime = 0;
+            CurrentMovesCount = 0;
+            currentLevel = levelName;
+        }
+
+        #endregion
+
+        #region 12. Events
+
+        private void HandlePlayerEvent(PlayerEventInfo playerEventInfo)
+        {
+            switch (playerEventInfo.type)
+            {
+                case PlayerEventType.Move:
+                    CurrentMovesCount++;
+                    EventManager.FireEvent(new DataManagerEvent());
+                    break;
+                case PlayerEventType.Die:
+                    break;
+            }
         }
 
         private void HandleSceneEvent(SceneEventInfo sceneEventInfo)
@@ -40,45 +91,6 @@ namespace GDGame.Managers
             }
         }
 
-        private void HandelSceneEventInfoOnSceneLoaded(string levelName)
-        {
-            currentTime = 0;
-            currentMovesCount = 0;
-            currentLevel = levelName;
-        }
-
-        private void HandelSceneEventInfoOnSceneChange()
-        {
-            if (!LevelStats.ContainsKey(currentLevel))
-            {
-                LevelStats.Add(currentLevel, new LevelStats());
-            }
-
-            LevelStats levelStat = LevelStats[currentLevel];
-            if (levelStat.moveCount > currentMovesCount)
-            {
-                levelStat.moveCount = currentMovesCount;
-            }
-
-            if (levelStat.time > currentTime)
-            {
-                levelStat.time = currentTime;
-            }
-
-            LevelStats[currentLevel] = levelStat;
-        }
-
-        private void HandlePlayerEvent(PlayerEventInfo playerEventInfo)
-        {
-            switch (playerEventInfo.type)
-            {
-                case PlayerEventType.Move:
-                     currentMovesCount++;
-                     EventManager.FireEvent(new DataManagerEvent());
-                    break;
-                case PlayerEventType.Die:
-                    break;
-            }
-        }
+        #endregion
     }
 }

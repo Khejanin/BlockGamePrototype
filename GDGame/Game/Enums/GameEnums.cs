@@ -1,6 +1,6 @@
 ﻿namespace GDGame.Enums
 {
-    public enum TileType : sbyte
+    public enum ETileType : sbyte
     {
         None,
         Static,
@@ -13,9 +13,10 @@
         Star,
         MovingPlatform,
         Spike,
-        Checkpoint
+        Checkpoint,
+        FallingPlatform
     }
-    
+
     public enum ColliderShape : sbyte
     {
         Cube,
@@ -27,7 +28,7 @@
         CheckOnly,
         Blocking
     }
-    
+
     public enum GameState : sbyte
     {
         Won,
@@ -39,7 +40,9 @@
         Move,
         Die,
         AttachedTileDie,
-        SetCheckpoint
+        SetCheckpoint,
+        OnMove,
+        OnEnemyMove
     }
 
     public enum TileEventType : sbyte
@@ -52,7 +55,7 @@
         Activate,
         Deactivate
     }
-    
+
     public enum SceneActionType : sbyte
     {
         OnSceneChange,
@@ -70,37 +73,12 @@
         Backward
     }
 
-    public enum MovementType : sbyte
+    public enum MovementType
     {
-        Slide,
-        Flip,
-        Jump
-    }
-
-    public enum SfxType : sbyte
-    {
-        PlayerMove,
-        PlayerAttach,
-        EnemyMove
-    }
-
-    public enum SoundEventType : sbyte
-    {
-        PlaySfx,
-        PlayMusic,
-        PauseMusic,
-        ResumeMusic,
-        ToggleMusicPlayback,
-        PlayNextMusic,
-        IncreaseVolume,
-        DecreaseVolume,
-        MuteVolume
-    }
-
-    public enum SoundVolumeType : sbyte
-    {
-        Master,
-        Sfx,
-        Music
+        Rotation,
+        OnMove,
+        OnEnemyMove,
+        OnPlayerMoved,
+        OnAttachedMove
     }
 }

@@ -9,7 +9,7 @@ namespace GDLibrary.Containers
     /// Provide generic map to load and store game content and allow Dispose() to be called on all content
     /// </summary>
     /// <typeparam name="V">Class type that implements IDisposable</typeparam>
-    public class ContentDictionary<V> : IDisposable where V : IDisposable
+    public class ContentDictionary<V> : IDisposable
     {
         #region Fields
 

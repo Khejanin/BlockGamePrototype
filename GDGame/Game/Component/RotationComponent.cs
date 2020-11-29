@@ -1,38 +1,42 @@
-﻿
+﻿using System;
 using GDGame.Actors;
-using GDGame.Utilities;
+using GDLibrary.Actors;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
-using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Component
 {
-    public class RotationComponent : IController
+    public class RotationComponent : Controller, ICloneable
     {
-        private MovableTile parent;
-        private Vector3 rightRotatePoint;
-        private Vector3 leftRotatePoint;
-        private Vector3 forwardRotatePoint;
+        #region 05. Private variables
+
         private Vector3 backwardRotatePoint;
+        private Vector3 forwardRotatePoint;
+        private Vector3 leftRotatePoint;
+        private Vector3 rightRotatePoint;
 
-        public object Clone()
+        #endregion
+
+        #region 06. Constructors
+
+        public RotationComponent(string id, ControllerType controllerType) : base(id, controllerType)
         {
-            return new RotationComponent();
         }
 
-        public void Update(GameTime gameTime, IActor actor)
+        #endregion
+
+        #region 11. Methods
+
+        public new object Clone()
         {
-            parent ??= actor as MovableTile;
+            return new RotationComponent(ID, ControllerType);
         }
 
-        public ControllerType GetControllerType()
+        public void SetRotatePoint(Vector3 direction, MovableTile actor)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public void SetRotatePoint(Vector3 direction)
-        {
-            UpdateRotatePoints();
+            MovableTile movableTile = actor;
+            UpdateRotatePoints(movableTile);
 
             Vector3 rotatePoint;
 
@@ -45,28 +49,23 @@ namespace GDGame.Component
             else if (direction == Vector3.UnitZ)
                 rotatePoint = backwardRotatePoint;
             else
-                throw new System.ArgumentException("Invalid direction!");
+                throw new ArgumentException("Invalid direction!");
 
-            parent.RotatePoint = rotatePoint;
+            movableTile.RotatePoint = rotatePoint;
 
-            PlayerTile player = parent as PlayerTile;
-            if (player == null) return;
-
-            foreach (AttachableTile tile in player.AttachedTiles)
-            {
-                tile.RotatePoint = rotatePoint;
-            }
+            if (!(movableTile is PlayerTile player)) return;
+            foreach (AttachableTile tile in player.AttachedTiles) tile.RotatePoint = rotatePoint;
         }
 
-        public void UpdateRotatePoints()
+        private void UpdateRotatePoints(Actor3D movableTile)
         {
             //Set all rotation points to the edges of the player cube
-            rightRotatePoint = parent.Transform3D.Translation + new Vector3(.5f, -.5f, 0);
-            leftRotatePoint = parent.Transform3D.Translation + new Vector3(-.5f, -.5f, 0);
-            forwardRotatePoint = parent.Transform3D.Translation + new Vector3(0, -.5f, -.5f);
-            backwardRotatePoint = parent.Transform3D.Translation + new Vector3(0, -.5f, .5f);
+            rightRotatePoint = movableTile.Transform3D.Translation + new Vector3(.5f, -.5f, 0);
+            leftRotatePoint = movableTile.Transform3D.Translation + new Vector3(-.5f, -.5f, 0);
+            forwardRotatePoint = movableTile.Transform3D.Translation + new Vector3(0, -.5f, -.5f);
+            backwardRotatePoint = movableTile.Transform3D.Translation + new Vector3(0, -.5f, .5f);
 
-            if (!(parent is PlayerTile player)) return;
+            if (!(movableTile is PlayerTile player)) return;
 
             //Loops through attached tiles to update the rotation points
             foreach (AttachableTile tile in player.AttachedTiles)
@@ -77,23 +76,25 @@ namespace GDGame.Component
                 //Update right rotate point
                 if (tilePos.Y <= playerPos.Y && tilePos.X > rightRotatePoint.X || tilePos.Y < rightRotatePoint.Y)
                     //if(tile.Raycast(tilePos, Vector3.Right, true, 1f) == null)
-                        rightRotatePoint = tilePos + new Vector3(.5f, -.5f, 0);
+                    rightRotatePoint = tilePos + new Vector3(.5f, -.5f, 0);
 
                 //Update left rotate point
                 if (tilePos.Y <= playerPos.Y && tilePos.X < leftRotatePoint.X || tilePos.Y < leftRotatePoint.Y)
                     //if(tile.Raycast(tilePos, Vector3.Left, true, 1f) == null)
-                        leftRotatePoint = tilePos + new Vector3(-.5f, -.5f, 0);
+                    leftRotatePoint = tilePos + new Vector3(-.5f, -.5f, 0);
 
                 //Update forward rotate point
                 if (tilePos.Y <= playerPos.Y && tilePos.Z < forwardRotatePoint.Z || tilePos.Y < forwardRotatePoint.Y)
                     //if(tile.Raycast(tilePos, Vector3.Forward, true, 1f) == null)
-                        forwardRotatePoint = tilePos + new Vector3(0, -.5f, -.5f);
+                    forwardRotatePoint = tilePos + new Vector3(0, -.5f, -.5f);
 
                 //Update back rotate point
                 if (tilePos.Y <= playerPos.Y && tilePos.Z > backwardRotatePoint.Z || tilePos.Y < backwardRotatePoint.Y)
                     //if(tile.Raycast(tilePos, Vector3.Backward, true, 1f) == null)
-                        backwardRotatePoint = tilePos + new Vector3(0, -.5f, .5f);
+                    backwardRotatePoint = tilePos + new Vector3(0, -.5f, .5f);
             }
         }
+
+        #endregion
     }
 }

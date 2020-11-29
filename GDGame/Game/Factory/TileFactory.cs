@@ -1,54 +1,143 @@
 ﻿using System.Collections.Generic;
 using GDGame.Actors;
-using Microsoft.Xna.Framework;
-using GDGame.Tiles;
+using GDGame.Component;
 using GDGame.Enums;
+using GDGame.Tiles;
 using GDGame.Utilities;
 using GDLibrary.Actors;
+using GDLibrary.Containers;
 using GDLibrary.Enums;
 using GDLibrary.Managers;
 using GDLibrary.Parameters;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Factory
 {
     public class TileFactory
     {
-        private readonly ObjectManager objectManager;
-        private readonly Dictionary<string, DrawnActor3D> drawnActors;
-        private readonly Dictionary<string, Texture2D> textures;
+        #region 05. Private variables
 
-        public TileFactory(ObjectManager objectManager, Dictionary<string, DrawnActor3D> drawnActors, Dictionary<string, Texture2D> textures)
+        private readonly Dictionary<string, DrawnActor3D> drawnActors;
+        private readonly ObjectManager objectManager;
+        private readonly ContentDictionary<Texture2D> textures;
+
+        #endregion
+
+        #region 06. Constructors
+
+        public TileFactory(ObjectManager objectManager, Dictionary<string, DrawnActor3D> drawnActors, ContentDictionary<Texture2D> textures)
         {
             this.objectManager = objectManager;
             this.drawnActors = drawnActors;
             this.textures = textures;
         }
 
-        public BasicTile CreateTile(TileType type,BasicTile.EStaticTileType staticTileType)
+        #endregion
+
+        #region 11. Methods
+
+        private BasicTile CreateAttachable()
         {
             BasicTile tile = type switch
             {
-                TileType.PlayerStart => CreatePlayer(),
-                TileType.Static => CreateStatic(staticTileType),
-                TileType.Attachable => CreateAttachable(),
-                TileType.Win => CreateGoal(),
-                TileType.Enemy => CreateEnemy(),
-                TileType.Button => CreateButton(),
-                TileType.MovingPlatform => CreateMovingPlatform(),
-                TileType.Spike => CreateSpike(),
-                TileType.Star => CreatePickup(),
-                TileType.Checkpoint => CreateCheckpoint(),
+                ETileType.PlayerStart => CreatePlayer(),
+                ETileType.Static => CreateStatic(staticTileType),
+                ETileType.Attachable => CreateAttachable(),
+                ETileType.Win => CreateGoal(),
+                ETileType.Enemy => CreateEnemy(),
+                ETileType.Button => CreateButton(),
+                ETileType.MovingPlatform => CreateMovingPlatform(),
+                ETileType.FallingPlatform => CreateFallingPlatform(),
+                ETileType.Spike => CreateSpike(),
+                ETileType.Star => CreatePickup(),
+                ETileType.Checkpoint => CreateCheckpoint(),
                 _ => null
             };
+            AttachableTile attachableTile = (AttachableTile) drawnActors["AttachableBlock"];
+            attachableTile = attachableTile.Clone() as AttachableTile;
+            if (attachableTile?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent)
+                tileMovementComponent.Tile = attachableTile;
 
-            return tile;
+            objectManager.Add(attachableTile);
+            return attachableTile;
+        }
+
+        private BasicTile CreateButton()
+        {
+            ButtonTile button = (ButtonTile) drawnActors["ButtonTile"];
+            button = button.Clone() as ButtonTile;
+            objectManager.Add(button);
+            return button;
+        }
+
+        private BasicTile CreateCheckpoint()
+        {
+            CheckpointTile checkpoint = (CheckpointTile) drawnActors["CheckpointTile"];
+            checkpoint = checkpoint.Clone() as CheckpointTile;
+            objectManager.Add(checkpoint);
+            return checkpoint;
+        }
+
+        private BasicTile CreateEnemy()
+        {
+            EnemyTile enemy = (EnemyTile) drawnActors["EnemyTile"];
+            enemy = enemy.Clone() as EnemyTile;
+            if (enemy?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent)
+                tileMovementComponent.Tile = enemy;
+            objectManager.Add(enemy);
+            return enemy;
+        }
+
+        private BasicTile CreateGoal()
+        {
+            GoalTile goal = (GoalTile) drawnActors["GoalTile"];
+            goal = goal.Clone() as GoalTile;
+            objectManager.Add(goal);
+            return goal;
+        }
+
+        private BasicTile CreateMovingPlatform()
+        {
+            MovingPlatformTile platform = (MovingPlatformTile) drawnActors["MovingPlatformTile"];
+            platform = platform.Clone() as MovingPlatformTile;
+            if (platform?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent)
+                tileMovementComponent.Tile = platform;
+            objectManager.Add(platform);
+            return platform;
+        }
+
+        private BasicTile CreatePickup()
+        {
+            PickupTile pickupTile = (PickupTile) drawnActors["StarPickupTile"];
+            pickupTile = pickupTile.Clone() as PickupTile;
+            objectManager.Add(pickupTile);
+            return pickupTile;
+        }
+
+        private BasicTile CreatePlayer()
+        {
+            PlayerTile playerTile = (PlayerTile) drawnActors["PlayerBlock"];
+            playerTile = playerTile.Clone() as PlayerTile;
+            if (playerTile?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent)
+                tileMovementComponent.Tile = playerTile;
+
+            objectManager.Add(playerTile);
+            return playerTile;
         }
 
         public Shape CreateShape()
         {
             return new Shape("Shape", ActorType.NonPlayer, StatusType.Update,
                 new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY));
+        }
+
+        private BasicTile CreateSpike()
+        {
+            SpikeTile spikeTile = (SpikeTile) drawnActors["SpikeTile"];
+            spikeTile = spikeTile.Clone() as SpikeTile;
+            objectManager.Add(spikeTile);
+            return spikeTile;
         }
 
         private BasicTile CreateStatic(BasicTile.EStaticTileType tileType)
@@ -60,7 +149,7 @@ namespace GDGame.Factory
             int randomN = MathHelperFunctions.Rnd.Next(0, 100);
             if (randomN > 70 && randomN < 90) texStringTiling = "4x";
             else if (randomN > 90) texStringTiling = "8x";
-            
+
             switch (tileType)
             {
                 case BasicTile.EStaticTileType.Chocolate:
@@ -73,16 +162,16 @@ namespace GDGame.Factory
                     texStringType = "DarkChocolate";
                     break;
                 case BasicTile.EStaticTileType.Plates:
-                    staticTile = ((BasicTile)drawnActors["PlateStackTile"]).Clone() as BasicTile;
+                    staticTile = ((BasicTile) drawnActors["PlateStackTile"]).Clone() as BasicTile;
                     break;
             }
 
             if (texStringType != "")
             {
-                staticTile = ((BasicTile)drawnActors["StaticTile"]).Clone() as BasicTile;
-                staticTile.EffectParameters.Texture = textures[texStringType + texStringTiling];
+                staticTile = ((BasicTile) drawnActors["StaticTile"]).Clone() as BasicTile;
+                if (staticTile != null) staticTile.EffectParameters.Texture = textures[texStringType + texStringTiling];
             }
-            
+
             objectManager.Add(staticTile);
             return staticTile;
         }
@@ -91,6 +180,8 @@ namespace GDGame.Factory
         {
             AttachableTile attachableTile = (AttachableTile) drawnActors["AttachableBlock"];
             attachableTile = attachableTile.Clone() as AttachableTile;
+            if (attachableTile?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent) tileMovementComponent.Tile = attachableTile;
+
             objectManager.Add(attachableTile);
             return attachableTile;
         }
@@ -99,13 +190,15 @@ namespace GDGame.Factory
         {
             PlayerTile playerTile = (PlayerTile) drawnActors["PlayerBlock"];
             playerTile = playerTile.Clone() as PlayerTile;
+            if (playerTile?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent) tileMovementComponent.Tile = playerTile;
+
             objectManager.Add(playerTile);
             return playerTile;
         }
 
         private BasicTile CreateGoal()
         {
-            GoalTile goal = (GoalTile)drawnActors["GoalTile"];
+            GoalTile goal = (GoalTile) drawnActors["GoalTile"];
             goal = goal.Clone() as GoalTile;
             objectManager.Add(goal);
             return goal;
@@ -113,15 +206,16 @@ namespace GDGame.Factory
 
         private BasicTile CreateEnemy()
         {
-            EnemyTile enemy = (EnemyTile)drawnActors["EnemyTile"];
+            EnemyTile enemy = (EnemyTile) drawnActors["EnemyTile"];
             enemy = enemy.Clone() as EnemyTile;
+            if (enemy?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent) tileMovementComponent.Tile = enemy;
             objectManager.Add(enemy);
             return enemy;
         }
 
         private BasicTile CreateButton()
         {
-            ButtonTile button = (ButtonTile)drawnActors["ButtonTile"];
+            ButtonTile button = (ButtonTile) drawnActors["ButtonTile"];
             button = button.Clone() as ButtonTile;
             objectManager.Add(button);
             return button;
@@ -129,34 +223,44 @@ namespace GDGame.Factory
 
         private BasicTile CreateMovingPlatform()
         {
-            MovingPlatformTile platform = (MovingPlatformTile)drawnActors["MovingPlatformTile"];
+            MovingPlatformTile platform = (MovingPlatformTile) drawnActors["MovingPlatformTile"];
             platform = platform.Clone() as MovingPlatformTile;
+            if (platform?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent) tileMovementComponent.Tile = platform;
             objectManager.Add(platform);
             return platform;
         }
 
+        private BasicTile CreateFallingPlatform()
+        {
+            FallingTile fallingTile = (FallingTile)drawnActors["FallingTile"];
+            fallingTile = fallingTile.Clone() as FallingTile;
+            if (fallingTile?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) is TileMovementComponent tileMovementComponent) tileMovementComponent.Tile = fallingTile;
+            objectManager.Add(fallingTile);
+            return fallingTile;
+        }
+
         private BasicTile CreateSpike()
+        
+        public BasicTile CreateTile(ETileType type, BasicTile.EStaticTileType staticTileType)
         {
-            SpikeTile spikeTile = (SpikeTile)drawnActors["SpikeTile"];
-            spikeTile = spikeTile.Clone() as SpikeTile;
-            objectManager.Add(spikeTile);
-            return spikeTile;
+            BasicTile tile = type switch
+            {
+                ETileType.PlayerStart => CreatePlayer(),
+                ETileType.Static => CreateStatic(staticTileType),
+                ETileType.Attachable => CreateAttachable(),
+                ETileType.Win => CreateGoal(),
+                ETileType.Enemy => CreateEnemy(),
+                ETileType.Button => CreateButton(),
+                ETileType.MovingPlatform => CreateMovingPlatform(),
+                ETileType.Spike => CreateSpike(),
+                ETileType.Star => CreatePickup(),
+                ETileType.Checkpoint => CreateCheckpoint(),
+                _ => null
+            };
+
+            return tile;
         }
 
-        private BasicTile CreatePickup()
-        {
-            PickupTile pickupTile = (PickupTile)drawnActors["StarPickupTile"];
-            pickupTile = pickupTile.Clone() as PickupTile;
-            objectManager.Add(pickupTile);
-            return pickupTile;
-        }
-
-        private BasicTile CreateCheckpoint()
-        {
-            CheckpointTile checkpoint = (CheckpointTile)drawnActors["CheckpointTile"];
-            checkpoint = checkpoint.Clone() as CheckpointTile;
-            objectManager.Add(checkpoint);
-            return checkpoint;
-        }
+        #endregion
     }
 }

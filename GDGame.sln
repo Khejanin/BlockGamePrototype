@@ -11,6 +11,7 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		GDLibrary\GDLibrary.projitems*{a0cdbd0e-3a41-42b7-9425-a838bc2c7383}*SharedItemsImports = 13
 		GDLibrary\GDLibrary.projitems*{fe6bc239-3500-47ea-a824-ed6c4640d06b}*SharedItemsImports = 5
+		JigLibX\JigLibX.projitems*{fe6bc239-3500-47ea-a824-ed6c4640d06b}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

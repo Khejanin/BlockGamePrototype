@@ -3,28 +3,54 @@ using System.IO;
 using GDGame.Actors;
 using GDGame.Enums;
 using GDGame.Factory;
-using GDGame.Interfaces;
 using GDGame.Tiles;
-using Vector3 = Microsoft.Xna.Framework.Vector3;
+using Microsoft.Xna.Framework;
 
 namespace GDGame.Utilities
 {
     public class Grid
     {
-        private TileFactory tileFactory;
+        #region 03. Static Fields and Constants
+
         private static BasicTile[,,] _grid;
         private static Dictionary<int, Shape> _shapes;
-        private LevelData data;
 
-        public Vector3 GetGridBounds()
-        {
-            return data.gridSize;
-        }
+        #endregion
+
+        #region 05. Private variables
+
+        private LevelData data;
+        private TileFactory tileFactory;
+
+        #endregion
+
+        #region 06. Constructors
 
         public Grid(TileFactory tileFactory)
         {
             this.tileFactory = tileFactory;
             _shapes = new Dictionary<int, Shape>();
+        }
+
+        #endregion
+
+        #region 11. Methods
+
+        private void CreateShapes(LevelData data, BasicTile[,,] grid)
+        {
+            foreach (double shapesKey in data.shapes.Keys)
+            {
+                Shape newShape = tileFactory.CreateShape();
+                foreach (Vector3 shape in data.shapes[shapesKey])
+                {
+                    AttachableTile tile =
+                        grid[(int) shape.X, (int) shape.Y, (int) data.gridSize.Z - 1 - (int) shape.Z] as AttachableTile;
+                    newShape.AddTile(tile);
+                    if (tile != null) tile.Shape = newShape;
+                }
+
+                _shapes.Add((int) shapesKey, newShape);
+            }
         }
 
         public void GenerateGrid(string levelFilePath)
@@ -37,8 +63,10 @@ namespace GDGame.Utilities
                 jsonString = reader.ReadToEnd();
             }
             else
+            {
                 throw new FileNotFoundException("The level file with the path: " + levelFilePath +
                                                 " was not found! Remember to set Build Action to 'Content' and Copy to 'Copy always' in the file properties!");
+            }
 
             data = LevelDataConverter.ConvertJsonToLevelData(jsonString);
             _grid = new BasicTile[(int) data.gridSize.X, (int) data.gridSize.Y, (int) data.gridSize.Z];
@@ -55,7 +83,7 @@ namespace GDGame.Utilities
                             //Super duper algorithm to determine what the current tile looks like!
                             BasicTile.EStaticTileType staticTileType = BasicTile.EStaticTileType.DarkChocolate;
                             int count = 0;
-                            
+
                             for (int i = -1; i <= 1; i += 2)
                             {
                                 if (x + i >= 0 && x + i < data.gridSize.X)
@@ -76,16 +104,19 @@ namespace GDGame.Utilities
                                 else if (count > 3) staticTileType = BasicTile.EStaticTileType.Chocolate;
                             }
 
-                            BasicTile tile = tileFactory.CreateTile(data.gridValues[x, y, z],staticTileType);
+                            BasicTile tile = tileFactory.CreateTile(data.gridValues[x, y, z], staticTileType);
                             if (tile != null)
                             {
                                 tile.Transform3D.Translation = pos + new Vector3(0, 0, data.gridSize.Z - 1);
                                 tile.InitializeTile();
                             }
+
                             _grid[x, y, (int) data.gridSize.Z - 1 - z] = tile;
                         }
                         else
+                        {
                             _grid[x, y, (int) data.gridSize.Z - 1 - z] = null;
+                        }
 
                         pos.Z -= data.tileSize.Z; //MonoGames Forward is -UnitZ
                     }
@@ -103,26 +134,30 @@ namespace GDGame.Utilities
             SetActivatorIds(data, _grid);
         }
 
-        private void CreateShapes(LevelData data, BasicTile[,,] grid)
+        public Vector3 GetGridBounds()
         {
-            foreach (var shapesKey in data.shapes.Keys)
-            {
-                Shape newShape = this.tileFactory.CreateShape();
-                foreach (Vector3 shape in data.shapes[shapesKey])
-                {
-                    AttachableTile tile =
-                        grid[(int) shape.X, (int) shape.Y, (int) data.gridSize.Z - 1 - (int) shape.Z] as AttachableTile;
-                    newShape.AddTile(tile);
-                    if (tile != null) tile.Shape = newShape;
-                }
+            return data.gridSize;
+        }
 
-                _shapes.Add((int) shapesKey, newShape);
-            }
+        private void SetActivatorIds(LevelData data, BasicTile[,,] grid)
+        {
+            foreach (Vector3 targetKey in data.activatorTargets.Keys)
+                //List<IActivatable> targets = new List<IActivatable>();
+                //ButtonTile button = grid[(int)targetKey.X, (int)targetKey.Y,
+                //    (int)data.gridSize.Z - 1 - (int)targetKey.Z] as ButtonTile;
+
+                //foreach (var target in data.activatorTargets[buttonTargetKey])
+                //    targets.Add(grid[(int)target.X, (int)target.Y, (int)target.Z] as IActivatable);
+
+                //button.Targets = targets;
+
+                grid[(int) targetKey.X, (int) targetKey.Y, (int) data.gridSize.Z - 1 - (int) targetKey.Z].activatorId =
+                    data.activatorTargets[targetKey];
         }
 
         private void SetPaths(LevelData data, BasicTile[,,] grid)
         {
-            foreach (var pathTileKey in data.movingTilePaths.Keys)
+            foreach (Vector3 pathTileKey in data.movingTilePaths.Keys)
             {
                 PathMoveTile moveTile =
                     grid[(int) pathTileKey.X, (int) pathTileKey.Y,
@@ -139,23 +174,6 @@ namespace GDGame.Utilities
             }
         }
 
-        private void SetActivatorIds(LevelData data, BasicTile[,,] grid)
-        {
-            foreach (var targetKey in data.activatorTargets.Keys)
-            {
-                //List<IActivatable> targets = new List<IActivatable>();
-                //ButtonTile button = grid[(int)targetKey.X, (int)targetKey.Y,
-                //    (int)data.gridSize.Z - 1 - (int)targetKey.Z] as ButtonTile;
-
-
-                //foreach (var target in data.activatorTargets[buttonTargetKey])
-                //    targets.Add(grid[(int)target.X, (int)target.Y, (int)target.Z] as IActivatable);
-
-                //button.Targets = targets;
-
-                grid[(int) targetKey.X, (int) targetKey.Y, (int) data.gridSize.Z - 1 - (int) targetKey.Z].activatorId =
-                    data.activatorTargets[targetKey];
-            }
-        }
+        #endregion
     }
 }

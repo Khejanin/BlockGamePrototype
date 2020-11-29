@@ -1,37 +1,42 @@
-﻿using GDGame.Component;
+﻿using System.Collections.Generic;
+using GDGame.Enums;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using GDGame.Enums;
 
 namespace GDGame.Actors
 {
     public abstract class PathMoveTile : MovableTile
     {
-        protected TileMovementComponent movementComponent;
-        protected int pathDir = 1;
+        #region 04. Public variables
 
-        public List<Vector3> path;
         public int currentPositionIndex;
 
-        protected PathMoveTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, TileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
+        public List<Vector3> path;
+
+        #endregion
+
+        #region 05. Private variables
+
+        protected int pathDir = 1;
+
+        #endregion
+
+        #region 06. Constructors
+
+        protected PathMoveTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model,
+            ETileType tileType) : base(id, actorType,
+            statusType, transform, effectParameters, model, tileType)
         {
             path = new List<Vector3>();
         }
 
-        public override void InitializeTile()
-        {
-            movementComponent = (TileMovementComponent)ControllerList.Find(controller => controller is TileMovementComponent);
-        }
+        #endregion
+
+        #region 11. Methods
 
         protected abstract void MoveToNextPoint();
-
-        protected virtual void OnMoveEnd()
-        {
-            currentPositionIndex += pathDir;
-        }
 
         protected Vector3 NextPathPoint()
         {
@@ -40,5 +45,16 @@ namespace GDGame.Actors
 
             return path[currentPositionIndex + pathDir];
         }
+
+        #endregion
+
+        #region 12. Events
+
+        protected virtual void OnMoveEnd()
+        {
+            currentPositionIndex += pathDir;
+        }
+
+        #endregion
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Linq;
 using GDGame.Actors;
 using GDGame.Controllers;
 using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Managers;
 using GDGame.Utilities;
+using GDLibrary.Actors;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
@@ -12,157 +14,163 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Component
 {
-    public class TileMovementComponent : IController
+    public class TileMovementComponent : Controller, ICloneable
     {
-        //TODO: Refactor this class. Use a State pattern for the different movement types.
+        #region 05. Private variables
 
-        private MovableTile parent;
-
+        private Curve1D curve1D;
         private int movementTime;
-        private int currentMovementTime;
-        private MovementType movementType;
-        private Curve1D moveCurve1D;
-        private Curve1D jumpCurve1D;
-        private Vector3 diff;
-        private Quaternion rotationQuaternion;
-        private Vector3 startPos;
-        private Vector3 endPos;
-        private float jumpHeight;
-        private Quaternion startRotation;
-        private Action endMoveCallback;
-        private Action<Raycaster.HitResult> onCollideCallback;
+        private bool useFlipMovement;
 
-        public TileMovementComponent(int movementTime, Curve1D moveCurve1D, MovementType movementType = MovementType.Slide)
+        #endregion
+
+        #region 06. Constructors
+
+        public TileMovementComponent(string id, ControllerType controllerType, int movementTime, Curve1D curve1D, bool useFlipMovement = false, MovableTile movableTile = null) :
+            base(id, controllerType)
         {
             this.movementTime = movementTime;
-            this.moveCurve1D = moveCurve1D;
-            this.movementType = movementType;
-            this.moveCurve1D.Add(1, 0);
-            this.moveCurve1D.Add(0, movementTime);
+            this.useFlipMovement = useFlipMovement;
+            this.curve1D = curve1D;
+            Tile = movableTile;
 
-            startRotation = rotationQuaternion = Quaternion.Identity;
+            this.curve1D.Add(1, 0);
+            this.curve1D.Add(0, movementTime);
+        }
 
-            if (movementType == MovementType.Jump)
+        #endregion
+
+        #region 07. Properties, Indexers
+
+        public MovableTile Tile { get; set; }
+
+        #endregion
+
+        #region 08. Initialization
+
+        private void Init()
+        {
+            EventManager.RegisterListener<MovementEvent>(HandleMovementEvent);
+        }
+
+        #endregion
+
+        #region 09. Override Methode
+
+        public override void Update(GameTime gameTime, IActor actor)
+        {
+            if (Tile != null && Tile.IsMoving)
             {
-                jumpHeight = .5f;
-                jumpCurve1D = new Curve1D(CurveLoopType.Cycle);
-                jumpCurve1D.Add(0, 0);
-                jumpCurve1D.Add(1, movementTime / 2);
-                jumpCurve1D.Add(0, movementTime);
+                if (Tile.CurrentMovementTime <= 0)
+                {
+                    Tile.IsMoving = false;
+                    Tile.CurrentMovementTime = 0;
+                    Tile.StartRotation = Tile.RotationQuaternion;
+                    Tile.EndMoveCallback?.Invoke();
+                }
+
+                if (useFlipMovement)
+                {
+                    float t = 1 - (float) Tile.CurrentMovementTime / movementTime;
+                    Quaternion quaternion = Quaternion.Slerp(Tile.StartRotation, Tile.RotationQuaternion, t);
+                    Tile.Transform3D.RotationInDegrees = MathHelperFunctions.QuaternionToEulerAngles(quaternion);
+                }
+
+                float currentStep = curve1D.Evaluate(Tile.CurrentMovementTime, 5);
+                Vector3 trans = Tile.StartPos + Tile.Diff * currentStep;
+
+                if (Tile.OnCollideCallback != null)
+                {
+                    Raycaster.HitResult hit = RaycastManager.Instance.Raycast(Tile, trans, Vector3.Up, true, 1f);
+
+                    if (hit != null)
+                    {
+                        Tile.OnCollideCallback?.Invoke(hit);
+                        Tile.OnCollideCallback = null;
+                    }
+                }
+
+                Tile.Transform3D.Translation = trans;
+                Tile.CurrentMovementTime -= (int) gameTime.ElapsedGameTime.TotalMilliseconds;
             }
         }
 
-        public void MoveInDirection(Vector3 direction, Action onMoveEndCallback = null, Action<Raycaster.HitResult> onCollideCallback = null)
+        #endregion
+
+        #region 11. Methods
+
+        public new object Clone()
         {
-            if (parent != null && !parent.IsMoving)
+            TileMovementComponent tileMovementComponent = new TileMovementComponent(ID, ControllerType, movementTime, new Curve1D(curve1D.CurveLookType), useFlipMovement, Tile);
+            tileMovementComponent.Init();
+            return tileMovementComponent;
+        }
+
+        private void MoveInDirection(Actor movableTile, Vector3 direction, Action onMoveEndCallback = null, Action<Raycaster.HitResult> onCollideCallback = null)
+        {
+            if (Equals(Tile, movableTile) && !Tile.IsMoving)
             {
-                this.endMoveCallback = onMoveEndCallback;
-                this.onCollideCallback = onCollideCallback;
+                Tile.EndMoveCallback = onMoveEndCallback;
+                Tile.OnCollideCallback = onCollideCallback;
 
-                startPos = parent.Transform3D.Translation;
+                Tile.StartPos = Tile.Transform3D.Translation;
 
-                if (movementType == MovementType.Flip)
+                if (useFlipMovement)
                 {
-                    RotationComponent rotationComponent =
-                        (RotationComponent)parent.ControllerList.Find(controller =>
-                           controller.GetType() == typeof(RotationComponent));
-
-                    rotationComponent?.SetRotatePoint(direction);
-
+                    RotationComponent rotationComponent = (RotationComponent) Tile.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Rotation);
+                    rotationComponent?.SetRotatePoint(direction, Tile);
                     //offset between the parent and the point to rotate around
-                    Vector3 offset = parent.Transform3D.Translation - parent.RotatePoint;
+                    Vector3 offset = Tile.Transform3D.Translation - Tile.RotatePoint;
                     //The rotation to apply
-                    var rot = Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, Vector3.Up), MathHelper.ToRadians(-90));
+                    Quaternion rot = Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, Vector3.Up), MathHelper.ToRadians(-90));
                     //Rotate around the offset point
                     Vector3 translation = Vector3.Transform(offset, rot);
-
                     //startRotation = MathHelperFunctions.EulerAnglesToQuaternion(parent.Transform3D.RotationInDegrees);
-                    rotationQuaternion = rot * startRotation;
-                    endPos = parent.Transform3D.Translation + translation - offset;
+                    Tile.RotationQuaternion = rot * Tile.StartRotation;
+                    Tile.EndPos = Tile.Transform3D.Translation + translation - offset;
 
-                    if (parent.ActorType == ActorType.Player)
+                    if (movableTile.ActorType == ActorType.Player)
                     {
-                        PlayerController playerController =
-                            (PlayerController)parent.ControllerList.Find(controller =>
-                               controller.GetType() == typeof(PlayerController));
-                        if (playerController != null &&
-                            playerController.IsMoveValid(rot, parent.RotatePoint, endPos, offset))
+                        PlayerController playerController = (PlayerController) Tile.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Player);
+                        if (playerController != null && playerController.IsMoveValid(Tile as PlayerTile, rot, Tile.RotatePoint, Tile.EndPos, offset))
                         {
-                            EventManager.FireEvent(new PlayerEventInfo { type = Enums.PlayerEventType.Move });
-                            EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerMove });
-                            //Calculate movement for each attached tile
-                            if (parent is PlayerTile player)
-                                foreach (AttachableTile tile in player.AttachedTiles)
-                                    (tile.ControllerList.Find(c => c is TileMovementComponent) as TileMovementComponent)?.MoveInDirection(direction, tile.OnMoveEnd);
-
-                            //Set animation time and movement flag
-                            currentMovementTime = movementTime;
-                            parent.IsMoving = true;
+                            EventManager.FireEvent(new MovementEvent {type = MovementType.OnPlayerMoved, direction = direction});
+                            EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.Move});
                         }
                         else
+                        {
                             return;
+                        }
                     }
                 }
                 else
                 {
-                    endPos = parent.Transform3D.Translation + direction;
+                    Tile.EndPos = Tile.Transform3D.Translation + direction;
                 }
 
-                diff = endPos - startPos;
-                currentMovementTime = movementTime;
-                parent.IsMoving = true;
+                Tile.Diff = Tile.EndPos - Tile.StartPos;
+                Tile.CurrentMovementTime = movementTime;
+                Tile.IsMoving = true;
             }
         }
 
-        public void Update(GameTime gameTime, IActor actor)
-        {
-            parent ??= actor as MovableTile;
+        #endregion
 
-            if (parent != null && parent.IsMoving)
+        #region 12. Events
+
+        private void HandleMovementEvent(MovementEvent movementEventInfo)
+        {
+            switch (movementEventInfo.type)
             {
-                if (currentMovementTime <= 0)
-                {
-                    parent.IsMoving = false;
-                    currentMovementTime = 0;
-                    startRotation = rotationQuaternion;
-                    endMoveCallback?.Invoke();
-                }
-
-                if (movementType == MovementType.Flip)
-                {
-                    float t = 1 - (float)currentMovementTime / movementTime;
-                    Quaternion quaternion = Quaternion.Slerp(startRotation, rotationQuaternion, t);
-                    parent.Transform3D.RotationInDegrees = MathHelperFunctions.QuaternionToEulerAngles(quaternion);
-                }
-
-                Vector3 trans = startPos + diff * moveCurve1D.Evaluate(currentMovementTime, 5);
-                if(jumpHeight != 0)
-                    trans.Y += jumpHeight * jumpCurve1D.Evaluate(currentMovementTime, 5);
-
-                if (onCollideCallback != null)
-                {
-                    Raycaster.HitResult hit = parent.Raycast(trans, Vector3.Up, true, 1f, false);
-
-                    if (hit != null)
-                    {
-                        onCollideCallback?.Invoke(hit);
-                        onCollideCallback = null;
-                    }
-                }
-
-                parent.Transform3D.Translation = trans;
-                currentMovementTime -= (int)gameTime.ElapsedGameTime.TotalMilliseconds;
+                case MovementType.OnEnemyMove:
+                    MoveInDirection(movementEventInfo.tile, movementEventInfo.direction, movementEventInfo.onMoveEnd, movementEventInfo.onCollideCallback);
+                    break;
+                case MovementType.OnMove:
+                    MoveInDirection(movementEventInfo.tile, movementEventInfo.direction, movementEventInfo.onMoveEnd);
+                    break;
             }
         }
 
-        public object Clone()
-        {
-            return new TileMovementComponent(movementTime, new Curve1D(moveCurve1D.CurveLookType), movementType);
-        }
-
-        public ControllerType GetControllerType()
-        {
-            throw new System.NotImplementedException();
-        }
+        #endregion
     }
 }

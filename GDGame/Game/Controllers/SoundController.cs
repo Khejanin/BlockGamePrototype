@@ -1,72 +1,90 @@
-﻿using GDGame.Actors;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
+﻿using System;
+using GDGame.Actors;
 using GDGame.Managers;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Managers;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Input;
 
 namespace GDGame.Controllers
 {
-    internal class SoundController : IController
+    internal class SoundController : Controller, ICloneable
     {
+        #region 05. Private variables
+
         private KeyboardManager keyboardManager;
+        private string moveSfx, attachSfx;
+        private SoundEffectInstance playerMove, playerAttach;
         private PlayerTile playerTile;
         private SoundManager soundManager;
-        private string moveSFX, attachSFX;
-        private SoundEffectInstance playerMove, playerAttach;
 
-        public SoundController(KeyboardManager keyboardManager, SoundManager soundManager, string moveSFX, string attachSFX)
+        #endregion
+
+        #region 06. Constructors
+
+        public SoundController(string id, ControllerType controllerType, KeyboardManager keyboardManager,
+            SoundManager soundManager, string moveSfx, string attachSfx) : base(id, controllerType)
         {
             this.keyboardManager = keyboardManager;
             this.soundManager = soundManager;
-            this.moveSFX = moveSFX;
-            this.attachSFX = attachSFX;
+            this.moveSfx = moveSfx;
+            this.attachSfx = attachSfx;
 
-            //SoundEffect temp = soundManager.FindSound(moveSFX).GetSfx();
-            //if (temp != null)
-            //    this.playerMove = temp.CreateInstance();
+            SoundEffect temp = soundManager.FindSound(this.moveSfx).GetSfx();
+            if (temp != null)
+                playerMove = temp.CreateInstance();
 
-            //SoundEffect temp2 = soundManager.FindSound(attachSFX).GetSfx();
-            //if (temp2 != null)
-            //    this.playerAttach = temp2.CreateInstance();
+            SoundEffect temp2 = soundManager.FindSound(this.attachSfx).GetSfx();
+            if (temp2 != null)
+                playerAttach = temp2.CreateInstance();
         }
 
-        public object Clone()
-        {
-            return new SoundController(keyboardManager, soundManager, moveSFX, attachSFX);
-        }
+        #endregion
 
-        public ControllerType GetControllerType()
-        {
-            throw new System.NotImplementedException();
-        }
+        #region 09. Override Methode
 
-        public void Update(GameTime gameTime, IActor actor)
+        public override void Update(GameTime gameTime, IActor actor)
         {
             playerTile ??= actor as PlayerTile;
-            if (this.keyboardManager.IsKeyPressed())
-                HandleKeyboardInput(gameTime);
+            if (keyboardManager.IsKeyPressed())
+                HandleKeyboardInput();
         }
 
-        private void HandleKeyboardInput(GameTime gameTime)
+        #endregion
+
+        #region 11. Methods
+
+        public new object Clone()
+        {
+            return new SoundController(ID, ControllerType, keyboardManager, soundManager, moveSfx, attachSfx);
+        }
+
+        #endregion
+
+        #region 12. Events
+
+        private void HandleKeyboardInput()
         {
             HandlePlayerMovement();
         }
 
         private void HandlePlayerMovement()
         {
-            if (keyboardManager.IsFirstKeyPress(Keys.Space) && playerTile.IsAttached && this.playerAttach != null)   
-                    playerAttach.Play();
+            if (keyboardManager.IsFirstKeyPress(Keys.Space) && playerTile.IsAttached)
+                playerAttach?.Play();
 
 
             if (playerTile.IsMoving)
-            {
-                if (this.playerMove != null && this.keyboardManager.IsFirstKeyPress(Keys.Up) || this.keyboardManager.IsFirstKeyPress(Keys.Down) 
-                    || this.keyboardManager.IsFirstKeyPress(Keys.Left) || this.keyboardManager.IsFirstKeyPress(Keys.Right))
-                    playerMove.Play();
-            }
+                if (playerMove != null && keyboardManager.IsFirstKeyPress(Keys.Up) ||
+                    keyboardManager.IsFirstKeyPress(Keys.Down)
+                    || keyboardManager.IsFirstKeyPress(Keys.Left) ||
+                    keyboardManager.IsFirstKeyPress(Keys.Right))
+                    playerMove?.Play();
         }
+
+        #endregion
     }
 }
