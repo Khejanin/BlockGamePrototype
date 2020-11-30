@@ -81,7 +81,7 @@ namespace GDGame.Managers
                 PlayMusic(currentMusicQueue[currentMusicIndex]);
         }
 
-        public void RemoveAll()
+        public void Dispose()
         {
             musicTracks.Clear();
             soundEffects.Clear();

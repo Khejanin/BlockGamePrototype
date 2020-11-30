@@ -617,7 +617,6 @@ namespace GDGame.Scenes
             Game.UiManager.Dispose();
 
             Game.ObjectManager.RemoveAll(actor3D => actor3D != null);
-            Game.SoundManager.RemoveIf(s => s != null);
 
             Game.ObjectManager.Enabled = true;
 
@@ -659,18 +658,18 @@ namespace GDGame.Scenes
 
             //Cycle Through Audio
             if (Game.KeyboardManager.IsFirstKeyPress(Keys.M))
-                Game.SoundManager.NextSong();
+                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.PlayNextMusic });
             //Stop Music
             if (Game.KeyboardManager.IsKeyDown(Keys.N))
-                Game.SoundManager.StopSong();
+                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.PauseMusic });
             //Volume Changes
             if (Game.KeyboardManager.IsFirstKeyPress(Keys.L))
-                Game.SoundManager.VolumeUp();
+                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.IncreaseVolume, soundVolumeType = SoundVolumeType.Master });
             else if (Game.KeyboardManager.IsFirstKeyPress(Keys.K))
-                Game.SoundManager.VolumeDown();
+                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.DecreaseVolume, soundVolumeType = SoundVolumeType.Master });
             //Pause/resume music
             if (Game.KeyboardManager.IsFirstKeyPress(Keys.P))
-                Game.SoundManager.ChangeMusicState();
+                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.ToggleMusicPlayback, soundVolumeType = SoundVolumeType.Master });
 
             //options menu
             if (Game.KeyboardManager.IsFirstKeyPress(Keys.O))
@@ -710,24 +709,21 @@ namespace GDGame.Scenes
 
         private void LoadSounds()
         {
-            Game.SoundManager.StopSong();
-            //step 1 - load songs
             SoundEffect track01 = Game.Content.Load<SoundEffect>("Assets/GameTracks/testTrack01");
             SoundEffect track02 = Game.Content.Load<SoundEffect>("Assets/GameTracks/testTrack02");
             SoundEffect track03 = Game.Content.Load<SoundEffect>("Assets/GameTracks/testTrack03");
             SoundEffect track04 = Game.Content.Load<SoundEffect>("Assets/Sound/Knock04");
             SoundEffect track05 = Game.Content.Load<SoundEffect>("Assets/Sound/Click02");
             SoundEffect track06 = Game.Content.Load<SoundEffect>("Assets/GameTracks/testTrack06");
+            
+            Game.SoundManager.AddMusic("gameTrack01", track01);
+            Game.SoundManager.AddMusic("gameTrack02", track02);
+            Game.SoundManager.AddMusic("gameTrack03", track03);
+            Game.SoundManager.AddMusic("endTheme", track06);
+            Game.SoundManager.AddSoundEffect(SfxType.PlayerMove, track04);
+            Game.SoundManager.AddSoundEffect(SfxType.PlayerAttach, track05);
 
-            //Step 2- Make into sounds
-            Game.SoundManager.Add(new Sounds(track01, "gameTrack01", ActorType.MusicTrack, StatusType.Update));
-            Game.SoundManager.Add(new Sounds(track02, "gameTrack02", ActorType.MusicTrack, StatusType.Update));
-            Game.SoundManager.Add(new Sounds(track03, "gameTrack03", ActorType.MusicTrack, StatusType.Update));
-            Game.SoundManager.Add(new Sounds(track04, "playerMove", ActorType.SoundEffect, StatusType.Update));
-            Game.SoundManager.Add(new Sounds(track05, "playerAttach", ActorType.SoundEffect, StatusType.Update));
-            Game.SoundManager.Add(new Sounds(track06, "endTheme", ActorType.SpecialTrack, StatusType.Update));
-
-            Game.SoundManager.NextSong();
+            Game.SoundManager.StartMusicQueue();
         }
 
         private void LoadTextures()

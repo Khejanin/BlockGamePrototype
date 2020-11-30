@@ -33,13 +33,13 @@ namespace GDGame.Controllers
             this.moveSfx = moveSfx;
             this.attachSfx = attachSfx;
 
-            SoundEffect temp = soundManager.FindSound(this.moveSfx).GetSfx();
-            if (temp != null)
-                playerMove = temp.CreateInstance();
+            //SoundEffect temp = soundManager.FindSound(this.moveSfx).GetSfx();
+            //if (temp != null)
+            //    playerMove = temp.CreateInstance();
 
-            SoundEffect temp2 = soundManager.FindSound(this.attachSfx).GetSfx();
-            if (temp2 != null)
-                playerAttach = temp2.CreateInstance();
+            //SoundEffect temp2 = soundManager.FindSound(this.attachSfx).GetSfx();
+            //if (temp2 != null)
+            //    playerAttach = temp2.CreateInstance();
         }
 
         #endregion
