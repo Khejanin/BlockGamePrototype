@@ -18,7 +18,6 @@ namespace GDGame.Actors
     {
         #region 05. Private variables
 
-        private List<Shape> attachCandidates;
         private Vector3 lastCheckpoint;
 
         #endregion
@@ -30,12 +29,14 @@ namespace GDGame.Actors
             : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
             AttachedTiles = new List<AttachableTile>();
-            attachCandidates = new List<Shape>();
+            AttachCandidates = new List<Shape>();
         }
 
         #endregion
 
         #region 07. Properties, Indexers
+
+        public List<Shape> AttachCandidates { get; }
 
         public List<AttachableTile> AttachedTiles { get; }
         public bool IsAttached { get; private set; }
@@ -57,10 +58,10 @@ namespace GDGame.Actors
 
         public void Attach()
         {
-            if (attachCandidates.Count == 0 || IsMoving) return;
+            if (AttachCandidates.Count == 0 || IsMoving) return;
 
             AttachedTiles.Clear();
-            foreach (AttachableTile tile in attachCandidates.SelectMany(shape => shape.AttachableTiles))
+            foreach (AttachableTile tile in AttachCandidates.SelectMany(shape => shape.AttachableTiles))
             {
                 AttachedTiles.Add(tile);
                 tile.EffectParameters.DiffuseColor = Color.DarkGray;
@@ -168,10 +169,10 @@ namespace GDGame.Actors
 
         private void UpdateAttachCandidates(List<AttachableTile> detectedAttachableTiles)
         {
-            attachCandidates.Clear();
+            AttachCandidates.Clear();
 
             foreach (AttachableTile tile in detectedAttachableTiles)
-                attachCandidates.Add(tile.Shape);
+                AttachCandidates.Add(tile.Shape);
         }
 
         #endregion

@@ -12,7 +12,7 @@ namespace GDLibrary.Actors
     /// <summary>
     /// Draws a texture to the screen. Useful for creating health/ammo UI icons, decals around UI elements, or menu backgrounds
     /// </summary>
-    public class UITextureObject : DrawnActor2D
+    public class UITextureObject : DrawnActor2D, ICloneable
     {
         #region Fields
         private Texture2D texture;
@@ -102,5 +102,10 @@ namespace GDLibrary.Actors
         //to do..Clone
 
         #endregion Constructors & Core
+
+        public new object Clone()
+        {
+            return new UITextureObject(ID, ActorType, StatusType, Transform2D.Clone() as Transform2D, Color, LayerDepth, SpriteEffects, Texture, SourceRectangle);
+        }
     }
 }
