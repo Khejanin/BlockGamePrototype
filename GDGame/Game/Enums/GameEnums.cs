@@ -81,4 +81,31 @@
         OnPlayerMoved,
         OnAttachedMove
     }
+
+    public enum SfxType : sbyte
+    {
+        PlayerMove,
+        PlayerAttach,
+        EnemyMove
+    }
+
+    public enum SoundEventType : sbyte
+    {
+        PlaySfx,
+        PlayMusic,
+        PauseMusic,
+        ResumeMusic,
+        ToggleMusicPlayback,
+        PlayNextMusic,
+        IncreaseVolume,
+        DecreaseVolume,
+        MuteVolume
+    }
+
+    public enum SoundVolumeType : sbyte
+    {
+        Master,
+        Sfx,
+        Music
+    }
 }

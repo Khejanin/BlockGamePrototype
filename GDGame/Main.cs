@@ -162,8 +162,8 @@ namespace GDGame
             Components.Add(MouseManager);
 
             //Sound
-            SoundManager = new SoundManager(this);
-            Components.Add(SoundManager);
+            SoundManager = new SoundManager();
+            //Components.Add(SoundManager);
 
             //Object
             ObjectManager = new ObjectManager(this, StatusType.Off, 6, 10);

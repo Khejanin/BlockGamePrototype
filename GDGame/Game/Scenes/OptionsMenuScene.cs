@@ -66,7 +66,9 @@ namespace GDGame.Scenes
         private void LoadSounds()
         {
             SoundEffect track01 = Main.Content.Load<SoundEffect>("Assets/GameTracks/GameTrack02");
-            Main.SoundManager.Add(new Sounds(track01, "gameTrack01", ActorType.MusicTrack, StatusType.Update));
+            Main.SoundManager.AddMusic("gametrack01", track01);
+
+            Main.SoundManager.StartMusicQueue();
         }
 
         private void LoadTextures()

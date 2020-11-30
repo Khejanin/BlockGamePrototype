@@ -1,208 +1,188 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using GDGame.Actors;
-using GDLibrary.Enums;
-using Microsoft.Xna.Framework;
+using GDGame.Enums;
+using GDGame.EventSystem;
 using Microsoft.Xna.Framework.Audio;
 
 namespace GDGame.Managers
 {
-    public class SoundManager : GameComponent
+    public class SoundManager
     {
-        #region Private variables
+        private float volumeStep = 0.2f;
+        private float musicVolume = 1f;
+        private float sfxVolume = 1f;
 
-        private int activeSongIndex;
-        private Sounds currentSong;
-        private List<Sounds> list;
-        private float masterSound = 0.2f;
-        private SoundEffectInstance mySoundInstance;
+        private SoundEffectInstance musicInstance;
+        private int currentMusicIndex;
+        private List<SoundEffect> currentMusicQueue;
 
-        #endregion
+        private Dictionary<string, SoundEffect> musicTracks;
+        private Dictionary<SfxType, SoundEffect> soundEffects;
 
-        #region Constructors
-
-        public SoundManager(Game game) : base(game)
+        public SoundManager()
         {
-            list = new List<Sounds>();
+            currentMusicQueue = new List<SoundEffect>();
+            soundEffects = new Dictionary<SfxType, SoundEffect>();
+            musicTracks = new Dictionary<string, SoundEffect>();
+            EventManager.RegisterListener<SoundEventInfo>(HandleSoundEvent);
         }
 
-        #endregion
-
-        #region Properties, Indexers
-
-        public Sounds ActiveSong => list[activeSongIndex];
-
-        public int ActiveSongIndex
+        private void HandleSoundEvent(SoundEventInfo info)
         {
-            get => activeSongIndex;
-            set
+            switch (info.soundEventType)
             {
-                value %= list.Count;
-                activeSongIndex = value;
+                 case SoundEventType.PlaySfx:
+                     PlaySoundEffect(info.sfxType);
+                     break;
+                 case SoundEventType.PlayNextMusic:
+                     PlayNextMusic();
+                     break;
+                 case SoundEventType.IncreaseVolume:
+                     AddToVolume(info.soundVolumeType, volumeStep);
+                     break;
+                 case SoundEventType.DecreaseVolume:
+                     AddToVolume(info.soundVolumeType, -volumeStep);
+                     break;
+                 case SoundEventType.PauseMusic:
+                     SetMusicPlaybackState(SoundState.Paused);
+                     break;
+                 case SoundEventType.ResumeMusic:
+                     SetMusicPlaybackState(SoundState.Playing);
+                     break;
+                 case SoundEventType.ToggleMusicPlayback:
+                     ToggleMusicPlaybackState();
+                     break;
             }
         }
 
-        /// <summary>
-        ///     Indexer for the camera manager
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        /// See
-        /// <see href="www." />
-        /// for more info
-        public Sounds this[int index]
+        public void AddSoundEffect(SfxType sfxType, SoundEffect sfx)
         {
-            get => list[index];
-            set => list[index] = value;
+            if(!soundEffects.ContainsKey(sfxType) && sfx != null)
+                soundEffects.Add(sfxType, sfx);
         }
 
-        #endregion
-
-        #region Methods
-
-        public void Add(Sounds newSong)
+        public void AddMusic(string id, SoundEffect track)
         {
-            if (FindSound(newSong.ID) == null)
-                list.Add(newSong);
+            if(!musicTracks.ContainsKey(id) && track != null)
+                musicTracks.Add(id, track);
         }
 
-        public void ChangeMusicState()
+        public void StartMusicQueue(bool startOnRandomTrack = true)
         {
-            switch (mySoundInstance.State)
+            currentMusicQueue.Clear();
+
+            foreach (KeyValuePair<string, SoundEffect> keyValuePair in musicTracks)
+                currentMusicQueue.Add(keyValuePair.Value);
+
+            currentMusicIndex = (startOnRandomTrack) ? new Random().Next(0, currentMusicQueue.Count - 1) : 0; 
+
+            if(currentMusicQueue.Count > 0)
+                PlayMusic(currentMusicQueue[currentMusicIndex]);
+        }
+
+        public void Dispose()
+        {
+            musicTracks.Clear();
+            soundEffects.Clear();
+        }
+
+        private void PlaySoundEffect(SfxType sfxType)
+        {
+            if(!soundEffects.ContainsKey(sfxType))
+                System.Diagnostics.Debug.WriteLine("No Sound for the specified key found!");
+
+            SoundEffect sfx = soundEffects[sfxType];
+
+            if (sfx != null)
+            {
+                SoundEffectInstance sei = sfx.CreateInstance();
+                sei.Volume = sfxVolume;
+                sei.Play();
+            }
+        }
+
+        private void PlayMusic(string id)
+        {
+            if(!musicTracks.ContainsKey(id))
+                System.Diagnostics.Debug.WriteLine("No Music for the specified key found!");
+
+            SoundEffect track = musicTracks[id];
+            if (track != null)
+            {
+                musicInstance.Stop();
+                musicInstance = track.CreateInstance();
+                musicInstance.Volume = musicVolume;
+                musicInstance.Play();
+            }
+        }
+
+        private void PlayMusic(SoundEffect musicTrack)
+        {
+            if (musicTrack != null)
+            {
+                musicInstance?.Stop();
+                musicInstance = musicTrack.CreateInstance();
+                musicInstance.Volume = musicVolume;
+                musicInstance.Play();
+            }
+        }
+
+        private void PlayNextMusic()
+        {
+            if (currentMusicQueue.Count == 0)
+                return;
+
+            if (++currentMusicIndex == currentMusicQueue.Count)
+                currentMusicIndex = 0;
+
+            SoundEffect nextSong = currentMusicQueue[currentMusicIndex];
+            PlayMusic(nextSong);
+        }
+
+        private void ToggleMusicPlaybackState()
+        {
+            if(musicInstance.State == SoundState.Playing)
+                SetMusicPlaybackState(SoundState.Paused);
+            else if(musicInstance.State == SoundState.Paused)
+                SetMusicPlaybackState(SoundState.Playing);
+        }
+
+        private void SetMusicPlaybackState(SoundState state)
+        {
+            if (musicInstance == null)
+                return;
+
+            switch (state)
             {
                 case SoundState.Playing:
-                    PauseSong();
+                    musicInstance.Resume();
                     break;
                 case SoundState.Paused:
-                    ResumeSong();
+                    musicInstance.Pause();
+                    break;
+                case SoundState.Stopped:
+                    musicInstance.Stop();
                     break;
             }
         }
 
-        public Sounds FindSound(string id)
+        private void AddToVolume(SoundVolumeType volumeType, float value)
         {
-            return list.FirstOrDefault(s => s.ID == id);
-        }
-
-        public void NextSong()
-        {
-            int next = activeSongIndex + 1;
-            if (next >= list.Count)
-                next = 0;
-
-            while (list[next].ActorType != ActorType.MusicTrack) next = (next + 1) % list.Count;
-
-            SwitchSong(next);
-            mySoundInstance.Volume = masterSound;
-            mySoundInstance.IsLooped = true;
-            mySoundInstance.Play();
-        }
-
-        private void PauseSong()
-        {
-            if (mySoundInstance != null && mySoundInstance.State == SoundState.Playing)
-                mySoundInstance.Pause();
-        }
-
-        private void PlaySfx(Sounds s)
-        {
-            if (s.ActorType == ActorType.SoundEffect)
+            switch (volumeType)
             {
-                SoundEffectInstance instance = s.GetSfx().CreateInstance();
-                instance.IsLooped = false;
-                instance.Play();
-            }
-        }
-
-        public void PlaySoundEffect(string id)
-        {
-            Sounds s = FindSound(id);
-            currentSong = s;
-            if (s != null)
-                switch (s.ActorType)
-                {
-                    case ActorType.MusicTrack:
-                    {
-                        if (currentSong != null)
-                            if (s.ID != currentSong.ID)
-                            {
-                                mySoundInstance = s.GetSfx().CreateInstance();
-                                mySoundInstance.IsLooped = true;
-                                mySoundInstance.Volume = masterSound;
-                                mySoundInstance.Play();
-                            }
-
-                        break;
-                    }
-                    case ActorType.SoundEffect:
-                        PlaySfx(s);
-                        break;
-                }
-        }
-
-        public bool RemoveIf(Predicate<Sounds> predicate)
-        {
-            int position = list.FindIndex(predicate);
-
-            if (position != -1)
-            {
-                list.RemoveAt(position);
-                return true;
+                case SoundVolumeType.Master:
+                    SoundEffect.MasterVolume = Math.Clamp(SoundEffect.MasterVolume + value, 0, 1f);
+                    break;
+                case SoundVolumeType.Music:
+                    musicVolume = Math.Clamp(musicVolume + value, 0, 1f);
+                    break;
+                case SoundVolumeType.Sfx:
+                    sfxVolume = Math.Clamp(musicVolume + value, 0, 1f);
+                    break;
             }
 
-            return false;
+            musicInstance.Volume = musicVolume;
         }
-
-        private void ResumeSong()
-        {
-            if (mySoundInstance != null && mySoundInstance.State == SoundState.Paused)
-                mySoundInstance.Resume();
-        }
-
-        public void StopSong()
-        {
-            if (mySoundInstance != null && mySoundInstance.State == SoundState.Playing)
-                mySoundInstance.Stop();
-        }
-
-        private void SwitchSong(int next)
-        {
-            activeSongIndex = next;
-
-            StopSong();
-
-            currentSong = list[next];
-            mySoundInstance = currentSong.GetSfx().CreateInstance();
-        }
-
-        public void VolumeDown()
-        {
-            PauseSong();
-
-            masterSound -= 0.2f;
-
-            if (masterSound <= 0)
-                masterSound = 0;
-
-            mySoundInstance.Volume = masterSound;
-            ResumeSong();
-        }
-
-
-        public void VolumeUp()
-        {
-            PauseSong();
-
-            masterSound += 0.2f;
-
-            if (masterSound >= 1.0)
-                masterSound = 1;
-
-            mySoundInstance.Volume = masterSound;
-            ResumeSong();
-        }
-
-        #endregion
     }
 }

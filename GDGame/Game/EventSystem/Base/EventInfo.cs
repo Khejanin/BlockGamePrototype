@@ -94,4 +94,11 @@ namespace GDGame.EventSystem
 
         #endregion
     }
+
+    public class SoundEventInfo : EventInfo
+    {
+        public SoundEventType soundEventType;
+        public SfxType sfxType;
+        public SoundVolumeType soundVolumeType;
+    }
 }
