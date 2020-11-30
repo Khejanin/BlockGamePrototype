@@ -1,4 +1,5 @@
-﻿using GDLibrary.Enums;
+﻿using System;
+using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,7 +9,7 @@ namespace GDLibrary.Actors
     /// <summary>
     /// Draws text to the screen with a user-defined text string and font. Useful for showing a score, elapsed time, or other game-state related info
     /// </summary>
-    public class UITextObject : DrawnActor2D
+    public class UITextObject : DrawnActor2D, ICloneable
     {
         #region Fields
         private string text;
@@ -62,5 +63,10 @@ namespace GDLibrary.Actors
         }
 
         #endregion Constructors & Core
+
+        public new object Clone()
+        {
+            return new UITextObject(ID, ActorType, StatusType, Transform2D.Clone() as Transform2D, Color, LayerDepth, SpriteEffects, Text, SpriteFont);
+        }
     }
 }

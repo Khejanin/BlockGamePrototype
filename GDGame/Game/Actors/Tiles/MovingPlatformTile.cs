@@ -15,30 +15,36 @@ namespace GDGame.Actors
         #region 05. Private variables
 
         private Vector3 currentPos;
-        private int dir;
+        private int dir; //-1 = X, 1 = Y, 0 = Z
         private Vector3 endPos;
+        private int tileMoves;
         private bool isActivated;
-        private int maxMove;
         private Vector3 starPos;
+        private bool oppDir;
+        private bool max;
 
+       
         #endregion
 
         #region 06. Constructors
 
-        //-1 = X, 1 = Y, 0 = Z
 
         public MovingPlatformTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType,
             int tileMoves, int dir) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
-            starPos = currentPos = Transform3D.Translation;
+            this.starPos = this.currentPos = Transform3D.Translation;
             this.dir = dir;
+            this.tileMoves = tileMoves;
 
             if (dir == -1)
-                endPos = new Vector3(starPos.X + maxMove, starPos.Y, StartPos.Z);
+                this.endPos = new Vector3(starPos.X + tileMoves, starPos.Y, StartPos.Z);
             else if (dir == 1)
-                endPos = new Vector3(starPos.X, starPos.Y + maxMove, StartPos.Z);
+                this.endPos = new Vector3(starPos.X, starPos.Y + tileMoves, StartPos.Z);
             else
-                endPos = new Vector3(starPos.X, starPos.Y, starPos.Z + maxMove);
+                this.endPos = new Vector3(this.starPos.X, this.starPos.Y, (this.starPos.Z + tileMoves));
+
+            this.oppDir = isOppDir();
+            this.max = false;
         }
 
         #endregion
@@ -80,7 +86,7 @@ namespace GDGame.Actors
         {
             MovingPlatformTile platform = new MovingPlatformTile("clone - " + ID, ActorType, StatusType,
                 Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as EffectParameters, Model, TileType, maxMove, dir);
+                EffectParameters.Clone() as EffectParameters, Model, TileType, tileMoves, dir);
 
             if (ControllerList != null)
                 foreach (IController controller in ControllerList)
@@ -102,30 +108,82 @@ namespace GDGame.Actors
             return isActivated;
         }
 
-        public void movePlatform()
+        public Vector3 moveUp()
         {
-            bool max = false;
-            int move = 0;
-            Vector3 b = new Vector3(0, 0, 0);
-
-            if (currentPos.X <= starPos.X || currentPos.Y <= starPos.Y || currentPos.Z <= starPos.Z)
-                max = false;
-
-            if (currentPos.X >= endPos.X || currentPos.Y >= starPos.Y || currentPos.Z >= starPos.Z)
-                max = true;
-
-
-            if (!max)
-                move = 1;
-            else
+            int move = 1;
+            if (oppDir)
                 move = -1;
 
-            if (dir == -1) //X
-                b = new Vector3(currentPos.X + move, 0, 0);
-            else if (dir == 1) //Y
-                b = new Vector3(0, currentPos.Y + move, 0);
+            float a = this.currentPos.X, b = this.currentPos.Y, c = this.currentPos.Z;
+
+            if (this.dir == -1) //X
+                a += move;
+            else if (this.dir == 1) //Y
+                b += move;
             else //Z
-                b = new Vector3(0, 0, currentPos.Z + move);
+                c += move;
+
+            return new Vector3(a, b, c);
+        }
+
+        public bool atMaxPoint()
+        {
+            if (oppDir)
+            {
+                if (currentPos.X >= starPos.X || currentPos.Y >= starPos.Y || currentPos.Z >= starPos.Z)
+                    max = false;
+
+                if (currentPos.X <= endPos.X || currentPos.Y <= starPos.Y || currentPos.Z <= starPos.Z)
+                    max = true;
+            }
+            else
+            {
+                if (currentPos.X <= starPos.X || currentPos.Y <= starPos.Y || currentPos.Z <= starPos.Z)
+                    max = false;
+
+                if (currentPos.X >= endPos.X || currentPos.Y >= starPos.Y || currentPos.Z >= starPos.Z)
+                    max = true;
+            }
+            return false;
+        }
+
+        public bool isOppDir()
+        {
+            if ((this.starPos.X > this.endPos.X || this.starPos.Y > this.endPos.Y || this.starPos.Z > this.endPos.Z))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public Vector3 moveDown()
+        {
+            int move = -1;
+            if (oppDir)
+                move = 1;
+
+            float a = this.currentPos.X, b = this.currentPos.Y, c = this.currentPos.Z;
+
+            if (this.dir == -1) //X
+                a += move;
+            else if (this.dir == 1) //Y
+                b += move;
+            else //Z
+                c += move;
+
+            return new Vector3(a, b, c);
+        }
+
+
+        public void movePlatform()
+        {
+            Vector3 b = new Vector3(0, 0, 0);
+            this.max = atMaxPoint();
+
+            if (!max)
+                b = moveUp();
+            else
+                b = moveDown();
 
             Transform3D.TranslateBy(b);
             currentPos = b;

@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GDGame
 {
-    public class Main : Microsoft.Xna.Framework.Game
+    public class Main : Game
     {
         #region 06. Constructors
 
@@ -46,6 +46,8 @@ namespace GDGame
         public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
         public SoundManager SoundManager { get; private set; }
         public ContentDictionary<Texture2D> Textures { get; private set; }
+
+        public Dictionary<string, DrawnActor2D> UiArchetypes { get; set; }
         public UIManager UiManager { get; private set; }
         public BasicEffect UnlitWireframeEffect { get; private set; }
 
@@ -115,8 +117,6 @@ namespace GDGame
             Models = new ContentDictionary<Model>("models", Content);
         }
 
-        public Dictionary<string, DrawnActor2D> UiArchetypes { get; set; }
-
         private void InitManagers()
         {
             //Events
@@ -166,6 +166,33 @@ namespace GDGame
             LevelDataManager = new LevelDataManager();
         }
 
+        private void InitUiArchetypes()
+        {
+            Texture2D texture = Textures["bStart"];
+            Integer2 dimensions = new Integer2(texture.Width, texture.Height);
+            Transform2D transform2D = new Transform2D(Vector2.Zero, 0, Vector2.One, Vector2.Zero, dimensions);
+            UITextureObject uiTextureObject = new UITextureObject("texture", ActorType.UITextureObject, StatusType.Drawn | StatusType.Update, transform2D, Color.White, 0.6f,
+                SpriteEffects.None, texture, new Rectangle(0, 0, texture.Width, texture.Height));
+
+            string text = "";
+            dimensions = new Integer2(Fonts["Arial"].MeasureString(text));
+            transform2D = new Transform2D(Vector2.Zero, 0, Vector2.One, Vector2.Zero, dimensions);
+            UITextObject uiTextObject = new UITextObject("text", ActorType.UIText, StatusType.Drawn | StatusType.Update, transform2D, Color.Black, 0.1f,
+                SpriteEffects.None, text, Fonts["Arial"]);
+
+            text = "";
+            texture = Textures["bStart"];
+            dimensions = new Integer2(texture.Width, texture.Height);
+            Vector2 origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
+            transform2D = new Transform2D(Vector2.Zero, 0, Vector2.One, origin, dimensions);
+            UiButtonObject uiButtonObject = new UiButtonObject("button", ActorType.UIButtonObject, StatusType.Update | StatusType.Drawn, transform2D, Color.White, 0.5f,
+                SpriteEffects.None, texture, new Rectangle(0, 0, texture.Width, texture.Height), text, Fonts["Arial"], Color.Black, Vector2.Zero);
+
+            UiArchetypes.Add("button", uiButtonObject);
+            UiArchetypes.Add("texture", uiTextureObject);
+            UiArchetypes.Add("text", uiTextObject);
+        }
+
         #endregion
 
         #region 09. Override Methode
@@ -182,6 +209,11 @@ namespace GDGame
 
         #region 10. Load Methods
 
+        private void LoadBasicTextures()
+        {
+            Textures.Load("Assets/Textures/Menu/button", "bStart");
+        }
+
         private void LoadFonts()
         {
             Fonts.Load("Assets/Fonts/Arial");
@@ -193,12 +225,12 @@ namespace GDGame
 
         private void CreateScenes()
         {
-            // SceneManager.AddScene("Menu", new Scenes.MenuScene(this));
+            SceneManager.AddScene("Menu", new Scenes.MenuScene(this));
             //SceneManager.AddScene("Test", new MainScene(this, "test_Enemy_path.json"));
             SceneManager.AddScene("Level 7", new MainScene(this, "Big_Level.json"));
 
 
-            //SceneManager.AddScene("Tutorial", new TutorialScene(this));
+            SceneManager.AddScene("Tutorial", new TutorialScene(this));
             // SceneManager.AddScene("Level1", new MainScene(this, "Paul_Level_1.json"));
             // SceneManager.AddScene("Level2", new MainScene(this, "Paul_Level_2.json"));
             //SceneManager.AddScene("Level3", new MainScene(this, "Paul_Level_3.json"));
@@ -206,31 +238,12 @@ namespace GDGame
             //SceneManager.AddScene("Level5", new MainScene(this, "Paul_Level_5.json"));
             //SceneManager.AddScene("Level6", new MainScene(this, "Paul_Level_6.json"));
             //throws back to menu eventually
-            // SceneManager.AddScene("End", new EndScene(this));
+            SceneManager.AddScene("End", new EndScene(this));
 
             //shouldn't be able to "next scene" to this
-            // SceneManager.AddScene("Options", new OptionsMenuScene(this));
+            SceneManager.AddScene("Options", new OptionsMenuScene(this));
         }
 
         #endregion
-
-
-        private void LoadBasicTextures()
-        {
-            Textures.Load("Assets/Textures/Menu/button", "bStart");
-        }
-
-        private void InitUiArchetypes()
-        {
-            string text = "Hello";
-            Texture2D texture = Textures["bStart"];
-            Vector2 origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
-            Integer2 dimensions = new Integer2(texture.Width, texture.Height);
-            Transform2D transform2D = new Transform2D(Vector2.Zero, 0, Vector2.One, origin, dimensions);
-            UiButtonObject button = new UiButtonObject("backButton", ActorType.UIButtonObject, StatusType.Update | StatusType.Drawn, transform2D, Color.White, 0.5f,
-                SpriteEffects.None, texture, new Rectangle(0, 0, texture.Width, texture.Height), text, Fonts["Arial"], Color.Black, Vector2.Zero);
-
-            UiArchetypes.Add("button", button);
-        }
     }
 }
