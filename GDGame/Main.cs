@@ -227,7 +227,7 @@ namespace GDGame
         {
             SceneManager.AddScene("Menu", new Scenes.MenuScene(this));
             //SceneManager.AddScene("Test", new MainScene(this, "test_Enemy_path.json"));
-            // SceneManager.AddScene("Level 7", new MainScene(this, "Big_Level.json"));
+            SceneManager.AddScene("Level 7", new MainScene(this, "Big_Level.json"));
 
 
             SceneManager.AddScene("Tutorial", new TutorialScene(this));

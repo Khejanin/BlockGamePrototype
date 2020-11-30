@@ -81,7 +81,7 @@ namespace GDGame.Managers
             }
         }
 
-        private void InitMainUi()
+        private void InitGameUi()
         {
             float screenHeight = Scene.Game.GraphicsDevice.Viewport.Height;
             float screenWidth = Scene.Game.GraphicsDevice.Viewport.Width;
@@ -221,6 +221,30 @@ namespace GDGame.Managers
                 button.Transform2D.Translation = Scene.Game.ScreenCentre + Vector2.UnitY * 120;
                 Scene.Game.UiManager.Add(button);
             }
+
+            if (((UITextObject) Scene.Game.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
+            {
+                text = "B_Logic";
+                uiTextObject.ID = "B_Logic";
+                uiTextObject.Text = text;
+                uiTextObject.Color = Color.SaddleBrown;
+                uiTextObject.Transform2D.Origin = new Vector2(Scene.Game.Fonts["Arial"].MeasureString(text).X / 2, Scene.Game.Fonts["Arial"].MeasureString(text).Y / 2);
+                uiTextObject.Transform2D.Translation = new Vector2(Scene.Game.ScreenCentre.X - 275, Scene.Game.ScreenCentre.Y - 25);
+                Scene.Game.UiManager.Add(uiTextObject);
+            }
+
+
+            uiTextObject = ((UITextObject) Scene.Game.UiArchetypes["text"]).Clone() as UITextObject;
+            if (uiTextObject != null)
+            {
+                text = "Caffeine Edition!";
+                uiTextObject.ID = "Caffeine Edition!";
+                uiTextObject.Text = text;
+                uiTextObject.Color = Color.SaddleBrown;
+                uiTextObject.Transform2D.Origin = new Vector2(Scene.Game.Fonts["Arial"].MeasureString(text).X / 2, Scene.Game.Fonts["Arial"].MeasureString(text).Y / 2);
+                uiTextObject.Transform2D.Translation = new Vector2(Scene.Game.ScreenCentre.X - 275, Scene.Game.ScreenCentre.Y - 50);
+                Scene.Game.UiManager.Add(uiTextObject);
+            }
         }
 
         private void InitOptionsUi()
@@ -251,7 +275,7 @@ namespace GDGame.Managers
                     InitEndUi();
                     break;
                 case SceneType.Game:
-                    InitMainUi();
+                    InitGameUi();
                     break;
                 case SceneType.Info:
                     InitInfoUi();
