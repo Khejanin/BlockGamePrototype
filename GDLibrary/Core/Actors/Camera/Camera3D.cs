@@ -18,7 +18,6 @@ namespace GDLibrary.Actors
         private ProjectionParameters projectionParameters;
 
         private Viewport viewPort;
-
         private Matrix view;
         // private bool isDirty;
 
@@ -26,15 +25,24 @@ namespace GDLibrary.Actors
 
         public Viewport Viewport
         {
-            get { return viewPort; }
-            protected set { viewPort = value; }
+            get
+            {
+                return viewPort;
+            }
+            protected set
+            {
+                viewPort = value;
+            }
         }
 
         #region Properties
 
         public Matrix Projection
         {
-            get { return projectionParameters.Projection; }
+            get
+            {
+                return projectionParameters.Projection;
+            }
         }
 
         //add a clean/dirty flag later
@@ -57,7 +65,9 @@ namespace GDLibrary.Actors
 
         #region Constructors
 
-        public Camera3D(string id, ActorType actorType, StatusType statusType, Transform3D transform3D, ProjectionParameters projectionParameters, Viewport viewPort) : base(id, actorType, statusType, transform3D)
+        public Camera3D(string id, ActorType actorType, StatusType statusType,
+            Transform3D transform3D, ProjectionParameters projectionParameters, Viewport viewPort)
+            : base(id, actorType, statusType, transform3D)
         {
             this.projectionParameters = projectionParameters;
             this.viewPort = viewPort;

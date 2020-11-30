@@ -1,15 +1,16 @@
-﻿using System;
-using GDLibrary.Enums;
+﻿using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 
 namespace GDLibrary.Actors
 {
     /// <summary>
     /// Draws text to the screen with a user-defined text string and font. Useful for showing a score, elapsed time, or other game-state related info
     /// </summary>
-    public class UITextObject : DrawnActor2D, ICloneable
+    public class UITextObject : DrawnActor2D
     {
         #region Fields
         private string text;
@@ -21,22 +22,22 @@ namespace GDLibrary.Actors
         {
             get
             {
-                return this.text;
+                return text;
             }
             set
             {
-                this.text = (value.Length >= 0) ? value : "Default";
+                text = (value.Length >= 0) ? value : "Default";
             }
         }
         public SpriteFont SpriteFont
         {
             get
             {
-                return this.spriteFont;
+                return spriteFont;
             }
             set
             {
-                this.spriteFont = value;
+                spriteFont = value;
             }
         }
         #endregion Properties
@@ -51,22 +52,44 @@ namespace GDLibrary.Actors
             Text = text;
         }
 
-        //to do...Draw, Equals, GetHashCode, Clone
-
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(this.spriteFont, this.text, this.Transform2D.Translation, this.Color,
-                this.Transform2D.RotationInRadians, this.Transform2D.Origin, this.Transform2D.Scale,
-                this.SpriteEffects, this.LayerDepth);
+            spriteBatch.DrawString(spriteFont, text, Transform2D.Translation, Color,
+                Transform2D.RotationInRadians, Transform2D.Origin, Transform2D.Scale,
+                SpriteEffects, LayerDepth);
 
             //base.Draw(gameTime, spriteBatch);
         }
 
-        #endregion Constructors & Core
+        public override bool Equals(object obj)
+        {
+            return obj is UITextObject @object &&
+                   base.Equals(obj) &&
+                   text == @object.text &&
+                   EqualityComparer<SpriteFont>.Default.Equals(spriteFont, @object.spriteFont);
+        }
+
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(base.GetHashCode());
+            hash.Add(text);
+            hash.Add(spriteFont);
+            return hash.ToHashCode();
+        }
 
         public new object Clone()
         {
-            return new UITextObject(ID, ActorType, StatusType, Transform2D.Clone() as Transform2D, Color, LayerDepth, SpriteEffects, Text, SpriteFont);
+            return new UITextObject("clone - " + ID, ActorType, StatusType,
+                Transform2D.Clone() as Transform2D,
+                Color,
+                LayerDepth,
+                SpriteEffects,
+                text,
+                spriteFont  //shallow - reference
+                );
         }
+
+        #endregion Constructors & Core
     }
 }

@@ -11,7 +11,7 @@ namespace GDGame.Actors
 {
     public class MovableTile : BasicTile, ICloneable
     {
-        #region 06. Constructors
+        #region Constructors
 
         protected MovableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
             EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform,
@@ -22,7 +22,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public int CurrentMovementTime { get; set; }
         public Vector3 Diff { get; set; }
@@ -40,7 +40,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         public override bool Equals(object obj)
         {
@@ -68,7 +68,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public Vector3 CalculateTargetPosition(Vector3 rotatePoint, Quaternion rotationToApply)
         {

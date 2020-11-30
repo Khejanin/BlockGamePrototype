@@ -10,13 +10,13 @@ namespace GDGame.Actors
 {
     public class ButtonTile : BasicTile, IActivatable
     {
-        #region 05. Private variables
+        #region Private variables
 
         private bool isActivated;
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         //public List<IActivatable> Targets { get; set; }
 
@@ -28,7 +28,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public void Activate()
         {

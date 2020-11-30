@@ -6,22 +6,22 @@ namespace GDGame.EventSystem
 {
     public class EventManager : GameComponent
     {
-        #region 01. Delegates
+        #region Delegates
 
         private delegate void EventListener(EventInfo ei);
 
         #endregion
 
-        #region 03. Static Fields and Constants
+        #region Static Fields and Constants
 
         private static Dictionary<Type, Dictionary<int, EventListener>> EventListeners;
         private static Queue<EventInfo> EventsToTrigger;
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
-        public EventManager(Microsoft.Xna.Framework.Game game) : base(game)
+        public EventManager(Game game) : base(game)
         {
             EventListeners = new Dictionary<Type, Dictionary<int, EventListener>>();
             EventsToTrigger = new Queue<EventInfo>();
@@ -29,7 +29,7 @@ namespace GDGame.EventSystem
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         public override void Update(GameTime gameTime)
         {
@@ -40,7 +40,7 @@ namespace GDGame.EventSystem
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public static void FireEvent(EventInfo eventInfo)
         {

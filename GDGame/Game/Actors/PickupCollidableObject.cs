@@ -8,7 +8,7 @@ namespace GDGame.Actors
 {
     public class PickupCollidableObject : CollidableObject
     {
-        #region 06. Constructors
+        #region Constructors
 
         public PickupCollidableObject(string id, ActorType actorType, StatusType statusType,
             Transform3D transform, EffectParameters effectParameters, Model model, int value)
@@ -22,13 +22,13 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public int Value { get; set; }
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public new object Clone()
         {
@@ -43,7 +43,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 12. Events
+        #region Events
 
         //step 2 - add a handler
         private bool HandleCollision(CollisionSkin collider, CollisionSkin collidee)

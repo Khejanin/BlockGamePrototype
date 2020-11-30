@@ -18,14 +18,14 @@ namespace GDGame.Controllers
 {
     public class PlayerController : Controller, ICloneable
     {
-        #region 05. Private variables
+        #region Private variables
 
         private CameraManager<Camera3D> cameraManager;
         private KeyboardManager keyboardManager;
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public PlayerController(string id, ControllerType controllerType, KeyboardManager keyboardManager, CameraManager<Camera3D> cameraManager) : base(id, controllerType)
         {
@@ -35,7 +35,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         public override void Update(GameTime gameTime, IActor actor)
         {
@@ -45,7 +45,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public new object Clone()
         {
@@ -66,7 +66,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 12. Events
+        #region Events
 
         private void HandleKeyboardInput(PlayerTile actor)
         {

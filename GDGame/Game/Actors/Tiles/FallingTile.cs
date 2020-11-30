@@ -1,8 +1,6 @@
-﻿using GDGame.Component;
-using GDGame.Enums;
+﻿using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Interfaces;
-using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
@@ -11,13 +9,24 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
-    class FallingTile : PathMoveTile, IActivatable
+    internal class FallingTile : PathMoveTile, IActivatable
     {
+        #region Private variables
+
         private Vector3 currentPos;
 
-        public FallingTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
+        #endregion
+
+        #region Constructors
+
+        public FallingTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) : base(
+            id, actorType, statusType, transform, effectParameters, model, tileType)
         {
         }
+
+        #endregion
+
+        #region Initialization
 
         public override void InitializeTile()
         {
@@ -25,9 +34,12 @@ namespace GDGame.Actors
             base.InitializeTile();
         }
 
-        private void HandleActivatorEvent(ActivatorEventInfo info)
+        #endregion
+
+        #region Override Methode
+
+        protected override void MoveToNextPoint()
         {
-            Activate();
         }
 
         protected override void OnMoveEnd()
@@ -35,29 +47,13 @@ namespace GDGame.Actors
             base.OnMoveEnd();
         }
 
+        #endregion
+
+        #region Methods
+
         public void Activate()
         {
             Fall();
-        }
-
-        public void Fall()
-        {
-            this.Transform3D.TranslateBy(new Vector3(0, 0, (this.currentPos.Z - 1)));
-            this.Transform3D.TranslateBy(new Vector3(0, 0, (this.currentPos.Z - 1)));
-            this.Deactivate();
-        }
-
-        protected override void MoveToNextPoint()
-        {
-        }
-
-        public void ToggleActivation()
-        {
-        }
-
-        public void Deactivate()
-        {
-
         }
 
         public new object Clone()
@@ -65,15 +61,37 @@ namespace GDGame.Actors
             FallingTile platform = new FallingTile("clone - " + ID, ActorType, StatusType,
                 Transform3D.Clone() as Transform3D,
                 EffectParameters.Clone() as EffectParameters, Model, TileType);
-    
+
             if (ControllerList != null)
-            {
                 foreach (IController controller in ControllerList)
-                {
                     platform.ControllerList.Add(controller.Clone() as IController);
-                }
-           }
-           return platform;
+            return platform;
         }
+
+        public void Deactivate()
+        {
+        }
+
+        public void Fall()
+        {
+            Transform3D.TranslateBy(new Vector3(0, 0, currentPos.Z - 1));
+            Transform3D.TranslateBy(new Vector3(0, 0, currentPos.Z - 1));
+            Deactivate();
+        }
+
+        public void ToggleActivation()
+        {
+        }
+
+        #endregion
+
+        #region Events
+
+        private void HandleActivatorEvent(ActivatorEventInfo info)
+        {
+            Activate();
+        }
+
+        #endregion
     }
 }

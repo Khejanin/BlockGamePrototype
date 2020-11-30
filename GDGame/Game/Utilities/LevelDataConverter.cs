@@ -18,7 +18,7 @@ namespace GDGame.Utilities
 
     public static class LevelDataConverter
     {
-        #region 11. Methods
+        #region Methods
 
         public static LevelData ConvertJsonToLevelData(string jsonLevelString)
         {

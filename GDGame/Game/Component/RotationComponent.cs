@@ -9,7 +9,7 @@ namespace GDGame.Component
 {
     public class RotationComponent : Controller, ICloneable
     {
-        #region 05. Private variables
+        #region Private variables
 
         private Vector3 backwardRotatePoint;
         private Vector3 forwardRotatePoint;
@@ -18,7 +18,7 @@ namespace GDGame.Component
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public RotationComponent(string id, ControllerType controllerType) : base(id, controllerType)
         {
@@ -26,7 +26,7 @@ namespace GDGame.Component
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public new object Clone()
         {

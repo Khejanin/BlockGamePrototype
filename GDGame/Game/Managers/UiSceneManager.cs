@@ -1,6 +1,5 @@
 ﻿using System;
 using GDGame.Actors;
-using GDGame.Actors.Drawn;
 using GDGame.EventSystem;
 using GDGame.Scenes;
 using GDLibrary.Actors;
@@ -14,7 +13,7 @@ namespace GDGame.Managers
 {
     public class UiSceneManager
     {
-        #region 05. Private variables
+        #region Private variables
 
         private bool optionsShown = true;
 
@@ -22,7 +21,7 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public UiSceneManager(Scene scene)
         {
@@ -32,24 +31,24 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         private Scene Scene { get; }
 
         #endregion
 
-        #region 08. Initialization
+        #region Initialization
 
         private void InitEndUi()
         {
             string text = "You won!!! Press ESC to close the Game!";
-            Vector2 origin = new Vector2(Scene.Game.Fonts["Arial"].MeasureString(text).X / 2, Scene.Game.Fonts["Arial"].MeasureString(text).Y / 2);
-            Integer2 dimensions = new Integer2(Scene.Game.Fonts["Arial"].MeasureString(text));
-            Transform2D transform2D = new Transform2D(Scene.Game.ScreenCentre, 0, Vector2.One, origin, dimensions);
+            Vector2 origin = new Vector2(Scene.Main.Fonts["Arial"].MeasureString(text).X / 2, Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
+            Integer2 dimensions = new Integer2(Scene.Main.Fonts["Arial"].MeasureString(text));
+            Transform2D transform2D = new Transform2D(Scene.Main.ScreenCentre, 0, Vector2.One, origin, dimensions);
 
             UITextObject uITextObject = new UITextObject("WinText", ActorType.UIText, StatusType.Drawn, transform2D, Color.Wheat, 0, SpriteEffects.None, text,
-                Scene.Game.Fonts["Arial"]);
-            Scene.Game.UiManager.Add(uITextObject);
+                Scene.Main.Fonts["Arial"]);
+            Scene.Main.UiManager.Add(uITextObject);
         }
 
         private void InitEventListeners()
@@ -57,213 +56,230 @@ namespace GDGame.Managers
             EventManager.RegisterListener<DataManagerEvent>(HandleDataManagerEvent);
         }
 
-        private void InitInfoUi()
-        {
-            if (((UITextureObject) Scene.Game.UiArchetypes["texture"]).Clone() is UITextureObject uiTextureObject)
-            {
-                Texture2D texture = Scene.Game.Textures["Tutorial"];
-                uiTextureObject.ID = "TutorialTexture";
-                uiTextureObject.Texture = texture;
-                uiTextureObject.Transform2D.Origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
-                uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
-                uiTextureObject.Transform2D.Translation = Scene.Game.ScreenCentre;
-                Scene.Game.UiManager.Add(uiTextureObject);
-            }
-
-            if (((UITextObject) Scene.Game.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
-            {
-                string text = "Press SPACEBAR to continue!";
-                uiTextObject.ID = "ContinueText";
-                uiTextObject.Text = text;
-                uiTextObject.Transform2D.Origin = new Vector2(Scene.Game.Fonts["Arial"].MeasureString(text).X / 2, Scene.Game.Fonts["Arial"].MeasureString(text).Y / 2);
-                uiTextObject.Transform2D.Translation = Scene.Game.ScreenCentre + Vector2.UnitY * 300;
-                Scene.Game.UiManager.Add(uiTextObject);
-            }
-        }
-
         private void InitGameUi()
         {
-            float screenHeight = Scene.Game.GraphicsDevice.Viewport.Height;
-            float screenWidth = Scene.Game.GraphicsDevice.Viewport.Width;
+            float screenHeight = Scene.Main.GraphicsDevice.Viewport.Height;
+            float screenWidth = Scene.Main.GraphicsDevice.Viewport.Width;
 
-            if (((UITextureObject) Scene.Game.UiArchetypes["texture"]).Clone() is UITextureObject uiTextureObject)
+            if (((UITextureObject) Scene.Main.UiArchetypes["texture"]).Clone() is UITextureObject uiTextureObject)
             {
                 float textureHeight = 50;
-                Texture2D texture = Scene.Game.Textures["WhiteSquare"];
+                Texture2D texture = Scene.Main.Textures["WhiteSquare"];
                 uiTextureObject.ID = "BottomBar";
                 uiTextureObject.Texture = texture;
                 uiTextureObject.Transform2D.Origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
                 uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
                 uiTextureObject.Transform2D.Scale = new Vector2(screenWidth, textureHeight);
-                uiTextureObject.Transform2D.Translation = Scene.Game.ScreenCentre + Vector2.UnitY * (screenHeight / 2 - textureHeight / 2);
-                Scene.Game.UiManager.Add(uiTextureObject);
+                uiTextureObject.Transform2D.Translation = Scene.Main.ScreenCentre + Vector2.UnitY * (screenHeight / 2 - textureHeight / 2);
+                Scene.Main.UiManager.Add(uiTextureObject);
             }
 
-            uiTextureObject = ((UITextureObject) Scene.Game.UiArchetypes["texture"]).Clone() as UITextureObject;
+            uiTextureObject = ((UITextureObject) Scene.Main.UiArchetypes["texture"]).Clone() as UITextureObject;
             if (uiTextureObject != null)
             {
                 float textureHeight = 100;
                 float textureWidth = 120;
-                Texture2D texture = Scene.Game.Textures["WhiteSquare"];
+                Texture2D texture = Scene.Main.Textures["WhiteSquare"];
                 uiTextureObject.ID = "BottomMiddleBar";
                 uiTextureObject.Texture = texture;
                 uiTextureObject.Transform2D.Origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
                 uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
                 uiTextureObject.Transform2D.Scale = new Vector2(textureWidth, textureHeight);
-                uiTextureObject.Transform2D.Translation = Scene.Game.ScreenCentre + Vector2.UnitY * (screenHeight / 2 - textureHeight / 2);
-                Scene.Game.UiManager.Add(uiTextureObject);
+                uiTextureObject.Transform2D.Translation = Scene.Main.ScreenCentre + Vector2.UnitY * (screenHeight / 2 - textureHeight / 2);
+                Scene.Main.UiManager.Add(uiTextureObject);
             }
 
 
-            if (((UITextObject) Scene.Game.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
+            if (((UITextObject) Scene.Main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
             {
                 string text = "Moves";
                 uiTextObject.ID = "MoveText";
                 uiTextObject.Text = text;
-                uiTextObject.Transform2D.Origin = new Vector2(Scene.Game.Fonts["Arial"].MeasureString(text).X / 2, Scene.Game.Fonts["Arial"].MeasureString(text).Y / 2);
-                uiTextObject.Transform2D.Translation = Scene.Game.ScreenCentre + Vector2.UnitY * (screenHeight / 2 - uiTextObject.Transform2D.Origin.Y - 55);
-                Scene.Game.UiManager.Add(uiTextObject);
+                uiTextObject.Transform2D.Origin = new Vector2(Scene.Main.Fonts["Arial"].MeasureString(text).X / 2, Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
+                uiTextObject.Transform2D.Translation = Scene.Main.ScreenCentre + Vector2.UnitY * (screenHeight / 2 - uiTextObject.Transform2D.Origin.Y - 55);
+                Scene.Main.UiManager.Add(uiTextObject);
             }
 
 
-            uiTextObject = ((UITextObject) Scene.Game.UiArchetypes["text"]).Clone() as UITextObject;
+            uiTextObject = ((UITextObject) Scene.Main.UiArchetypes["text"]).Clone() as UITextObject;
             if (uiTextObject != null)
             {
                 string text = Scene.SceneName;
                 uiTextObject.ID = "SceneNameText";
                 uiTextObject.Text = text;
-                uiTextObject.Transform2D.Origin = new Vector2(Scene.Game.Fonts["Arial"].MeasureString(text).X / 2, Scene.Game.Fonts["Arial"].MeasureString(text).Y / 2);
+                uiTextObject.Transform2D.Origin = new Vector2(Scene.Main.Fonts["Arial"].MeasureString(text).X / 2, Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
                 uiTextObject.Transform2D.Translation =
-                    Scene.Game.ScreenCentre + Vector2.UnitY * (screenHeight / 2 - uiTextObject.Transform2D.Origin.Y - 5) - Vector2.UnitX * screenWidth / 4;
-                Scene.Game.UiManager.Add(uiTextObject);
+                    Scene.Main.ScreenCentre + Vector2.UnitY * (screenHeight / 2 - uiTextObject.Transform2D.Origin.Y - 5) - Vector2.UnitX * screenWidth / 4;
+                Scene.Main.UiManager.Add(uiTextObject);
             }
 
-            uiTextObject = ((UITextObject) Scene.Game.UiArchetypes["text"]).Clone() as UITextObject;
+            uiTextObject = ((UITextObject) Scene.Main.UiArchetypes["text"]).Clone() as UITextObject;
             if (uiTextObject != null)
             {
                 string text = "Time : 00:00:00";
                 uiTextObject.ID = "TimeText";
                 uiTextObject.Text = text;
-                uiTextObject.Transform2D.Origin = new Vector2(Scene.Game.Fonts["Arial"].MeasureString(text).X / 2, Scene.Game.Fonts["Arial"].MeasureString(text).Y / 2);
+                uiTextObject.Transform2D.Origin = new Vector2(Scene.Main.Fonts["Arial"].MeasureString(text).X / 2, Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
                 uiTextObject.Transform2D.Translation =
-                    Scene.Game.ScreenCentre + Vector2.UnitY * (screenHeight / 2 - uiTextObject.Transform2D.Origin.Y - 5) + Vector2.UnitX * screenWidth / 4;
-                Scene.Game.UiManager.Add(uiTextObject);
+                    Scene.Main.ScreenCentre + Vector2.UnitY * (screenHeight / 2 - uiTextObject.Transform2D.Origin.Y - 5) + Vector2.UnitX * screenWidth / 4;
+                Scene.Main.UiManager.Add(uiTextObject);
             }
 
-            uiTextObject = ((UITextObject) Scene.Game.UiArchetypes["text"]).Clone() as UITextObject;
+            uiTextObject = ((UITextObject) Scene.Main.UiArchetypes["text"]).Clone() as UITextObject;
             if (uiTextObject != null)
             {
                 string text = "0";
                 uiTextObject.ID = "NumberOfMovesText";
                 uiTextObject.Text = text;
-                uiTextObject.Transform2D.Origin = new Vector2(Scene.Game.Fonts["Arial"].MeasureString(text).X / 2, Scene.Game.Fonts["Arial"].MeasureString(text).Y / 2);
-                uiTextObject.Transform2D.Translation = Scene.Game.ScreenCentre + Vector2.UnitY * (screenHeight / 2 - uiTextObject.Transform2D.Origin.Y - 5);
-                Scene.Game.UiManager.Add(uiTextObject);
+                uiTextObject.Transform2D.Origin = new Vector2(Scene.Main.Fonts["Arial"].MeasureString(text).X / 2, Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
+                uiTextObject.Transform2D.Translation = Scene.Main.ScreenCentre + Vector2.UnitY * (screenHeight / 2 - uiTextObject.Transform2D.Origin.Y - 5);
+                Scene.Main.UiManager.Add(uiTextObject);
             }
 
-            uiTextObject = ((UITextObject) Scene.Game.UiArchetypes["text"]).Clone() as UITextObject;
+            uiTextObject = ((UITextObject) Scene.Main.UiArchetypes["text"]).Clone() as UITextObject;
             if (uiTextObject != null)
             {
                 string text = "Hold Space To Attach";
                 uiTextObject.ID = "AttachToolTipText";
                 uiTextObject.Text = text;
                 uiTextObject.StatusType = StatusType.Off;
-                Scene.Game.UiManager.Add(uiTextObject);
+                Scene.Main.UiManager.Add(uiTextObject);
             }
 
-            uiTextureObject = ((UITextureObject) Scene.Game.UiArchetypes["texture"]).Clone() as UITextureObject;
+            uiTextureObject = ((UITextureObject) Scene.Main.UiArchetypes["texture"]).Clone() as UITextureObject;
             if (uiTextureObject != null)
             {
-                Texture2D texture = Scene.Game.Textures["options"];
+                Texture2D texture = Scene.Main.Textures["options"];
                 uiTextureObject.ID = "PauseBackground";
                 uiTextureObject.Texture = texture;
                 uiTextureObject.Transform2D.Origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
                 uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
-                uiTextureObject.Transform2D.Translation = Scene.Game.ScreenCentre;
+                uiTextureObject.Transform2D.Translation = Scene.Main.ScreenCentre;
                 uiTextureObject.StatusType = StatusType.Off;
-                Scene.Game.UiManager.Add(uiTextureObject);
+                Scene.Main.UiManager.Add(uiTextureObject);
             }
 
-            if (((UiButtonObject) Scene.Game.UiArchetypes["button"]).Clone() is UiButtonObject uiButtonObject)
+            if (((UIButtonObject) Scene.Main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)
             {
                 uiButtonObject.ID = "ResumeButton";
                 uiButtonObject.Text = "Resume";
-                uiButtonObject.Transform2D.Translation = Scene.Game.ScreenCentre;
+                uiButtonObject.Transform2D.Translation = Scene.Main.ScreenCentre;
                 uiButtonObject.StatusType = StatusType.Off;
-                Scene.Game.UiManager.Add(uiButtonObject);
+                Scene.Main.UiManager.Add(uiButtonObject);
+            }
+        }
+
+        private void InitInfoUi()
+        {
+            if (((UITextureObject) Scene.Main.UiArchetypes["texture"]).Clone() is UITextureObject uiTextureObject)
+            {
+                Texture2D texture = Scene.Main.Textures["Tutorial"];
+                uiTextureObject.ID = "TutorialTexture";
+                uiTextureObject.Texture = texture;
+                uiTextureObject.Transform2D.Origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
+                uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
+                uiTextureObject.Transform2D.Translation = Scene.Main.ScreenCentre;
+                Scene.Main.UiManager.Add(uiTextureObject);
+            }
+
+            if (((UITextObject) Scene.Main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
+            {
+                string text = "Press SPACEBAR to continue!";
+                uiTextObject.ID = "ContinueText";
+                uiTextObject.Text = text;
+                uiTextObject.Transform2D.Origin = new Vector2(Scene.Main.Fonts["Arial"].MeasureString(text).X / 2, Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
+                uiTextObject.Transform2D.Translation = Scene.Main.ScreenCentre + Vector2.UnitY * 300;
+                Scene.Main.UiManager.Add(uiTextObject);
             }
         }
 
         private void InitMenuUi()
         {
             string text = "Play";
-            if (((UiButtonObject) Scene.Game.UiArchetypes["button"]).Clone() is UiButtonObject button)
+            if (((UIButtonObject) Scene.Main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)
             {
-                button.Text = text;
-                button.Transform2D.Translation = Scene.Game.ScreenCentre - Vector2.UnitY * 120;
-                Scene.Game.UiManager.Add(button);
+                uiButtonObject.Text = text;
+                uiButtonObject.ID = text;
+                uiButtonObject.Transform2D.Translation = Scene.Main.ScreenCentre - Vector2.UnitY * 120;
+                uiButtonObject.TextOffset = new Vector2(uiButtonObject.Texture.Width / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).X / 2,
+                    uiButtonObject.Texture.Height / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
+                Scene.Main.MenuManager.Add("MainMenu", uiButtonObject);
             }
 
             text = "Options";
-            button = ((UiButtonObject) Scene.Game.UiArchetypes["button"]).Clone() as UiButtonObject;
-            if (button != null)
+            uiButtonObject = ((UIButtonObject) Scene.Main.UiArchetypes["button"]).Clone() as UIButtonObject;
+            if (uiButtonObject != null)
             {
-                button.Text = text;
-                button.Transform2D.Translation = Scene.Game.ScreenCentre;
-                Scene.Game.UiManager.Add(button);
+                uiButtonObject.Text = text;
+                uiButtonObject.ID = text;
+                uiButtonObject.Transform2D.Translation = Scene.Main.ScreenCentre;
+                uiButtonObject.TextOffset = new Vector2(uiButtonObject.Texture.Width / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).X / 2,
+                    uiButtonObject.Texture.Height / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
+                Scene.Main.MenuManager.Add("MainMenu", uiButtonObject);
             }
 
             text = "Quit";
-            button = ((UiButtonObject) Scene.Game.UiArchetypes["button"]).Clone() as UiButtonObject;
-            if (button != null)
+            uiButtonObject = ((UIButtonObject) Scene.Main.UiArchetypes["button"]).Clone() as UIButtonObject;
+            if (uiButtonObject != null)
             {
-                button.Text = text;
-                button.Transform2D.Translation = Scene.Game.ScreenCentre + Vector2.UnitY * 120;
-                Scene.Game.UiManager.Add(button);
+                uiButtonObject.Text = text;
+                uiButtonObject.ID = text;
+                uiButtonObject.Transform2D.Translation = Scene.Main.ScreenCentre + Vector2.UnitY * 120;
+                uiButtonObject.TextOffset = new Vector2(uiButtonObject.Texture.Width / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).X / 2,
+                    uiButtonObject.Texture.Height / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
+                Scene.Main.MenuManager.Add("MainMenu", uiButtonObject);
             }
 
-            if (((UITextObject) Scene.Game.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
+            if (((UITextObject) Scene.Main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
             {
                 text = "B_Logic";
                 uiTextObject.ID = "B_Logic";
                 uiTextObject.Text = text;
                 uiTextObject.Color = Color.SaddleBrown;
-                uiTextObject.Transform2D.Origin = new Vector2(Scene.Game.Fonts["Arial"].MeasureString(text).X / 2, Scene.Game.Fonts["Arial"].MeasureString(text).Y / 2);
-                uiTextObject.Transform2D.Translation = new Vector2(Scene.Game.ScreenCentre.X - 275, Scene.Game.ScreenCentre.Y - 25);
-                Scene.Game.UiManager.Add(uiTextObject);
+                uiTextObject.Transform2D.Origin = new Vector2(Scene.Main.Fonts["Arial"].MeasureString(text).X / 2, Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
+                uiTextObject.Transform2D.Translation = new Vector2(Scene.Main.ScreenCentre.X - 275, Scene.Main.ScreenCentre.Y - 25);
+                Scene.Main.MenuManager.Add("MainMenu", uiTextObject);
             }
 
 
-            uiTextObject = ((UITextObject) Scene.Game.UiArchetypes["text"]).Clone() as UITextObject;
+            uiTextObject = ((UITextObject) Scene.Main.UiArchetypes["text"]).Clone() as UITextObject;
             if (uiTextObject != null)
             {
                 text = "Caffeine Edition!";
                 uiTextObject.ID = "Caffeine Edition!";
                 uiTextObject.Text = text;
                 uiTextObject.Color = Color.SaddleBrown;
-                uiTextObject.Transform2D.Origin = new Vector2(Scene.Game.Fonts["Arial"].MeasureString(text).X / 2, Scene.Game.Fonts["Arial"].MeasureString(text).Y / 2);
-                uiTextObject.Transform2D.Translation = new Vector2(Scene.Game.ScreenCentre.X - 275, Scene.Game.ScreenCentre.Y - 50);
-                Scene.Game.UiManager.Add(uiTextObject);
+                uiTextObject.Transform2D.Origin = new Vector2(Scene.Main.Fonts["Arial"].MeasureString(text).X / 2, Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
+                uiTextObject.Transform2D.Translation = new Vector2(Scene.Main.ScreenCentre.X - 275, Scene.Main.ScreenCentre.Y - 50);
+                Scene.Main.MenuManager.Add("MainMenu", uiTextObject);
             }
+            
+            
         }
 
         private void InitOptionsUi()
         {
             string text = "Resume";
-            if (((UiButtonObject) Scene.Game.UiArchetypes["button"]).Clone() is UiButtonObject button)
+            if (((UIButtonObject) Scene.Main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)
             {
-                button.Text = text;
-                button.Transform2D.Translation = Scene.Game.ScreenCentre - Vector2.UnitY * 75;
-                Scene.Game.UiManager.Add(button);
+                uiButtonObject.Text = text;
+                uiButtonObject.ID = text;
+                uiButtonObject.Transform2D.Translation = Scene.Main.ScreenCentre - Vector2.UnitY * 75;
+                uiButtonObject.TextOffset = new Vector2(uiButtonObject.Texture.Width / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).X / 2,
+                    uiButtonObject.Texture.Height / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
+                Scene.Main.MenuManager.Add("Options", uiButtonObject);
             }
 
-            text = "Quit";
-            button = ((UiButtonObject) Scene.Game.UiArchetypes["button"]).Clone() as UiButtonObject;
-            if (button != null)
+            text = "Back";
+            uiButtonObject = ((UIButtonObject) Scene.Main.UiArchetypes["button"]).Clone() as UIButtonObject;
+            if (uiButtonObject != null)
             {
-                button.Text = text;
-                button.Transform2D.Translation = Scene.Game.ScreenCentre + Vector2.UnitY * 75;
-                Scene.Game.UiManager.Add(button);
+                uiButtonObject.Text = text;
+                uiButtonObject.ID = text;
+                uiButtonObject.Transform2D.Translation = Scene.Main.ScreenCentre + Vector2.UnitY * 75;
+                uiButtonObject.TextOffset = new Vector2(uiButtonObject.Texture.Width / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).X / 2,
+                    uiButtonObject.Texture.Height / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
+                Scene.Main.MenuManager.Add("Options", uiButtonObject);
             }
         }
 
@@ -280,39 +296,35 @@ namespace GDGame.Managers
                 case SceneType.Info:
                     InitInfoUi();
                     break;
-                case SceneType.Menu:
-                    InitMenuUi();
-                    break;
-                case SceneType.Options:
-                    InitOptionsUi();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
+
+            InitMenuUi();
+            InitOptionsUi();
+            Scene.Main.MenuManager.SetScene("MainMenu");
         }
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         private void ToggleOptionsMenu()
         {
             optionsShown = !optionsShown;
-            UITextureObject uiTextureObject = Scene.Game.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "PauseBackground") as UITextureObject;
+            UITextureObject uiTextureObject = Scene.Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "PauseBackground") as UITextureObject;
             if (uiTextureObject != null && optionsShown)
                 uiTextureObject.StatusType = StatusType.Drawn;
             else if (uiTextureObject != null) uiTextureObject.StatusType = StatusType.Off;
 
-            uiTextureObject = Scene.Game.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "ResumeButton") as UITextureObject;
+            uiTextureObject = Scene.Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "ResumeButton") as UITextureObject;
             if (uiTextureObject != null && optionsShown)
             {
                 uiTextureObject.StatusType = StatusType.Drawn | StatusType.Update;
-                Scene.Game.MouseManager.MouseVisible = optionsShown;
+                Scene.Main.MouseManager.MouseVisible = optionsShown;
             }
             else if (uiTextureObject != null)
             {
                 uiTextureObject.StatusType = StatusType.Off;
-                Scene.Game.MouseManager.MouseVisible = optionsShown;
+                Scene.Main.MouseManager.MouseVisible = optionsShown;
             }
         }
 
@@ -324,65 +336,129 @@ namespace GDGame.Managers
                     UpdateGameUi(gameTime);
                     break;
                 case SceneType.Menu:
-                    UpdateMenuUi(gameTime);
+                    UpdateMenuUi();
                     break;
                 case SceneType.End:
-                    UpdateEndUi(gameTime);
+                    UpdateEndUi();
                     break;
                 case SceneType.Info:
-                    UpdateInfoUi(gameTime);
+                    UpdateInfoUi();
                     break;
                 case SceneType.Options:
-                    UpdateOptionsUi(gameTime);
+                    UpdateOptionsUi();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        private void UpdateEndUi(GameTime gameTime)
+        private void UpdateEndUi()
         {
         }
 
         private void UpdateGameUi(GameTime gameTime)
         {
-            if (Scene.Game.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "TimeText") is UITextObject uiTextObject)
+            if (Scene.Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "TimeText") is UITextObject uiTextObject)
             {
                 uiTextObject.Text = gameTime.TotalGameTime.Hours % 24 + ":" + gameTime.TotalGameTime.Minutes % 60 + ":" + gameTime.TotalGameTime.Seconds % 60;
-                uiTextObject.Transform2D.Origin = new Vector2(Scene.Game.Fonts["Arial"].MeasureString(uiTextObject.Text).X / 2,
-                    Scene.Game.Fonts["Arial"].MeasureString(uiTextObject.Text).Y / 2);
+                uiTextObject.Transform2D.Origin = new Vector2(Scene.Main.Fonts["Arial"].MeasureString(uiTextObject.Text).X / 2,
+                    Scene.Main.Fonts["Arial"].MeasureString(uiTextObject.Text).Y / 2);
             }
 
-            uiTextObject = Scene.Game.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "AttachToolTipText") as UITextObject;
-            playerTile ??= Scene.Game.ObjectManager.OpaqueList.Find(actor3D => actor3D.ID == "clone - Player") as PlayerTile;
+            uiTextObject = Scene.Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "AttachToolTipText") as UITextObject;
+            playerTile ??= Scene.Main.ObjectManager.OpaqueList.Find(actor3D => actor3D.ID == "clone - Player") as PlayerTile;
             if (uiTextObject != null && playerTile != null && playerTile.AttachCandidates.Count > 0)
                 uiTextObject.StatusType = StatusType.Drawn;
             else if (uiTextObject != null) uiTextObject.StatusType = StatusType.Off;
 
-            if (Scene.Game.KeyboardManager.IsFirstKeyPress(Keys.O))
+            if (Scene.Main.KeyboardManager.IsFirstKeyPress(Keys.O))
                 ToggleOptionsMenu();
         }
 
-        private void UpdateInfoUi(GameTime gameTime)
+        private void UpdateInfoUi()
         {
         }
 
-        private void UpdateMenuUi(GameTime gameTime)
+        private void UpdateMenuUi()
         {
+            foreach (DrawnActor2D drawnActor2D in Scene.Main.UiManager.UIObjectList)
+            {
+                if (drawnActor2D is UIButtonObject uiButtonObject)
+                {
+                    if (uiButtonObject.Transform2D.Bounds.Contains(Scene.Main.MouseManager.Bounds))
+                    {
+                        AnimateButton(uiButtonObject, 1.1f);
+
+                        if (Scene.Main.MouseManager.IsLeftButtonClickedOnce())
+                        {
+                            switch (uiButtonObject.ID)
+                            {
+                                case "Play":
+                                    Scene.Main.SceneManager.NextScene();
+                                    break;
+                                case "Options":
+                                    Scene.Main.SceneManager.OptionsSwitchScene();
+                                    break;
+                                case "Quit":
+                                    Scene.Main.Exit();
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        AnimateButton(uiButtonObject, 1);
+                    }
+                }
+            }
         }
 
-        private void UpdateOptionsUi(GameTime gameTime)
+        private void AnimateButton(UIButtonObject uiButtonObject, float f)
         {
+            uiButtonObject.Transform2D.Scale = Vector2.One * f;
+            uiButtonObject.TextOffset = new Vector2(uiButtonObject.Transform2D.Bounds.Width / 2f - Scene.Main.Fonts["Arial"].MeasureString(uiButtonObject.Text).X / 2,
+                uiButtonObject.Transform2D.Bounds.Height / 2f - Scene.Main.Fonts["Arial"].MeasureString(uiButtonObject.Text).Y / 2);
+        }
+
+        private void UpdateOptionsUi()
+        {
+            foreach (DrawnActor2D drawnActor2D in Scene.Main.UiManager.UIObjectList)
+            {
+                if (drawnActor2D is UIButtonObject uiButtonObject)
+                {
+                    if (uiButtonObject.Transform2D.Bounds.Contains(Scene.Main.MouseManager.Bounds))
+                    {
+                        AnimateButton(uiButtonObject, 1.1f);
+
+                        if (Scene.Main.MouseManager.IsLeftButtonClickedOnce())
+                        {
+                            switch (uiButtonObject.ID)
+                            {
+                                case "Resume":
+                                    Scene.Main.SceneManager.MenuSwitchScene();
+                                    break;
+                                case "Back":
+                                    Scene.Main.SceneManager.MenuSwitchScene();
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        AnimateButton(uiButtonObject, 1);
+                    }
+                }
+            }
         }
 
         #endregion
 
-        #region 12. Events
+        #region Events
 
         private void HandleDataManagerEvent(DataManagerEvent obj)
         {
-            if (Scene.Game.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "NumberOfMovesText") is UITextObject uiTextObject)
-                uiTextObject.Text = Scene.Game.LevelDataManager.CurrentMovesCount.ToString();
+            if (Scene.Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "NumberOfMovesText") is UITextObject uiTextObject)
+                uiTextObject.Text = Scene.Main.LevelDataManager.CurrentMovesCount.ToString();
         }
 
         #endregion

@@ -10,21 +10,21 @@ namespace GDGame.Utilities
 {
     public class Grid
     {
-        #region 03. Static Fields and Constants
+        #region Static Fields and Constants
 
         private static BasicTile[,,] _grid;
         private static Dictionary<int, Shape> _shapes;
 
         #endregion
 
-        #region 05. Private variables
+        #region Private variables
 
         private LevelData data;
         private TileFactory tileFactory;
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public Grid(TileFactory tileFactory)
         {
@@ -34,7 +34,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         private void CreateShapes(LevelData data, BasicTile[,,] grid)
         {

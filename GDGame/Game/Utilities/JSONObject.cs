@@ -30,7 +30,7 @@ namespace GDGame.Utilities
 {
     public static class Extensions
     {
-        #region 11. Methods
+        #region Methods
 
         public static T Pop<T>(this List<T> list)
         {
@@ -76,7 +76,7 @@ namespace GDGame.Utilities
 
     public class JSONValue
     {
-        #region 06. Constructors
+        #region Constructors
 
         public JSONValue(JSONValueType type)
         {
@@ -153,7 +153,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public JSONArray Array { get; set; }
         public bool Boolean { get; set; }
@@ -166,7 +166,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         /// <returns>String representation of this JSONValue</returns>
         public override string ToString()
@@ -197,7 +197,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public static implicit operator JSONValue(string str)
         {
@@ -229,13 +229,13 @@ namespace GDGame.Utilities
 
     public class JSONArray : IEnumerable<JSONValue>
     {
-        #region 05. Private variables
+        #region Private variables
 
         private readonly List<JSONValue> values = new List<JSONValue>();
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public JSONArray()
         {
@@ -253,7 +253,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public JSONValue this[int index]
         {
@@ -268,7 +268,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         /// <returns>String representation of this JSONArray</returns>
         public override string ToString()
@@ -288,7 +288,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         /// <summary>
         ///     Add a JSONValue to this array
@@ -361,7 +361,7 @@ namespace GDGame.Utilities
 
     public class JSONObject : IEnumerable<KeyValuePair<string, JSONValue>>
     {
-        #region 02. Enums
+        #region Enums
 
         private enum JSONParsingState
         {
@@ -381,13 +381,13 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region 05. Private variables
+        #region Private variables
 
         private readonly IDictionary<string, JSONValue> values = new Dictionary<string, JSONValue>();
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public JSONObject()
         {
@@ -408,7 +408,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public JSONValue this[string key]
         {
@@ -418,7 +418,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         /// <returns>String representation of this JSONObject</returns>
         public override string ToString()
@@ -441,7 +441,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public void Add(string key, JSONValue value)
         {

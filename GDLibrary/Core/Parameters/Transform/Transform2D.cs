@@ -126,18 +126,26 @@ namespace GDLibrary.Parameters
         /// <param name="rotationInDegrees">Rotation in degrees around the Z-axis</param>
         /// <param name="scale">Scale (x,y)</param>
         /// <param name="origin">Origin (x,y) normally (0,0) but will need to be set if we want to rotate the Actor2D around its centre</param>
-        /// <param name="dimensions">Dimensions of the unscaled bounding box that we want to place around the Actor2D</param>
+        /// <param name="imageDimensions">Dimensions of the original image used when drawing the actor2D</param>
         public Transform2D(Vector2 translation, float rotationInDegrees, Vector2 scale,
-            Vector2 origin, Integer2 dimensions)
+            Vector2 origin, Integer2 imageDimensions)
         {
             Translation = translation;
             Scale = scale;
             RotationInDegrees = rotationInDegrees;
             Origin = origin;
 
-            //original bounding box based on the texture source rectangle dimensions
-            originalBounds = new Rectangle(0, 0, dimensions.X, dimensions.Y);
-            originalDimensions = dimensions;
+            //original bounding box based on the texture source rectangle imageDimensions
+            originalBounds = new Rectangle(0, 0, imageDimensions.X, imageDimensions.Y);
+            originalDimensions = imageDimensions;
+        }
+
+        /// <summary>
+        /// Use this version of the constructor to draw background textures that are scaled to fit the screen
+        /// </summary>
+        /// <param name="scale">Scale factor</param>
+        public Transform2D(Vector2 scale) : this(Vector2.Zero, 0, scale, Vector2.Zero, Integer2.One)
+        {
         }
 
         //used internally when creating the originalTransform object

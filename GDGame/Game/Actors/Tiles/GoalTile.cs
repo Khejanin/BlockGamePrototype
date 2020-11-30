@@ -8,7 +8,7 @@ namespace GDGame.Actors
 {
     public class GoalTile : BasicTile
     {
-        #region 06. Constructors
+        #region Constructors
 
         public GoalTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
             EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform,
@@ -18,7 +18,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public new object Clone()
         {

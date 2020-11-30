@@ -24,10 +24,7 @@ namespace GDLibrary.Actors
 
         public IVertexData IVertexData
         {
-            get
-            {
-                return vertexData;
-            }
+            get { return vertexData; }
         }
 
         #endregion Properties
@@ -36,7 +33,7 @@ namespace GDLibrary.Actors
 
         public PrimitiveObject(string id, ActorType actorType, StatusType statusType, Transform3D transform3D,
             EffectParameters effectParameters, IVertexData vertexData)
-                        : base(id, actorType, statusType, transform3D, effectParameters)
+            : base(id, actorType, statusType, transform3D, effectParameters)
         {
             this.vertexData = vertexData;
         }
@@ -53,7 +50,7 @@ namespace GDLibrary.Actors
         {
             return new PrimitiveObject(ID, ActorType, StatusType, Transform3D.Clone() as Transform3D,
                 EffectParameters.Clone() as EffectParameters, vertexData.Clone()
-                as IVertexData);
+                    as IVertexData);
         }
 
         public override bool Equals(object obj)

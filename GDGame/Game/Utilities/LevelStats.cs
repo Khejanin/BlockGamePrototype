@@ -2,7 +2,7 @@
 {
     public class LevelStats
     {
-        #region 06. Constructors
+        #region Constructors
 
         public LevelStats()
         {
@@ -12,7 +12,7 @@
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public int MoveCount { get; set; }
 

@@ -1,18 +1,16 @@
-﻿using GDLibrary.Containers;
-using GDLibrary.Enums;
+﻿using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace GDLibrary.Actors
 {
     /// <summary>
     /// Draws a texture to the screen. Useful for creating health/ammo UI icons, decals around UI elements, or menu backgrounds
     /// </summary>
-    public class UITextureObject : DrawnActor2D, ICloneable
+    public class UITextureObject : DrawnActor2D
     {
         #region Fields
         private Texture2D texture;
@@ -35,6 +33,7 @@ namespace GDLibrary.Actors
                 sourceRectangle.Width = value;
             }
         }
+
         public int SourceRectangleHeight
         {
             get
@@ -46,6 +45,7 @@ namespace GDLibrary.Actors
                 sourceRectangle.Height = value;
             }
         }
+
         public Rectangle OriginalSourceRectangle
         {
             get
@@ -53,9 +53,11 @@ namespace GDLibrary.Actors
                 return originalSourceRectangle;
             }
         }
+
         #endregion Properties
 
         #region Constructors & Core
+
         public UITextureObject(string id, ActorType actorType, StatusType statusType,
            Transform2D transform2D, Color color, float layerDepth, SpriteEffects spriteEffects,
            Texture2D texture, Rectangle sourceRectangle)
@@ -69,15 +71,9 @@ namespace GDLibrary.Actors
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, 
-                Transform2D.Translation, 
-                sourceRectangle,
-                Color, 
-                Transform2D.RotationInRadians, 
-                Transform2D.Origin, 
-                Transform2D.Scale,
-                SpriteEffects, 
-                LayerDepth);
+            spriteBatch.Draw(texture, Transform2D.Translation, sourceRectangle,
+                Color, Transform2D.RotationInRadians, Transform2D.Origin, Transform2D.Scale,
+                SpriteEffects, LayerDepth);
 
             //base.Draw(gameTime);
         }
@@ -99,13 +95,15 @@ namespace GDLibrary.Actors
             return hash.ToHashCode();
         }
 
-        //to do..Clone
-
-        #endregion Constructors & Core
-
         public new object Clone()
         {
-            return new UITextureObject(ID, ActorType, StatusType, Transform2D.Clone() as Transform2D, Color, LayerDepth, SpriteEffects, Texture, SourceRectangle);
+            return new UITextureObject("clone - " + ID, ActorType,
+                StatusType, Transform2D.Clone() as Transform2D,
+                Color, LayerDepth, SpriteEffects,
+                texture, //shallow - reference
+                sourceRectangle);
         }
+
+        #endregion Constructors & Core
     }
 }

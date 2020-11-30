@@ -13,7 +13,7 @@ namespace GDGame.Actors
 {
     public class BasicTile : ModelObject, ICloneable
     {
-        #region 02. Enums
+        #region Enums
 
         public enum EStaticTileType
         {
@@ -25,19 +25,19 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 04. Public variables
+        #region Public variables
 
         public int activatorId = -1;
 
         #endregion
 
-        #region 05. Private variables
+        #region Private variables
 
         private Vector3 spawnPos;
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public BasicTile(string id, ActorType actorType, StatusType statusType,
             Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType)
@@ -48,7 +48,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public Shape Shape { get; set; }
 
@@ -56,7 +56,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 08. Initialization
+        #region Initialization
 
         public virtual void InitializeTile()
         {
@@ -66,7 +66,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public new object Clone()
         {
@@ -86,7 +86,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 12. Events
+        #region Events
 
         private void HandleTileEvent(TileEventInfo info)
         {

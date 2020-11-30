@@ -5,19 +5,19 @@ namespace GDGame.Utilities
 {
     public class MathHelperFunctions
     {
-        #region 03. Static Fields and Constants
+        #region Static Fields and Constants
 
         private static Random _rnd;
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public static Random Rnd => _rnd ?? new Random();
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public static float GetAngle(Vector3 forward, Vector3 look)
         {

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using GDGame.Actors.Drawn;
 using GDGame.EventSystem;
 using GDGame.Managers;
 using GDGame.Scenes;
@@ -12,23 +11,32 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MenuScene = GDGame.Scenes.MenuScene;
 
 namespace GDGame
 {
     public class Main : Game
     {
-        #region 06. Constructors
+        #region Private variables
+
+        private MyMenuManager menuMenuManager;
+        private SpriteBatch spriteBatch;
+
+        #endregion
+
+        #region Constructors
 
         public Main()
         {
             Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            
         }
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public CameraManager<Camera3D> CameraManager { get; private set; }
         public ContentDictionary<SpriteFont> Fonts { get; private set; }
@@ -51,9 +59,15 @@ namespace GDGame
         public UIManager UiManager { get; private set; }
         public BasicEffect UnlitWireframeEffect { get; private set; }
 
+        public MyMenuManager MenuManager
+        {
+            get => menuMenuManager;
+            set => menuMenuManager = value;
+        }
+
         #endregion
 
-        #region 08. Initialization
+        #region Initialization
 
         private void InitEffect()
         {
@@ -88,11 +102,15 @@ namespace GDGame
                 AddressU = TextureAddressMode.Clamp, AddressV = TextureAddressMode.Clamp
             };
             Graphics.GraphicsDevice.SamplerStates[0] = samplerState;
+            
         }
 
         protected override void Initialize()
         {
             Window.Title = "B_Logic";
+            
+            InitGraphics(1024, 768);
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
             InitManagers();
             InitializeDictionaries();
@@ -104,7 +122,7 @@ namespace GDGame
 
             InitUiArchetypes();
 
-            InitGraphics(1024, 768);
+            
             base.Initialize();
         }
 
@@ -128,11 +146,11 @@ namespace GDGame
             Components.Add(PhysicsManager);
 
             //Camera
-            CameraManager = new CameraManager<Camera3D>(this, StatusType.Update);
+            CameraManager = new CameraManager<Camera3D>(this, StatusType.Off);
             Components.Add(CameraManager);
 
             //Scene
-            SceneManager = new SceneManager(this);
+            SceneManager = new SceneManager(this, StatusType.Off);
             Components.Add(SceneManager);
 
             //Keyboard
@@ -140,7 +158,7 @@ namespace GDGame
             Components.Add(KeyboardManager);
 
             //Mouse
-            MouseManager = new MouseManager(this, true, PhysicsManager);
+            MouseManager = new MouseManager(this, true, PhysicsManager, ScreenCentre);
             Components.Add(MouseManager);
 
             //Sound
@@ -148,7 +166,7 @@ namespace GDGame
             Components.Add(SoundManager);
 
             //Object
-            ObjectManager = new ObjectManager(this, StatusType.Update, 6, 10);
+            ObjectManager = new ObjectManager(this, StatusType.Off, 6, 10);
             Components.Add(ObjectManager);
 
             //Render
@@ -156,8 +174,11 @@ namespace GDGame
             Components.Add(RenderManager);
 
             //UI
-            UiManager = new UIManager(this, StatusType.Update | StatusType.Drawn, new SpriteBatch(GraphicsDevice), 10);
+            UiManager = new UIManager(this, StatusType.Off, spriteBatch, 10);
             Components.Add(UiManager);
+
+            MenuManager = new MyMenuManager(this, StatusType.Drawn | StatusType.Update, spriteBatch, MouseManager, KeyboardManager);
+            Components.Add(MenuManager);
 
             //Raycast
             RaycastManager.Instance.ObjectManager = ObjectManager;
@@ -185,8 +206,8 @@ namespace GDGame
             dimensions = new Integer2(texture.Width, texture.Height);
             Vector2 origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
             transform2D = new Transform2D(Vector2.Zero, 0, Vector2.One, origin, dimensions);
-            UiButtonObject uiButtonObject = new UiButtonObject("button", ActorType.UIButtonObject, StatusType.Update | StatusType.Drawn, transform2D, Color.White, 0.5f,
-                SpriteEffects.None, texture, new Rectangle(0, 0, texture.Width, texture.Height), text, Fonts["Arial"], Color.Black, Vector2.Zero);
+            UIButtonObject uiButtonObject = new UIButtonObject("button", ActorType.UIButtonObject, StatusType.Update | StatusType.Drawn, transform2D, Color.White, 0.5f,
+                SpriteEffects.None, texture, new Rectangle(0, 0, texture.Width, texture.Height), text, Fonts["Arial"], Vector2.One, Color.White, Vector2.Zero);
 
             UiArchetypes.Add("button", uiButtonObject);
             UiArchetypes.Add("texture", uiTextureObject);
@@ -195,7 +216,13 @@ namespace GDGame
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
+
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.Aqua);
+            base.Draw(gameTime);
+        }
 
         protected override void Update(GameTime gameTime)
         {
@@ -207,7 +234,7 @@ namespace GDGame
 
         #endregion
 
-        #region 10. Load Methods
+        #region Load Methods
 
         private void LoadBasicTextures()
         {
@@ -221,27 +248,21 @@ namespace GDGame
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         private void CreateScenes()
         {
-            SceneManager.AddScene("Menu", new Scenes.MenuScene(this));
             //SceneManager.AddScene("Test", new MainScene(this, "test_Enemy_path.json"));
             SceneManager.AddScene("Level 7", new MainScene(this, "Big_Level.json"));
 
 
-            SceneManager.AddScene("Tutorial", new TutorialScene(this));
+            // SceneManager.AddScene("Tutorial", new TutorialScene(this));
             // SceneManager.AddScene("Level1", new MainScene(this, "Paul_Level_1.json"));
             // SceneManager.AddScene("Level2", new MainScene(this, "Paul_Level_2.json"));
             //SceneManager.AddScene("Level3", new MainScene(this, "Paul_Level_3.json"));
             //SceneManager.AddScene("Level4", new MainScene(this, "Paul_Level_4.json"));
             //SceneManager.AddScene("Level5", new MainScene(this, "Paul_Level_5.json"));
             //SceneManager.AddScene("Level6", new MainScene(this, "Paul_Level_6.json"));
-            //throws back to menu eventually
-            SceneManager.AddScene("End", new EndScene(this));
-
-            //shouldn't be able to "next scene" to this
-            SceneManager.AddScene("Options", new OptionsMenuScene(this));
         }
 
         #endregion

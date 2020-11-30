@@ -13,7 +13,7 @@ namespace GDGame.Actors
 {
     public class AttachableTile : MovableTile
     {
-        #region 06. Constructors
+        #region Constructors
 
         public AttachableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
             EffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType,
@@ -23,7 +23,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         private void CheckCollision(Raycaster.HitResult hit)
         {
@@ -60,7 +60,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 12. Events
+        #region Events
 
         public void OnMoveEnd()
         {

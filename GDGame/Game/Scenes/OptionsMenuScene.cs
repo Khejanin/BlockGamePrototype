@@ -11,16 +11,16 @@ namespace GDGame.Scenes
 {
     public class OptionsMenuScene : Scene
     {
-        #region 06. Constructors
+        #region Constructors
 
-        public OptionsMenuScene(Main game, bool unloadsContent = false) : base(game, SceneType.Options, unloadsContent)
+        public OptionsMenuScene(Main main, SceneType sceneType, bool unloadsContent) : base(main, sceneType, unloadsContent)
         {
             backgroundColor = Color.LightCyan;
         }
 
         #endregion
 
-        #region 08. Initialization
+        #region Initialization
 
         public override void Initialize()
         {
@@ -32,8 +32,8 @@ namespace GDGame.Scenes
         private void InitializeCamera()
         {
             Camera3D camera3D = new Camera3D("Menu_Camera", ActorType.Camera3D, StatusType.Update, new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up),
-                Game.GlobalProjectionParameters, new Viewport(0, 0, 1024, 768));
-            Game.CameraManager.Add(camera3D);
+                Main.GlobalProjectionParameters, new Viewport(0, 0, 1024, 768));
+            Main.CameraManager.Add(camera3D);
         }
 
         private void InitializeLoadContent()
@@ -44,41 +44,38 @@ namespace GDGame.Scenes
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
-        protected override void DrawScene(GameTime gameTime)
-        {
-        }
 
 
         protected override void Terminate()
         {
-            Game.CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Menu_Camera");
+            Main.CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Menu_Camera");
         }
 
 
-        protected override void UpdateScene(GameTime gameTime)
+        protected override void UpdateScene()
         {
-            if (Game.KeyboardManager.IsFirstKeyPress(Keys.Space)) Game.SceneManager.NextScene();
+            if (Main.KeyboardManager.IsFirstKeyPress(Keys.Space)) Main.SceneManager.NextScene();
         }
 
         #endregion
 
-        #region 10. Load Methods
+        #region Load Methods
 
         private void LoadSounds()
         {
-            SoundEffect track01 = Game.Content.Load<SoundEffect>("Assets/GameTracks/GameTrack02");
-            Game.SoundManager.Add(new Sounds(track01, "gameTrack01", ActorType.MusicTrack, StatusType.Update));
+            SoundEffect track01 = Main.Content.Load<SoundEffect>("Assets/GameTracks/GameTrack02");
+            Main.SoundManager.Add(new Sounds(track01, "gameTrack01", ActorType.MusicTrack, StatusType.Update));
         }
 
         private void LoadTextures()
         {
-            Game.Textures.Load("Assets/Textures/Block/block_red", "Cursor");
-            Game.Textures.Load("Assets/Textures/Menu/button", "bStart");
-            Game.Textures.Load("Assets/Textures/Block/block_yellow", "bBasic");
-            Game.Textures.Load("Assets/Textures/Block/block_green", "bg");
-            Game.Textures.Load("Assets/Textures/Skybox/floor_neon", "Panel");
+            Main.Textures.Load("Assets/Textures/Block/block_red", "Cursor");
+            Main.Textures.Load("Assets/Textures/Menu/button", "bStart");
+            Main.Textures.Load("Assets/Textures/Block/block_yellow", "bBasic");
+            Main.Textures.Load("Assets/Textures/Block/block_green", "bg");
+            Main.Textures.Load("Assets/Textures/Skybox/floor_neon", "Panel");
         }
 
         #endregion

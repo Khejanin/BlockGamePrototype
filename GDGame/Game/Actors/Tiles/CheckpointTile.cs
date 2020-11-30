@@ -8,7 +8,7 @@ namespace GDGame.Actors
 {
     internal class CheckpointTile : BasicTile
     {
-        #region 06. Constructors
+        #region Constructors
 
         public CheckpointTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType) :
             base(id, actorType, statusType, transform, effectParameters, model, tileType)
@@ -17,7 +17,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 08. Initialization
+        #region Initialization
 
         public override void InitializeTile()
         {
@@ -26,7 +26,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public new object Clone()
         {

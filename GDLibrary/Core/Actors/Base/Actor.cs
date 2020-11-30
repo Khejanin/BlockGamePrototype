@@ -116,12 +116,6 @@ namespace GDLibrary.Actors
         {
             //calls update on any attached controllers
             controllerList.Update(gameTime, this);
-
-            //line above replaces for() below
-            //foreach (IController controller in controllerList)
-            //{
-            //    controller.Update(gameTime, this);
-            //}
         }
 
         public override bool Equals(object obj)
@@ -140,6 +134,8 @@ namespace GDLibrary.Actors
 
         public object Clone()
         {
+            //to do...are we also cloning controllers and event handlers???
+
             //deep-copy
             return new Actor(id, actorType, statusType);
         }

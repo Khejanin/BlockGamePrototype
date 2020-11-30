@@ -12,7 +12,7 @@ namespace GDGame.EventSystem
 
     public class TileEventInfo : EventInfo
     {
-        #region 04. Public variables
+        #region Public variables
 
         public ETileType targetedTileType;
         public TileEventType type;
@@ -22,7 +22,7 @@ namespace GDGame.EventSystem
 
     public class PlayerEventInfo : EventInfo
     {
-        #region 04. Public variables
+        #region Public variables
 
         public AttachableTile attachedTile;
         public Vector3? position;
@@ -33,7 +33,7 @@ namespace GDGame.EventSystem
 
     public class ActivatorEventInfo : EventInfo
     {
-        #region 04. Public variables
+        #region Public variables
 
         public int id;
         public ActivatorEventType type;
@@ -43,13 +43,13 @@ namespace GDGame.EventSystem
 
     public class GameStateMessageEventInfo : EventInfo
     {
-        #region 04. Public variables
+        #region Public variables
 
         public GameState gameState;
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public GameStateMessageEventInfo(GameState gameState)
         {
@@ -61,13 +61,13 @@ namespace GDGame.EventSystem
 
     public class SceneEventInfo : EventInfo
     {
-        #region 04. Public variables
+        #region Public variables
 
         public SceneActionType sceneActionType;
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public string LevelName { get; set; }
 
@@ -84,7 +84,7 @@ namespace GDGame.EventSystem
 
     public class MovementEvent : EventInfo
     {
-        #region 04. Public variables
+        #region Public variables
 
         public Vector3 direction;
         public Action<Raycaster.HitResult> onCollideCallback;

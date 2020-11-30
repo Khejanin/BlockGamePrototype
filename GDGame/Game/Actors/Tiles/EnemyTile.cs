@@ -12,7 +12,7 @@ namespace GDGame.Actors
 {
     internal class EnemyTile : PathMoveTile
     {
-        #region 05. Private variables
+        #region Private variables
 
         private bool canMove;
         private float currentMovementCoolDown;
@@ -20,7 +20,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public EnemyTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType,
             float movementCoolDown = 0.5f) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
@@ -30,7 +30,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 08. Initialization
+        #region Initialization
 
         public override void InitializeTile()
         {
@@ -41,7 +41,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         protected override void MoveToNextPoint()
         {
@@ -72,7 +72,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public new object Clone()
         {
@@ -109,7 +109,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 12. Events
+        #region Events
 
         private void OnCollide(Raycaster.HitResult hitInfo)
         {

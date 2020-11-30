@@ -1,19 +1,21 @@
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Managers;
+using GDLibrary.Enums;
+using GDLibrary.GameComponents;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Scenes
 {
     public abstract class Scene
     {
-        #region 01. Delegates
+        #region Delegates
 
         public delegate void OnUnloaded();
 
         #endregion
 
-        #region 05. Private variables
+        #region Private variables
 
         protected Color backgroundColor = Color.CornflowerBlue;
         private OnUnloaded onUnloadedCallback;
@@ -23,28 +25,28 @@ namespace GDGame.Scenes
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
-        protected Scene(Main game, SceneType sceneType, bool unloadsContent = false)
+        protected Scene(Main main,SceneType sceneType, bool unloadsContent = false)
         {
             uiSceneManager = new UiSceneManager(this);
-            Game = game;
-            SceneType = sceneType;
             this.unloadsContent = unloadsContent;
+            Main = main;
+            SceneType = sceneType;
         }
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
-        public Main Game { get; }
+        public Main Main { get; }
 
         public string SceneName { get; set; }
-        public SceneType SceneType { get; set; }
+        public SceneType SceneType { get; }
 
         #endregion
 
-        #region 08. Initialization
+        #region Initialization
 
         public virtual void Initialize()
         {
@@ -53,15 +55,7 @@ namespace GDGame.Scenes
 
         #endregion
 
-        #region 11. Methods
-
-        public void Draw(GameTime gameTime)
-        {
-            Game.GraphicsDevice.Clear(backgroundColor);
-            DrawScene(gameTime);
-        }
-
-        protected abstract void DrawScene(GameTime gameTime);
+        #region Methods
 
         protected virtual void PreTerminate()
         {
@@ -72,7 +66,7 @@ namespace GDGame.Scenes
             if (terminateOnNextTick)
             {
                 Terminate();
-
+                Main.UiManager.UIObjectList.Clear();
                 onUnloadedCallback.Invoke();
             }
         }
@@ -83,9 +77,8 @@ namespace GDGame.Scenes
         {
             onUnloadedCallback = cb;
             if (unloadsContent)
-                Game.Content.Unload();
+                Main.Content.Unload();
             terminateOnNextTick = true;
-            Game.UiManager.UIObjectList.Clear();
             PreTerminate();
         }
 
@@ -95,16 +88,18 @@ namespace GDGame.Scenes
 
             if (!terminateOnNextTick)
             {
-                UpdateScene(gameTime);
+                UpdateScene();
                 uiSceneManager.Update(gameTime);
+                
             }
             else
             {
+                
                 terminateOnNextTick = false;
             }
         }
 
-        protected abstract void UpdateScene(GameTime gameTime);
+        protected abstract void UpdateScene();
 
         #endregion
     }

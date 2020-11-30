@@ -190,29 +190,29 @@ namespace GDLibrary.Managers
             }
         }
 
-        ///// <summary>
-        ///// Called to draw the lists of actors
-        ///// </summary>
-        ///// <see cref="PausableDrawableGameComponent.Draw(GameTime)"/>
-        ///// <param name="gameTime">GameTime object</param>
-        //protected override void ApplyDraw(GameTime gameTime)
-        //{
-        //    foreach (DrawnActor3D actor in opaqueList)
-        //    {
-        //        if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
-        //        {
-        //            actor.Draw(gameTime, cameraManager.ActiveCamera, GraphicsDevice);
-        //        }
-        //    }
+        // /// <summary>
+        // /// Called to draw the lists of actors
+        // /// </summary>
+        // /// <see cref="PausableDrawableGameComponent.Draw(GameTime)"/>
+        // /// <param name="gameTime">GameTime object</param>
+        // protected override void ApplyDraw(GameTime gameTime)
+        // {
+        //     foreach (DrawnActor3D actor in opaqueList)
+        //     {
+        //         if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
+        //         {
+        //             actor.Draw(gameTime, cameraManager.ActiveCamera, GraphicsDevice);
+        //         }
+        //     }
 
-        //    foreach (DrawnActor3D actor in transparentList)
-        //    {
-        //        if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
-        //        {
-        //            actor.Draw(gameTime, cameraManager.ActiveCamera, GraphicsDevice);
-        //        }
-        //    }
-        //}
+        //     foreach (DrawnActor3D actor in transparentList)
+        //     {
+        //         if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
+        //         {
+        //             actor.Draw(gameTime, cameraManager.ActiveCamera, GraphicsDevice);
+        //         }
+        //     }
+        // }
 
         #endregion Constructors & Core
     }

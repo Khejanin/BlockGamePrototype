@@ -12,44 +12,42 @@ namespace GDGame.Actors
 {
     public class MovingPlatformTile : PathMoveTile, IActivatable
     {
-        #region 05. Private variables
+        #region Private variables
 
         private Vector3 currentPos;
         private int dir; //-1 = X, 1 = Y, 0 = Z
         private Vector3 endPos;
-        private int tileMoves;
         private bool isActivated;
-        private Vector3 starPos;
-        private bool oppDir;
         private bool max;
+        private bool oppDir;
+        private Vector3 starPos;
+        private int tileMoves;
 
-       
         #endregion
 
-        #region 06. Constructors
-
+        #region Constructors
 
         public MovingPlatformTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType,
             int tileMoves, int dir) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
-            this.starPos = this.currentPos = Transform3D.Translation;
+            starPos = currentPos = Transform3D.Translation;
             this.dir = dir;
             this.tileMoves = tileMoves;
 
             if (dir == -1)
-                this.endPos = new Vector3(starPos.X + tileMoves, starPos.Y, StartPos.Z);
+                endPos = new Vector3(starPos.X + tileMoves, starPos.Y, StartPos.Z);
             else if (dir == 1)
-                this.endPos = new Vector3(starPos.X, starPos.Y + tileMoves, StartPos.Z);
+                endPos = new Vector3(starPos.X, starPos.Y + tileMoves, StartPos.Z);
             else
-                this.endPos = new Vector3(this.starPos.X, this.starPos.Y, (this.starPos.Z + tileMoves));
+                endPos = new Vector3(starPos.X, starPos.Y, starPos.Z + tileMoves);
 
-            this.oppDir = isOppDir();
-            this.max = false;
+            oppDir = isOppDir();
+            max = false;
         }
 
         #endregion
 
-        #region 08. Initialization
+        #region Initialization
 
         public override void InitializeTile()
         {
@@ -59,7 +57,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         protected override void MoveToNextPoint()
         {
@@ -73,13 +71,35 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public void Activate()
         {
             //System.Diagnostics.Debug.WriteLine("Moving Platform activate (doesn't work yet)");
             isActivated = true;
             if (isActivated) movePlatform();
+        }
+
+        public bool atMaxPoint()
+        {
+            if (oppDir)
+            {
+                if (currentPos.X >= starPos.X || currentPos.Y >= starPos.Y || currentPos.Z >= starPos.Z)
+                    max = false;
+
+                if (currentPos.X <= endPos.X || currentPos.Y <= starPos.Y || currentPos.Z <= starPos.Z)
+                    max = true;
+            }
+            else
+            {
+                if (currentPos.X <= starPos.X || currentPos.Y <= starPos.Y || currentPos.Z <= starPos.Z)
+                    max = false;
+
+                if (currentPos.X >= endPos.X || currentPos.Y >= starPos.Y || currentPos.Z >= starPos.Z)
+                    max = true;
+            }
+
+            return false;
         }
 
         public new object Clone()
@@ -108,51 +128,9 @@ namespace GDGame.Actors
             return isActivated;
         }
 
-        public Vector3 moveUp()
-        {
-            int move = 1;
-            if (oppDir)
-                move = -1;
-
-            float a = this.currentPos.X, b = this.currentPos.Y, c = this.currentPos.Z;
-
-            if (this.dir == -1) //X
-                a += move;
-            else if (this.dir == 1) //Y
-                b += move;
-            else //Z
-                c += move;
-
-            return new Vector3(a, b, c);
-        }
-
-        public bool atMaxPoint()
-        {
-            if (oppDir)
-            {
-                if (currentPos.X >= starPos.X || currentPos.Y >= starPos.Y || currentPos.Z >= starPos.Z)
-                    max = false;
-
-                if (currentPos.X <= endPos.X || currentPos.Y <= starPos.Y || currentPos.Z <= starPos.Z)
-                    max = true;
-            }
-            else
-            {
-                if (currentPos.X <= starPos.X || currentPos.Y <= starPos.Y || currentPos.Z <= starPos.Z)
-                    max = false;
-
-                if (currentPos.X >= endPos.X || currentPos.Y >= starPos.Y || currentPos.Z >= starPos.Z)
-                    max = true;
-            }
-            return false;
-        }
-
         public bool isOppDir()
         {
-            if ((this.starPos.X > this.endPos.X || this.starPos.Y > this.endPos.Y || this.starPos.Z > this.endPos.Z))
-            {
-                return true;
-            }
+            if (starPos.X > endPos.X || starPos.Y > endPos.Y || starPos.Z > endPos.Z) return true;
             return false;
         }
 
@@ -162,11 +140,11 @@ namespace GDGame.Actors
             if (oppDir)
                 move = 1;
 
-            float a = this.currentPos.X, b = this.currentPos.Y, c = this.currentPos.Z;
+            float a = currentPos.X, b = currentPos.Y, c = currentPos.Z;
 
-            if (this.dir == -1) //X
+            if (dir == -1) //X
                 a += move;
-            else if (this.dir == 1) //Y
+            else if (dir == 1) //Y
                 b += move;
             else //Z
                 c += move;
@@ -178,7 +156,7 @@ namespace GDGame.Actors
         public void movePlatform()
         {
             Vector3 b = new Vector3(0, 0, 0);
-            this.max = atMaxPoint();
+            max = atMaxPoint();
 
             if (!max)
                 b = moveUp();
@@ -187,6 +165,24 @@ namespace GDGame.Actors
 
             Transform3D.TranslateBy(b);
             currentPos = b;
+        }
+
+        public Vector3 moveUp()
+        {
+            int move = 1;
+            if (oppDir)
+                move = -1;
+
+            float a = currentPos.X, b = currentPos.Y, c = currentPos.Z;
+
+            if (dir == -1) //X
+                a += move;
+            else if (dir == 1) //Y
+                b += move;
+            else //Z
+                c += move;
+
+            return new Vector3(a, b, c);
         }
 
         public void ToggleActivation()
@@ -199,7 +195,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 12. Events
+        #region Events
 
         private void HandleActivatorEvent(ActivatorEventInfo info)
         {

@@ -12,7 +12,7 @@ namespace GDGame.Controllers
 {
     public abstract class ColliderController : Controller
     {
-        #region 05. Private variables
+        #region Private variables
 
         protected ColliderShape colliderShape;
         protected bool drawDebug;
@@ -20,7 +20,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         protected ColliderController(string id, ControllerType controllerType, ColliderShape colliderShape,
             ColliderType colliderType = ColliderType.Blocking) : base(id, controllerType)
@@ -31,13 +31,13 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public ColliderType ColliderType { get; }
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public abstract void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice);
 
@@ -46,13 +46,13 @@ namespace GDGame.Controllers
 
     public class CustomBoxColliderController : ColliderController, ICloneable
     {
-        #region 05. Private variables
+        #region Private variables
 
         private float scale;
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public CustomBoxColliderController(string id, ControllerType controllerType, ColliderShape colliderShape, float scale, ColliderType colliderType = ColliderType.Blocking) :
             base(id, controllerType, colliderShape, colliderType)
@@ -62,7 +62,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
         {
@@ -74,7 +74,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public new object Clone()
         {
@@ -94,7 +94,7 @@ namespace GDGame.Controllers
 
     public class PrimitiveColliderController : ColliderController, ICloneable
     {
-        #region 06. Constructors
+        #region Constructors
 
         private PrimitiveColliderController(string id, ControllerType controllerType, ColliderShape colliderShape, ColliderType colliderType = ColliderType.Blocking) : base(id,
             controllerType, colliderShape, colliderType)
@@ -103,7 +103,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
         {
@@ -115,7 +115,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public new object Clone()
         {

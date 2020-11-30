@@ -11,13 +11,13 @@ namespace GDGame.Component
 {
     public class RandomRotatorController : Controller
     {
-        #region 05. Private variables
+        #region Private variables
 
         private Vector3 rotation;
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public RandomRotatorController(string id, ControllerType controllerType) : base(id, controllerType)
         {
@@ -27,7 +27,7 @@ namespace GDGame.Component
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         public override void Update(GameTime gameTime, IActor actor)
         {

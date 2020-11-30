@@ -16,13 +16,13 @@ namespace GDGame.Actors
 {
     public class PlayerTile : MovableTile, ICloneable
     {
-        #region 05. Private variables
+        #region Private variables
 
         private Vector3 lastCheckpoint;
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public PlayerTile(string id, ActorType actorType, StatusType statusType,
             Transform3D transform, EffectParameters effectParameters, Model model, ETileType tileType)
@@ -34,7 +34,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public List<Shape> AttachCandidates { get; }
 
@@ -43,7 +43,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 08. Initialization
+        #region Initialization
 
         public override void InitializeTile()
         {
@@ -54,7 +54,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public void Attach()
         {
@@ -177,7 +177,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 12. Events
+        #region Events
 
         private void HandleMovementEvent(MovementEvent movementEvent)
         {
@@ -213,7 +213,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 14. Nested Types
+        #region Nested Types
 
         private struct PlayerSurroundCheck
         {

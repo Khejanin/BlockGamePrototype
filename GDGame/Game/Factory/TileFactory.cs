@@ -16,7 +16,7 @@ namespace GDGame.Factory
 {
     public class TileFactory
     {
-        #region 05. Private variables
+        #region Private variables
 
         private readonly Dictionary<string, DrawnActor3D> drawnActors;
         private readonly ObjectManager objectManager;
@@ -24,7 +24,7 @@ namespace GDGame.Factory
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public TileFactory(ObjectManager objectManager, Dictionary<string, DrawnActor3D> drawnActors, ContentDictionary<Texture2D> textures)
         {
@@ -35,7 +35,7 @@ namespace GDGame.Factory
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         private BasicTile CreateAttachable()
         {

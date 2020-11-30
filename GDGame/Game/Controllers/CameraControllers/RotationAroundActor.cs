@@ -10,7 +10,7 @@ namespace GDGame.Controllers
 {
     public class RotationAroundActor : Controller
     {
-        #region 05. Private variables
+        #region Private variables
 
         private float angle = -15;
         private float distance;
@@ -21,7 +21,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public RotationAroundActor(string id, ControllerType controllerType, KeyboardManager keyboardManager, float elevationAngle, float distance) : base(id, controllerType)
         {
@@ -32,7 +32,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public IActor Target
         {
@@ -41,7 +41,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         public override void Update(GameTime gameTime, IActor actor)
         {
@@ -62,7 +62,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         private void HandelInput()
         {

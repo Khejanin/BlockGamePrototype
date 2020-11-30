@@ -29,7 +29,7 @@ namespace GDLibrary.Controllers
 
         //local
         Vector3 translation, look, up;
-        public int ElapsedTimeInMs => elapsedTimeInMs;
+        public float ElapsedTimeInMs => elapsedTimeInMs;
 
         public override void Update(GameTime gameTime, IActor actor)
         {

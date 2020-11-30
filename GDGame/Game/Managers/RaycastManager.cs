@@ -9,13 +9,13 @@ namespace GDGame.Managers
 {
     public class RaycastManager
     {
-        #region 03. Static Fields and Constants
+        #region Static Fields and Constants
 
         private static RaycastManager _raycastManagerInstance;
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         private RaycastManager()
         {
@@ -23,14 +23,14 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public static RaycastManager Instance => _raycastManagerInstance ?? (_raycastManagerInstance = new RaycastManager());
         public ObjectManager ObjectManager { get; set; }
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public Raycaster.HitResult Raycast(DrawnActor3D drawnActor3D, Vector3 position, Vector3 direction, bool ignoreSelf, float maxDistance, bool onlyCheckBlocking = true)
         {

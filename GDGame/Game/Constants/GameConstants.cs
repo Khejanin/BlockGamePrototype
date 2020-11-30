@@ -4,7 +4,7 @@ namespace GDGame.Constants
 {
     public class GameConstants
     {
-        #region 03. Static Fields and Constants
+        #region Static Fields and Constants
 
         private static readonly float StrafeSpeedMultiplier = 0.75f;
         public static readonly Keys[] KeysOne = {Keys.W, Keys.S, Keys.A, Keys.D};

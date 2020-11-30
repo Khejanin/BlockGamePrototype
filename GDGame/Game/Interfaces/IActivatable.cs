@@ -2,7 +2,7 @@
 {
     public interface IActivatable
     {
-        #region 11. Methods
+        #region Methods
 
         void Activate();
         void Deactivate();

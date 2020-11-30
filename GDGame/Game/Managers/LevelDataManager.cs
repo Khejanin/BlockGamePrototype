@@ -8,7 +8,7 @@ namespace GDGame.Managers
 {
     public class LevelDataManager
     {
-        #region 05. Private variables
+        #region Private variables
 
         private string currentLevel;
 
@@ -16,7 +16,7 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public LevelDataManager()
         {
@@ -30,7 +30,7 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public int CurrentMovesCount { get; private set; }
 
@@ -38,7 +38,7 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         private void HandelSceneEventInfoOnSceneChange()
         {
@@ -61,7 +61,7 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region 12. Events
+        #region Events
 
         private void HandlePlayerEvent(PlayerEventInfo playerEventInfo)
         {

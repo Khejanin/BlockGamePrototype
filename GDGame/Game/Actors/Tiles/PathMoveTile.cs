@@ -9,7 +9,7 @@ namespace GDGame.Actors
 {
     public abstract class PathMoveTile : MovableTile
     {
-        #region 04. Public variables
+        #region Public variables
 
         public int currentPositionIndex;
 
@@ -17,13 +17,13 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 05. Private variables
+        #region Private variables
 
         protected int pathDir = 1;
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         protected PathMoveTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model,
             ETileType tileType) : base(id, actorType,
@@ -34,7 +34,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         protected abstract void MoveToNextPoint();
 
@@ -48,7 +48,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 12. Events
+        #region Events
 
         protected virtual void OnMoveEnd()
         {

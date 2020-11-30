@@ -12,7 +12,7 @@ namespace GDGame.Utilities
 {
     public static class Raycaster
     {
-        #region 11. Methods
+        #region Methods
 
         public static void PlayerCastAll(this PlayerTile player, ObjectManager objectManager, Vector3 offset, List<Vector3> initialPositions, List<Vector3> endPositions,
             ref List<HitResult> blockingObjectsResult, ref List<FloorHitResult> floorResult)
@@ -113,7 +113,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region 14. Nested Types
+        #region Nested Types
 
         public struct FloorHitResult
         {
@@ -123,14 +123,14 @@ namespace GDGame.Utilities
 
         public class HitResult : IComparable<HitResult>
         {
-            #region 04. Public variables
+            #region Public variables
 
             public Actor3D actor;
             public float distance;
 
             #endregion
 
-            #region 11. Methods
+            #region Methods
 
             public int CompareTo(HitResult other)
             {

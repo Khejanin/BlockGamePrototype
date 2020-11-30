@@ -10,7 +10,7 @@ namespace GDGame.Managers
 {
     public class SoundManager : GameComponent
     {
-        #region 05. Private variables
+        #region Private variables
 
         private int activeSongIndex;
         private Sounds currentSong;
@@ -20,16 +20,16 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
-        public SoundManager(Microsoft.Xna.Framework.Game game) : base(game)
+        public SoundManager(Game game) : base(game)
         {
             list = new List<Sounds>();
         }
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public Sounds ActiveSong => list[activeSongIndex];
 
@@ -59,7 +59,7 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public void Add(Sounds newSong)
         {

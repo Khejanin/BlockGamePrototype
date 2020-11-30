@@ -7,7 +7,7 @@ namespace GDGame.Actors
 {
     public class Sounds : Actor
     {
-        #region 05. Private variables
+        #region Private variables
 
         private bool isPlaying;
 
@@ -15,7 +15,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public Sounds(SoundEffect sfx, string id, ActorType actorType, StatusType statusType) : base(id, actorType,
             statusType)
@@ -26,7 +26,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         public override void Update(GameTime gameTime)
         {
@@ -35,7 +35,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public SoundEffect GetSfx()
         {

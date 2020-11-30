@@ -16,7 +16,7 @@ namespace GDGame.Component
 {
     public class TileMovementComponent : Controller, ICloneable
     {
-        #region 05. Private variables
+        #region Private variables
 
         private Curve1D curve1D;
         private int movementTime;
@@ -24,7 +24,7 @@ namespace GDGame.Component
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public TileMovementComponent(string id, ControllerType controllerType, int movementTime, Curve1D curve1D, bool useFlipMovement = false, MovableTile movableTile = null) :
             base(id, controllerType)
@@ -40,13 +40,13 @@ namespace GDGame.Component
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         public MovableTile Tile { get; set; }
 
         #endregion
 
-        #region 08. Initialization
+        #region Initialization
 
         private void Init()
         {
@@ -55,7 +55,7 @@ namespace GDGame.Component
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         public override void Update(GameTime gameTime, IActor actor)
         {
@@ -97,7 +97,7 @@ namespace GDGame.Component
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public new object Clone()
         {
@@ -156,7 +156,7 @@ namespace GDGame.Component
 
         #endregion
 
-        #region 12. Events
+        #region Events
 
         private void HandleMovementEvent(MovementEvent movementEventInfo)
         {

@@ -2,13 +2,15 @@ using System.Collections.Generic;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Scenes;
+using GDLibrary.Enums;
+using GDLibrary.GameComponents;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Managers
 {
-    public class SceneManager : DrawableGameComponent
+    public class SceneManager : PausableGameComponent
     {
-        #region 05. Private variables
+        #region Private variables
 
         private int nextSceneIndex = -1;
 
@@ -16,10 +18,10 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         //The Game needs a SceneManager, and the SceneManager needs a Scene.
-        public SceneManager(Microsoft.Xna.Framework.Game game) : base(game)
+        public SceneManager(Game game, StatusType statusType) : base(game, statusType)
         {
             sceneList = new List<Scene>();
             SceneIndexDictionary = new Dictionary<string, int>();
@@ -28,7 +30,7 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region 07. Properties, Indexers
+        #region Properties, Indexers
 
         private Scene CurrentScene => sceneList[CurrentSceneIndex];
 
@@ -39,7 +41,7 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region 08. Initialization
+        #region Initialization
 
         public override void Initialize()
         {
@@ -48,23 +50,16 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
-        public override void Draw(GameTime gameTime)
+        protected override void ApplyUpdate(GameTime gameTime)
         {
-            base.Draw(gameTime);
-            CurrentScene.Draw(gameTime);
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
             CurrentScene.Update(gameTime);
         }
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public void AddScene(string key, Scene s)
         {
@@ -76,8 +71,7 @@ namespace GDGame.Managers
         //direct switch back to main menu - for going back from options and a quit game thing
         public void MenuSwitchScene()
         {
-            sceneList[CurrentSceneIndex].UnloadScene(OnCurrentSceneUnloaded);
-            nextSceneIndex = SceneIndexDictionary["Menu"];
+            SwitchScene(SceneIndexDictionary["Menu"]);
         }
 
         public void NextScene()
@@ -88,8 +82,7 @@ namespace GDGame.Managers
         //direct switch to options menu
         public void OptionsSwitchScene()
         {
-            sceneList[CurrentSceneIndex].UnloadScene(OnCurrentSceneUnloaded);
-            nextSceneIndex = SceneIndexDictionary["Options"];
+            SwitchScene(SceneIndexDictionary["Options"]);
         }
 
         public void PreviousScene()
@@ -107,9 +100,9 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region 12. Events
+        #region Events
 
-        public void OnCurrentSceneUnloaded()
+        private void OnCurrentSceneUnloaded()
         {
             CurrentSceneIndex = nextSceneIndex;
             CurrentScene.Initialize();

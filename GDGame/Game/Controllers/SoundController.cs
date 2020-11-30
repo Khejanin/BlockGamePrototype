@@ -13,7 +13,7 @@ namespace GDGame.Controllers
 {
     internal class SoundController : Controller, ICloneable
     {
-        #region 05. Private variables
+        #region Private variables
 
         private KeyboardManager keyboardManager;
         private string moveSfx, attachSfx;
@@ -23,7 +23,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 06. Constructors
+        #region Constructors
 
         public SoundController(string id, ControllerType controllerType, KeyboardManager keyboardManager,
             SoundManager soundManager, string moveSfx, string attachSfx) : base(id, controllerType)
@@ -44,7 +44,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 09. Override Methode
+        #region Override Methode
 
         public override void Update(GameTime gameTime, IActor actor)
         {
@@ -55,7 +55,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 11. Methods
+        #region Methods
 
         public new object Clone()
         {
@@ -64,7 +64,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region 12. Events
+        #region Events
 
         private void HandleKeyboardInput()
         {

@@ -8,16 +8,16 @@ namespace GDGame.Scenes
 {
     public class EndScene : Scene
     {
-        #region 06. Constructors
+        #region Constructors
 
-        public EndScene(Main game, bool unloadsContent = false) : base(game, SceneType.End, unloadsContent)
+        public EndScene(Main main, SceneType sceneType, bool unloadsContent) : base(main, sceneType, unloadsContent)
         {
             backgroundColor = Color.Black;
         }
 
         #endregion
 
-        #region 08. Initialization
+        #region Initialization
 
         public override void Initialize()
         {
@@ -28,24 +28,20 @@ namespace GDGame.Scenes
         private void InitializeCamera()
         {
             Camera3D camera3D = new Camera3D("Menu_Camera", ActorType.Camera3D, StatusType.Update, new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up),
-                Game.GlobalProjectionParameters, new Viewport(0, 0, 1024, 768));
-            Game.CameraManager.Add(camera3D);
+                Main.GlobalProjectionParameters, new Viewport(0, 0, 1024, 768));
+            Main.CameraManager.Add(camera3D);
         }
 
         #endregion
 
-        #region 09. Override Methode
-
-        protected override void DrawScene(GameTime gameTime)
-        {
-        }
+        #region Override Methode
 
 
         protected override void Terminate()
         {
         }
 
-        protected override void UpdateScene(GameTime gameTime)
+        protected override void UpdateScene()
         {
         }
 
