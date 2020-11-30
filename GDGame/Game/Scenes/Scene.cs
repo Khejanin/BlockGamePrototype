@@ -1,5 +1,6 @@
 using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Managers;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Scenes
@@ -17,15 +18,18 @@ namespace GDGame.Scenes
         protected Color backgroundColor = Color.CornflowerBlue;
         private OnUnloaded onUnloadedCallback;
         private bool terminateOnNextTick;
+        protected UiSceneManager uiSceneManager;
         private bool unloadsContent;
 
         #endregion
 
         #region 06. Constructors
 
-        protected Scene(Main game, bool unloadsContent = false)
+        protected Scene(Main game, SceneType sceneType, bool unloadsContent = false)
         {
+            uiSceneManager = new UiSceneManager(this);
             Game = game;
+            SceneType = sceneType;
             this.unloadsContent = unloadsContent;
         }
 
@@ -33,9 +37,10 @@ namespace GDGame.Scenes
 
         #region 07. Properties, Indexers
 
-        protected Main Game { get; }
+        public Main Game { get; }
 
         public string SceneName { get; set; }
+        public SceneType SceneType { get; set; }
 
         #endregion
 
@@ -80,6 +85,7 @@ namespace GDGame.Scenes
             if (unloadsContent)
                 Game.Content.Unload();
             terminateOnNextTick = true;
+            Game.UiManager.UIObjectList.Clear();
             PreTerminate();
         }
 
@@ -88,13 +94,27 @@ namespace GDGame.Scenes
             PreUpdate();
 
             if (!terminateOnNextTick)
+            {
                 UpdateScene(gameTime);
+                uiSceneManager.Update(gameTime);
+            }
             else
+            {
                 terminateOnNextTick = false;
+            }
         }
 
         protected abstract void UpdateScene(GameTime gameTime);
 
         #endregion
+    }
+
+    public enum SceneType
+    {
+        Game,
+        Menu,
+        End,
+        Options,
+        Info
     }
 }

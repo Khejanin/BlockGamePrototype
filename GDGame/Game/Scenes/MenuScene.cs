@@ -1,6 +1,4 @@
 using GDGame.Actors;
-using GDGame.Actors.Drawn;
-using GDGame.Game.UI;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
@@ -13,15 +11,9 @@ namespace GDGame.Scenes
 {
     public class MenuScene : Scene
     {
-        #region 05. Private variables
-
-        private UiButton playUiButton, optionsUiButton, quitUiButton;
-
-        #endregion
-
         #region 06. Constructors
 
-        public MenuScene(Main game, bool unloadsContent = false) : base(game, unloadsContent)
+        public MenuScene(Main game, bool unloadsContent = false) : base(game, SceneType.Menu, unloadsContent)
         {
             backgroundColor = Color.LightCyan;
         }
@@ -30,40 +22,11 @@ namespace GDGame.Scenes
 
         #region 08. Initialization
 
-        private void InitialiseButtons()
-        {
-            string text = "Play";
-            if (((UiButtonObject) Game.UiArchetypes["button"]).Clone() is UiButtonObject button)
-            {
-                button.Text = text;
-                button.Transform2D.Translation = Game.ScreenCentre - Vector2.UnitY * 120;
-                Game.UiManager.Add(button);
-            }
-
-            text = "Options";
-            button = ((UiButtonObject) Game.UiArchetypes["button"]).Clone() as UiButtonObject;
-            if (button != null)
-            {
-                button.Text = text;
-                button.Transform2D.Translation = Game.ScreenCentre;
-                Game.UiManager.Add(button);
-            }
-
-            text = "Quit";
-            button = ((UiButtonObject) Game.UiArchetypes["button"]).Clone() as UiButtonObject;
-            if (button != null)
-            {
-                button.Text = text;
-                button.Transform2D.Translation = Game.ScreenCentre + Vector2.UnitY * 120;
-                Game.UiManager.Add(button);
-            }
-        }
-
         public override void Initialize()
         {
             InitializeLoadContent();
             InitializeCamera();
-            InitialiseButtons();
+            uiSceneManager.InitUi();
         }
 
         private void InitializeCamera()
@@ -90,7 +53,6 @@ namespace GDGame.Scenes
 
         protected override void Terminate()
         {
-            Game.UiManager.Dispose();
             Game.CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Menu_Camera");
         }
 
@@ -117,25 +79,6 @@ namespace GDGame.Scenes
             Game.Textures.Load("Assets/Textures/Block/block_yellow", "bBasic");
             Game.Textures.Load("Assets/Textures/Block/block_green", "bg");
             Game.Textures.Load("Assets/Textures/Skybox/floor_neon", "Panel");
-        }
-
-        #endregion
-
-        #region 11. Methods
-
-        private void Click_OptionsBtn()
-        {
-            Game.SceneManager.OptionsSwitchScene();
-        }
-
-        private void Click_PlayBtn()
-        {
-            Game.SceneManager.NextScene();
-        }
-
-        private void Click_QuitBtn()
-        {
-            Game.Exit();
         }
 
         #endregion
