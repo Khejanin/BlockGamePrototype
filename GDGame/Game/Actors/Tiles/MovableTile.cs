@@ -29,9 +29,9 @@ namespace GDGame.Actors
         public Action EndMoveCallback { get; set; }
 
         public Vector3 EndPos { get; set; }
+        public bool IsAttached { get; set; }
 
         public bool IsMoving { get; set; }
-        public bool IsAttached { get; set; }
         public Action<Raycaster.HitResult> OnCollideCallback { get; set; }
         public Vector3 RotatePoint { get; set; }
         public Quaternion RotationQuaternion { get; set; }

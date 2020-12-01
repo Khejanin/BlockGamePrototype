@@ -42,7 +42,8 @@ namespace GDGame.Utilities
             foreach (double shapesKey in data.shapes.Keys)
             {
                 Shape newShape = tileFactory.CreateShape();
-                foreach (AttachableTile tile in data.shapes[shapesKey].Select(shape => grid[(int) shape.X, (int) shape.Y, (int) data.gridSize.Z - 1 - (int) shape.Z] as AttachableTile))
+                foreach (AttachableTile tile in data.shapes[shapesKey]
+                    .Select(shape => grid[(int) shape.X, (int) shape.Y, (int) data.gridSize.Z - 1 - (int) shape.Z] as AttachableTile))
                 {
                     newShape.AddTile(tile);
                     if (tile != null) tile.Shape = newShape;
@@ -103,7 +104,7 @@ namespace GDGame.Utilities
                                 else if (count > 3) staticTileType = BasicTile.EStaticTileType.Chocolate;
                             }
 
-                            BasicTile tile = tileFactory.CreateTile(pos + new Vector3(0, 0, data.gridSize.Z - 1) ,data.gridValues[x, y, z], staticTileType);
+                            BasicTile tile = tileFactory.CreateTile(pos + new Vector3(0, 0, data.gridSize.Z - 1), data.gridValues[x, y, z], staticTileType);
                             tile?.InitializeTile();
 
                             _grid[x, y, (int) data.gridSize.Z - 1 - z] = tile;

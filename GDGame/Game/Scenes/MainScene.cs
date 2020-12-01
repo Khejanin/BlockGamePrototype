@@ -15,7 +15,6 @@ using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using JigLibX.Collision;
 using JigLibX.Geometry;
-using JigLibX.Physics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -676,7 +675,7 @@ namespace GDGame.Scenes
             test = new BasicTile("StaticTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, Main.Models["Knife"], ETileType.Static);
             test.ControllerList.Add(new CustomBoxColliderController("testBCC", ControllerType.Collider, ColliderShape.Cube, 1f));
             drawnActors.Add("StaticTile2", test);
-            
+
             test.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale), MaterialProperties.Unset);
             test.Enable(true, 1);
             Main.ObjectManager.Add(test);

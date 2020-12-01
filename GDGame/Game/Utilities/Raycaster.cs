@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GDGame.Actors;
-using GDGame.Controllers;
-using GDGame.Enums;
 using GDLibrary.Actors;
-using GDLibrary.Enums;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 
@@ -53,7 +50,6 @@ namespace GDGame.Utilities
             if (ignoreList != null) allObjects.RemoveAll(ignoreList.Contains);
             Ray ray = new Ray(position, direction);
             foreach (DrawnActor3D drawnActor3D in allObjects)
-            {
                 if (drawnActor3D is CollidableObject collidableObject)
                 {
                     float? dist;
@@ -65,23 +61,22 @@ namespace GDGame.Utilities
                     }
                 }
 
-                // PrimitiveColliderController pcc = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as PrimitiveColliderController;
-                //
-                // CustomBoxColliderController customBoxColliderController = null;
-                // if (pcc == null)
-                //     customBoxColliderController = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as CustomBoxColliderController;
-                //
-                // bool pccCheck = pcc != null && (dist = ray.Intersects(pcc.GetBounds(drawnActor3D as PrimitiveObject))) != null &&
-                //                 (pcc.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
-                // bool customBoxColliderCheck = customBoxColliderController != null && (dist = ray.Intersects(customBoxColliderController.GetBounds(drawnActor3D))) != null &&
-                //                               (customBoxColliderController.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
-                //
-                // if ((pccCheck || customBoxColliderCheck) && dist < maxDist)
-                // {
-                //     HitResult result = new HitResult {actor = drawnActor3D, distance = (float) dist};
-                //     hit.Add(result);
-                // }
-            }
+            // PrimitiveColliderController pcc = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as PrimitiveColliderController;
+            //
+            // CustomBoxColliderController customBoxColliderController = null;
+            // if (pcc == null)
+            //     customBoxColliderController = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as CustomBoxColliderController;
+            //
+            // bool pccCheck = pcc != null && (dist = ray.Intersects(pcc.GetBounds(drawnActor3D as PrimitiveObject))) != null &&
+            //                 (pcc.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
+            // bool customBoxColliderCheck = customBoxColliderController != null && (dist = ray.Intersects(customBoxColliderController.GetBounds(drawnActor3D))) != null &&
+            //                               (customBoxColliderController.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
+            //
+            // if ((pccCheck || customBoxColliderCheck) && dist < maxDist)
+            // {
+            //     HitResult result = new HitResult {actor = drawnActor3D, distance = (float) dist};
+            //     hit.Add(result);
+            // }
         }
 
         private static HitResult Raycast(ObjectManager objectManager, Vector3 position, Vector3 direction, float maxDist = float.MaxValue, List<Actor3D> ignoreList = null,

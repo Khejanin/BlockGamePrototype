@@ -48,7 +48,8 @@ namespace GDGame.Factory
             if (attachableTile != null)
             {
                 attachableTile.Transform3D.Translation = position;
-                attachableTile.AddPrimitive(new Box(attachableTile.Transform3D.Translation, Matrix.Identity, attachableTile.Transform3D.Scale), new MaterialProperties(0.3f, 0.5f, 0.3f));
+                attachableTile.AddPrimitive(new Box(attachableTile.Transform3D.Translation, Matrix.Identity, attachableTile.Transform3D.Scale),
+                    new MaterialProperties(0.3f, 0.5f, 0.3f));
                 attachableTile.Enable(false, 1);
             }
 
@@ -233,10 +234,7 @@ namespace GDGame.Factory
             if (texStringType != "")
             {
                 staticTile = ((BasicTile) drawnActors["StaticTile"]).Clone() as BasicTile;
-                if (staticTile != null)
-                {
-                    staticTile.EffectParameters.Texture = textures[texStringType + texStringTiling];
-                }
+                if (staticTile != null) staticTile.EffectParameters.Texture = textures[texStringType + texStringTiling];
             }
 
             if (staticTile != null)

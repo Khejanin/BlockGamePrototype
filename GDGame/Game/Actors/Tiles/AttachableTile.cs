@@ -53,6 +53,10 @@ namespace GDGame.Actors
             return enemyTile;
         }
 
+        #endregion
+
+        #region Events
+
         public void OnMoveEnd()
         {
             CheckCollision(RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f));
@@ -60,7 +64,7 @@ namespace GDGame.Actors
             if (hit?.actor is SpikeTile)
                 Debug.WriteLine(ID + " is ded!");
         }
-        
+
         #endregion
     }
 }
