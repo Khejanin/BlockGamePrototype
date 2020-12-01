@@ -1,5 +1,4 @@
-﻿using GDGame.Actors;
-using GDLibrary.Actors;
+﻿using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
@@ -15,7 +14,6 @@ namespace GDGame.Scenes
 
         public OptionsMenuScene(Main main, SceneType sceneType, bool unloadsContent) : base(main, sceneType, unloadsContent)
         {
-            backgroundColor = Color.LightCyan;
         }
 
         #endregion
@@ -45,8 +43,6 @@ namespace GDGame.Scenes
         #endregion
 
         #region Override Methode
-
-
 
         protected override void Terminate()
         {

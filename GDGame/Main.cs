@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GDGame.Controllers;
 using GDGame.EventSystem;
 using GDGame.Managers;
 using GDGame.Scenes;
@@ -11,7 +12,6 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MenuScene = GDGame.Scenes.MenuScene;
 
 namespace GDGame
 {
@@ -19,7 +19,6 @@ namespace GDGame
     {
         #region Private variables
 
-        private MyMenuManager menuMenuManager;
         private SpriteBatch spriteBatch;
 
         #endregion
@@ -31,7 +30,6 @@ namespace GDGame
             Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            
         }
 
         #endregion
@@ -44,6 +42,9 @@ namespace GDGame
         public GraphicsDeviceManager Graphics { get; }
         public KeyboardManager KeyboardManager { get; private set; }
         public LevelDataManager LevelDataManager { get; private set; }
+
+        public MyMenuManager MenuManager { get; set; }
+
         public BasicEffect ModelEffect { get; private set; }
         public ContentDictionary<Model> Models { get; private set; }
         public MouseManager MouseManager { get; private set; }
@@ -56,14 +57,8 @@ namespace GDGame
         public ContentDictionary<Texture2D> Textures { get; private set; }
 
         public Dictionary<string, DrawnActor2D> UiArchetypes { get; set; }
-        public UIManager UiManager { get; private set; }
+        public OurUiManager UiManager { get; private set; }
         public BasicEffect UnlitWireframeEffect { get; private set; }
-
-        public MyMenuManager MenuManager
-        {
-            get => menuMenuManager;
-            set => menuMenuManager = value;
-        }
 
         #endregion
 
@@ -102,13 +97,12 @@ namespace GDGame
                 AddressU = TextureAddressMode.Clamp, AddressV = TextureAddressMode.Clamp
             };
             Graphics.GraphicsDevice.SamplerStates[0] = samplerState;
-            
         }
 
         protected override void Initialize()
         {
             Window.Title = "B_Logic";
-            
+
             InitGraphics(1024, 768);
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -122,7 +116,7 @@ namespace GDGame
 
             InitUiArchetypes();
 
-            
+
             base.Initialize();
         }
 
@@ -174,7 +168,7 @@ namespace GDGame
             Components.Add(RenderManager);
 
             //UI
-            UiManager = new UIManager(this, StatusType.Off, spriteBatch, 10);
+            UiManager = new OurUiManager(this, StatusType.Off, spriteBatch, 10);
             Components.Add(UiManager);
 
             MenuManager = new MyMenuManager(this, StatusType.Drawn | StatusType.Update, spriteBatch, MouseManager, KeyboardManager);
@@ -208,6 +202,7 @@ namespace GDGame
             transform2D = new Transform2D(Vector2.Zero, 0, Vector2.One, origin, dimensions);
             UIButtonObject uiButtonObject = new UIButtonObject("button", ActorType.UIButtonObject, StatusType.Update | StatusType.Drawn, transform2D, Color.White, 0.5f,
                 SpriteEffects.None, texture, new Rectangle(0, 0, texture.Width, texture.Height), text, Fonts["Arial"], Vector2.One, Color.White, Vector2.Zero);
+            uiButtonObject.ControllerList.Add(new UiScaleLerpController("USC", ControllerType.Ui, MouseManager, new TrigonometricParameters(0.05f, 0.1f, 180)));
 
             UiArchetypes.Add("button", uiButtonObject);
             UiArchetypes.Add("texture", uiTextureObject);

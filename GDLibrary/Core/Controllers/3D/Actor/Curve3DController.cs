@@ -12,17 +12,22 @@ namespace GDLibrary.Controllers
     public class Curve3DController : Controller
     {
         #region Statics
+
         private static int EVALUATE_PRECISION = 3;
+
         #endregion Statics
 
         #region Fields
+
         private Transform3DCurve transform3DCurve;
         private int elapsedTimeInMs = 0;
+
         #endregion Fields
 
         #region Constructors & Core
+
         public Curve3DController(string id, ControllerType controllerType,
-         Transform3DCurve transform3DCurve) : base(id, controllerType)
+            Transform3DCurve transform3DCurve) : base(id, controllerType)
         {
             this.transform3DCurve = transform3DCurve;
         }
@@ -49,6 +54,7 @@ namespace GDLibrary.Controllers
             //does nothing so comment out
             //base.Update(gameTime, actor);
         }
+
         #endregion Constructors & Core
     }
 }

@@ -13,7 +13,6 @@ namespace GDGame.Scenes
 
         public TutorialScene(Main main, SceneType sceneType, bool unloadsContent) : base(main, sceneType, unloadsContent)
         {
-            backgroundColor = Color.White;
         }
 
         #endregion
@@ -42,8 +41,6 @@ namespace GDGame.Scenes
         #endregion
 
         #region Override Methode
-
-
 
         protected override void Terminate()
         {

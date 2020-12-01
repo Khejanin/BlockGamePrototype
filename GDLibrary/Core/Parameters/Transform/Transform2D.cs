@@ -17,6 +17,9 @@ namespace GDLibrary.Parameters
         private Rectangle originalBounds;
         private Matrix world;
         private bool isDirty = true;
+        private Vector2 originalTranslation;
+        private Vector2 originalScale;
+        private float originalRotationInDegrees;
         #endregion Fields
 
         #region Properties
@@ -117,6 +120,38 @@ namespace GDLibrary.Parameters
             }
         }
 
+        public Vector2 OriginalTranslation
+        {
+            get
+            {
+                return originalTranslation;
+            }
+        }
+
+        public float OriginalRotationInDegrees
+        {
+            get
+            {
+                return originalRotationInDegrees;
+            }
+        }
+
+        public float OriginalRotationInRadians
+        {
+            get
+            {
+                return MathHelper.ToRadians(originalRotationInDegrees);
+            }
+        }
+
+        public Vector2 OriginalScale
+        {
+            get
+            {
+                return originalScale;
+            }
+        }
+
         #endregion Properties
 
         /// <summary>
@@ -130,9 +165,9 @@ namespace GDLibrary.Parameters
         public Transform2D(Vector2 translation, float rotationInDegrees, Vector2 scale,
             Vector2 origin, Integer2 imageDimensions)
         {
-            Translation = translation;
-            Scale = scale;
-            RotationInDegrees = rotationInDegrees;
+            Translation = originalTranslation = translation;
+            Scale = originalScale = scale;
+            RotationInDegrees = originalRotationInDegrees = rotationInDegrees;
             Origin = origin;
 
             //original bounding box based on the texture source rectangle imageDimensions

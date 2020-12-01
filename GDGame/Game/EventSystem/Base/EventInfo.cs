@@ -97,8 +97,12 @@ namespace GDGame.EventSystem
 
     public class SoundEventInfo : EventInfo
     {
-        public SoundEventType soundEventType;
+        #region Public variables
+
         public SfxType sfxType;
+        public SoundEventType soundEventType;
         public SoundVolumeType soundVolumeType;
+
+        #endregion
     }
 }

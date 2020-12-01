@@ -23,7 +23,7 @@ namespace GDGame.Scenes
 {
     public class MainScene : Scene
     {
-        #region 05. Private variables
+        #region Private variables
 
         private readonly string levelName;
         private readonly MouseManager mouseManager;
@@ -45,7 +45,7 @@ namespace GDGame.Scenes
 
         #region Constructors
 
-        public MainScene(Main main, string levelName, SceneType sceneType = SceneType.Game,  bool unloadsContent = false) : base(main, sceneType, unloadsContent)
+        public MainScene(Main main, string levelName, SceneType sceneType = SceneType.Game, bool unloadsContent = false) : base(main, sceneType, unloadsContent)
         {
             this.levelName = @"Game\LevelFiles\" + levelName;
         }
@@ -502,7 +502,6 @@ namespace GDGame.Scenes
 
         #region Override Methode
 
-
         protected override void PreTerminate()
         {
             base.PreTerminate();
@@ -556,18 +555,18 @@ namespace GDGame.Scenes
 
             //Cycle Through Audio
             if (Main.KeyboardManager.IsFirstKeyPress(Keys.M))
-                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.PlayNextMusic });
+                EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PlayNextMusic});
             //Stop Music
             if (Main.KeyboardManager.IsKeyDown(Keys.N))
-                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.PauseMusic });
+                EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PauseMusic});
             //Volume Changes
             if (Main.KeyboardManager.IsFirstKeyPress(Keys.L))
-                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.IncreaseVolume, soundVolumeType = SoundVolumeType.Master });
+                EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.IncreaseVolume, soundVolumeType = SoundVolumeType.Master});
             else if (Main.KeyboardManager.IsFirstKeyPress(Keys.K))
-                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.DecreaseVolume, soundVolumeType = SoundVolumeType.Master });
+                EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.DecreaseVolume, soundVolumeType = SoundVolumeType.Master});
             //Pause/resume music
             if (Main.KeyboardManager.IsFirstKeyPress(Keys.P))
-                EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.ToggleMusicPlayback, soundVolumeType = SoundVolumeType.Master });
+                EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.ToggleMusicPlayback, soundVolumeType = SoundVolumeType.Master});
 
             //Test
             if (Main.KeyboardManager.IsFirstKeyPress(Keys.G))
@@ -609,7 +608,7 @@ namespace GDGame.Scenes
             SoundEffect track04 = Main.Content.Load<SoundEffect>("Assets/Sound/Knock04");
             SoundEffect track05 = Main.Content.Load<SoundEffect>("Assets/Sound/Click02");
             SoundEffect track06 = Main.Content.Load<SoundEffect>("Assets/GameTracks/testTrack06");
-            
+
             Main.SoundManager.AddMusic("gameTrack01", track01);
             Main.SoundManager.AddMusic("gameTrack02", track02);
             Main.SoundManager.AddMusic("gameTrack03", track03);

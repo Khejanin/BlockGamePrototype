@@ -56,9 +56,6 @@ namespace GDLibrary.Managers
                     actor.Draw(gameTime, spriteBatch);
             }
             spriteBatch.End();
-
-            GraphicsDevice.BlendState =BlendState.Opaque;    
-            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             base.ApplyDraw(gameTime);
         }
     }

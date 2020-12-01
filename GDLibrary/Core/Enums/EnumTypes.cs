@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GDLibrary.Enums
+﻿namespace GDLibrary.Enums
 {
     /// <summary>
     /// Used to indicate if single or multiple cameras are drawn to the screen at the same time
@@ -22,7 +20,6 @@ namespace GDLibrary.Enums
         Player,    //hero (rendered using Max/Maya file)
         Decorator, //architecture, obstacle (rendered using Max/Maya file)
         Primitive, //make this type using IVertexData
-        Platform,
 
         Camera2D,
         Camera3D,
@@ -36,17 +33,14 @@ namespace GDLibrary.Enums
         CollidableInventory,
         UITextureObject,
         UIText,
-        MusicTrack,
-        SoundEffect,
-        SpecialTrack,
-        UIButtonObject
+        UIButtonObject,
+        Platform
     }
 
     /// <summary>
     /// Possible status types for an actor within the game (e.g. Update | Drawn, Update, Drawn, Off)
     /// </summary>
     /// <see cref="GDLibrary.Actors.Actor.Actor(string, ActorType, StatusType)"/>
-    [Flags]
     public enum StatusType
     {
         //used for enabling objects for updating and drawing e.g. a model or a camera, or a controller
@@ -86,9 +80,11 @@ namespace GDLibrary.Enums
         ColorLerpOverTime,
         MouseOver,
         Progress,
-        Movement,
+        ScaleLerpOverTime,
         Rotation,
         Player,
+        Ui,
+        Movement,
         Collider,
         Sound
     }

@@ -1,5 +1,7 @@
-﻿using GDLibrary.Controllers;
+﻿using GDLibrary.Actors;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
+using GDLibrary.Events;
 using GDLibrary.GameComponents;
 using JigLibX.Collision;
 using JigLibX.Physics;
@@ -44,6 +46,34 @@ namespace GDLibrary.Managers
         public PhysicsManager(Game game, StatusType statusType)
             : this(game, statusType, -10 * Vector3.UnitY)
         {
+        }
+
+        protected override void SubscribeToEvents()
+        {
+            //remove
+            EventDispatcher.Subscribe(EventCategoryType.Object, HandleEvent);
+
+            base.SubscribeToEvents();
+        }
+
+        protected override void HandleEvent(EventData eventData)
+        {
+            if (eventData.EventCategoryType == EventCategoryType.Object)
+            {
+                HandleObjectCategoryEvent(eventData);
+            }
+
+            base.HandleEvent(eventData);
+        }
+
+        private void HandleObjectCategoryEvent(EventData eventData)
+        {
+            if (eventData.EventActionType == EventActionType.OnRemoveActor)
+            {
+                CollidableObject collidableObject = eventData.Parameters[0] as CollidableObject;
+
+                this.PhysicsSystem.RemoveBody(collidableObject.Body);
+            }
         }
 
         //user-defined gravity

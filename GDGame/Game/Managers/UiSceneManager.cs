@@ -201,8 +201,6 @@ namespace GDGame.Managers
                 uiButtonObject.Text = text;
                 uiButtonObject.ID = text;
                 uiButtonObject.Transform2D.Translation = Scene.Main.ScreenCentre - Vector2.UnitY * 120;
-                uiButtonObject.TextOffset = new Vector2(uiButtonObject.Texture.Width / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).X / 2,
-                    uiButtonObject.Texture.Height / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
                 Scene.Main.MenuManager.Add("MainMenu", uiButtonObject);
             }
 
@@ -213,8 +211,6 @@ namespace GDGame.Managers
                 uiButtonObject.Text = text;
                 uiButtonObject.ID = text;
                 uiButtonObject.Transform2D.Translation = Scene.Main.ScreenCentre;
-                uiButtonObject.TextOffset = new Vector2(uiButtonObject.Texture.Width / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).X / 2,
-                    uiButtonObject.Texture.Height / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
                 Scene.Main.MenuManager.Add("MainMenu", uiButtonObject);
             }
 
@@ -225,8 +221,6 @@ namespace GDGame.Managers
                 uiButtonObject.Text = text;
                 uiButtonObject.ID = text;
                 uiButtonObject.Transform2D.Translation = Scene.Main.ScreenCentre + Vector2.UnitY * 120;
-                uiButtonObject.TextOffset = new Vector2(uiButtonObject.Texture.Width / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).X / 2,
-                    uiButtonObject.Texture.Height / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
                 Scene.Main.MenuManager.Add("MainMenu", uiButtonObject);
             }
 
@@ -253,8 +247,6 @@ namespace GDGame.Managers
                 uiTextObject.Transform2D.Translation = new Vector2(Scene.Main.ScreenCentre.X - 275, Scene.Main.ScreenCentre.Y - 50);
                 Scene.Main.MenuManager.Add("MainMenu", uiTextObject);
             }
-            
-            
         }
 
         private void InitOptionsUi()
@@ -265,8 +257,6 @@ namespace GDGame.Managers
                 uiButtonObject.Text = text;
                 uiButtonObject.ID = text;
                 uiButtonObject.Transform2D.Translation = Scene.Main.ScreenCentre - Vector2.UnitY * 75;
-                uiButtonObject.TextOffset = new Vector2(uiButtonObject.Texture.Width / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).X / 2,
-                    uiButtonObject.Texture.Height / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
                 Scene.Main.MenuManager.Add("Options", uiButtonObject);
             }
 
@@ -277,8 +267,6 @@ namespace GDGame.Managers
                 uiButtonObject.Text = text;
                 uiButtonObject.ID = text;
                 uiButtonObject.Transform2D.Translation = Scene.Main.ScreenCentre + Vector2.UnitY * 75;
-                uiButtonObject.TextOffset = new Vector2(uiButtonObject.Texture.Width / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).X / 2,
-                    uiButtonObject.Texture.Height / 2f - Scene.Main.Fonts["Arial"].MeasureString(text).Y / 2);
                 Scene.Main.MenuManager.Add("Options", uiButtonObject);
             }
         }
@@ -306,6 +294,13 @@ namespace GDGame.Managers
         #endregion
 
         #region Methods
+
+        private void AnimateButton(UIButtonObject uiButtonObject, float f)
+        {
+            uiButtonObject.Transform2D.Scale = Vector2.One * f;
+            uiButtonObject.TextOffset = new Vector2(uiButtonObject.Transform2D.Bounds.Width / 2f - Scene.Main.Fonts["Arial"].MeasureString(uiButtonObject.Text).X / 2,
+                uiButtonObject.Transform2D.Bounds.Height / 2f - Scene.Main.Fonts["Arial"].MeasureString(uiButtonObject.Text).Y / 2);
+        }
 
         private void ToggleOptionsMenu()
         {
@@ -382,7 +377,6 @@ namespace GDGame.Managers
         private void UpdateMenuUi()
         {
             foreach (DrawnActor2D drawnActor2D in Scene.Main.UiManager.UIObjectList)
-            {
                 if (drawnActor2D is UIButtonObject uiButtonObject)
                 {
                     if (uiButtonObject.Transform2D.Bounds.Contains(Scene.Main.MouseManager.Bounds))
@@ -390,7 +384,6 @@ namespace GDGame.Managers
                         AnimateButton(uiButtonObject, 1.1f);
 
                         if (Scene.Main.MouseManager.IsLeftButtonClickedOnce())
-                        {
                             switch (uiButtonObject.ID)
                             {
                                 case "Play":
@@ -403,27 +396,17 @@ namespace GDGame.Managers
                                     Scene.Main.Exit();
                                     break;
                             }
-                        }
                     }
                     else
                     {
                         AnimateButton(uiButtonObject, 1);
                     }
                 }
-            }
-        }
-
-        private void AnimateButton(UIButtonObject uiButtonObject, float f)
-        {
-            uiButtonObject.Transform2D.Scale = Vector2.One * f;
-            uiButtonObject.TextOffset = new Vector2(uiButtonObject.Transform2D.Bounds.Width / 2f - Scene.Main.Fonts["Arial"].MeasureString(uiButtonObject.Text).X / 2,
-                uiButtonObject.Transform2D.Bounds.Height / 2f - Scene.Main.Fonts["Arial"].MeasureString(uiButtonObject.Text).Y / 2);
         }
 
         private void UpdateOptionsUi()
         {
             foreach (DrawnActor2D drawnActor2D in Scene.Main.UiManager.UIObjectList)
-            {
                 if (drawnActor2D is UIButtonObject uiButtonObject)
                 {
                     if (uiButtonObject.Transform2D.Bounds.Contains(Scene.Main.MouseManager.Bounds))
@@ -431,7 +414,6 @@ namespace GDGame.Managers
                         AnimateButton(uiButtonObject, 1.1f);
 
                         if (Scene.Main.MouseManager.IsLeftButtonClickedOnce())
-                        {
                             switch (uiButtonObject.ID)
                             {
                                 case "Resume":
@@ -441,14 +423,12 @@ namespace GDGame.Managers
                                     Scene.Main.SceneManager.MenuSwitchScene();
                                     break;
                             }
-                        }
                     }
                     else
                     {
                         AnimateButton(uiButtonObject, 1);
                     }
                 }
-            }
         }
 
         #endregion

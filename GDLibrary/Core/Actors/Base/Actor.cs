@@ -3,6 +3,8 @@ using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GDLibrary.Actors
 {
@@ -136,8 +138,18 @@ namespace GDLibrary.Actors
         {
             //to do...are we also cloning controllers and event handlers???
 
-            //deep-copy
-            return new Actor(id, actorType, statusType);
+            //deep-copy or shallow-copy
+            //value types - byte, sbyte, double, boolean, string, struct (e.g. Vector3), enums (e.g. PrimitiveType)
+            //reference types - user-defined classes, MonoGame classes, array
+
+            Actor clonedActor = new Actor(id, actorType, statusType);  //deep
+            clonedActor.ControllerList.AddRange(GetControllerListClone());
+            return clonedActor;
+        }
+
+        protected List<IController> GetControllerListClone()
+        {
+            return controllerList.Select(controller => controller.Clone() as IController).ToList();
         }
     }
 }

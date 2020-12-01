@@ -1,8 +1,6 @@
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Managers;
-using GDLibrary.Enums;
-using GDLibrary.GameComponents;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Scenes
@@ -17,7 +15,6 @@ namespace GDGame.Scenes
 
         #region Private variables
 
-        protected Color backgroundColor = Color.CornflowerBlue;
         private OnUnloaded onUnloadedCallback;
         private bool terminateOnNextTick;
         protected UiSceneManager uiSceneManager;
@@ -27,7 +24,7 @@ namespace GDGame.Scenes
 
         #region Constructors
 
-        protected Scene(Main main,SceneType sceneType, bool unloadsContent = false)
+        protected Scene(Main main, SceneType sceneType, bool unloadsContent = false)
         {
             uiSceneManager = new UiSceneManager(this);
             this.unloadsContent = unloadsContent;
@@ -90,11 +87,9 @@ namespace GDGame.Scenes
             {
                 UpdateScene();
                 uiSceneManager.Update(gameTime);
-                
             }
             else
             {
-                
                 terminateOnNextTick = false;
             }
         }
