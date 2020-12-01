@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
-    public class MovableTile : BasicTile, ICloneable
+    public class MovableTile : BasicTile
     {
         #region Constructors
 
@@ -31,6 +31,7 @@ namespace GDGame.Actors
         public Vector3 EndPos { get; set; }
 
         public bool IsMoving { get; set; }
+        public bool IsAttached { get; set; }
         public Action<Raycaster.HitResult> OnCollideCallback { get; set; }
         public Vector3 RotatePoint { get; set; }
         public Quaternion RotationQuaternion { get; set; }
@@ -64,6 +65,12 @@ namespace GDGame.Actors
             hashCode.Add(OnCollideCallback);
             hashCode.Add(StartRotation);
             return hashCode.ToHashCode();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            //Transform3D.Translation = Body.Position;
+            base.Update(gameTime);
         }
 
         #endregion

@@ -1,17 +1,15 @@
-using System;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Tiles;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
-using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
-    public class BasicTile : ModelObject, ICloneable
+    public class BasicTile : CollidableObject
     {
         #region Enums
 
@@ -70,12 +68,9 @@ namespace GDGame.Actors
 
         public new object Clone()
         {
-            BasicTile basicTile = new BasicTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as EffectParameters, Model, TileType);
-            if (ControllerList != null)
-                foreach (IController controller in ControllerList)
-                    basicTile.ControllerList.Add(controller.Clone() as IController);
-
+            BasicTile basicTile = new BasicTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as EffectParameters, Model,
+                TileType);
+            basicTile.ControllerList.AddRange(GetControllerListClone());
             return basicTile;
         }
 

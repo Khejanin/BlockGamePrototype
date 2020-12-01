@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using GDGame.Enums;
 using GDGame.EventSystem;
@@ -14,7 +13,7 @@ using static GDGame.Utilities.Raycaster;
 
 namespace GDGame.Actors
 {
-    public class PlayerTile : MovableTile, ICloneable
+    public class PlayerTile : MovableTile
     {
         #region Private variables
 
@@ -39,7 +38,6 @@ namespace GDGame.Actors
         public List<Shape> AttachCandidates { get; }
 
         public List<AttachableTile> AttachedTiles { get; }
-        public bool IsAttached { get; private set; }
 
         #endregion
 
@@ -65,6 +63,7 @@ namespace GDGame.Actors
             {
                 AttachedTiles.Add(tile);
                 tile.EffectParameters.DiffuseColor = Color.DarkGray;
+                tile.IsAttached = true;
             }
 
             IsAttached = true;
@@ -112,19 +111,21 @@ namespace GDGame.Actors
             PlayerTile playerTile = new PlayerTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as EffectParameters, Model,
                 TileType);
 
-            if (ControllerList != null)
-                foreach (IController controller in ControllerList)
-                    playerTile.ControllerList.Add(controller.Clone() as IController);
+            playerTile.ControllerList.AddRange(GetControllerListClone());
 
             return playerTile;
         }
 
         public void Detach()
         {
-            foreach (AttachableTile tile in AttachedTiles) tile.EffectParameters.DiffuseColor = Color.White;
+            foreach (AttachableTile tile in AttachedTiles)
+            {
+                tile.EffectParameters.DiffuseColor = Color.White;
+                tile.IsAttached = false;
+            }
 
-            AttachedTiles.Clear();
             IsAttached = false;
+            AttachedTiles.Clear();
         }
 
         private IEnumerable<PlayerSurroundCheck> GetSurroundings(Vector3 translation)

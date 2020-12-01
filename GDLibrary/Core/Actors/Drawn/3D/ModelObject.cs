@@ -11,7 +11,7 @@ namespace GDLibrary.Actors
     /// Base class for all drawn 3D draw models objects used in the engine. This class adds a Model field.
     /// </summary>
     /// <see cref="GDLibrary.Actors.PrimitiveObject"/>
-    public class ModelObject : DrawnActor3D, ICloneable
+    public class ModelObject : DrawnActor3D
     {
         #region Fields
 

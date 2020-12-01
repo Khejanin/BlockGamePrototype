@@ -91,8 +91,13 @@ namespace GDGame.Component
                 }
 
                 Tile.Transform3D.Translation = trans;
+                Tile.Body.MoveTo(trans, Matrix.Identity);
                 Tile.CurrentMovementTime -= (int) gameTime.ElapsedGameTime.TotalMilliseconds;
+                Tile.Body.SetInactive();
             }
+
+            if (Tile != null && !Tile.IsMoving && !Tile.IsAttached)
+                Tile.Body.SetActive();
         }
 
         #endregion

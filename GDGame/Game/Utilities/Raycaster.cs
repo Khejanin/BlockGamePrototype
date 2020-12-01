@@ -54,24 +54,33 @@ namespace GDGame.Utilities
             Ray ray = new Ray(position, direction);
             foreach (DrawnActor3D drawnActor3D in allObjects)
             {
-                float? dist = -1f;
-
-                PrimitiveColliderController pcc = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as PrimitiveColliderController;
-
-                CustomBoxColliderController customBoxColliderController = null;
-                if (pcc == null)
-                    customBoxColliderController = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as CustomBoxColliderController;
-
-                bool pccCheck = pcc != null && (dist = ray.Intersects(pcc.GetBounds(drawnActor3D as PrimitiveObject))) != null &&
-                                (pcc.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
-                bool customBoxColliderCheck = customBoxColliderController != null && (dist = ray.Intersects(customBoxColliderController.GetBounds(drawnActor3D))) != null &&
-                                              (customBoxColliderController.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
-
-                if ((pccCheck || customBoxColliderCheck) && dist < maxDist)
+                if (drawnActor3D is CollidableObject collidableObject)
                 {
-                    HitResult result = new HitResult {actor = drawnActor3D, distance = (float) dist};
-                    hit.Add(result);
+                    float? dist;
+                    bool collidableObjectCheck = (dist = ray.Intersects(collidableObject.Collision.WorldBoundingBox)) != null;
+                    if (collidableObjectCheck && dist < maxDist)
+                    {
+                        HitResult result = new HitResult {actor = drawnActor3D, distance = (float) dist};
+                        hit.Add(result);
+                    }
                 }
+
+                // PrimitiveColliderController pcc = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as PrimitiveColliderController;
+                //
+                // CustomBoxColliderController customBoxColliderController = null;
+                // if (pcc == null)
+                //     customBoxColliderController = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as CustomBoxColliderController;
+                //
+                // bool pccCheck = pcc != null && (dist = ray.Intersects(pcc.GetBounds(drawnActor3D as PrimitiveObject))) != null &&
+                //                 (pcc.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
+                // bool customBoxColliderCheck = customBoxColliderController != null && (dist = ray.Intersects(customBoxColliderController.GetBounds(drawnActor3D))) != null &&
+                //                               (customBoxColliderController.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
+                //
+                // if ((pccCheck || customBoxColliderCheck) && dist < maxDist)
+                // {
+                //     HitResult result = new HitResult {actor = drawnActor3D, distance = (float) dist};
+                //     hit.Add(result);
+                // }
             }
         }
 

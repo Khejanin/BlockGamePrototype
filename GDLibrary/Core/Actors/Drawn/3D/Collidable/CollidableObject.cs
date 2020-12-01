@@ -17,47 +17,31 @@ namespace GDLibrary.Actors
     public class CollidableObject : ModelObject
     {
         #region Variables
+
         private Body body;
         private CollisionSkin collision;
         private float mass;
+
         #endregion Variables
 
         #region Properties
 
         public float Mass
         {
-            get
-            {
-                return mass;
-            }
-            set
-            {
-                mass = value;
-            }
+            get { return mass; }
+            set { mass = value; }
         }
 
         public CollisionSkin Collision
         {
-            get
-            {
-                return collision;
-            }
-            set
-            {
-                collision = value;
-            }
+            get { return collision; }
+            set { collision = value; }
         }
 
         public Body Body
         {
-            get
-            {
-                return body;
-            }
-            set
-            {
-                body = value;
-            }
+            get { return body; }
+            set { body = value; }
         }
 
         #endregion Properties
@@ -83,10 +67,10 @@ namespace GDLibrary.Actors
         public override Matrix GetWorldMatrix()
         {
             return Matrix.CreateScale(Transform3D.Scale) *
-                    collision.GetPrimitiveLocal(0).Transform.Orientation *
-                        body.Orientation *
-                            Transform3D.Orientation *
-                                Matrix.CreateTranslation(body.Position);
+                   collision.GetPrimitiveLocal(0).Transform.Orientation *
+                   body.Orientation *
+                   Transform3D.Orientation *
+                   Matrix.CreateTranslation(body.Position);
         }
 
         private float junk;
@@ -127,9 +111,9 @@ namespace GDLibrary.Actors
         public new object Clone()
         {
             return new CollidableObject("clone - " + ID, //deep
-                ActorType,   //deep
+                ActorType, //deep
                 StatusType,
-                Transform3D.Clone() as Transform3D,  //deep
+                Transform3D.Clone() as Transform3D, //deep
                 EffectParameters.Clone() as EffectParameters, //hybrid - shallow (texture and effect) and deep (all other fields)
                 Model); //shallow i.e. a reference
         }

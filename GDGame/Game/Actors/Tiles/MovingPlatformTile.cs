@@ -41,7 +41,7 @@ namespace GDGame.Actors
             else
                 endPos = new Vector3(starPos.X, starPos.Y, starPos.Z + tileMoves);
 
-            oppDir = isOppDir();
+            oppDir = IsOppDir();
             max = false;
         }
 
@@ -77,10 +77,10 @@ namespace GDGame.Actors
         {
             //System.Diagnostics.Debug.WriteLine("Moving Platform activate (doesn't work yet)");
             isActivated = true;
-            if (isActivated) movePlatform();
+            if (isActivated) MovePlatform();
         }
 
-        public bool atMaxPoint()
+        public bool AtMaxPoint()
         {
             if (oppDir)
             {
@@ -123,18 +123,18 @@ namespace GDGame.Actors
             isActivated = false;
         }
 
-        public bool isActive()
+        public bool IsActive()
         {
             return isActivated;
         }
 
-        public bool isOppDir()
+        public bool IsOppDir()
         {
             if (starPos.X > endPos.X || starPos.Y > endPos.Y || starPos.Z > endPos.Z) return true;
             return false;
         }
 
-        public Vector3 moveDown()
+        public Vector3 MoveDown()
         {
             int move = -1;
             if (oppDir)
@@ -153,21 +153,21 @@ namespace GDGame.Actors
         }
 
 
-        public void movePlatform()
+        public void MovePlatform()
         {
             Vector3 b = new Vector3(0, 0, 0);
-            max = atMaxPoint();
+            max = AtMaxPoint();
 
             if (!max)
-                b = moveUp();
+                b = MoveUp();
             else
-                b = moveDown();
+                b = MoveDown();
 
             Transform3D.TranslateBy(b);
             currentPos = b;
         }
 
-        public Vector3 moveUp()
+        public Vector3 MoveUp()
         {
             int move = 1;
             if (oppDir)

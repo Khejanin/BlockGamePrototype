@@ -12,12 +12,15 @@ using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Factories;
 using GDLibrary.Interfaces;
-using GDLibrary.Managers;
 using GDLibrary.Parameters;
+using JigLibX.Collision;
+using JigLibX.Geometry;
+using JigLibX.Physics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using PrimitiveType = Microsoft.Xna.Framework.Graphics.PrimitiveType;
 
 namespace GDGame.Scenes
 {
@@ -26,7 +29,6 @@ namespace GDGame.Scenes
         #region Private variables
 
         private readonly string levelName;
-        private readonly MouseManager mouseManager;
 
         ////FOR SKYBOX____ TEMP
         private PrimitiveObject archetypalTexturedQuad, primitiveObject;
@@ -36,7 +38,6 @@ namespace GDGame.Scenes
         private Dictionary<string, DrawnActor3D> drawnActors;
         private Vector3 levelBounds;
 
-        private bool optionsToggle;
         private DrawnActor3D player;
         private BasicTile test;
         private Transform3DCurve transform3DCurve;
@@ -238,7 +239,7 @@ namespace GDGame.Scenes
             PrimitiveObject actor = new PrimitiveObject("origin helper",
                 ActorType.Helper, StatusType.Drawn, transform3D, effectParameters, vertexData);
 
-            Main.ObjectManager.Add(actor);
+            //Main.ObjectManager.Add(actor);
         }
 
         public override void Initialize()
@@ -264,6 +265,8 @@ namespace GDGame.Scenes
             {
                 Transform3D = {Scale = scale}
             };
+            table.AddPrimitive(new Box(table.Transform3D.Translation, Matrix.Identity, table.Transform3D.Scale), new MaterialProperties(0.2f, 0.8f, 0.7f));
+            table.Enable(true, 1);
             Main.ObjectManager.Add(table);
 
             effectParameters = new EffectParameters(Main.ModelEffect, Main.Textures["Ceramic"], Color.White, 1);
@@ -272,6 +275,8 @@ namespace GDGame.Scenes
             {
                 Transform3D = {Scale = scale}
             };
+            cups.AddPrimitive(new Box(cups.Transform3D.Translation, Matrix.Identity, cups.Transform3D.Scale), new MaterialProperties(0.2f, 0.8f, 0.7f));
+            cups.Enable(true, 1);
             drawnActors.Add("Cups", cups);
             Main.ObjectManager.Add(cups);
 
@@ -281,6 +286,8 @@ namespace GDGame.Scenes
             {
                 Transform3D = {Scale = scale}
             };
+            choco.AddPrimitive(new Box(choco.Transform3D.Translation, Matrix.Identity, choco.Transform3D.Scale), new MaterialProperties(0.2f, 0.8f, 0.7f));
+            choco.Enable(true, 1);
             Main.ObjectManager.Add(choco);
 
             effectParameters = new EffectParameters(Main.ModelEffect, Main.Textures["Checkers"], Color.White, 1);
@@ -289,6 +296,8 @@ namespace GDGame.Scenes
             {
                 Transform3D = {Scale = scale}
             };
+            cat.AddPrimitive(new Box(cat.Transform3D.Translation, Matrix.Identity, cat.Transform3D.Scale), new MaterialProperties(0.2f, 0.8f, 0.7f));
+            cat.Enable(true, 1);
             Main.ObjectManager.Add(cat);
 
             effectParameters = new EffectParameters(Main.ModelEffect, Main.Textures["blackTile"], Color.White, 1);
@@ -297,6 +306,8 @@ namespace GDGame.Scenes
             {
                 Transform3D = {Scale = scale}
             };
+            catBed.AddPrimitive(new Box(catBed.Transform3D.Translation, Matrix.Identity, catBed.Transform3D.Scale), new MaterialProperties(0.2f, 0.8f, 0.7f));
+            catBed.Enable(true, 1);
             Main.ObjectManager.Add(catBed);
         }
 
@@ -533,8 +544,7 @@ namespace GDGame.Scenes
             if (player == null)
             {
                 DrawnActor3D drawnActor3D = Main.ObjectManager.OpaqueList.Find(actor3D => actor3D.ID == "clone - Player");
-                if (Main.CameraManager.ActiveCamera.ControllerList[0] is RotationAroundActor cam &&
-                    drawnActor3D != null)
+                if (Main.CameraManager.ActiveCamera.ControllerList[0] is RotationAroundActor cam && drawnActor3D != null)
                 {
                     cam.Target = drawnActor3D;
                     player = drawnActor3D;
@@ -666,6 +676,9 @@ namespace GDGame.Scenes
             test = new BasicTile("StaticTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, Main.Models["Knife"], ETileType.Static);
             test.ControllerList.Add(new CustomBoxColliderController("testBCC", ControllerType.Collider, ColliderShape.Cube, 1f));
             drawnActors.Add("StaticTile2", test);
+            
+            test.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale), MaterialProperties.Unset);
+            test.Enable(true, 1);
             Main.ObjectManager.Add(test);
         }
 

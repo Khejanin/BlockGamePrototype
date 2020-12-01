@@ -43,8 +43,7 @@ namespace GDLibrary.Managers
         #endregion Properties
 
         //gravity pre-defined
-        public PhysicsManager(Game game, StatusType statusType)
-            : this(game, statusType, -10 * Vector3.UnitY)
+        public PhysicsManager(Game game, StatusType statusType) : this(game, statusType, -10 * Vector3.UnitY)
         {
         }
 

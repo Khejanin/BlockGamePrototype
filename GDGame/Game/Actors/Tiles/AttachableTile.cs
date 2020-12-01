@@ -4,7 +4,6 @@ using GDGame.EventSystem;
 using GDGame.Managers;
 using GDGame.Utilities;
 using GDLibrary.Enums;
-using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -32,12 +31,10 @@ namespace GDGame.Actors
             switch (hit.actor)
             {
                 case SpikeTile _:
-                    EventManager.FireEvent(new PlayerEventInfo
-                        {type = PlayerEventType.AttachedTileDie, attachedTile = this});
+                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.AttachedTileDie, attachedTile = this});
                     break;
                 case CheckpointTile checkpointTile:
-                    EventManager.FireEvent(new PlayerEventInfo
-                        {type = PlayerEventType.SetCheckpoint, position = checkpointTile.Transform3D.Translation});
+                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.SetCheckpoint, position = checkpointTile.Transform3D.Translation});
                     break;
                 case ButtonTile buttonTile:
                     buttonTile.Activate();
@@ -51,16 +48,10 @@ namespace GDGame.Actors
                 Transform3D.Clone() as Transform3D,
                 EffectParameters.Clone() as EffectParameters, Model, TileType);
 
-            if (ControllerList != null)
-                foreach (IController controller in ControllerList)
-                    enemyTile.ControllerList.Add(controller.Clone() as IController);
+            enemyTile.ControllerList.AddRange(GetControllerListClone());
 
             return enemyTile;
         }
-
-        #endregion
-
-        #region Events
 
         public void OnMoveEnd()
         {
@@ -69,7 +60,7 @@ namespace GDGame.Actors
             if (hit?.actor is SpikeTile)
                 Debug.WriteLine(ID + " is ded!");
         }
-
+        
         #endregion
     }
 }

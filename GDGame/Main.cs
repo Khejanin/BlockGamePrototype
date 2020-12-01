@@ -5,6 +5,7 @@ using GDGame.Managers;
 using GDGame.Scenes;
 using GDLibrary.Actors;
 using GDLibrary.Containers;
+using GDLibrary.Debug;
 using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.Managers;
@@ -176,6 +177,11 @@ namespace GDGame
 
             //Raycast
             RaycastManager.Instance.ObjectManager = ObjectManager;
+
+            PhysicsDebugDrawer physicsDebugDrawer = new PhysicsDebugDrawer(this, StatusType.Update | StatusType.Drawn,
+                CameraManager, ObjectManager) {DrawOrder = 3};
+            Components.Add(physicsDebugDrawer);
+
 
             //LevelData
             LevelDataManager = new LevelDataManager();
