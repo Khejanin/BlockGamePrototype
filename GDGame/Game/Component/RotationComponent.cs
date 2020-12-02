@@ -1,13 +1,14 @@
-﻿using GDGame.Game.Tiles;
+﻿
+using GDGame.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 
-namespace GDGame.Game.Controllers
+namespace GDGame.Component
 {
     public class RotationComponent : IController
     {
-        private CubePlayer parent;
+        private MovableTile parent;
         private Vector3 rightRotatePoint;
         private Vector3 leftRotatePoint;
         private Vector3 forwardRotatePoint;
@@ -20,7 +21,7 @@ namespace GDGame.Game.Controllers
 
         public void Update(GameTime gameTime, IActor actor)
         {
-            parent ??= actor as CubePlayer;
+            parent ??= actor as MovableTile;
         }
 
         public ControllerType GetControllerType()
@@ -46,7 +47,11 @@ namespace GDGame.Game.Controllers
                 throw new System.ArgumentException("Invalid direction!");
 
             parent.RotatePoint = rotatePoint;
-            foreach (AttachableTile tile in parent.AttachedTiles)
+
+            PlayerTile player = parent as PlayerTile;
+            if (player == null) return;
+
+            foreach (MovableTile tile in player.AttachedTiles)
             {
                 tile.RotatePoint = rotatePoint;
             }
@@ -60,10 +65,13 @@ namespace GDGame.Game.Controllers
             forwardRotatePoint = parent.Transform3D.Translation + new Vector3(0, -.5f, -.5f);
             backwardRotatePoint = parent.Transform3D.Translation + new Vector3(0, -.5f, .5f);
 
+            PlayerTile player = parent as PlayerTile;
+            if (player == null) return;
+
             //Loops through attached tiles to update the rotation points
-            foreach (AttachableTile tile in parent.AttachedTiles)
+            foreach (MovableTile tile in player.AttachedTiles)
             {
-                Vector3 playerPos = parent.Transform3D.Translation;
+                Vector3 playerPos = player.Transform3D.Translation;
                 Vector3 tilePos = tile.Transform3D.Translation;
 
                 //Update right rotate point

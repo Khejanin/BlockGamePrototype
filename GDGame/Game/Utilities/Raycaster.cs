@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using GDGame.Game.Controllers;
-using GDGame.Game.Tiles;
+using GDGame.Actors;
+using GDGame.Controllers;
+using GDGame.Enums;
+using GDGame.Managers;
 using GDLibrary.Actors;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
-using SharpDX.Direct2D1;
 
-namespace GDGame.Game.Utilities
+namespace GDGame.Utilities
 {
     public static class Raycaster
     {
@@ -20,7 +20,7 @@ namespace GDGame.Game.Utilities
         }
         #region Public Methods
 
-        public static void PlayerCastAll(this CubePlayer player,Vector3 offset,List<Vector3> initialPositions, List<Vector3> endPositions,ref List<HitResult> blockingObjectsResult,ref List<FloorHitResult> floorResult)
+        public static void PlayerCastAll(this PlayerTile player,Vector3 offset,List<Vector3> initialPositions, List<Vector3> endPositions,ref List<HitResult> blockingObjectsResult,ref List<FloorHitResult> floorResult)
         {
             List<Actor3D> ignore = new List<Actor3D>();
             ignore.AddRange(player.AttachedTiles);
@@ -50,10 +50,10 @@ namespace GDGame.Game.Utilities
         {
             if(maxDist <= 0) throw new ArgumentException("You can't set a max cast distance to zero or negative!");
             
-            List<DrawnActor3D> AllObjects = ObjectManager.GetAllObjects();
-            if(ignoreList != null) AllObjects.RemoveAll(actor3D => ignoreList.Contains(actor3D));
+            List<DrawnActor3D> allObjects = OurObjectManager.GetAllObjects();
+            if(ignoreList != null) allObjects.RemoveAll(actor3D => ignoreList.Contains(actor3D));
             Ray ray = new Ray(position, direction);
-            foreach (DrawnActor3D drawnActor3D in AllObjects)
+            foreach (DrawnActor3D drawnActor3D in allObjects)
             {
                 float? dist = -1f;
 
@@ -82,7 +82,7 @@ namespace GDGame.Game.Utilities
             }
         }
 
-        public static HitResult Raycast(Vector3 position, Vector3 direction,float maxDist = float.MaxValue,List<Actor3D> ignoreList = null, bool onlyCheckBlocking = true)
+        private static HitResult Raycast(Vector3 position, Vector3 direction,float maxDist = float.MaxValue,List<Actor3D> ignoreList = null, bool onlyCheckBlocking = true)
         {
             List<HitResult> all = RaycastAll(position, direction, maxDist,ignoreList,onlyCheckBlocking);
             all.Sort();

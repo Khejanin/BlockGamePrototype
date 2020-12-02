@@ -1,9 +1,10 @@
-﻿using GDLibrary.Actors;
+﻿using System.Collections.Generic;
+using GDGame.Actors;
+using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
-using System.Collections.Generic;
 
-namespace GDGame.Game.Tiles
+namespace GDGame.Tiles
 {
     public class Shape : Actor3D
     {

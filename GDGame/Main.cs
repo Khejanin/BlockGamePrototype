@@ -1,12 +1,17 @@
-﻿using System.Collections.Generic;
-using GDGame.Game.Managers;
-using GDGame.Game.Scenes;
+﻿using System;
+using System.Collections.Generic;
+using GDGame.EventSystem;
+using GDGame.Managers;
+using GDGame.Scenes;
+using GDLibrary;
+using GDLibrary.Actors;
+using GDLibrary.Enums;
+using GDLibrary.Events;
+using GDLibrary.Managers;
+using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using GDLibrary.Managers;
-using GDLibrary.Actors;
-using GDLibrary.Parameters;
 
 namespace GDGame
 {
@@ -14,17 +19,24 @@ namespace GDGame
     {
         public GraphicsDeviceManager Graphics { get; }
 
+        public LevelDataManager LevelDataManager { get; set; }
+
         public BasicEffect ModelEffect { get; private set; }
 
         public BasicEffect UnlitTexturedEffect { get; private set; }
 
         public BasicEffect UnlitWireframeEffect { get; private set; }
+        
+        public BasicEffect ModelEffectColor { get; private set; }
 
         public CameraManager<Camera3D> CameraManager { get; private set; }
 
-        public ObjectManager ObjectManager { get; private set; }
+        public ObjectManager ObjectManagerOLD { get; private set; }
+        public OurObjectManager ObjectManager { get; private set; }
 
         public KeyboardManager KeyboardManager { get; private set; }
+
+        public GamePadManager GamePadManager { get; private set; }
 
         public MouseManager MouseManager { get; private set; }
 
@@ -37,12 +49,13 @@ namespace GDGame
         public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
 
         public SoundManager SoundManager { get; private set; }
-        
+
         public SceneManager SceneManager { get; private set; }
         public UiManager UiManager { get; private set; }
 
 
         public Dictionary<string, SpriteFont> Fonts { get; private set; }
+
 
         public ProjectionParameters GlobalProjectionParameters => ProjectionParameters.StandardDeepSixteenTen;
 
@@ -65,7 +78,7 @@ namespace GDGame
         {
             // TODO: Add your initialization logic here
             Window.Title = "My Amazing Game";
-            
+
             InitManagers();
             CreateScenes();
             LoadEffects();
@@ -75,11 +88,7 @@ namespace GDGame
             InitGraphics(1024, 768);
 
             base.Initialize();
-            
-            SceneManager.Initialize();
         }
-
-        
 
 
         private void InitDebug()
@@ -95,16 +104,35 @@ namespace GDGame
 
         private void CreateScenes()
         {
+            SceneManager.AddScene("EnemyTest", new MainScene(this, "test_Enemy_path.json"));
+
             SceneManager.AddScene("Menu", new MenuScene(this));
-            SceneManager.AddScene("Game", new MainScene(this));
+            SceneManager.AddScene("Tutorial", new TutorialScene(this));
+            SceneManager.AddScene("Level1", new MainScene(this, "Paul_Level_1.json"));
+            SceneManager.AddScene("Level2", new MainScene(this, "Paul_Level_2.json"));
+            SceneManager.AddScene("Level3", new MainScene(this, "Paul_Level_3.json"));
+            SceneManager.AddScene("Level4", new MainScene(this, "Paul_Level_4.json"));
+            SceneManager.AddScene("Level5", new MainScene(this, "Paul_Level_5.json"));
+            SceneManager.AddScene("Level6", new MainScene(this, "Paul_Level_6.json"));
+
+            //thows back to menu eventually
+            SceneManager.AddScene("End", new EndScene(this));
+
+            //shouldnt be able to "next scene" to this
+            SceneManager.AddScene("Options", new OptionsMenuScene(this));
         }
 
         private void InitManagers()
         {
+            //Events
+            Components.Add(new EventManager(this));
+
+            Components.Add(new EventDispatcher(this));
+
             //Camera
             CameraManager = new CameraManager<Camera3D>(this);
             Components.Add(CameraManager);
-            
+
             //Scene
             SceneManager = new SceneManager(this);
             Components.Add(SceneManager);
@@ -113,6 +141,10 @@ namespace GDGame
             KeyboardManager = new KeyboardManager(this);
             Components.Add(KeyboardManager);
 
+            //Gamepad
+            GamePadManager = new GamePadManager(this, 1);
+            Components.Add(GamePadManager);
+
             //Mouse
             MouseManager = new MouseManager(this, false);
             Components.Add(MouseManager);
@@ -120,14 +152,18 @@ namespace GDGame
             //Sound
             SoundManager = new SoundManager(this);
             Components.Add(SoundManager);
-            
+
             //Object
-            ObjectManager = new ObjectManager(this, 6, 10, CameraManager);
-            Components.Add(ObjectManager);
+            ObjectManagerOLD = new ObjectManager(this, StatusType.Update | StatusType.Drawn, 6, 10, CameraManager);
+            Components.Add(ObjectManagerOLD);
             
+            ObjectManager = new OurObjectManager(this,StatusType.Update | StatusType.Drawn,6,10,CameraManager);
+            Components.Add(ObjectManager);
+
             UiManager = new UiManager(this);
             Components.Add(UiManager);
 
+            LevelDataManager = new LevelDataManager();
         }
 
         private void LoadEffects()
@@ -135,7 +171,7 @@ namespace GDGame
             testEffect = Content.Load<Effect>("Assets/Effects/test");
             testEffect2 = Content.Load<Effect>("Assets/Effects/test2");
         }
-        
+
         private void InitEffect()
         {
             //to do...
@@ -154,6 +190,10 @@ namespace GDGame
             //this.modelEffect.LightingEnabled = true;
             //this.modelEffect.EnableDefaultLighting();
 
+            //Model without texture
+            ModelEffectColor = new BasicEffect(Graphics.GraphicsDevice);
+            ModelEffectColor.TextureEnabled = false;
+
             WireframeModelEffect = new BasicEffect(Graphics.GraphicsDevice);
             WireframeModelEffect.TextureEnabled = false;
             WireframeModelEffect.VertexColorEnabled = true;
@@ -161,14 +201,14 @@ namespace GDGame
             WireframeRasterizerState = new RasterizerState();
             WireframeRasterizerState.FillMode = FillMode.WireFrame;
         }
-        
+
         private void LoadFonts()
         {
             SpriteFont uiFont = Content.Load<SpriteFont>("Assets/Fonts/Arial");
 
             Fonts = new Dictionary<string, SpriteFont> {{"UI", uiFont}};
         }
-        
+
         #endregion
 
         #region Load and Unload Content
@@ -195,7 +235,7 @@ namespace GDGame
             Graphics.ApplyChanges();
 
             //set screen centre based on resolution
-            ScreenCentre = new Vector2(width / 2, height / 2);
+            ScreenCentre = new Vector2(width / 2f, height / 2f);
 
             //set cull mode to show front and back faces - inefficient but we will change later
             RasterizerState rs = new RasterizerState();
@@ -207,8 +247,6 @@ namespace GDGame
             samplerState.AddressU = TextureAddressMode.Clamp;
             samplerState.AddressV = TextureAddressMode.Clamp;
             Graphics.GraphicsDevice.SamplerStates[0] = samplerState;
-            
-            
         }
 
 
@@ -228,5 +266,17 @@ namespace GDGame
         }
 
         #endregion
+    }
+
+    public class LevelStats
+    {
+        public int time;
+        public int moveCount;
+
+        public LevelStats()
+        {
+            time = Int32.MaxValue;
+            moveCount = Int32.MaxValue;
+        }
     }
 }

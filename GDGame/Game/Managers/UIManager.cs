@@ -5,12 +5,13 @@ using GDLibrary.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GDGame.Game.Managers
+namespace GDGame.Managers
 {
     public class UiManager : DrawableGameComponent
     {
         private Dictionary<string, UiElement> elements;
         private SpriteBatch spriteBatch;
+
 
         public UiManager(Microsoft.Xna.Framework.Game game) : base(game)
         {
@@ -23,10 +24,30 @@ namespace GDGame.Game.Managers
             elements.Add(name, element);
         }
 
+        //in game menu overlay trigger
+        public void Options(bool q)
+        {
+            foreach (KeyValuePair<string, UiElement> keyValuePair in elements)
+            {
+                if (keyValuePair.Key.Contains("Options"))
+                {
+                    if (q)
+                    {
+                        keyValuePair.Value.StatusType = StatusType.Drawn | StatusType.Update;
+                    }
+                    else
+                    {
+                        keyValuePair.Value.StatusType = StatusType.Off;
+                    }
+                }
+            }
+        }
+
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            foreach (KeyValuePair<string, UiElement> keyValuePair in elements.Where(keyValuePair => keyValuePair.Value.StatusType == StatusType.Drawn))
+            foreach (KeyValuePair<string, UiElement> keyValuePair in elements.Where(keyValuePair =>
+                (keyValuePair.Value.StatusType & StatusType.Drawn) == StatusType.Drawn))
             {
                 keyValuePair.Value.Draw(gameTime, spriteBatch);
             }
@@ -36,6 +57,17 @@ namespace GDGame.Game.Managers
             GraphicsDevice.BlendState = BlendState.Opaque;
             GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             base.Draw(gameTime);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            foreach (KeyValuePair<string, UiElement> keyValuePair in elements.Where(keyValuePair =>
+                (keyValuePair.Value.StatusType & StatusType.Update) == StatusType.Update))
+            {
+                keyValuePair.Value.Update(gameTime);
+            }
+
+            base.Update(gameTime);
         }
 
         public UiElement this[string key] => elements[key];

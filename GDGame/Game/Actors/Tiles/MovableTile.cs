@@ -6,11 +6,16 @@ using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GDGame.Game.Tiles
+namespace GDGame.Actors
 {
-    public class AttachableTile : GridTile, ICloneable
+    public class MovableTile : BasicTile, ICloneable
     {
-        public AttachableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
+        
+        public bool IsMoving { get; set; }
+        public Vector3 RotatePoint { get; set; }
+        public int CurrentMovementTime { get; set; }
+        
+        public MovableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
             EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform,
             effectParameters, model)
         {
@@ -27,7 +32,7 @@ namespace GDGame.Game.Tiles
 
         public new object Clone()
         {
-            AttachableTile attachableTile = new AttachableTile("clone - " + ID, ActorType, StatusType,
+            MovableTile movableTile = new MovableTile("clone - " + ID, ActorType, StatusType,
                 Transform3D.Clone() as Transform3D,
                 EffectParameters.Clone() as EffectParameters, Model);
 
@@ -35,11 +40,11 @@ namespace GDGame.Game.Tiles
             {
                 foreach (IController controller in ControllerList)
                 {
-                    attachableTile.ControllerList.Add(controller.Clone() as IController);
+                    movableTile.ControllerList.Add(controller.Clone() as IController);
                 }
             }
 
-            return attachableTile;
+            return movableTile;
         }
     }
 }

@@ -1,38 +1,43 @@
 ﻿using System.Collections.Generic;
+using GDGame.Actors;
 using Microsoft.Xna.Framework;
-using GDGame.Game.Tiles;
-using GDLibrary.Managers;
-using GDGame.Game.Enums;
+using GDGame.Tiles;
+using GDGame.Enums;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
+using GDLibrary.Managers;
 using GDLibrary.Parameters;
+using GDGame.Game.Actors.Tiles;
+using GDGame.Managers;
 
-namespace GDGame.Game.Factory
+namespace GDGame.Factory
 {
     public class TileFactory
     {
-        private ObjectManager objectManager;
+        private OurObjectManager objectManager;
 
         private Dictionary<string, DrawnActor3D> drawnActors;
 
-        public TileFactory(ObjectManager objectManager, Dictionary<string, DrawnActor3D> drawnActors)
+        public TileFactory(OurObjectManager objectManager, Dictionary<string, DrawnActor3D> drawnActors)
         {
             this.objectManager = objectManager;
             this.drawnActors = drawnActors;
         }
 
-        public GridTile CreateTile(ETileType type)
+        public BasicTile CreateTile(ETileType type)
         {
-            GridTile tile = type switch
+            BasicTile tile = type switch
             {
                 ETileType.PlayerStart => CreatePlayer(),
                 ETileType.Static => CreateStatic(),
                 ETileType.Attachable => CreateAttachable(),
                 ETileType.Win => CreateGoal(),
+                ETileType.Enemy => CreateEnemy(),
+                ETileType.Button => CreateButton(),
                 _ => null
             };
 
-            if (tile != null) tile.TileType = type;
+            tile.InitializeTile();
             return tile;
         }
 
@@ -42,15 +47,15 @@ namespace GDGame.Game.Factory
                 new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY));
         }
 
-        private GridTile CreateStatic()
+        private BasicTile CreateStatic()
         {
-            StaticTile staticTile = (StaticTile) drawnActors["StaticTile"];
-            staticTile = staticTile.Clone() as StaticTile;
+            BasicTile staticTile = (BasicTile) drawnActors["StaticTile"];
+            staticTile = staticTile.Clone() as BasicTile;
             objectManager.Add(staticTile);
             return staticTile;
         }
 
-        private GridTile CreateAttachable()
+        private BasicTile CreateAttachable()
         {
             AttachableTile attachableTile = (AttachableTile) drawnActors["AttachableBlock"];
             attachableTile = attachableTile.Clone() as AttachableTile;
@@ -58,20 +63,36 @@ namespace GDGame.Game.Factory
             return attachableTile;
         }
 
-        private GridTile CreatePlayer()
+        private BasicTile CreatePlayer()
         {
-            CubePlayer player = (CubePlayer) drawnActors["PlayerBlock"];
-            player = player.Clone() as CubePlayer;
-            objectManager.Add(player);
-            return player;
+            PlayerTile playerTile = (PlayerTile) drawnActors["PlayerBlock"];
+            playerTile = playerTile.Clone() as PlayerTile;
+            objectManager.player = playerTile;
+            return playerTile;
         }
 
-        private GridTile CreateGoal()
+        private BasicTile CreateGoal()
         {
             GoalTile goal = (GoalTile)drawnActors["GoalTile"];
             goal = goal.Clone() as GoalTile;
             objectManager.Add(goal);
             return goal;
+        }
+
+        private BasicTile CreateEnemy()
+        {
+            EnemyTile enemy = (EnemyTile)drawnActors["EnemyTile"];
+            enemy = enemy.Clone() as EnemyTile;
+            objectManager.Add(enemy);
+            return enemy;
+        }
+
+        private BasicTile CreateButton()
+        {
+            ButtonTile button = (ButtonTile)drawnActors["ButtonTile"];
+            button = button.Clone() as ButtonTile;
+            objectManager.Add(button);
+            return button;
         }
     }
 }

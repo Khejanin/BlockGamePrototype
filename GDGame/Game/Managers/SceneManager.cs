@@ -1,38 +1,43 @@
 using System.Collections.Generic;
+using GDGame.Enums;
+using GDGame.EventSystem;
+using GDGame.Scenes;
 using Microsoft.Xna.Framework;
 
-namespace GDGame.Game.Scenes
+namespace GDGame.Managers
 {
     public class SceneManager : DrawableGameComponent
     {
-        private Scene CurrentScene
-        {
-            get { return SceneList[currentSceneIndex];}
-        }
-        
+        private Scene CurrentScene => sceneList[currentSceneIndex];
+
         //So you can access by key and then request Scene at index to be switched to
-        public Dictionary<string, int> SceneIndexDictionary { get; private set; }
-        
-        private List<Scene> SceneList;
+        private Dictionary<string, int> SceneIndexDictionary { get; }
+
+        private List<Scene> sceneList;
         private int currentSceneIndex;
+
+        public int CurrentSceneIndex => currentSceneIndex;
+
+        private int nextSceneIndex = -1;
 
         //The Game needs a SceneManager, and the SceneManager needs a Scene.
         public SceneManager(Microsoft.Xna.Framework.Game game) : base(game)
         {
-            SceneList = new List<Scene>();
+            sceneList = new List<Scene>();
             SceneIndexDictionary = new Dictionary<string, int>();
             currentSceneIndex = 0;
         }
 
         public void AddScene(string key, Scene s)
         {
-            SceneIndexDictionary.Add(key,SceneList.Count);
-            SceneList.Add(s);
+            SceneIndexDictionary.Add(key,sceneList.Count);
+            sceneList.Add(s);
+            s.SceneName = key;
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
-            SceneList[currentSceneIndex].Initialize();
+            sceneList[currentSceneIndex].Initialize();
         }
 
         public void NextScene()
@@ -46,11 +51,29 @@ namespace GDGame.Game.Scenes
         }
 
         //A loading screen would be nice but I don't have time to test and implement async operations, we just gotta live with the unresponsiveness for now.
-        public void SwitchScene(int sceneIndex)
+        private void SwitchScene(int sceneIndex)
         {
-            SceneList[currentSceneIndex].UnloadScene();
+            EventManager.FireEvent(new SceneEventInfo {sceneActionType = SceneActionType.OnSceneChange});
+            sceneList[currentSceneIndex].UnloadScene(OnCurrentSceneUnloaded);
+            nextSceneIndex = sceneIndex;
+        }
 
-            currentSceneIndex = sceneIndex;
+        //direct switch back to main menu - for going back from options and a quit game thing
+        public void MenuSwitchScene()
+        {
+            sceneList[currentSceneIndex].UnloadScene(OnCurrentSceneUnloaded);
+            nextSceneIndex = SceneIndexDictionary["Menu"];
+        }
+        //direct switch to options menu
+        public void OptionsSwitchScene()
+        {
+            sceneList[currentSceneIndex].UnloadScene(OnCurrentSceneUnloaded);
+            nextSceneIndex = SceneIndexDictionary["Options"];
+        }
+
+        public void OnCurrentSceneUnloaded()
+        {
+            currentSceneIndex = nextSceneIndex;
             CurrentScene.Initialize();
         }
 
@@ -59,7 +82,7 @@ namespace GDGame.Game.Scenes
             base.Update(gameTime);
             CurrentScene.Update(gameTime);
         }
-        
+
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);

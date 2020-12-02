@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using GDGame.Game.Actors.Audio;
+using GDGame.Actors;
+using GDGame.Enums;
 using GDLibrary.Enums;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
-namespace GDGame.Game.Managers
+namespace GDGame.Managers
 {
     public class SoundManager : GameComponent
     {
@@ -13,6 +14,7 @@ namespace GDGame.Game.Managers
         private int activeSongIndex = 0;
         private Sounds currentSong;
         private SoundEffectInstance mySoundInstance;
+        private float masterSound = 0.5f;
 
         /// <summary>
         /// Indexer for the camera manager
@@ -99,6 +101,7 @@ namespace GDGame.Game.Managers
                         {
                             this.mySoundInstance = s.GetSfx().CreateInstance();
                             this.mySoundInstance.IsLooped = true;
+                            this.mySoundInstance.Volume = this.masterSound;
                             this.mySoundInstance.Play();
                         }
                     }
@@ -130,7 +133,7 @@ namespace GDGame.Game.Managers
             }
 
             SwitchSong(next);
-            this.mySoundInstance.Volume = (float)0.5;
+            this.mySoundInstance.Volume = this.masterSound;
             this.mySoundInstance.Play();
         }
 
@@ -175,11 +178,12 @@ namespace GDGame.Game.Managers
         {
             pauseSong();
 
-            float newVol = (float)(this.mySoundInstance.Volume + 0.1);
-            if (newVol >= 1.0)
-                newVol = 1;
+            this.masterSound = this.masterSound + 0.2f;
+
+            if (this.masterSound >= 1.0)
+                this.masterSound = 1;
             
-            this.mySoundInstance.Volume = newVol;
+            this.mySoundInstance.Volume = this.masterSound;
             resumeSong();
         }
 
@@ -187,16 +191,22 @@ namespace GDGame.Game.Managers
         {
             pauseSong();
 
-            float newVol = (float)(this.mySoundInstance.Volume - 0.1);
-            if (newVol <= 0)
-                newVol = 0;
+            this.masterSound = this.masterSound - 0.2f;
 
-            this.mySoundInstance.Volume = newVol;
+            if (this.masterSound <= 0)
+                this.masterSound = 0;
+
+            this.mySoundInstance.Volume = this.masterSound;
             resumeSong();
         }
 
         public override void Update(GameTime gameTime)
         {
+            //if(this.mySoundInstance.State == SoundState.Stopped)
+            //{
+            //    this.mySoundInstance.Play();
+            //}
+
             base.Update(gameTime);
         }
     }

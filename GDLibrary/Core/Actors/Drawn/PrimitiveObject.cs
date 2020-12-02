@@ -46,7 +46,8 @@ namespace GDLibrary.Actors
 
         public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
         {
-            EffectParameters.DrawPrimitive(Transform3D.World, camera);
+            EffectParameters.DrawPrimitive(Transform3D.World, camera,gameTime);
+            //This draw method doesnt use effect
             IVertexData.Draw(gameTime, null, graphicsDevice);
         }
 

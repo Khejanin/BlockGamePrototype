@@ -50,5 +50,7 @@ namespace GDGame.Game.UI
         {
             spriteBatch.Draw(texture2D, rectangle, sourceRectangle, color, rotation, origin, spriteEffects, layerDepth);
         }
+
+        public override void Update(GameTime gameTime) { }
     }
 }

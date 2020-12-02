@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using GDGame.Game.Scenes;
+using GDGame.Scenes;
 using GDLibrary.Actors;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
@@ -59,16 +59,30 @@ namespace GDGame.Game.Parameters.Effect
             Effect = effect;
         }
 
-        protected abstract void SetupMaterial(Matrix world, Camera3D camera3D);
+        protected abstract void SetupMaterial(Matrix world, Camera3D camera3D,GameTime gameTime);
 
-        public virtual void DrawPrimitive(Matrix world, Camera3D camera)
+        public virtual void DrawPrimitive(Matrix world, Camera3D camera,GameTime gameTime)
         {
-            SetupMaterial(world,camera);
+            SetupMaterial(world,camera,gameTime);
+            effect.CurrentTechnique.Passes[0].Apply();
         }
 
-        public virtual void DrawMesh(Matrix world, Camera3D camera3D, Model model, Matrix[] boneTransforms)
+        public virtual void DrawMesh(Matrix world, Camera3D camera3D, Model model, Matrix[] boneTransforms,GameTime gameTime)
         {
-            SetupMaterial(world,camera3D);
+            SetupMaterial(world,camera3D,gameTime);
+            foreach (ModelMesh mesh in model.Meshes)
+            {
+                foreach (ModelMeshPart part in mesh.MeshParts)
+                {
+                    part.Effect = effect;
+                }
+                
+                effect.Parameters["World"].SetValue(boneTransforms[mesh.ParentBone.Index]*world);
+                effect.Parameters["View"].SetValue(camera3D.View);
+                effect.Parameters["Projection"].SetValue(camera3D.Projection);
+                
+                mesh.Draw();
+            }
         }
 
         public T GetTyped<T>() where T : EffectParameters
@@ -125,7 +139,7 @@ namespace GDGame.Game.Parameters.Effect
             alpha = a;
         }
 
-        protected override void SetupMaterial(Matrix world, Camera3D camera3D)
+        protected override void SetupMaterial(Matrix world, Camera3D camera3D,GameTime gameTime)
         {
             BasicEffect basicEffect = (BasicEffect) effect;
             basicEffect.Alpha = alpha;
@@ -137,15 +151,15 @@ namespace GDGame.Game.Parameters.Effect
             Effect.CurrentTechnique.Passes[0].Apply();
         }
 
-        public override void DrawPrimitive(Matrix world, Camera3D camera)
+        public override void DrawPrimitive(Matrix world, Camera3D camera,GameTime gameTime)
         {
-            base.DrawPrimitive(world,camera);
+            base.DrawPrimitive(world,camera, gameTime);
             effect.CurrentTechnique.Passes[0].Apply();
         }
 
-        public override void DrawMesh(Matrix world, Camera3D camera3D, Model model, Matrix[] boneTransforms)
+        public override void DrawMesh(Matrix world, Camera3D camera3D, Model model, Matrix[] boneTransforms,GameTime gameTime)
         {
-            base.DrawMesh(world,camera3D, model, boneTransforms);
+            base.DrawMesh(world,camera3D, model, boneTransforms, gameTime);
             
             foreach (ModelMesh mesh in model.Meshes)
             {
@@ -169,6 +183,79 @@ namespace GDGame.Game.Parameters.Effect
         }
     }
 
+    public class NormalEffectParameters : EffectParameters
+    {
+        protected  Texture2D colorTexture, normalTexture;
+        protected Color ambientColor, diffuseColor;
+        protected float ambientIntensity, diffuseIntensity;
+        protected Transform3D lightTransform;
+        
+        public NormalEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D colorTexture, Texture2D normalTexture, Color diffuseColor, Color ambientColor, float ambientIntensity, float diffuseIntensity,Transform3D lightTransform) : base(effect)
+        {
+            this.effect = effect;
+            this.colorTexture = colorTexture;
+            this.normalTexture = normalTexture;
+            this.diffuseColor = diffuseColor;
+            this.ambientColor = ambientColor;
+            this.ambientIntensity = ambientIntensity;
+            this.diffuseIntensity = diffuseIntensity;
+            this.lightTransform = lightTransform;
+        }
+
+        protected override void SetupMaterial(Matrix world, Camera3D camera3D,GameTime gameTime)
+        {
+            effect.Parameters["AmbientColor"].SetValue(Color.Black.ToVector4());
+            effect.Parameters["AmbientIntensity"].SetValue(1f);
+            effect.Parameters["DiffuseColor"].SetValue(Vector4.One);
+            effect.Parameters["DiffuseIntensity"].SetValue(1f);
+            effect.Parameters["Light"].SetValue(Vector3.Normalize(lightTransform.RotationInDegrees));
+            effect.Parameters["ColorMap"].SetValue(colorTexture);
+            effect.Parameters["NormalMap"].SetValue(normalTexture);
+        }
+
+        public override float GetAlpha()
+        {
+            return 1;
+        }
+
+        public override object Clone()
+        {
+            return new NormalEffectParameters(effect,colorTexture,normalTexture,diffuseColor,ambientColor,ambientIntensity,diffuseIntensity,lightTransform);
+        }
+    }
+    
+    public class CoffeeEffectParameters : EffectParameters
+    {
+        protected  Texture2D uvTilesTexture, flowTexture;
+        protected Color coffeeColor;
+        
+        public CoffeeEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D uvTilesTexture,Texture2D flowTexture, Color coffeeColor) : base(effect)
+        {
+            this.uvTilesTexture = uvTilesTexture;
+            this.flowTexture = flowTexture;
+            this.coffeeColor = coffeeColor;
+            this.effect = effect;
+        }
+
+        protected override void SetupMaterial(Matrix world, Camera3D camera3D,GameTime gameTime)
+        {
+            effect.Parameters["AmbientColor"].SetValue(Color.Black.ToVector4());
+            effect.Parameters["AmbientIntensity"].SetValue(1f);
+            effect.Parameters["DiffuseColor"].SetValue(Vector4.One);
+            effect.Parameters["DiffuseIntensity"].SetValue(1f);
+        }
+
+        public override float GetAlpha()
+        {
+            return 1;
+        }
+
+        public override object Clone()
+        {
+            return new CoffeeEffectParameters(effect,uvTilesTexture,flowTexture,coffeeColor);
+        }
+    }
+    
     public class CelEffectParameters : EffectParameters
     {
         //Not currently used
@@ -184,34 +271,11 @@ namespace GDGame.Game.Parameters.Effect
             alpha = a;
         }
         
-        protected override void SetupMaterial(Matrix world, Camera3D camera3D)
+        protected override void SetupMaterial(Matrix world, Camera3D camera3D,GameTime gameTime)
         {
             effect.Parameters["WorldViewProjection"].SetValue(world*camera3D.View*camera3D.Projection);
             Effect.CurrentTechnique.Passes[0].Apply();
         }
-
-        public override void DrawPrimitive(Matrix world, Camera3D camera)
-        {
-            base.DrawPrimitive(world, camera);
-        }
-
-        public override void DrawMesh(Matrix world,Camera3D camera3D, Model model, Matrix[] boneTransforms)
-        {
-            base.DrawMesh(world,camera3D, model,boneTransforms);
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                foreach (ModelMeshPart part in mesh.MeshParts)
-                {
-                    part.Effect = effect;
-                }
-                
-                //@TODO Inefficient, seperate World and View+Projection into different Parameters in shader
-                effect.Parameters["WorldViewProjection"].SetValue(boneTransforms[mesh.ParentBone.Index]*world*camera3D.View*camera3D.Projection);
-                
-                mesh.Draw();
-            }
-        }
-
 
         public override float GetAlpha()
         {
@@ -246,36 +310,13 @@ namespace GDGame.Game.Parameters.Effect
             playerPosition = position;
         }
         
-        protected override void SetupMaterial(Matrix world, Camera3D camera3D)
+        protected override void SetupMaterial(Matrix world, Camera3D camera3D,GameTime gameTime)
         {
             effect.Parameters["WorldViewProjection"].SetValue(world*camera3D.View*camera3D.Projection);
             effect.Parameters["World"].SetValue(world);
             effect.Parameters["PlayerPos"].SetValue(MainScene.playerTransform3D.Translation);
             Effect.CurrentTechnique.Passes[0].Apply();
         }
-
-        public override void DrawPrimitive(Matrix world, Camera3D camera)
-        {
-            base.DrawPrimitive(world, camera);
-        }
-
-        public override void DrawMesh(Matrix world,Camera3D camera3D, Model model, Matrix[] boneTransforms)
-        {
-            base.DrawMesh(world,camera3D, model,boneTransforms);
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                foreach (ModelMeshPart part in mesh.MeshParts)
-                {
-                    part.Effect = effect;
-                }
-                
-                //@TODO Inefficient, seperate World and View+Projection into different Parameters in shader
-                effect.Parameters["WorldViewProjection"].SetValue(boneTransforms[mesh.ParentBone.Index]*world*camera3D.View*camera3D.Projection);
-                
-                mesh.Draw();
-            }
-        }
-
 
         public override float GetAlpha()
         {

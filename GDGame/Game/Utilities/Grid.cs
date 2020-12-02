@@ -1,23 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using GDGame.Game.Enums;
-using GDGame.Game.Factory;
-using GDGame.Game.Tiles;
+using GDGame.Actors;
+using GDGame.Enums;
+using GDGame.Factory;
+using GDGame.Game.Actors.Tiles;
+using GDGame.Tiles;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
-namespace GDLibrary
+namespace GDGame.Utilities
 {
     public class Grid
     {
         private TileFactory tileFactory;
-        private static GridTile[,,] grid;
-        private static Dictionary<int, Shape> shapes;
+        private static BasicTile[,,] _grid;
+        private static Dictionary<int, Shape> _shapes;
 
         public Grid(TileFactory tileFactory)
         {
             this.tileFactory = tileFactory;
-            shapes = new Dictionary<int, Shape>();
+            _shapes = new Dictionary<int, Shape>();
         }
 
         public void GenerateGrid(string levelFilePath)
@@ -26,19 +27,16 @@ namespace GDLibrary
 
             if (File.Exists(levelFilePath))
             {
-                using (StreamReader reader = new StreamReader(File.OpenRead(levelFilePath)))
-                {
-                    jsonString = reader.ReadToEnd();
-                }
+                using StreamReader reader = new StreamReader(File.OpenRead(levelFilePath));
+                jsonString = reader.ReadToEnd();
             }
             else
-                throw new FileNotFoundException("The level file with the path: " + levelFilePath + " was not found!");
+                throw new FileNotFoundException("The level file with the path: " + levelFilePath +
+                                                " was not found! Remember to set Build Action to 'Content' and Copy to 'Copy always' in the file properties!");
 
             LevelData data = LevelDataConverter.ConvertJsonToLevelData(jsonString);
-            grid = new GridTile[(int)data.gridSize.X, (int)data.gridSize.Y, (int)data.gridSize.Z];
+            _grid = new BasicTile[(int) data.gridSize.X, (int) data.gridSize.Y, (int) data.gridSize.Z];
             Vector3 pos = Vector3.Zero;
-
-
 
             for (int x = 0; x < data.gridSize.X; x++)
             {
@@ -46,14 +44,14 @@ namespace GDLibrary
                 {
                     for (int z = 0; z < data.gridSize.Z; z++)
                     {
-                        if (data.gridValues[x, y, z] != ETileType.None) 
+                        if (data.gridValues[x, y, z] != ETileType.None)
                         {
-                            GridTile tile = tileFactory.CreateTile(data.gridValues[x, y, z]);
-                            tile?.SetPosition(pos + new Vector3(0, 0, data.gridSize.Z - 1));
-                            grid[x, y, (int)data.gridSize.Z - 1 - z] = tile;
+                            BasicTile tile = tileFactory.CreateTile(data.gridValues[x, y, z]);
+                            if(tile != null ) tile.Transform3D.Translation = pos + new Vector3(0, 0, data.gridSize.Z - 1);
+                            _grid[x, y, (int) data.gridSize.Z - 1 - z] = tile;
                         }
                         else
-                            grid[x, y, (int)data.gridSize.Z - 1 - z] = null;
+                            _grid[x, y, (int) data.gridSize.Z - 1 - z] = null;
 
                         pos.Z -= data.tileSize.Z; //MonoGames Forward is -UnitZ
                     }
@@ -66,106 +64,58 @@ namespace GDLibrary
                 pos.X += data.tileSize.X;
             }
 
-            CreateShapes(data, grid);
+            CreateShapes(data, _grid);
+            SetEnemyPaths(data, _grid);
+            SetButtonTargets(data, _grid);
         }
 
-        private void CreateShapes(LevelData data, GridTile[,,] grid)
+        private void CreateShapes(LevelData data, BasicTile[,,] grid)
         {
             foreach (var shapesKey in data.shapes.Keys)
             {
                 Shape newShape = this.tileFactory.CreateShape();
-                foreach (var shape in data.shapes[shapesKey])
+                foreach (Vector3 shape in data.shapes[shapesKey])
                 {
-                    AttachableTile tile = grid[(int)shape.X, (int)shape.Y, (int)data.gridSize.Z - 1 - (int)shape.Z] as AttachableTile;
+                    AttachableTile tile =
+                        grid[(int) shape.X, (int) shape.Y, (int) data.gridSize.Z - 1 - (int) shape.Z] as AttachableTile;
                     newShape.AddTile(tile);
-                    tile.Shape = newShape;
+                    if (tile != null) tile.Shape = newShape;
                 }
-                shapes.Add((int)shapesKey, newShape);
+
+                _shapes.Add((int) shapesKey, newShape);
             }
         }
 
-        public static void MoveTo(Vector3 start, Vector3 dest)
+        private void SetEnemyPaths(LevelData data, BasicTile[,,] grid)
         {
-            grid[(int)dest.X,(int)dest.Y,(int)dest.Z] = grid[(int)start.X,(int)start.Y,(int)start.Z];
-            grid[(int)start.X,(int)start.Y,(int)start.Z] = null;
-        }
-
-        public struct GridPositionResult
-        {
-            public Vector3 pos;
-            public GridTile floorTile;
-            public GridTile positionTile;
-            public bool validMovePos;
-        }
-
-        public static GridPositionResult QueryMove(Vector3 pos)
-        {
-            try
+            foreach (var enemyKey in data.enemyPaths.Keys)
             {
-                int x = (int) pos.X;
-                int y = (int) pos.Y;
-                int z = (int) pos.Z;
-                
-                GridTile floorTile = grid[x, y - 1, z];
-                GridTile destinationTile = grid[x, y , z];
-                
-                GridPositionResult gpr = new GridPositionResult();
-                gpr.pos = pos;
-                gpr.floorTile = floorTile;
-                gpr.positionTile = destinationTile;
-                
-                bool hasFloor = floorTile != null;
-                bool validDest = destinationTile == null;
-                if (hasFloor && validDest)
+                EnemyTile enemy =
+                    grid[(int) enemyKey.X, (int) enemyKey.Y, (int) data.gridSize.Z - 1 - (int) enemyKey.Z] as EnemyTile;
+
+                foreach (Vector3 enemyPath in data.enemyPaths[enemyKey])
                 {
-                    gpr.validMovePos = true;
-                    return gpr;
+                    Vector3 pathPoint = new Vector3(enemyPath.X, enemyPath.Y, data.gridSize.Z - 1 - enemyPath.Z);
+                    enemy.path.Add(pathPoint);
                 }
-                else
-                {
-                    gpr.validMovePos = false;
-                    return gpr;
-                }
-            }
-            catch (IndexOutOfRangeException e)
-            {
-                return new GridPositionResult(){validMovePos = false, pos = pos};
+
+                if (enemy.path.Count > 0)
+                    enemy.currentPositionIndex = 0;
             }
         }
 
-        public static bool CanMove(Vector3 pos)
+        private void SetButtonTargets(LevelData data, BasicTile[,,] grid)
         {
-            return CanMove((int) pos.X, (int) pos.Y, (int) pos.Z);
-        }
-
-        public static bool CanMove(int x, int y, int z)
-        {
-            try
+            foreach (var buttonTargetKey in data.buttonTargets.Keys)
             {
-                bool hasFloor = grid[x, y - 1, z] != null;
-                bool isFree = grid[x, y, z] == null;
+                List<BasicTile> targets = new List<BasicTile>();
+                ButtonTile button = grid[(int)buttonTargetKey.X, (int)buttonTargetKey.Y, (int)data.gridSize.Z - 1 - (int)buttonTargetKey.Z] as ButtonTile;
 
-                return hasFloor && isFree;
+                foreach (var target in data.buttonTargets[buttonTargetKey])
+                    targets.Add(grid[(int)target.X, (int)target.Y, (int)target.Z]);
+
+                button.Targets = targets;
             }
-            catch (IndexOutOfRangeException e)
-            {
-                return false;
-            }
-        }
-
-        public static Shape GetShapeById(int id)
-        {
-            if(shapes.ContainsKey(id)) 
-            {
-                return shapes[id];
-            }
-
-            return null;
-        }
-
-        public GridTile[,,] GetGrid()
-        {
-            return grid;
         }
     }
 }

@@ -26,6 +26,7 @@
     <None Remove="Game\LevelFiles\Paul_Level_5.json" />
     <None Remove="Game\LevelFiles\Paul_Level_6.json" />
     <None Remove="Game\LevelFiles\PrototypeLevel.json" />
+    <None Remove="Game\LevelFiles\test_Enemy_path.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game\LevelFiles\AttachTest.json">
@@ -53,6 +54,21 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Game\LevelFiles\PrototypeLevel.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Game\LevelFiles\BridgeLevel.json" />
+    <Content Include="Game\LevelFiles\BridgeLevel.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Game\LevelFiles\MediumLevel.json" />
+    <Content Include="Game\LevelFiles\MediumLevel.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Game\LevelFiles\presentationLevel1.json" />
+    <Content Include="Game\LevelFiles\presentationLevel1.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Game\LevelFiles\test_Enemy_path.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

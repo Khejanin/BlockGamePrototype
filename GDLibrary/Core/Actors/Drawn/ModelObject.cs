@@ -79,7 +79,7 @@ namespace GDLibrary.Actors
 
         public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
         {
-            EffectParameters.DrawMesh(Transform3D.World,camera,model,boneTransforms);
+            EffectParameters.DrawMesh(Transform3D.World,camera,model,boneTransforms,gameTime);
         }
 
         public new object Clone()
@@ -103,21 +103,5 @@ namespace GDLibrary.Actors
 
             return actor;
         }
-
-        #region OurCode
-
-        public List<BoundingSphere> GetBounds()
-        {
-            List<BoundingSphere> result = new List<BoundingSphere>();
-            
-            foreach (ModelMesh mesh in Model.Meshes)
-            {
-                result.Add(mesh.BoundingSphere);
-            }
-
-            return result;
-        }
-
-        #endregion
     }
 }

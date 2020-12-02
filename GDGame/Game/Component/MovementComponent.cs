@@ -1,31 +1,35 @@
-﻿using System.Linq;
-using GDGame.Game.Tiles;
+﻿using System;
+using System.Linq;
+using GDGame.Actors;
+using GDGame.Controllers;
+using GDGame.EventSystem;
+using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 
-namespace GDGame.Game.Controllers
+namespace GDGame.Component
 {
     public class MovementComponent : IController
     {
-        private GridTile parent;
+        private MovableTile parent;
 
         private int movementTime;
         private Curve1D curve1D;
         private Vector3 diff;
-        private Quaternion startRotQ;
-        private Quaternion endRotQ;
+        private Quaternion rotationQuaternion;
         private Vector3 startPos;
         private Vector3 endPos;
+        private Quaternion startRotation;
 
         public MovementComponent(int movementTime, Curve1D curve1D)
         {
             this.movementTime = movementTime;
-
             this.curve1D = curve1D;
             this.curve1D.Add(1, 0);
             this.curve1D.Add(0, movementTime);
+            startRotation = rotationQuaternion = Quaternion.Identity;
         }
 
         public object Clone()
@@ -35,7 +39,7 @@ namespace GDGame.Game.Controllers
 
         public void Update(GameTime gameTime, IActor actor)
         {
-            parent ??= actor as GridTile;
+            parent ??= actor as MovableTile;
 
             if (parent != null && parent.IsMoving)
             {
@@ -43,18 +47,20 @@ namespace GDGame.Game.Controllers
                 {
                     parent.IsMoving = false;
                     parent.CurrentMovementTime = 0;
+                    startRotation = rotationQuaternion; 
                 }
 
-                Quaternion rot = Quaternion.Slerp(startRotQ, endRotQ,
+                Quaternion quaternion = Quaternion.Slerp(startRotation, rotationQuaternion,
                     1 - (float) parent.CurrentMovementTime / movementTime);
                 float currentStep = curve1D.Evaluate(parent.CurrentMovementTime, 5);
                 Vector3 trans = startPos + diff * currentStep;
 
-                parent.Transform3D.Rotation = rot;
+                parent.Transform3D.RotationInDegrees = MathHelperFunctions.QuaternionToEulerAngles(quaternion);
                 parent.Transform3D.Translation = trans;
                 parent.CurrentMovementTime -= (int) gameTime.ElapsedGameTime.TotalMilliseconds;
             }
         }
+
 
         public ControllerType GetControllerType()
         {
@@ -65,25 +71,21 @@ namespace GDGame.Game.Controllers
         {
             if (parent != null && !parent.IsMoving)
             {
-                if (parent.ActorType == ActorType.Player)
-                {
-                    RotationComponent rotationComponent =
-                        (RotationComponent) parent.ControllerList.Find(controller =>
-                            controller.GetType() == typeof(RotationComponent));
-                    rotationComponent?.SetRotatePoint(direction);
-                }
+                RotationComponent rotationComponent =
+                    (RotationComponent) parent.ControllerList.Find(controller =>
+                        controller.GetType() == typeof(RotationComponent));
+                rotationComponent?.SetRotatePoint(direction);
 
                 //offset between the player and the point to rotate around
                 Vector3 offset = parent.Transform3D.Translation - parent.RotatePoint;
                 //The rotation to apply
-                Quaternion rot =
+                var rot =
                     Quaternion.CreateFromAxisAngle(Vector3.Cross(direction, Vector3.Up), MathHelper.ToRadians(-90));
                 //Rotate around the offset point
                 Vector3 translation = Vector3.Transform(offset, rot);
 
-                //Start and End Rotation --> Will be lerped between
-                startRotQ = parent.Transform3D.Rotation;
-                endRotQ = rot * startRotQ;
+                //startRotation = MathHelperFunctions.EulerAnglesToQuaternion(parent.Transform3D.RotationInDegrees);
+                rotationQuaternion = rot * startRotation;
 
                 //Start and End Position --> Will be lerped between
                 startPos = parent.Transform3D.Translation;
@@ -96,10 +98,11 @@ namespace GDGame.Game.Controllers
                         (PlayerController) parent.ControllerList.Find(controller =>
                             controller.GetType() == typeof(PlayerController));
                     if (playerController != null &&
-                        playerController.IsMoveValid(rot, parent.RotatePoint, endPos,offset))
+                        playerController.IsMoveValid(rot, parent.RotatePoint, endPos, offset))
                     {
+                        EventManager.FireEvent(new PlayerEventInfo { type = Enums.PlayerEventType.Move });
                         //Calculate movement for each attached tile
-                        if (parent is CubePlayer player)
+                        if (parent is PlayerTile player)
                             foreach (MovementComponent movementController in player.AttachedTiles.Select(tile =>
                                 (MovementComponent) tile.ControllerList.Find(controller =>
                                     controller.GetType() == typeof(MovementComponent))))
@@ -120,5 +123,6 @@ namespace GDGame.Game.Controllers
                 }
             }
         }
+        
     }
 }

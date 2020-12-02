@@ -1,16 +1,5 @@
-﻿namespace GDGame.Game.Enums
+﻿namespace GDGame.Enums
 {
-    public enum EDirection : sbyte
-    {
-        None,
-        Right,
-        Left,
-        Up,
-        Down,
-        Forward,
-        Back
-    }
-    
     public enum ETileType
     {
         None,
@@ -18,6 +7,37 @@
         Attachable,
         Trigger,
         PlayerStart,
-        Win
+        Win,
+        Enemy,
+        Button
+    }
+    
+    public enum ColliderShape
+    {
+        Cube,
+        Sphere
+    }
+
+    public enum ColliderType
+    {
+        CheckOnly,
+        Blocking
+    }
+    
+    public enum GameState
+    {
+        Won,
+        Lost
+    }
+
+    public enum PlayerEventType
+    {
+        Move
+    }
+    
+    public enum SceneActionType
+    {
+        OnSceneChange,
+        OnSceneLoaded
     }
 }
