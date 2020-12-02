@@ -13,35 +13,17 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Assets/Effects/File - Copy.fx
+#begin Assets/Effects/Coffee.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Assets/Effects/File - Copy.fx
+/build:Assets/Effects/Coffee.fx
 
-#begin Assets/Effects/File.fx
+#begin Assets/Effects/Normal.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Assets/Effects/File.fx
-
-#begin Assets/Effects/refrac.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Assets/Effects/refrac.fx
-
-#begin Assets/Effects/sliding.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Assets/Effects/sliding.fx
-
-#begin Assets/Effects/test.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Assets/Effects/test.fx
+/build:Assets/Effects/Normal.fx
 
 #begin Assets/Fonts/Arial.spritefont
 /importer:FontDescriptionImporter
@@ -107,7 +89,7 @@
 /processorParam:ColorKeyEnabled=True
 /processorParam:DefaultEffect=BasicEffect
 /processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
+/processorParam:GenerateTangentFrames=True
 /processorParam:PremultiplyTextureAlpha=True
 /processorParam:PremultiplyVertexColors=True
 /processorParam:ResizeTexturesToPowerOfTwo=False
@@ -164,7 +146,7 @@
 /processorParam:ColorKeyEnabled=True
 /processorParam:DefaultEffect=BasicEffect
 /processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
+/processorParam:GenerateTangentFrames=True
 /processorParam:PremultiplyTextureAlpha=True
 /processorParam:PremultiplyVertexColors=True
 /processorParam:ResizeTexturesToPowerOfTwo=False
@@ -202,7 +184,7 @@
 /processorParam:ColorKeyEnabled=True
 /processorParam:DefaultEffect=BasicEffect
 /processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
+/processorParam:GenerateTangentFrames=True
 /processorParam:PremultiplyTextureAlpha=True
 /processorParam:PremultiplyVertexColors=True
 /processorParam:ResizeTexturesToPowerOfTwo=False
@@ -575,6 +557,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/circle.png
 
+#begin Assets/Textures/flowmap2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/flowmap2.png
+
 #begin Assets/Textures/Foliage/Ground/grass_midlevel.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -899,7 +893,7 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Skybox/tiles.png
 
-#begin Assets/Textures/uv.png
+#begin Assets/Textures/uvalex.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -909,29 +903,5 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/uv.png
-
-#begin Assets/Textures/xnarefracdemo.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/xnarefracdemo.png
-
-#begin Assets/Textures/xnarefracnormalpng.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/xnarefracnormalpng.png
+/build:Assets/Textures/uvalex.png
 

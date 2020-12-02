@@ -67,7 +67,7 @@ namespace GDGame.Factory
         {
             PlayerTile playerTile = (PlayerTile) drawnActors["PlayerBlock"];
             playerTile = playerTile.Clone() as PlayerTile;
-            objectManager.Add(playerTile);
+            objectManager.player = playerTile;
             return playerTile;
         }
 

@@ -9,6 +9,7 @@ using GDGame.Game.Actors.Tiles;
 using GDGame.Game.UI;
 using GDGame.Utilities;
 using GDLibrary.Actors;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Factories;
 using GDLibrary.Interfaces;
@@ -33,6 +34,7 @@ namespace GDGame.Scenes
         private bool optionsToggle;
 
         private ModelObject coffee;
+        private ModelObject player;
 
 
         ////FOR SKYBOX____ TEMP
@@ -57,12 +59,8 @@ namespace GDGame.Scenes
 
         private void SetTargetToCamera()
         {
-            List<DrawnActor3D> players = ObjectManager.FindAll(actor3D => actor3D.ActorType == ActorType.Player);
-            if (players.Count > 0)
-            {
-                RotationAroundActor cam = (RotationAroundActor) CameraManager.ActiveCamera.ControllerList[0];
-                cam.Target = players[0];
-            }
+            RotationAroundActor cam = (RotationAroundActor) CameraManager.ActiveCamera.ControllerList[0];
+            cam.Target = ObjectManager.player;
         }
 
         #region Initialization - Vertices, Archetypes, Helpers, Drawn Content(e.g. Skybox)
@@ -93,14 +91,24 @@ namespace GDGame.Scenes
             InitSkybox();
 
             InitCoffee();
-
-            //Effect coffeePostProcess = Content.Load<Effect>("Assets/Effects/File - Copy");
-            Effect coffeePostProcess = Content.Load<Effect>("Assets/Effects/sliding");
-
-            ObjectManager.coffeePostProcess = coffeePostProcess;
-
-            ObjectManager.testTexture = textures["uvtest"];
             
+            Effect coffeePostProcess = Content.Load<Effect>("Assets/Effects/Coffee");
+            Effect dissolvePP = Content.Load<Effect>("Assets/Effects/Normal");
+                        
+            Texture2D dis = Content.Load<Texture2D>("Assets/Textures/uvalex");
+            Texture2D flow = Content.Load<Texture2D>("Assets/Textures/flowmap2");
+            
+            //Texture2D normal = Content.Load<Texture2D>("Assets/Textures/norma1k");
+            
+            ObjectManager.coffeePostProcess = coffeePostProcess;
+            ObjectManager.testTexture = textures["uvtest"];
+            ObjectManager.displacement = dis;
+            ObjectManager.flowMap = flow;
+
+            ObjectManager.normalPP = dissolvePP;
+            //ObjectManager.playerNormal = normal;
+            ObjectManager.playerTexture = textures["Player"];
+
             ObjectManager.screenSpace = Game.ScreenCentre*2;
             
             ObjectManager.coffee = coffee;
@@ -128,8 +136,9 @@ namespace GDGame.Scenes
 
         private void InitCoffee()
         {
-            EffectParameters staticColorEffect = new EffectParameters(ModelEffectColor,textures["uvtest"], /*new Color(111,78,55),0.8f*/ Color.White,1);
+            EffectParameters staticColorEffect = new EffectParameters(ModelEffectColor,textures["uvtest"], Color.White,0.5f);
             Transform3D transform3D = new Transform3D(Vector3.Down * 3, -Vector3.Forward, Vector3.Up);
+            transform3D.Scale = Vector3.One /5;
             coffee = new ModelObject("coffee - plane",ActorType.Primitive,StatusType.Update,transform3D,staticColorEffect,models["Plane"]);
             coffee.ControllerList.Add(new MoveController("coffee move controller", ControllerType.Pan, Vector3.Up / 5.0f));
             
@@ -145,7 +154,12 @@ namespace GDGame.Scenes
             camera3D.ControllerList.Add(new RotationAroundActor("main_cam", ControllerType.FlightCamera,
                 KeyboardManager, 20, 20));
 
+            transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward,Vector3.Up);
+            Camera3D camera3D2 = new Camera3D("cam",ActorType.Camera3D,StatusType.Update, transform3D,ProjectionParameters.StandardDeepFourThree);
+            camera3D2.ControllerList.Add(new FirstPersonController("fp",ControllerType.FirstPerson,KeyboardManager,MouseManager,0.1f,0.1f,0.01f));
+            
             CameraManager.Add(camera3D);
+            CameraManager.Add(camera3D2);
             CameraManager.ActiveCameraIndex = 0; //0, 1, 2, 3
         }
 
@@ -448,6 +462,7 @@ namespace GDGame.Scenes
         private void LoadTextures()
         {
             Texture2D cubeTexture = Content.Load<Texture2D>("Assets/Textures/Props/GameTextures/TextureCube");
+            Texture2D test = Content.Load<Texture2D>("Assets/Textures/lampcolor");
             Texture2D basicBgFloor = Content.Load<Texture2D>("Assets/Textures/Block/BlockTextureBlue");
             Texture2D whiteSquareTexture = Content.Load<Texture2D>("Assets/Textures/Base/WhiteSquare");
             Texture2D compassTexture = Content.Load<Texture2D>("Assets/Textures/Base/BasicCompass");
@@ -456,7 +471,7 @@ namespace GDGame.Scenes
             Texture2D logoMirror = Content.Load<Texture2D>("Assets/Textures/Menu/logo_mirror");
             Texture2D options = Content.Load<Texture2D>("Assets/Textures/Menu/menubaseres");
             Texture2D optionsButton = Content.Load<Texture2D>("Assets/Textures/Menu/button");
-            Texture2D uvTest = Content.Load<Texture2D>("Assets/Textures/uv");
+            Texture2D uvTest = Content.Load<Texture2D>("Assets/Textures/uvalex");
 
             Texture2D wall = Content.Load<Texture2D>("Assets/Textures/Block/block_green");
             Texture2D floor = Content.Load<Texture2D>("Assets/Textures/Skybox/floor_neon");
@@ -469,7 +484,7 @@ namespace GDGame.Scenes
 
             textures = new Dictionary<string, Texture2D>
             {
-                {"Player", cubeTexture},
+                {"Player", test},
                 {"Attachable", cubeTexture},
                 {"Finish", cubeTexture},
                 {"Box", basicBgFloor},
@@ -499,10 +514,11 @@ namespace GDGame.Scenes
             Model boxModel = Content.Load<Model>("Assets/Models/box2");
             Model enemyModel = Content.Load<Model>("Assets/Models/Enemy");
             Model planeModel = Content.Load<Model>("Assets/Models/plane");
+            Model test = Content.Load<Model>("Assets/Models/LanternFBXNOTEXTURE");
 
             models = new Dictionary<string, Model>
             {
-                {"Attachable", redCube}, {"Player", blueCube}, {"Box", boxModel}, {"Enemy", enemyModel} , {"Plane",planeModel}
+                {"Attachable", redCube}, {"Player", test}, {"Box", boxModel}, {"Enemy", enemyModel} , {"Plane",planeModel}
             };
         }
 
@@ -554,13 +570,7 @@ namespace GDGame.Scenes
                 CameraManager.CycleActiveCamera();
                 // this.cameraManager.ActiveCameraIndex++;
             }
-
-            if (KeyboardManager.IsFirstKeyPress(Keys.C))
-            {
-                CameraManager.CycleActiveCamera();
-                // this.cameraManager.ActiveCameraIndex++;
-            }
-
+            
             //Cycle Through Audio
             if (KeyboardManager.IsFirstKeyPress(Keys.M))
                 SoundManager.NextSong();
