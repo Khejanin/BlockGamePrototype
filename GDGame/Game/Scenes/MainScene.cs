@@ -269,8 +269,8 @@ namespace GDGame.Scenes
             Main.ObjectManager.Add(choco);
 
             //effectParameters = new BasicEffectParameters(unlitTexturedEffect, textures["Wall"], /*bug*/ Color.White, 1);
-            
-            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Checkers"], Color.White, 1);
+
+            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["blackTile"], Color.White, 1);
             BasicTile cat = new BasicTile("Cat", ActorType.Primitive, StatusType.Drawn, transform3D, effectParameters,
                 Main.Models["Cat"], ETileType.Static)
             {
@@ -280,7 +280,7 @@ namespace GDGame.Scenes
             cat.Enable(true, 1);
             Main.ObjectManager.Add(cat);
 
-            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["blackTile"], Color.White, 1);
+            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Checkers"], Color.White, 1);
             BasicTile catBed = new BasicTile("Catbed", ActorType.Primitive,
                 StatusType.Drawn, transform3D, effectParameters, Main.Models["CatBed"], ETileType.Static)
             {
@@ -588,27 +588,29 @@ namespace GDGame.Scenes
             Main.Models.Load("Assets/Models/Pyramid");
             Main.Models.Load("Assets/Models/SinglePlate");
             Main.Models.Load("Assets/Models/SugarBox");
-            Main.Models.Load("Assets/Models/Decor/table03", "Table");
-            Main.Models.Load("Assets/Models/Decor/cups03", "Cups");
-            Main.Models.Load("Assets/Models/Decor/choco03", "Chocolate");
-            Main.Models.Load("Assets/Models/Decor/cat03", "Cat");
-            Main.Models.Load("Assets/Models/Decor/catbed03", "CatBed");
+            Main.Models.Load("Assets/Models/Decor/table01", "Table");
+            Main.Models.Load("Assets/Models/Decor/cups01", "Cups");
+            Main.Models.Load("Assets/Models/Decor/choco01", "Chocolate");
+            Main.Models.Load("Assets/Models/Decor/cat01", "Cat");
+            Main.Models.Load("Assets/Models/Decor/bed01", "CatBed");
             Main.Models.Load("Assets/Models/plane", "CoffeePlane");
         }
 
         private void LoadSounds()
         {
-            SoundEffect track01 = Main.Content.Load<SoundEffect>("Assets/GameTracks/testTrack01");
-            SoundEffect track02 = Main.Content.Load<SoundEffect>("Assets/GameTracks/testTrack02");
-            SoundEffect track03 = Main.Content.Load<SoundEffect>("Assets/GameTracks/testTrack03");
+            SoundEffect track01 = Main.Content.Load<SoundEffect>("Assets/GameTracks/track01");
+            SoundEffect track02 = Main.Content.Load<SoundEffect>("Assets/GameTracks/track02");
+            SoundEffect track03 = Main.Content.Load<SoundEffect>("Assets/GameTracks/track03");
             SoundEffect track04 = Main.Content.Load<SoundEffect>("Assets/Sound/Knock04");
             SoundEffect track05 = Main.Content.Load<SoundEffect>("Assets/Sound/Click02");
-            SoundEffect track06 = Main.Content.Load<SoundEffect>("Assets/GameTracks/testTrack06");
+            SoundEffect track06 = Main.Content.Load<SoundEffect>("Assets/GameTracks/track04");
+            SoundEffect track07 = Main.Content.Load<SoundEffect>("Assets/GameTracks/track05");
 
-            Main.SoundManager.AddMusic("gameTrack01", track01);
-            Main.SoundManager.AddMusic("gameTrack02", track02);
-            Main.SoundManager.AddMusic("gameTrack03", track03);
-            Main.SoundManager.AddMusic("endTheme", track06);
+            Main.SoundManager.AddMusic("endTheme", track01);
+            Main.SoundManager.AddMusic("gameTrack01", track02);
+            Main.SoundManager.AddMusic("gameTrack02", track03);
+            Main.SoundManager.AddMusic("gameTrack03", track06);
+            Main.SoundManager.AddMusic("titleTheme", track07);
             Main.SoundManager.AddSoundEffect(SfxType.PlayerMove, track04);
             Main.SoundManager.AddSoundEffect(SfxType.PlayerAttach, track05);
 
