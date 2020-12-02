@@ -1,59 +1,37 @@
-﻿using GDGame.Actors;
-using GDGame.Managers;
-using GDGame.Game.UI;
-using GDLibrary.Actors;
+﻿using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using GDLibrary.Managers;
-using GDGame.Scenes;
 
 namespace GDGame.Scenes
 {
-    class OptionsMenuScene : Scene
+    public class OptionsMenuScene : Scene
     {
-        private Dictionary<string, Texture2D> textures;
-        UiButton backUiButton, quitUiButton;
-        public OptionsMenuScene(Main game, bool unloadsContent = false) : base(game, unloadsContent)
+        #region Constructors
+
+        public OptionsMenuScene(Main main, SceneType sceneType, bool unloadsContent) : base(main, sceneType, unloadsContent)
         {
-            MouseManager mouseManager = new MouseManager(game, true);
-            backgroundColor = Color.LightCyan;
         }
+
+        #endregion
+
+        #region Initialization
 
         public override void Initialize()
         {
             InitializeLoadContent();
             InitializeCamera();
-            //InitializeText();
-            InitialiseButtons();
+            uiSceneManager.InitUi();
         }
 
-        private void InitialiseButtons()
+        private void InitializeCamera()
         {
-            backUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X - 93, Game.ScreenCentre.Y - 40), "Resume", textures["bStart"], Game.Fonts["UI"]);
-            UiManager.AddUiElement("BackButton", backUiButton);
-
-            backUiButton.Click += Click_BackBtn;
-
-            quitUiButton = new UiButton(StatusType.Drawn, new Vector2(Game.ScreenCentre.X - 93, Game.ScreenCentre.Y + 80), "Quit", textures["bStart"], Game.Fonts["UI"]);
-            UiManager.AddUiElement("QuitBotton", quitUiButton);
-
-            quitUiButton.Click += Click_QuitBtn;
-        }
-
-        private void Click_QuitBtn()
-        {
-            Game.Exit();
-        }
-
-        private void Click_BackBtn()
-        {
-            Game.SceneManager.MenuSwitchScene();
+            Camera3D camera3D = new Camera3D("Menu_Camera", ActorType.Camera3D, StatusType.Update, new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up),
+                Main.GlobalProjectionParameters, new Viewport(0, 0, 1024, 768));
+            Main.CameraManager.Add(camera3D);
         }
 
         private void InitializeLoadContent()
@@ -62,69 +40,40 @@ namespace GDGame.Scenes
             LoadSounds();
         }
 
-        private void InitializeCamera()
-        {
-            Camera3D camera3D = new Camera3D("Menu_Camera", ActorType.Camera3D, StatusType.Update,
-                new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up), Game.GlobalProjectionParameters);
-            CameraManager.Add(camera3D);
-        }
+        #endregion
 
-
-        private void InitializeText()
-        {
-            UiText menuUiText = new UiText(StatusType.Drawn, "Press SPACEBAR to start the Game!", Game.Fonts["UI"],
-                Game.ScreenCentre, Color.Wheat);
-            UiManager.AddUiElement("MenuText", menuUiText);
-        }
-
-        protected override void UpdateScene(GameTime gameTime)
-        {
-            backUiButton.Update(gameTime);
-            quitUiButton.Update(gameTime);
-
-            if (KeyboardManager.IsFirstKeyPress(Keys.Space))
-            {
-                Game.SceneManager.NextScene();
-            }
-        }
-
-        protected override void DrawScene(GameTime gameTime)
-        {
-
-        }
-
+        #region Override Methode
 
         protected override void Terminate()
         {
-            UiManager.Clear();
-            CameraManager.Clear();
+            Main.CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Menu_Camera");
         }
 
 
-        #region Load Content
+        protected override void UpdateScene()
+        {
+            if (Main.KeyboardManager.IsFirstKeyPress(Keys.Space)) Main.SceneManager.NextScene();
+        }
+
+        #endregion
+
+        #region Load Methods
+
         private void LoadSounds()
         {
-            SoundEffect track01 = Content.Load<SoundEffect>("Assets/GameTracks/GameTrack02");
-            SoundManager.Add(new Sounds(track01, "gameTrack01", ActorType.MusicTrack, StatusType.Update));
-            //SoundManager.NextSong();
+            SoundEffect track01 = Main.Content.Load<SoundEffect>("Assets/GameTracks/GameTrack02");
+            Main.SoundManager.AddMusic("gametrack01", track01);
+
+            Main.SoundManager.StartMusicQueue();
         }
 
         private void LoadTextures()
         {
-            Texture2D cursor = Content.Load<Texture2D>("Assets/Textures/Block/block_red");
-            Texture2D buttonStart = Content.Load<Texture2D>("Assets/Textures/Menu/button");
-            Texture2D buttonBasic = Content.Load<Texture2D>("Assets/Textures/Block/block_yellow");
-            Texture2D background = Content.Load<Texture2D>("Assets/Textures/Block/block_green");
-            Texture2D panel = Content.Load<Texture2D>("Assets/Textures/Skybox/floor_neon");
-
-            textures = new Dictionary<string, Texture2D>
-            {
-                {"bStart", buttonStart},
-                {"bBasic", buttonBasic},
-                {"bg", background},
-                {"Panel", panel},
-                {"Cursor", cursor }
-            };
+            Main.Textures.Load("Assets/Textures/Block/block_red", "Cursor");
+            Main.Textures.Load("Assets/Textures/Menu/button", "bStart");
+            Main.Textures.Load("Assets/Textures/Block/block_yellow", "bBasic");
+            Main.Textures.Load("Assets/Textures/Block/block_green", "bg");
+            Main.Textures.Load("Assets/Textures/Skybox/floor_neon", "Panel");
         }
 
         #endregion

@@ -1,87 +1,101 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <PublishReadyToRun>false</PublishReadyToRun>
-    <TieredCompilation>false</TieredCompilation>
-    <UseWindowsForms>true</UseWindowsForms>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="GDLibrary\**" />
-    <EmbeddedResource Remove="GDLibrary\**" />
-    <None Remove="GDLibrary\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Game\LevelFiles\AttachTest.json" />
-    <None Remove="Game\LevelFiles\Leveltest1.json" />
-    <None Remove="Game\LevelFiles\LevelTest2.json" />
-    <None Remove="Game\LevelFiles\Paul_Level_1.json" />
-    <None Remove="Game\LevelFiles\Paul_Level_2.json" />
-    <None Remove="Game\LevelFiles\Paul_Level_3.json" />
-    <None Remove="Game\LevelFiles\Paul_Level_4.json" />
-    <None Remove="Game\LevelFiles\Paul_Level_5.json" />
-    <None Remove="Game\LevelFiles\Paul_Level_6.json" />
-    <None Remove="Game\LevelFiles\PrototypeLevel.json" />
-    <None Remove="Game\LevelFiles\test_Enemy_path.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Game\LevelFiles\AttachTest.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Game\LevelFiles\LevelTest2.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Game\LevelFiles\Paul_Level_1.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Game\LevelFiles\Paul_Level_2.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Game\LevelFiles\Paul_Level_3.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Game\LevelFiles\Paul_Level_4.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Game\LevelFiles\Paul_Level_5.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Game\LevelFiles\Paul_Level_6.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Game\LevelFiles\PrototypeLevel.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Remove="Game\LevelFiles\BridgeLevel.json" />
-    <Content Include="Game\LevelFiles\BridgeLevel.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Remove="Game\LevelFiles\MediumLevel.json" />
-    <Content Include="Game\LevelFiles\MediumLevel.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Remove="Game\LevelFiles\presentationLevel1.json" />
-    <Content Include="Game\LevelFiles\presentationLevel1.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Game\LevelFiles\test_Enemy_path.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Game\Actors\DrawnActors" />
-    <Folder Include="Game\Parameters" />
-  </ItemGroup>
-  <Import Project="..\GDLibrary\GDLibrary.projitems" Label="Shared" />
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<PublishReadyToRun>false</PublishReadyToRun>
+		<TieredCompilation>false</TieredCompilation>
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
+	<PropertyGroup>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<ApplicationIcon>Icon.ico</ApplicationIcon>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+	<ItemGroup>
+		<TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
+		<PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
+	</ItemGroup>
+	<ItemGroup>
+		<MonoGameContentReference Include="Content\Content.mgcb" />
+		<MonoGameContentReference Remove="Game\Actors\Drawn\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Game\LevelFiles\Paul_Level_1.json" />
+	  <Content Include="Game\LevelFiles\Paul_Level_1.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\LevelFiles\AttachTest.json" />
+	  <Content Include="Game\LevelFiles\AttachTest.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\LevelFiles\Big_Level.json" />
+	  <Content Include="Game\LevelFiles\Big_Level.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\LevelFiles\BridgeLevel.json" />
+	  <Content Include="Game\LevelFiles\BridgeLevel.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\LevelFiles\LevelTest2.json" />
+	  <Content Include="Game\LevelFiles\LevelTest2.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\LevelFiles\MediumLevel.json" />
+	  <Content Include="Game\LevelFiles\MediumLevel.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\LevelFiles\Paul_Level_2.json" />
+	  <Content Include="Game\LevelFiles\Paul_Level_2.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\LevelFiles\Paul_Level_3.json" />
+	  <Content Include="Game\LevelFiles\Paul_Level_3.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\LevelFiles\Paul_Level_4.json" />
+	  <Content Include="Game\LevelFiles\Paul_Level_4.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\LevelFiles\Paul_Level_5.json" />
+	  <Content Include="Game\LevelFiles\Paul_Level_5.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\LevelFiles\Paul_Level_6.json" />
+	  <Content Include="Game\LevelFiles\Paul_Level_6.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\LevelFiles\presentationLevel1.json" />
+	  <Content Include="Game\LevelFiles\presentationLevel1.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\LevelFiles\PrototypeLevel.json" />
+	  <Content Include="Game\LevelFiles\PrototypeLevel.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\LevelFiles\PrototypeLevel - Copy.json" />
+	  <Content Include="Game\LevelFiles\PrototypeLevel - Copy.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\LevelFiles\test_Enemy_path.json" />
+	  <Content Include="Game\LevelFiles\test_Enemy_path.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <None Remove="Game\Actors\Drawn\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="Game\Actors\Drawn\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Remove="Game\Actors\Drawn\**" />
+	</ItemGroup>
+	<Import Project="..\GDLibrary\GDLibrary.projitems" Label="Shared" />
+	<Import Project="..\JigLibX\JigLibX.projitems" Label="Shared" />
 </Project>

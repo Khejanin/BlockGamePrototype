@@ -1,4 +1,3 @@
-using GDGame.Game.UI;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
@@ -10,54 +9,59 @@ namespace GDGame.Scenes
 {
     public class TutorialScene : Scene
     {
+        #region Constructors
 
-        public TutorialScene(Main game,bool unloadsContent = false) : base(game,unloadsContent)
+        public TutorialScene(Main main, SceneType sceneType, bool unloadsContent) : base(main, sceneType, unloadsContent)
         {
-            backgroundColor = Color.Black;
         }
+
+        #endregion
+
+        #region Initialization
 
         public override void Initialize()
         {
+            InitializeLoadContent();
             InitializeCamera();
-            InitializeText();
+            uiSceneManager.InitUi();
         }
-
 
         private void InitializeCamera()
         {
-            Camera3D camera3D = new Camera3D("Menu_Camera", ActorType.Camera3D, StatusType.Update,
-                new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up), Game.GlobalProjectionParameters);
-            CameraManager.Add(camera3D);
+            Camera3D camera3D = new Camera3D("Menu_Camera", ActorType.Camera3D, StatusType.Update, new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up),
+                Main.GlobalProjectionParameters, new Viewport(0, 0, 1024, 768));
+            Main.CameraManager.Add(camera3D);
         }
 
-
-        private void InitializeText()
+        private void InitializeLoadContent()
         {
-            Texture2D texture2D = Content.Load<Texture2D>("Assets/Textures/Menu/tutorial");
-            UiSprite tutorialText = new UiSprite(StatusType.Drawn,texture2D,new Rectangle(0,0,(int) (Game.ScreenCentre.X*2),(int) (Game.ScreenCentre.Y*2)),Color.White,false);
-            UiText menuUiText = new UiText(StatusType.Drawn, "Press SPACEBAR to continue!", Game.Fonts["UI"],
-                Game.ScreenCentre - new Vector2(0,Game.ScreenCentre.Y/2), Color.Black);
-            UiManager.AddUiElement("TutorialImage",tutorialText);
-            UiManager.AddUiElement("TutorialText", menuUiText);
+            LoadTextures();
         }
 
-        protected override void UpdateScene(GameTime gameTime)
-        {
-            if (KeyboardManager.IsFirstKeyPress(Keys.Space))
-            {
-                Game.SceneManager.NextScene();
-            }
-        }
+        #endregion
 
-        protected override void DrawScene(GameTime gameTime)
-        {
-        }
-
+        #region Override Methode
 
         protected override void Terminate()
         {
-            UiManager.Clear();
-            CameraManager.Clear();
+            Main.CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Menu_Camera");
+            Main.Textures.Dispose();
         }
+
+        protected override void UpdateScene()
+        {
+            if (Main.KeyboardManager.IsFirstKeyPress(Keys.Space)) Main.SceneManager.NextScene();
+        }
+
+        #endregion
+
+        #region Load Methods
+
+        private void LoadTextures()
+        {
+            Main.Textures.Load("Assets/Textures/Menu/tutorial", "Tutorial");
+        }
+
+        #endregion
     }
 }

@@ -1,58 +1,48 @@
-using System.Diagnostics;
-using GDGame.Game.UI;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Scenes
 {
     public class EndScene : Scene
     {
-        public EndScene(Main game, bool unloadsContent = false) : base(game, unloadsContent)
+        #region Constructors
+
+        public EndScene(Main main, SceneType sceneType, bool unloadsContent) : base(main, sceneType, unloadsContent)
         {
-            backgroundColor = Color.Black;
         }
+
+        #endregion
+
+        #region Initialization
 
         public override void Initialize()
         {
             InitializeCamera();
-            InitializeText();
+            uiSceneManager.InitUi();
         }
-
 
         private void InitializeCamera()
         {
-            Camera3D camera3D = new Camera3D("Menu_Camera", ActorType.Camera3D, StatusType.Update,
-                new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up), Game.GlobalProjectionParameters);
-            CameraManager.Add(camera3D);
+            Camera3D camera3D = new Camera3D("Menu_Camera", ActorType.Camera3D, StatusType.Update, new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up),
+                Main.GlobalProjectionParameters, new Viewport(0, 0, 1024, 768));
+            Main.CameraManager.Add(camera3D);
         }
 
+        #endregion
 
-        protected void InitializeText()
-        {
-            UiText winText = new UiText(StatusType.Drawn, "You won!!! Press ESC to close the Game!", Game.Fonts["UI"],
-                Game.ScreenCentre, Color.Wheat);
-            UiManager.AddUiElement("MenuText", winText);
-        }
-
-        protected override void UpdateScene(GameTime gameTime)
-        {
-            if (KeyboardManager.IsFirstKeyPress(Keys.NumPad0))
-            {
-                Debug.WriteLine("0");
-            }
-        }
-
-        protected override void DrawScene(GameTime gameTime)
-        {
-        }
-
+        #region Override Methode
 
         protected override void Terminate()
         {
-            UiManager.Clear();
         }
+
+        protected override void UpdateScene()
+        {
+        }
+
+        #endregion
     }
 }

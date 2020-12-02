@@ -1,6 +1,7 @@
-﻿using GDGame.Enums;
-using GDGame.Interfaces;
+﻿using System;
+using GDGame.Enums;
 using GDLibrary.Actors;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
@@ -9,124 +10,87 @@ using SharpDX.Direct2D1.Effects;
 
 namespace GDGame.Controllers
 {
-
-    public abstract class ColliderController : IDrawnController
+    public abstract class ColliderController : Controller
     {
-        public ColliderType ColliderType { get; private set;}
+        #region Private variables
+
         protected ColliderShape colliderShape;
         protected bool drawDebug;
         protected Transform3D parentTransform;
 
-        protected ColliderController(ColliderShape colliderShape,ColliderType colliderType = ColliderType.Blocking)
+        #endregion
+
+        #region Constructors
+
+        protected ColliderController(string id, ControllerType controllerType, ColliderShape colliderShape,
+            ColliderType colliderType = ColliderType.Blocking) : base(id, controllerType)
         {
             this.colliderShape = colliderShape;
             ColliderType = colliderType;
         }
 
-        public abstract object Clone();
+        #endregion
 
-        public abstract void Update(GameTime gameTime, IActor actor);
+        #region Properties, Indexers
 
-        public ControllerType GetControllerType()
-        {
-            throw new System.NotImplementedException();
-        }
+        public ColliderType ColliderType { get; }
+
+        #endregion
+
+        #region Methods
 
         public abstract void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice);
-    }
 
-    public class CustomBoxColliderController : ColliderController
+        #endregion
+    }
+    
+    public class CustomBoxColliderController : ColliderController, ICloneable
     {
-        private Actor3D parent;
+        #region Private variables
 
         private float scale;
 
-        public CustomBoxColliderController(ColliderShape colliderShape, float scale,ColliderType colliderType = ColliderType.Blocking) : base(colliderShape,colliderType)
+        #endregion
+
+        #region Constructors
+
+        public CustomBoxColliderController(string id, ControllerType controllerType, ColliderShape colliderShape, float scale, ColliderType colliderType = ColliderType.Blocking) :
+            base(id, controllerType, colliderShape, colliderType)
         {
             this.scale = scale;
         }
 
-        public override object Clone()
+        #endregion
+
+        #region Override Methode
+
+        public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
         {
-            return new CustomBoxColliderController(colliderShape,scale,ColliderType);
         }
 
-        public BoundingBox GetBounds()
+        public override void Update(GameTime gameTime, IActor actor)
         {
-            Vector3 min = parent.Transform3D.Translation + new Vector3(-parent.Transform3D.Scale.X,
-                -parent.Transform3D.Scale.Y, -parent.Transform3D.Scale.Z) / 2.0f * scale;
-            Vector3 max = parent.Transform3D.Translation + new Vector3(parent.Transform3D.Scale.X,
-                parent.Transform3D.Scale.Y, parent.Transform3D.Scale.Z) / 2.0f * scale;
+        }
 
+        #endregion
+
+        #region Methods
+
+        public new object Clone()
+        {
+            return new CustomBoxColliderController(ID, ControllerType, colliderShape, scale, ColliderType);
+        }
+
+        public BoundingBox GetBounds(Actor3D parent)
+        {
+            Vector3 min = parent.Transform3D.Translation + new Vector3(-parent.Transform3D.Scale.X, -parent.Transform3D.Scale.Y, -parent.Transform3D.Scale.Z) / 2.0f * scale;
+            Vector3 max = parent.Transform3D.Translation + new Vector3(parent.Transform3D.Scale.X, parent.Transform3D.Scale.Y, parent.Transform3D.Scale.Z) / 2.0f * scale;
             BoundingBox box = new BoundingBox(min, max);
-
             return box;
         }
 
-        public override void Update(GameTime gameTime, IActor actor)
-        {
-            parent ??= (Actor3D) actor;
-        }
-
-        public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
-        {
-        }
+        #endregion
     }
 
-    public class PrimitiveColliderController : ColliderController
-    {
-        private PrimitiveObject parent;
-
-        public PrimitiveColliderController(ColliderShape colliderShape) : base(colliderShape)
-        {
-        }
-
-        public override object Clone()
-        {
-            return new PrimitiveColliderController(colliderShape);
-        }
-
-        public BoundingBox GetBounds()
-        {
-            return parent.GetDrawnBoundingBox();
-        }
-
-        public override void Update(GameTime gameTime, IActor actor)
-        {
-            parent ??= (PrimitiveObject) actor;
-        }
-
-        public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
-        {
-        }
-    }
-/*
-    public class ModelColliderController : ColliderController
-    {
-        private ModelObject parent;
-
-        public ModelColliderController(ColliderShape colliderShape) : base(colliderShape)
-        {
-        }
-
-        public override object Clone()
-        {
-            return new ModelColliderController(colliderShape);
-        }
-
-        public List<BoundingSphere> GetBounds()
-        {
-            return parent.GetBounds();
-        }
-
-        public override void Update(GameTime gameTime, IActor actor)
-        {
-            parent ??= (ModelObject) actor;
-        }
-
-        public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
-        {
-        }
-    }
-    */
+    
 }

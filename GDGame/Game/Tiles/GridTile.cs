@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using GDGame.Actors;
 using GDGame.Enums;
 using GDGame.Game.Parameters.Effect;
 using GDGame.Tiles;
@@ -14,7 +15,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Game.Tiles
 {
-    public class GridTile : ModelObject, ICloneable
+    public class GridTile : OurModelObject, ICloneable
     {
         private ETileType tileType;
         private Shape shape;
@@ -26,7 +27,7 @@ namespace GDGame.Game.Tiles
         public int CurrentMovementTime { get; set; }
 
         public GridTile(string id, ActorType actorType, StatusType statusType,
-            Transform3D transform, EffectParameters effectParameters, Model model)
+            Transform3D transform, OurEffectParameters effectParameters, Model model)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
         }
@@ -39,7 +40,7 @@ namespace GDGame.Game.Tiles
         public new object Clone()
         {
             GridTile gridTile = new GridTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as EffectParameters, Model);
+                EffectParameters.Clone() as OurEffectParameters, Model);
             if (ControllerList != null)
             {
                 foreach (IController controller in ControllerList)

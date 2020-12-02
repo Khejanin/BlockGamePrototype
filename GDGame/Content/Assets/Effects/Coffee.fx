@@ -32,14 +32,14 @@ struct VertexShaderOutput
     float2 TexCoord : TEXCOORD0;
 };
 
-//Used the Water distortion/Flow Tutorials on CatlikeCoding, they are for Unity but shaders are shaders
+
 VertexShaderOutput MainVS(VertexShaderInput input)
 {
     VertexShaderOutput output;
     
     float4 WorldPosition = mul(input.Position, World);
-    float4 ViewPosition = mul(input.Position,View);
-    output.Position = mul(ViewPosition, WorldViewProjection);
+    float4 ViewPosition = mul(WorldPosition,View);
+    output.Position = mul(ViewPosition,Projection);
     
     output.TexCoord = input.TexCoord;
     
@@ -77,6 +77,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	
 	return finalTex * coffeeColor;
 }
+
 
 technique SpriteDrawing
 {

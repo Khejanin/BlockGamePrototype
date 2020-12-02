@@ -10,17 +10,19 @@ namespace GDGame.Controllers
 {
     public class RotationAroundActor : Controller
     {
-        #region Fields
+        #region Private variables
+
+        private float angle = -15;
+        private float distance;
+        private float elevationAngle;
 
         private KeyboardManager keyboardManager;
-        private float angle;
         private IActor target;
-        private float elevationAngle;
-        private float distance;
 
         #endregion
 
-        
+        #region Constructors
+
         public RotationAroundActor(string id, ControllerType controllerType, KeyboardManager keyboardManager, float elevationAngle, float distance) : base(id, controllerType)
         {
             this.keyboardManager = keyboardManager;
@@ -28,10 +30,18 @@ namespace GDGame.Controllers
             this.distance = distance;
         }
 
+        #endregion
+
+        #region Properties, Indexers
+
         public IActor Target
         {
             set => target = value;
         }
+
+        #endregion
+
+        #region Override Methode
 
         public override void Update(GameTime gameTime, IActor actor)
         {
@@ -50,6 +60,10 @@ namespace GDGame.Controllers
             }
         }
 
+        #endregion
+
+        #region Methods
+
         private void HandelInput()
         {
             if (keyboardManager.IsKeyDown(Keys.Q))
@@ -59,5 +73,7 @@ namespace GDGame.Controllers
 
             angle %= 360;
         }
+
+        #endregion
     }
 }

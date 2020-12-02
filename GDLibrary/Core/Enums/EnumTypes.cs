@@ -1,27 +1,46 @@
 ﻿namespace GDLibrary.Enums
 {
     /// <summary>
+    /// Used to indicate if single or multiple cameras are drawn to the screen at the same time
+    /// </summary>
+    /// <see cref="GDLibrary.Managers.RenderManager.ApplyDraw(Microsoft.Xna.Framework.GameTime)"/>
+    public enum ScreenLayoutType : sbyte
+    {
+        Single,
+        Multi
+    }
+
+    /// <summary>
     /// Actor types within the game (both drawn and undrawn)
     /// </summary>
+    /// <see cref="GDLibrary.Actors.Actor.Actor(string, ActorType, StatusType)"/>
     public enum ActorType : sbyte
     {
         NonPlayer,
         Player,    //hero (rendered using Max/Maya file)
         Decorator, //architecture, obstacle (rendered using Max/Maya file)
         Primitive, //make this type using IVertexData
-        Pickups,
 
         Camera2D,
         Camera3D,
 
         Helper,
-        MusicTrack,
-        SoundEffect
+
+        CollidableGround,
+        CollidablePickup,
+        CollidableDecorator, //architecture
+        CollidableCamera,
+        CollidableInventory,
+        UITextureObject,
+        UIText,
+        UIButtonObject,
+        Platform
     }
 
     /// <summary>
     /// Possible status types for an actor within the game (e.g. Update | Drawn, Update, Drawn, Off)
     /// </summary>
+    /// <see cref="GDLibrary.Actors.Actor.Actor(string, ActorType, StatusType)"/>
     public enum StatusType
     {
         //used for enabling objects for updating and drawing e.g. a model or a camera, or a controller
@@ -39,6 +58,7 @@
     /// <summary>
     /// Controller types to be applied to an actor (both drawn and undrawn) within the game
     /// </summary>
+    /// <see cref="GDLibrary.Controllers.Controller.Controller(string, ControllerType)"/>
     public enum ControllerType
     {
         //camera specific
@@ -54,12 +74,25 @@
         Curve,
 
         AlphaCycle,
-        SinTranslation
+        SinTranslation,
+        FirstPersonCollidable,
+        RotationOverTime,
+        ColorLerpOverTime,
+        MouseOver,
+        Progress,
+        ScaleLerpOverTime,
+        Rotation,
+        Player,
+        Ui,
+        Movement,
+        Collider,
+        Sound
     }
 
     /// <summary>
     /// Alignment plane types for a surface within the game (e.g. a primitive object, such as a circle, is aligned with the XY plane)
     /// </summary>
+    /// <see cref="GDLibrary.Factories.VertexFactory"/>
     public enum AlignmentPlaneType : sbyte
     {
         XY,
@@ -68,13 +101,13 @@
     }
 
     /// <summary>
-    /// Event categories within the game that a subscriber can subscribe to in the EventDispatcher 
+    /// Event categories within the game that a subscriber can subscribe to in the EventDispatcher
     /// </summary>
     /// <see cref="GDLibrary.Events.EventData"/>
-    /// <seealso cref="GDLibrary.Events.EventDispatcher_OLD"/>
+    /// <seealso cref="GDLibrary.Events.EventDispatcher.Subscribe(EventCategoryType, Events.EventDispatcher.EventHandlerDelegate)"/>
     public enum EventCategoryType
     {
-        Camera,      
+        Camera,
         Player,
         NonPlayer,
         Pickup,
@@ -86,14 +119,15 @@
     }
 
     /// <summary>
-    /// Event actions that can occur within a category (e.g. EventCategoryType.Sound with EventActionType.OnPlay) 
+    /// Event actions that can occur within a category (e.g. EventCategoryType.Sound with EventActionType.OnPlay)
     /// </summary>
     /// <see cref="GDLibrary.Events.EventData"/>
-    /// <seealso cref="GDLibrary.Events.EventDispatcher_OLD"/>
+    /// <seealso cref="GDLibrary.Events.EventDispatcher.Subscribe(EventCategoryType, Events.EventDispatcher.EventHandlerDelegate)"/>
     public enum EventActionType
     {
         //sent by audio, video
         OnPlay,
+
         OnPause,
         OnResume,
         OnStop,
@@ -101,6 +135,7 @@
 
         //processed by many managers (incl. menu, sound, object, ui, physic) and video controller
         OnStart,
+
         OnRestart,
         OnVolumeDelta,
         OnVolumeSet,
@@ -110,13 +145,15 @@
 
         //send by mouse or gamepad manager
         OnClick,
+
         OnHover,
 
         //sent by camera manager
         OnCameraSetActive,
+
         OnCameraCycle,
 
-        //sent by player when gains or loses health 
+        //sent by player when gains or loses health
         OnHealthDelta,
 
         //sent to set player health to a specific start/end value
@@ -124,19 +161,21 @@
 
         //sent by game state manager
         OnLose,
+
         OnWin,
         OnPickup,
 
         //sent whenever we change the opacity of a drawn object - remember ObjectManager has two draw lists (opaque and transparent)
         OnOpaqueToTransparent,
+
         OnTransparentToOpaque,
 
         //sent when we want to add/remove an Actor from the game - see ObjectManager::Remove()
         OnAddActor,
+
         OnRemoveActor,
         OnSpawn,
 
         //add more here...
     }
-
 }

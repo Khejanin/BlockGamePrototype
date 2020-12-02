@@ -1,6 +1,6 @@
-﻿using GDGame.Actors;
-using GDGame.Component;
+﻿using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Managers;
 using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
@@ -10,38 +10,82 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using GDGame.Game.Parameters.Effect;
 
-namespace GDGame.Game.Actors.Tiles
+namespace GDGame.Actors
 {
-    class EnemyTile : MovableTile
+    internal class EnemyTile : PathMoveTile
     {
-        private MovementComponent movementComponent;
-        private int pathDir = 1;
+        #region Private variables
 
-        public List<Vector3> path;
-        public int currentPositionIndex;
+        private bool canMove;
+        private float currentMovementCoolDown;
+        private float movementCoolDown;
 
-        public EnemyTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, EffectParameters effectParameters, Model model) : base(id, actorType, statusType, transform, effectParameters, model)
+        #endregion
+
+        #region Constructors
+
+        public EnemyTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model, ETileType tileType,
+            float movementCoolDown = 0.5f) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
-            path = new List<Vector3>();
+            this.movementCoolDown = movementCoolDown;
         }
+
+        #endregion
+
+        #region Initialization
 
         public override void InitializeTile()
         {
-            EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
-            movementComponent = (MovementComponent)ControllerList.Find(controller => controller.GetType() == typeof(MovementComponent));
+            currentMovementCoolDown = movementCoolDown;
+            canMove = true;
+            base.InitializeTile();
         }
 
-        private void HandlePlayerEvent(PlayerEventInfo info)
+        #endregion
+
+        #region Override Methode
+
+        protected override void MoveToNextPoint()
         {
-            if(info.type == Enums.PlayerEventType.Move)
+            Vector3 moveDir = GetDirection();
+            if (moveDir != Vector3.Zero)
+                EventManager.FireEvent(new MovementEvent {type = MovementType.OnEnemyMove, tile = this, direction = moveDir, onMoveEnd = OnMoveEnd, onCollideCallback = OnCollide});
+        }
+
+        protected override void OnMoveEnd()
+        {
+            base.OnMoveEnd();
+            canMove = true;
+            currentMovementCoolDown = movementCoolDown;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (canMove && currentMovementCoolDown <= 0)
             {
-                Vector3 moveDir = GetDirection();
-                if (moveDir != Vector3.Zero)
-                {
-                    movementComponent.Move(moveDir);
-                    currentPositionIndex += pathDir;
-                }
+                canMove = false;
+                MoveToNextPoint();
+                return;
             }
+
+            currentMovementCoolDown -= (float) gameTime.ElapsedGameTime.TotalSeconds;
+            base.Update(gameTime);
+        }
+
+        #endregion
+
+        #region Methods
+
+        public new object Clone()
+        {
+            EnemyTile enemyTile = new EnemyTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as OurEffectParameters, Model,
+                TileType);
+
+            if (ControllerList != null)
+                foreach (IController controller in ControllerList)
+                    enemyTile.ControllerList.Add(controller.Clone() as IController);
+
+            return enemyTile;
         }
 
         private Vector3 GetDirection()
@@ -50,40 +94,33 @@ namespace GDGame.Game.Actors.Tiles
             Vector3 destination = NextPathPoint();
             Vector3 direction = Vector3.Normalize(destination - origin);
 
-            if (this.Raycast(Transform3D.Translation, direction, true, 1f) == null)
+            Raycaster.HitResult hit = RaycastManager.Instance.Raycast(this, Transform3D.Translation, direction, true, 1f);
+            if (hit == null || hit.actor is PlayerTile || hit.actor is AttachableTile)
                 return direction;
 
             pathDir *= -1;
             Vector3 dest2 = NextPathPoint();
-            if (destination == dest2 || this.Raycast(Transform3D.Translation, direction, true, 1f) != null)
-                return Vector3.Zero;
+            Vector3 dir2 = Vector3.Normalize(dest2 - origin);
 
-           return Vector3.Normalize(dest2 - origin);
+            hit = RaycastManager.Instance.Raycast(this, Transform3D.Translation, dir2, true, 1f);
+            if (destination != dest2 && (hit == null || hit.actor is PlayerTile))
+                return dir2;
+
+            return Vector3.Zero;
         }
 
-        private Vector3 NextPathPoint()
+        #endregion
+
+        #region Events
+
+        private void OnCollide(Raycaster.HitResult hitInfo)
         {
-            if (currentPositionIndex + pathDir == path.Count || currentPositionIndex + pathDir == -1)
-                pathDir *= -1;
-
-            return path[currentPositionIndex + pathDir];
+            if (hitInfo?.actor is PlayerTile)
+                EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.Die});
+            else if (hitInfo?.actor is AttachableTile tile)
+                EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.AttachedTileDie, attachedTile = tile});
         }
 
-        public new object Clone()
-        {
-            EnemyTile enemyTile = new EnemyTile("clone - " + ID, ActorType, StatusType,
-                Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as EffectParameters, Model);
-
-            if (ControllerList != null)
-            {
-                foreach (IController controller in ControllerList)
-                {
-                    enemyTile.ControllerList.Add(controller.Clone() as IController);
-                }
-            }
-
-            return enemyTile;
-        }
+        #endregion
     }
 }

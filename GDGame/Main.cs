@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GDGame.Controllers;
 using GDGame.EventSystem;
 using GDGame.Managers;
 using GDGame.Scenes;
-using GDLibrary;
 using GDLibrary.Actors;
+using GDLibrary.Containers;
+using GDLibrary.Debug;
 using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.Managers;
@@ -17,54 +18,17 @@ namespace GDGame
 {
     public class Main : Microsoft.Xna.Framework.Game
     {
-        public GraphicsDeviceManager Graphics { get; }
+        #region Private variables
 
-        public LevelDataManager LevelDataManager { get; set; }
+        private SpriteBatch spriteBatch;
 
-        public BasicEffect ModelEffect { get; private set; }
+        #endregion
 
-        public BasicEffect UnlitTexturedEffect { get; private set; }
+        #region Constructors
 
         public BasicEffect UnlitWireframeEffect { get; private set; }
         
         public BasicEffect ModelEffectColor { get; private set; }
-
-        public CameraManager<Camera3D> CameraManager { get; private set; }
-
-        public ObjectManager ObjectManagerOLD { get; private set; }
-        public OurObjectManager ObjectManager { get; private set; }
-
-        public KeyboardManager KeyboardManager { get; private set; }
-
-        public GamePadManager GamePadManager { get; private set; }
-
-        public MouseManager MouseManager { get; private set; }
-
-        public SpriteFont DebugFont { get; set; }
-
-        public BasicEffect WireframeModelEffect { get; private set; }
-
-        public RasterizerState WireframeRasterizerState { get; private set; }
-
-        public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
-
-        public SoundManager SoundManager { get; private set; }
-
-        public SceneManager SceneManager { get; private set; }
-        public UiManager UiManager { get; private set; }
-
-
-        public Dictionary<string, SpriteFont> Fonts { get; private set; }
-
-
-        public ProjectionParameters GlobalProjectionParameters => ProjectionParameters.StandardDeepSixteenTen;
-
-        private float worldScale = 3000;
-        private PrimitiveObject primitiveObject = null;
-        public Effect testEffect;
-        public Effect testEffect2;
-
-
         public Main()
         {
             Graphics = new GraphicsDeviceManager(this);
@@ -72,158 +36,48 @@ namespace GDGame
             IsMouseVisible = true;
         }
 
-        #region Initialization - Managers, Cameras, Effects, Textures, Audio
+        #endregion
+        public OurObjectManager ObjectManager { get; private set; }
+        
+        #region Properties, Indexers
 
-        protected override void Initialize()
-        {
-            // TODO: Add your initialization logic here
-            Window.Title = "My Amazing Game";
+        public CameraManager<Camera3D> CameraManager { get; private set; }
+        public ContentDictionary<SpriteFont> Fonts { get; private set; }
+        public ProjectionParameters GlobalProjectionParameters => ProjectionParameters.StandardDeepSixteenTen;
+        public GraphicsDeviceManager Graphics { get; }
+        public KeyboardManager KeyboardManager { get; private set; }
+        public LevelDataManager LevelDataManager { get; private set; }
 
-            InitManagers();
-            CreateScenes();
-            LoadEffects();
-            InitEffect();
-            LoadFonts();
+        public MyMenuManager MenuManager { get; set; }
 
-            InitGraphics(1024, 768);
+        public BasicEffect ModelEffect { get; private set; }
+        public ContentDictionary<Model> Models { get; private set; }
+        public MouseManager MouseManager { get; private set; }
+        private PhysicsManager PhysicsManager { get; set; }
+        private OurRenderManager RenderManager { get; set; }
+        public SceneManager SceneManager { get; private set; }
+        public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
+        public SoundManager SoundManager { get; private set; }
+        public ContentDictionary<Texture2D> Textures { get; private set; }
+        public ContentDictionary<Effect> Effects { get; private set; }
 
-            base.Initialize();
-        }
+        public Dictionary<string, DrawnActor2D> UiArchetypes { get; set; }
+        public OurUiManager UiManager { get; private set; }
 
+        #endregion
 
-        private void InitDebug()
-        {
-            /*Components.Add(new DebugDrawer(this, _spriteBatch, this.debugFont,
-                this.cameraManager, this.objectManager));*/
-        }
-
-        private void InitFonts()
-        {
-            DebugFont = Content.Load<SpriteFont>("Assets/Fonts/debug");
-        }
-
-        private void CreateScenes()
-        {
-            SceneManager.AddScene("EnemyTest", new MainScene(this, "test_Enemy_path.json"));
-
-            SceneManager.AddScene("Menu", new MenuScene(this));
-            SceneManager.AddScene("Tutorial", new TutorialScene(this));
-            SceneManager.AddScene("Level1", new MainScene(this, "Paul_Level_1.json"));
-            SceneManager.AddScene("Level2", new MainScene(this, "Paul_Level_2.json"));
-            SceneManager.AddScene("Level3", new MainScene(this, "Paul_Level_3.json"));
-            SceneManager.AddScene("Level4", new MainScene(this, "Paul_Level_4.json"));
-            SceneManager.AddScene("Level5", new MainScene(this, "Paul_Level_5.json"));
-            SceneManager.AddScene("Level6", new MainScene(this, "Paul_Level_6.json"));
-
-            //thows back to menu eventually
-            SceneManager.AddScene("End", new EndScene(this));
-
-            //shouldnt be able to "next scene" to this
-            SceneManager.AddScene("Options", new OptionsMenuScene(this));
-        }
-
-        private void InitManagers()
-        {
-            //Events
-            Components.Add(new EventManager(this));
-
-            Components.Add(new EventDispatcher(this));
-
-            //Camera
-            CameraManager = new CameraManager<Camera3D>(this);
-            Components.Add(CameraManager);
-
-            //Scene
-            SceneManager = new SceneManager(this);
-            Components.Add(SceneManager);
-
-            //Keyboard
-            KeyboardManager = new KeyboardManager(this);
-            Components.Add(KeyboardManager);
-
-            //Gamepad
-            GamePadManager = new GamePadManager(this, 1);
-            Components.Add(GamePadManager);
-
-            //Mouse
-            MouseManager = new MouseManager(this, false);
-            Components.Add(MouseManager);
-
-            //Sound
-            SoundManager = new SoundManager(this);
-            Components.Add(SoundManager);
-
-            //Object
-            ObjectManagerOLD = new ObjectManager(this, StatusType.Update | StatusType.Drawn, 6, 10, CameraManager);
-            Components.Add(ObjectManagerOLD);
-            
-            ObjectManager = new OurObjectManager(this,StatusType.Update | StatusType.Drawn,6,10,CameraManager);
-            Components.Add(ObjectManager);
-
-            UiManager = new UiManager(this);
-            Components.Add(UiManager);
-
-            LevelDataManager = new LevelDataManager();
-        }
-
-        private void LoadEffects()
-        {
-            testEffect = Content.Load<Effect>("Assets/Effects/test");
-            testEffect2 = Content.Load<Effect>("Assets/Effects/test2");
-        }
+        #region Initialization
 
         private void InitEffect()
         {
-            //to do...
-            UnlitTexturedEffect = new BasicEffect(Graphics.GraphicsDevice);
-            UnlitTexturedEffect.VertexColorEnabled = true; //otherwise we wont see RGB
-            UnlitTexturedEffect.TextureEnabled = true;
-
             //wireframe primitives with no lighting and no texture
-            UnlitWireframeEffect = new BasicEffect(Graphics.GraphicsDevice);
-            UnlitWireframeEffect.VertexColorEnabled = true;
+            UnlitWireframeEffect = new BasicEffect(Graphics.GraphicsDevice) {VertexColorEnabled = true};
 
             //model effect
-            //add a ModelObject
-            ModelEffect = new BasicEffect(Graphics.GraphicsDevice);
-            ModelEffect.TextureEnabled = true;
+            ModelEffect = new BasicEffect(Graphics.GraphicsDevice) {TextureEnabled = true};
             //this.modelEffect.LightingEnabled = true;
             //this.modelEffect.EnableDefaultLighting();
-
-            //Model without texture
-            ModelEffectColor = new BasicEffect(Graphics.GraphicsDevice);
-            ModelEffectColor.TextureEnabled = false;
-
-            WireframeModelEffect = new BasicEffect(Graphics.GraphicsDevice);
-            WireframeModelEffect.TextureEnabled = false;
-            WireframeModelEffect.VertexColorEnabled = true;
-
-            WireframeRasterizerState = new RasterizerState();
-            WireframeRasterizerState.FillMode = FillMode.WireFrame;
         }
-
-        private void LoadFonts()
-        {
-            SpriteFont uiFont = Content.Load<SpriteFont>("Assets/Fonts/Arial");
-
-            Fonts = new Dictionary<string, SpriteFont> {{"UI", uiFont}};
-        }
-
-        #endregion
-
-        #region Load and Unload Content
-
-        protected override void LoadContent()
-        {
-            InitDebug();
-        }
-
-        protected override void UnloadContent()
-        {
-            base.UnloadContent();
-        }
-
-        #endregion
 
         private void InitGraphics(int width, int height)
         {
@@ -238,19 +92,137 @@ namespace GDGame
             ScreenCentre = new Vector2(width / 2f, height / 2f);
 
             //set cull mode to show front and back faces - inefficient but we will change later
-            RasterizerState rs = new RasterizerState();
-            rs.CullMode = CullMode.None;
+            RasterizerState rs = new RasterizerState {CullMode = CullMode.None};
             Graphics.GraphicsDevice.RasterizerState = rs;
 
             //we use a sampler state to set the texture address mode to solve the aliasing problem between skybox planes
-            SamplerState samplerState = new SamplerState();
-            samplerState.AddressU = TextureAddressMode.Clamp;
-            samplerState.AddressV = TextureAddressMode.Clamp;
+            SamplerState samplerState = new SamplerState
+            {
+                AddressU = TextureAddressMode.Clamp, AddressV = TextureAddressMode.Clamp
+            };
             Graphics.GraphicsDevice.SamplerStates[0] = samplerState;
         }
 
+        protected override void Initialize()
+        {
+            Window.Title = "B_Logic";
 
-        #region Update & Draw
+            InitGraphics(1024, 768);
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            InitManagers();
+            InitializeDictionaries();
+
+            CreateScenes();
+            InitEffect();
+            LoadFonts();
+            LoadBasicTextures();
+
+            InitUiArchetypes();
+
+
+            base.Initialize();
+        }
+
+        private void InitializeDictionaries()
+        {
+            UiArchetypes = new Dictionary<string, DrawnActor2D>();
+
+            Fonts = new ContentDictionary<SpriteFont>("fonts", Content);
+            Textures = new ContentDictionary<Texture2D>("textures", Content);
+            Models = new ContentDictionary<Model>("models", Content);
+            Effects = new ContentDictionary<Effect>("effects",Content);
+        }
+
+        private void InitManagers()
+        {
+            //Events
+            Components.Add(new EventManager(this));
+            Components.Add(new EventDispatcher(this));
+
+            //Physics
+            PhysicsManager = new PhysicsManager(this, StatusType.Off);
+            Components.Add(PhysicsManager);
+
+            //Camera
+            CameraManager = new CameraManager<Camera3D>(this, StatusType.Off);
+            Components.Add(CameraManager);
+
+            //Scene
+            SceneManager = new SceneManager(this, StatusType.Off);
+            Components.Add(SceneManager);
+
+            //Keyboard
+            KeyboardManager = new KeyboardManager(this);
+            Components.Add(KeyboardManager);
+
+            //Mouse
+            MouseManager = new MouseManager(this, true, PhysicsManager, ScreenCentre);
+            Components.Add(MouseManager);
+
+            //Sound
+            SoundManager = new SoundManager();
+            //Components.Add(SoundManager);
+
+            //Object
+            ObjectManager = new OurObjectManager(this,StatusType.Off,10,8);
+            Components.Add(ObjectManager);
+
+            //Render
+            RenderManager = new OurRenderManager(this, StatusType.Drawn, ScreenLayoutType.Single, ObjectManager, CameraManager);
+            Components.Add(RenderManager);
+
+            //UI
+            UiManager = new OurUiManager(this, StatusType.Off, spriteBatch, 10);
+            Components.Add(UiManager);
+
+            MenuManager = new MyMenuManager(this, StatusType.Drawn | StatusType.Update, spriteBatch, MouseManager, KeyboardManager);
+            Components.Add(MenuManager);
+
+            //Raycast
+            RaycastManager.Instance.ObjectManager = ObjectManager;
+
+            //LevelData
+            LevelDataManager = new LevelDataManager();
+        }
+
+        private void InitUiArchetypes()
+        {
+            Texture2D texture = Textures["bStart"];
+            Integer2 dimensions = new Integer2(texture.Width, texture.Height);
+            Transform2D transform2D = new Transform2D(Vector2.Zero, 0, Vector2.One, Vector2.Zero, dimensions);
+            UITextureObject uiTextureObject = new UITextureObject("texture", ActorType.UITextureObject, StatusType.Drawn | StatusType.Update, transform2D, Color.White, 0.6f,
+                SpriteEffects.None, texture, new Rectangle(0, 0, texture.Width, texture.Height));
+
+            string text = "";
+            dimensions = new Integer2(Fonts["Arial"].MeasureString(text));
+            transform2D = new Transform2D(Vector2.Zero, 0, Vector2.One, Vector2.Zero, dimensions);
+            UITextObject uiTextObject = new UITextObject("text", ActorType.UIText, StatusType.Drawn | StatusType.Update, transform2D, Color.Black, 0.1f,
+                SpriteEffects.None, text, Fonts["Arial"]);
+
+            text = "";
+            texture = Textures["bStart"];
+            dimensions = new Integer2(texture.Width, texture.Height);
+            Vector2 origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
+            transform2D = new Transform2D(Vector2.Zero, 0, Vector2.One, origin, dimensions);
+            UIButtonObject uiButtonObject = new UIButtonObject("button", ActorType.UIButtonObject, StatusType.Update | StatusType.Drawn, transform2D, Color.White, 0.5f,
+                SpriteEffects.None, texture, new Rectangle(0, 0, texture.Width, texture.Height), text, Fonts["Arial"], Vector2.One, Color.White, Vector2.Zero);
+            uiButtonObject.ControllerList.Add(new UiScaleLerpController("USC", ControllerType.Ui, MouseManager, new TrigonometricParameters(0.05f, 0.1f, 180)));
+
+            UiArchetypes.Add("button", uiButtonObject);
+            UiArchetypes.Add("texture", uiTextureObject);
+            UiArchetypes.Add("text", uiTextObject);
+        }
+
+        #endregion
+
+        #region Override Methode
+
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.Aqua);
+            base.Draw(gameTime);
+        }
 
         protected override void Update(GameTime gameTime)
         {
@@ -260,23 +232,39 @@ namespace GDGame
             base.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime)
+        #endregion
+
+        #region Load Methods
+
+        private void LoadBasicTextures()
         {
-            base.Draw(gameTime);
+            Textures.Load("Assets/Textures/Menu/button", "bStart");
+        }
+
+        private void LoadFonts()
+        {
+            Fonts.Load("Assets/Fonts/Arial");
         }
 
         #endregion
-    }
 
-    public class LevelStats
-    {
-        public int time;
-        public int moveCount;
+        #region Methods
 
-        public LevelStats()
+        private void CreateScenes()
         {
-            time = Int32.MaxValue;
-            moveCount = Int32.MaxValue;
+            //SceneManager.AddScene("Test", new MainScene(this, "test_Enemy_path.json"));
+            SceneManager.AddScene("Level 7", new MainScene(this, "Big_Level.json"));
+
+
+            // SceneManager.AddScene("Tutorial", new TutorialScene(this));
+            // SceneManager.AddScene("Level1", new MainScene(this, "Paul_Level_1.json"));
+            // SceneManager.AddScene("Level2", new MainScene(this, "Paul_Level_2.json"));
+            //SceneManager.AddScene("Level3", new MainScene(this, "Paul_Level_3.json"));
+            //SceneManager.AddScene("Level4", new MainScene(this, "Paul_Level_4.json"));
+            //SceneManager.AddScene("Level5", new MainScene(this, "Paul_Level_5.json"));
+            //SceneManager.AddScene("Level6", new MainScene(this, "Paul_Level_6.json"));
         }
+
+        #endregion
     }
 }

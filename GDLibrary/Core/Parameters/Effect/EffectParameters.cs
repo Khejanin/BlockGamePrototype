@@ -1,24 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using GDGame.Scenes;
-using GDLibrary.Actors;
-using GDLibrary.Parameters;
+﻿using GDLibrary.Actors;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 
-namespace GDGame.Game.Parameters.Effect
+namespace GDLibrary.Parameters
 {
     /// <summary>
     /// Encapsulates the effect, texture, color (diffuse etc ) and alpha fields for any drawn 3D object.
     /// </summary>
     /// <see cref="GDLibrary.Actors.ModelObject"/>
     /// <seealso cref="GDLibrary.Actors.PrimitiveObject"/>
-    public abstract class EffectParameters : ICloneable
+    public class EffectParameters : ICloneable
     {
         #region Fields
 
         //shader reference
-        protected Microsoft.Xna.Framework.Graphics.Effect effect;
+        private BasicEffect effect;
+
+        //texture
+        private Texture2D texture;
+
+        //transparency
+        private float alpha;
+
+        //defaults in case the developer forgets to set these values when adding a model object (or child object).
+        //setting these values prevents us from seeing only a black surface (i.e. no texture, no color) or no object at all (alpha = 0).
+        private Color diffuseColor = Color.White;
 
         #endregion Fields
 
@@ -30,7 +38,7 @@ namespace GDGame.Game.Parameters.Effect
         /// <value>
         /// Effect gets/sets the value of the effect field
         /// </value>
-        public Microsoft.Xna.Framework.Graphics.Effect Effect
+        public BasicEffect Effect
         {
             get
             {
@@ -39,6 +47,71 @@ namespace GDGame.Game.Parameters.Effect
             set
             {
                 effect = value;
+            }
+        }
+
+        /// <summary>
+        /// Represents the 2D texture used to render the drawn object
+        /// </summary>
+        /// <value>
+        /// Texture gets/sets the value of the texture field
+        /// </value>
+        public Texture2D Texture
+        {
+            get
+            {
+                return texture;
+            }
+            set
+            {
+                texture = value;
+            }
+        }
+
+        /// <summary>
+        /// Represents the diffuseColor used to blend with the rendered drawn object
+        /// </summary>
+        /// <value>
+        /// DiffuseColor gets/sets the value of the diffuseColor field
+        /// </value>
+        public Color DiffuseColor
+        {
+            get
+            {
+                return diffuseColor;
+            }
+            set
+            {
+                diffuseColor = value;
+            }
+        }
+
+        /// <summary>
+        /// Represents the transparency set on the rendered drawn object
+        /// </summary>
+        /// <value>
+        /// Alpha gets/sets the value of the alpha field
+        /// </value>
+        public float Alpha
+        {
+            get
+            {
+                return alpha;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    alpha = 0;
+                }
+                else if (value > 1)
+                {
+                    alpha = 1;
+                }
+                else
+                {
+                    alpha = (float)Math.Round(value, 2); //2 decimal places e.g. 0.99
+                }
             }
         }
 
@@ -54,279 +127,62 @@ namespace GDGame.Game.Parameters.Effect
         /// <param name="texture">2D Texture</param>
         /// <param name="diffusecolor">RGBA diffuse color</param>
         /// <param name="alpha">Floating-point tansparency value</param>
-        public EffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect)
+        public EffectParameters(BasicEffect effect, Texture2D texture, Color diffusecolor, float alpha)
         {
             Effect = effect;
+
+            if (texture != null)
+            {
+                Texture = texture;
+            }
+
+            DiffuseColor = diffuseColor;
+
+            //use Property to ensure values are inside correct ranges
+            Alpha = alpha;
         }
 
-        protected abstract void SetupMaterial(Matrix world, Camera3D camera3D,GameTime gameTime);
-
-        public virtual void DrawPrimitive(Matrix world, Camera3D camera,GameTime gameTime)
+        public void Draw(Matrix world, Camera3D camera)
         {
-            SetupMaterial(world,camera,gameTime);
+            effect.World = world;
+            effect.View = camera.View;
+            effect.Projection = camera.Projection;
+
+            //if no texture, then dont crash!
+            if (texture != null)
+            {
+                effect.Texture = texture;
+            }
+
+            //to do - diffuse and alpha are not applied
+            effect.DiffuseColor = diffuseColor.ToVector3();
+            effect.Alpha = alpha;
             effect.CurrentTechnique.Passes[0].Apply();
         }
 
-        public virtual void DrawMesh(Matrix world, Camera3D camera3D, Model model, Matrix[] boneTransforms,GameTime gameTime)
+        public object Clone()
         {
-            SetupMaterial(world,camera3D,gameTime);
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                foreach (ModelMeshPart part in mesh.MeshParts)
-                {
-                    part.Effect = effect;
-                }
-                
-                effect.Parameters["World"].SetValue(boneTransforms[mesh.ParentBone.Index]*world);
-                effect.Parameters["View"].SetValue(camera3D.View);
-                effect.Parameters["Projection"].SetValue(camera3D.Projection);
-                
-                mesh.Draw();
-            }
+            //hybrid - shallow and deep
+            return new EffectParameters(effect, //ref - shallow
+                texture,  //ref - shallow
+                diffuseColor, //in-built value types - so deep
+                alpha); //in-built primitive value types - so deep
         }
-
-        public T GetTyped<T>() where T : EffectParameters
-        {
-            return (T)this;
-        }
-
-        public abstract float GetAlpha();
-
-        public abstract object Clone();
 
         public override bool Equals(object obj)
         {
             return obj is EffectParameters parameters &&
-                   EqualityComparer<Microsoft.Xna.Framework.Graphics.Effect>.Default.Equals(effect, parameters.effect);
+                   EqualityComparer<BasicEffect>.Default.Equals(effect, parameters.effect) &&
+                   EqualityComparer<Texture2D>.Default.Equals(texture, parameters.texture) &&
+                   alpha == parameters.alpha &&
+                   diffuseColor.Equals(parameters.diffuseColor);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(effect);
+            return HashCode.Combine(effect, texture, alpha, diffuseColor);
         }
 
         #endregion Constructors & Core
     }
-
-    public class BasicEffectParameters : EffectParameters
-    {
-        private Texture2D texture;
-        private Color color;
-        private float alpha;
-
-        public Texture2D Texture
-        {
-            get => texture;
-            set => texture = value;
-        }
-
-        public Color Color
-        {
-            get => color;
-            set => color = value;
-        }
-
-        public float Alpha
-        {
-            get => alpha;
-            set => alpha = value;
-        }
-
-        public BasicEffectParameters(BasicEffect effect,Texture2D t,Color c, float a) : base(effect)
-        {
-            texture = t;
-            color = c;
-            alpha = a;
-        }
-
-        protected override void SetupMaterial(Matrix world, Camera3D camera3D,GameTime gameTime)
-        {
-            BasicEffect basicEffect = (BasicEffect) effect;
-            basicEffect.Alpha = alpha;
-            basicEffect.Texture = texture;
-            basicEffect.EmissiveColor = color.ToVector3();
-            basicEffect.View = camera3D.View;
-            basicEffect.Projection = camera3D.Projection;
-            
-            Effect.CurrentTechnique.Passes[0].Apply();
-        }
-
-        public override void DrawPrimitive(Matrix world, Camera3D camera,GameTime gameTime)
-        {
-            base.DrawPrimitive(world,camera, gameTime);
-            effect.CurrentTechnique.Passes[0].Apply();
-        }
-
-        public override void DrawMesh(Matrix world, Camera3D camera3D, Model model, Matrix[] boneTransforms,GameTime gameTime)
-        {
-            base.DrawMesh(world,camera3D, model, boneTransforms, gameTime);
-            
-            foreach (ModelMesh mesh in model.Meshes)
-            {
-                foreach (ModelMeshPart part in mesh.MeshParts)
-                {
-                    part.Effect = effect;
-                }
-                ((BasicEffect)effect).World = boneTransforms[mesh.ParentBone.Index] * world;
-                mesh.Draw();
-            }
-        }
-
-        public override float GetAlpha()
-        {
-            return alpha;
-        }
-
-        public override object Clone()
-        {
-            return new BasicEffectParameters((BasicEffect)effect,texture,color,alpha);
-        }
-    }
-
-    public class NormalEffectParameters : EffectParameters
-    {
-        protected  Texture2D colorTexture, normalTexture;
-        protected Color ambientColor, diffuseColor;
-        protected float ambientIntensity, diffuseIntensity;
-        protected Transform3D lightTransform;
-        
-        public NormalEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D colorTexture, Texture2D normalTexture, Color diffuseColor, Color ambientColor, float ambientIntensity, float diffuseIntensity,Transform3D lightTransform) : base(effect)
-        {
-            this.effect = effect;
-            this.colorTexture = colorTexture;
-            this.normalTexture = normalTexture;
-            this.diffuseColor = diffuseColor;
-            this.ambientColor = ambientColor;
-            this.ambientIntensity = ambientIntensity;
-            this.diffuseIntensity = diffuseIntensity;
-            this.lightTransform = lightTransform;
-        }
-
-        protected override void SetupMaterial(Matrix world, Camera3D camera3D,GameTime gameTime)
-        {
-            effect.Parameters["AmbientColor"].SetValue(Color.Black.ToVector4());
-            effect.Parameters["AmbientIntensity"].SetValue(1f);
-            effect.Parameters["DiffuseColor"].SetValue(Vector4.One);
-            effect.Parameters["DiffuseIntensity"].SetValue(1f);
-            effect.Parameters["Light"].SetValue(Vector3.Normalize(lightTransform.RotationInDegrees));
-            effect.Parameters["ColorMap"].SetValue(colorTexture);
-            effect.Parameters["NormalMap"].SetValue(normalTexture);
-        }
-
-        public override float GetAlpha()
-        {
-            return 1;
-        }
-
-        public override object Clone()
-        {
-            return new NormalEffectParameters(effect,colorTexture,normalTexture,diffuseColor,ambientColor,ambientIntensity,diffuseIntensity,lightTransform);
-        }
-    }
-    
-    public class CoffeeEffectParameters : EffectParameters
-    {
-        protected  Texture2D uvTilesTexture, flowTexture;
-        protected Color coffeeColor;
-        
-        public CoffeeEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D uvTilesTexture,Texture2D flowTexture, Color coffeeColor) : base(effect)
-        {
-            this.uvTilesTexture = uvTilesTexture;
-            this.flowTexture = flowTexture;
-            this.coffeeColor = coffeeColor;
-            this.effect = effect;
-        }
-
-        protected override void SetupMaterial(Matrix world, Camera3D camera3D,GameTime gameTime)
-        {
-            effect.Parameters["AmbientColor"].SetValue(Color.Black.ToVector4());
-            effect.Parameters["AmbientIntensity"].SetValue(1f);
-            effect.Parameters["DiffuseColor"].SetValue(Vector4.One);
-            effect.Parameters["DiffuseIntensity"].SetValue(1f);
-        }
-
-        public override float GetAlpha()
-        {
-            return 1;
-        }
-
-        public override object Clone()
-        {
-            return new CoffeeEffectParameters(effect,uvTilesTexture,flowTexture,coffeeColor);
-        }
-    }
-    
-    public class CelEffectParameters : EffectParameters
-    {
-        //Not currently used
-        protected Texture2D texture2D;
-        protected Color color;
-        protected float alpha;
-        
-        
-        public CelEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D t, Color c,float a) : base(effect)
-        {
-            texture2D = t;
-            color = c;
-            alpha = a;
-        }
-        
-        protected override void SetupMaterial(Matrix world, Camera3D camera3D,GameTime gameTime)
-        {
-            effect.Parameters["WorldViewProjection"].SetValue(world*camera3D.View*camera3D.Projection);
-            Effect.CurrentTechnique.Passes[0].Apply();
-        }
-
-        public override float GetAlpha()
-        {
-            return alpha;
-        }
-
-        public override object Clone()
-        {
-            return new CelEffectParameters(effect,texture2D,color,alpha);
-        }
-    }
-    
-    public class TestEffectParameters : EffectParameters
-    {
-        //Not currently used
-        protected Texture2D texture2D;
-        protected Color color;
-        protected float alpha;
-        protected Transform3D playerPosition;
-
-        public Transform3D PlayerPosition
-        {
-            get => playerPosition;
-            set => playerPosition = value;
-        }
-
-        public TestEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect,Transform3D position, Texture2D t, Color c,float a) : base(effect)
-        {
-            texture2D = t;
-            color = c;
-            alpha = a;
-            playerPosition = position;
-        }
-        
-        protected override void SetupMaterial(Matrix world, Camera3D camera3D,GameTime gameTime)
-        {
-            effect.Parameters["WorldViewProjection"].SetValue(world*camera3D.View*camera3D.Projection);
-            effect.Parameters["World"].SetValue(world);
-            effect.Parameters["PlayerPos"].SetValue(MainScene.playerTransform3D.Translation);
-            Effect.CurrentTechnique.Passes[0].Apply();
-        }
-
-        public override float GetAlpha()
-        {
-            return alpha;
-        }
-
-        public override object Clone()
-        {
-            return new TestEffectParameters(effect,playerPosition,texture2D,color,alpha);
-        }
-    }
-    
 }

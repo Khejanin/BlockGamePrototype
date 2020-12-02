@@ -11,7 +11,7 @@ namespace GDGame.Game.Tiles
     public class StaticTile : GridTile, ICloneable
     {
         public StaticTile(string id, ActorType actorType, StatusType statusType,
-            Transform3D transform, EffectParameters effectParameters, Model model)
+            Transform3D transform, OurEffectParameters effectParameters, Model model)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
 
@@ -20,7 +20,7 @@ namespace GDGame.Game.Tiles
         public new object Clone()
         {
             StaticTile staticTile = new StaticTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as EffectParameters, Model);
+                EffectParameters.Clone() as OurEffectParameters, Model);
             if (ControllerList != null)
             {
                 foreach (IController controller in ControllerList)

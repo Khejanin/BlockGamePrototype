@@ -1,62 +1,61 @@
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Managers;
-using GDLibrary;
-using GDLibrary.Actors;
-using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Scenes
 {
     public abstract class Scene
     {
-        private Main game;
-        private bool unloadsContent;
-        private bool terminateOnNextTick;
-        private OnUnloaded onUnloadedCallback;
-
-        public string SceneName { get; set; }
-
-        protected Color backgroundColor = Color.CornflowerBlue;
-
-        protected Scene(Main game, bool unloadsContent = false)
-        {
-            this.game = game;
-            this.unloadsContent = unloadsContent;
-        }
+        #region Delegates
 
         public delegate void OnUnloaded();
 
+        #endregion
 
-        #region Parameters
+        #region Private variables
 
-        protected GraphicsDevice GraphicsDevice => game.GraphicsDevice;
-        protected GraphicsDeviceManager Graphics => game.Graphics;
-        protected ContentManager Content => game.Content;
-        protected ObjectManager ObjectManagerOLD => game.ObjectManagerOLD;
-        protected OurObjectManager ObjectManager => game.ObjectManager;
-        protected KeyboardManager KeyboardManager => game.KeyboardManager;
-        protected GamePadManager GamePadManager => game.GamePadManager;
-        protected CameraManager<Camera3D> CameraManager => game.CameraManager;
-        protected MouseManager MouseManager => game.MouseManager;
-        protected SoundManager SoundManager => game.SoundManager;
-        protected BasicEffect ModelEffect => game.ModelEffect;
-        protected BasicEffect ModelEffectColor => game.ModelEffectColor;
-        protected BasicEffect UnlitWireframeEffect => game.UnlitWireframeEffect;
-        protected BasicEffect UnlitTexturedEffect => game.UnlitTexturedEffect;
-        protected RasterizerState WireframeRasterizerState => game.WireframeRasterizerState;
-        protected UiManager UiManager => game.UiManager;
-
-        protected Main Game => game;
+        private OnUnloaded onUnloadedCallback;
+        private bool terminateOnNextTick;
+        protected UiSceneManager uiSceneManager;
+        private bool unloadsContent;
 
         #endregion
 
+        #region Constructors
+
+        protected Scene(Main main, SceneType sceneType, bool unloadsContent = false)
+        {
+            uiSceneManager = new UiSceneManager(this);
+            this.unloadsContent = unloadsContent;
+            Main = main;
+            SceneType = sceneType;
+        }
+
+        #endregion
+
+        #region Properties, Indexers
+
+        public Main Main { get; }
+
+        public string SceneName { get; set; }
+        public SceneType SceneType { get; }
+
+        #endregion
+
+        #region Initialization
+
         public virtual void Initialize()
         {
-            EventManager.FireEvent(new SceneEventInfo()
-                {sceneActionType = SceneActionType.OnSceneLoaded, LevelName = SceneName});
+            EventManager.FireEvent(new SceneEventInfo {sceneActionType = SceneActionType.OnSceneLoaded, LevelName = SceneName});
+        }
+
+        #endregion
+
+        #region Methods
+
+        protected virtual void PreTerminate()
+        {
         }
 
         private void PreUpdate()
@@ -64,9 +63,20 @@ namespace GDGame.Scenes
             if (terminateOnNextTick)
             {
                 Terminate();
-
+                Main.UiManager.UIObjectList.Clear();
                 onUnloadedCallback.Invoke();
             }
+        }
+
+        protected abstract void Terminate();
+
+        public void UnloadScene(OnUnloaded cb)
+        {
+            onUnloadedCallback = cb;
+            if (unloadsContent)
+                Main.Content.Unload();
+            terminateOnNextTick = true;
+            PreTerminate();
         }
 
         public void Update(GameTime gameTime)
@@ -75,7 +85,8 @@ namespace GDGame.Scenes
 
             if (!terminateOnNextTick)
             {
-                UpdateScene(gameTime);
+                UpdateScene();
+                uiSceneManager.Update(gameTime);
             }
             else
             {
@@ -83,32 +94,17 @@ namespace GDGame.Scenes
             }
         }
 
-        protected abstract void UpdateScene(GameTime gameTime);
+        protected abstract void UpdateScene();
 
-        public void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(backgroundColor);
-            DrawScene(gameTime);
-        }
+        #endregion
+    }
 
-        protected abstract void DrawScene(GameTime gameTime);
-
-        protected virtual void PreTerminate()
-        {
-        }
-
-        protected abstract void Terminate();
-
-        public virtual void UnloadScene(OnUnloaded cb)
-        {
-            onUnloadedCallback = cb;
-            if (unloadsContent)
-                Content.Unload();
-
-            CameraManager.Clear();
-
-            terminateOnNextTick = true;
-            PreTerminate();
-        }
+    public enum SceneType
+    {
+        Game,
+        Menu,
+        End,
+        Options,
+        Info
     }
 }
