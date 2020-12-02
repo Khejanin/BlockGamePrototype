@@ -77,14 +77,20 @@ namespace GDGame.Actors
         {
             //System.Diagnostics.Debug.WriteLine("Moving Platform activate (doesn't work yet)");
             isActivated = true;
-            if (isActivated) MovePlatform();
+            if (isActivated)
+            {
+                for(int i = 0; i < 10; i++)
+                {
+                    MovePlatform();
+                }
+            }
         }
 
         public bool AtMaxPoint()
         {
             if (oppDir)
             {
-                if (currentPos.X >= starPos.X || currentPos.Y >= starPos.Y || currentPos.Z >= starPos.Z)
+                if (currentPos.X >= endPos.X || currentPos.Y >= endPos.Y || currentPos.Z >= endPos.Z)
                     max = false;
 
                 if (currentPos.X <= endPos.X || currentPos.Y <= starPos.Y || currentPos.Z <= starPos.Z)
@@ -95,7 +101,7 @@ namespace GDGame.Actors
                 if (currentPos.X <= starPos.X || currentPos.Y <= starPos.Y || currentPos.Z <= starPos.Z)
                     max = false;
 
-                if (currentPos.X >= endPos.X || currentPos.Y >= starPos.Y || currentPos.Z >= starPos.Z)
+                if (currentPos.X >= endPos.X || currentPos.Y >= endPos.Y || currentPos.Z >= endPos.Z)
                     max = true;
             }
 
@@ -163,8 +169,8 @@ namespace GDGame.Actors
             else
                 b = MoveDown();
 
-            Transform3D.TranslateBy(b);
-            currentPos = b;
+            this.Transform3D.TranslateBy(b);
+            this.currentPos = b;
         }
 
         public Vector3 MoveUp()
@@ -173,7 +179,7 @@ namespace GDGame.Actors
             if (oppDir)
                 move = -1;
 
-            float a = currentPos.X, b = currentPos.Y, c = currentPos.Z;
+            float a = this.currentPos.X, b = this.currentPos.Y, c = this.currentPos.Z;
 
             if (dir == -1) //X
                 a += move;
