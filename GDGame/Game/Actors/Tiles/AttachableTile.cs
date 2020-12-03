@@ -1,9 +1,6 @@
-﻿using System;
-using System.Diagnostics;
-using GDGame.Enums;
+﻿using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Game.Parameters.Effect;
-using GDGame.Managers;
 using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
@@ -88,7 +85,6 @@ namespace GDGame.Actors
 
         public virtual void OnMoveEnd()
         {
-            
         }
 
         #endregion

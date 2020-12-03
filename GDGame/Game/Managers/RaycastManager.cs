@@ -2,7 +2,6 @@
 using GDGame.Actors;
 using GDGame.Utilities;
 using GDLibrary.Actors;
-using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Managers

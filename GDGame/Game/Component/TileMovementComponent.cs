@@ -55,7 +55,7 @@ namespace GDGame.Component
         public override void Update(GameTime gameTime, IActor actor)
         {
             Tile ??= actor as AttachableTile;
-            
+
             if (Tile != null && Tile.IsMoving)
             {
                 endMoveCallback ??= Tile.OnMoveEnd;

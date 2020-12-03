@@ -9,7 +9,8 @@ namespace GDGame.Managers
     {
         #region Constructors
 
-        public OurUiManager(Microsoft.Xna.Framework.Game game, StatusType statusType, SpriteBatch spriteBatch, int initialDrawSize) : base(game, statusType, spriteBatch, initialDrawSize)
+        public OurUiManager(Microsoft.Xna.Framework.Game game, StatusType statusType, SpriteBatch spriteBatch, int initialDrawSize) : base(game, statusType, spriteBatch,
+            initialDrawSize)
         {
         }
 

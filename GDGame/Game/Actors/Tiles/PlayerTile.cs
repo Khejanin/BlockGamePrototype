@@ -55,53 +55,12 @@ namespace GDGame.Actors
 
         #region Override Methode
 
-        public void SetRotatePoint(Vector3 direction)
+        public override void OnMoveEnd()
         {
-            UpdateRotatePoints();
+            CheckAndProcessSurroundings(GetSurroundings(Transform3D.Translation));
+            if (IsAttached) Attach();
 
-            Vector3 rotatePoint = Vector3.Zero;
-
-            if (direction == Vector3.UnitX)
-                rotatePoint = rightRotatePoint;
-            else if (direction == -Vector3.UnitX)
-                rotatePoint = leftRotatePoint;
-            else if (direction == -Vector3.UnitZ)
-                rotatePoint = forwardRotatePoint;
-            else if (direction == Vector3.UnitZ)
-                rotatePoint = backwardRotatePoint;
-
-            RotatePoint = rotatePoint;
-            foreach (AttachableTile tile in AttachedTiles) tile.RotatePoint = RotatePoint;
-        }
-
-        private void UpdateRotatePoints()
-        {
-            rightRotatePoint = Transform3D.Translation + new Vector3(.5f, -.5f, 0);
-            leftRotatePoint = Transform3D.Translation + new Vector3(-.5f, -.5f, 0);
-            forwardRotatePoint = Transform3D.Translation + new Vector3(0, -.5f, -.5f);
-            backwardRotatePoint = Transform3D.Translation + new Vector3(0, -.5f, .5f);
-            //Loops through attached tiles to update the rotation points
-            foreach (AttachableTile tile in AttachedTiles)
-            {
-                Vector3 playerPos = Transform3D.Translation;
-                Vector3 tilePos = tile.Transform3D.Translation;
-
-                //Update right rotate point
-                if (tilePos.Y <= playerPos.Y && tilePos.X > rightRotatePoint.X || tilePos.Y < rightRotatePoint.Y)
-                    rightRotatePoint = tilePos + new Vector3(.5f, -.5f, 0);
-
-                //Update left rotate point
-                if (tilePos.Y <= playerPos.Y && tilePos.X < leftRotatePoint.X || tilePos.Y < leftRotatePoint.Y)
-                    leftRotatePoint = tilePos + new Vector3(-.5f, -.5f, 0);
-
-                //Update forward rotate point
-                if (tilePos.Y <= playerPos.Y && tilePos.Z < forwardRotatePoint.Z || tilePos.Y < forwardRotatePoint.Y)
-                    forwardRotatePoint = tilePos + new Vector3(0, -.5f, -.5f);
-
-                //Update back rotate point
-                if (tilePos.Y <= playerPos.Y && tilePos.Z > backwardRotatePoint.Z || tilePos.Y < backwardRotatePoint.Y)
-                    backwardRotatePoint = tilePos + new Vector3(0, -.5f, .5f);
-            }
+            CheckCollision(RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f));
         }
 
         #endregion
@@ -226,12 +185,61 @@ namespace GDGame.Actors
                 lastCheckpoint = (Vector3) position;
         }
 
+        public void SetRotatePoint(Vector3 direction)
+        {
+            UpdateRotatePoints();
+
+            Vector3 rotatePoint = Vector3.Zero;
+
+            if (direction == Vector3.UnitX)
+                rotatePoint = rightRotatePoint;
+            else if (direction == -Vector3.UnitX)
+                rotatePoint = leftRotatePoint;
+            else if (direction == -Vector3.UnitZ)
+                rotatePoint = forwardRotatePoint;
+            else if (direction == Vector3.UnitZ)
+                rotatePoint = backwardRotatePoint;
+
+            RotatePoint = rotatePoint;
+            foreach (AttachableTile tile in AttachedTiles) tile.RotatePoint = RotatePoint;
+        }
+
         private void UpdateAttachCandidates(List<MovableTile> detectedAttachableTiles)
         {
             AttachCandidates.Clear();
 
             foreach (MovableTile tile in detectedAttachableTiles)
                 AttachCandidates.Add(tile.Shape);
+        }
+
+        private void UpdateRotatePoints()
+        {
+            rightRotatePoint = Transform3D.Translation + new Vector3(.5f, -.5f, 0);
+            leftRotatePoint = Transform3D.Translation + new Vector3(-.5f, -.5f, 0);
+            forwardRotatePoint = Transform3D.Translation + new Vector3(0, -.5f, -.5f);
+            backwardRotatePoint = Transform3D.Translation + new Vector3(0, -.5f, .5f);
+            //Loops through attached tiles to update the rotation points
+            foreach (AttachableTile tile in AttachedTiles)
+            {
+                Vector3 playerPos = Transform3D.Translation;
+                Vector3 tilePos = tile.Transform3D.Translation;
+
+                //Update right rotate point
+                if (tilePos.Y <= playerPos.Y && tilePos.X > rightRotatePoint.X || tilePos.Y < rightRotatePoint.Y)
+                    rightRotatePoint = tilePos + new Vector3(.5f, -.5f, 0);
+
+                //Update left rotate point
+                if (tilePos.Y <= playerPos.Y && tilePos.X < leftRotatePoint.X || tilePos.Y < leftRotatePoint.Y)
+                    leftRotatePoint = tilePos + new Vector3(-.5f, -.5f, 0);
+
+                //Update forward rotate point
+                if (tilePos.Y <= playerPos.Y && tilePos.Z < forwardRotatePoint.Z || tilePos.Y < forwardRotatePoint.Y)
+                    forwardRotatePoint = tilePos + new Vector3(0, -.5f, -.5f);
+
+                //Update back rotate point
+                if (tilePos.Y <= playerPos.Y && tilePos.Z > backwardRotatePoint.Z || tilePos.Y < backwardRotatePoint.Y)
+                    backwardRotatePoint = tilePos + new Vector3(0, -.5f, .5f);
+            }
         }
 
         #endregion
@@ -260,14 +268,6 @@ namespace GDGame.Actors
                     info.movableTile.Respawn();
                     break;
             }
-        }
-
-        public override void OnMoveEnd()
-        {
-            CheckAndProcessSurroundings(GetSurroundings(Transform3D.Translation));
-            if (IsAttached) Attach();
-
-            CheckCollision(RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f));
         }
 
         #endregion

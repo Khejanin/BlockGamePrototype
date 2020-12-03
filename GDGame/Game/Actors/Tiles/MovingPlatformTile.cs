@@ -28,7 +28,8 @@ namespace GDGame.Actors
 
         #region Constructors
 
-        public MovingPlatformTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model, ETileType tileType,
+        public MovingPlatformTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model,
+            ETileType tileType,
             int tileMoves, int dir) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
             starPos = currentPos = Transform3D.Translation;
@@ -71,12 +72,8 @@ namespace GDGame.Actors
             //System.Diagnostics.Debug.WriteLine("Moving Platform activate (doesn't work yet)");
             isActivated = true;
             if (isActivated)
-            {
-                for(int i = 0; i < 10; i++)
-                {
+                for (int i = 0; i < 10; i++)
                     MovePlatform();
-                }
-            }
         }
 
         public bool AtMaxPoint()
@@ -162,8 +159,8 @@ namespace GDGame.Actors
             else
                 b = MoveDown();
 
-            this.Transform3D.TranslateBy(b);
-            this.currentPos = b;
+            Transform3D.TranslateBy(b);
+            currentPos = b;
         }
 
         public Vector3 MoveUp()
@@ -172,7 +169,7 @@ namespace GDGame.Actors
             if (oppDir)
                 move = -1;
 
-            float a = this.currentPos.X, b = this.currentPos.Y, c = this.currentPos.Z;
+            float a = currentPos.X, b = currentPos.Y, c = currentPos.Z;
 
             if (dir == -1) //X
                 a += move;

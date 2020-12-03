@@ -3,7 +3,6 @@ using GDGame.Enums;
 using GDGame.Game.Parameters.Effect;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors

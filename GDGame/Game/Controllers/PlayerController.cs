@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using GDGame.Actors;
 using GDGame.Enums;
 using GDGame.EventSystem;
-using GDGame.Managers;
-using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
@@ -51,8 +47,6 @@ namespace GDGame.Controllers
         {
             return new PlayerController(ID, ControllerType, keyboardManager, cameraManager);
         }
-
-        
 
         #endregion
 

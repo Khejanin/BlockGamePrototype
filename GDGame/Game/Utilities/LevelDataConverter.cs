@@ -44,7 +44,7 @@ namespace GDGame.Utilities
             //populate Grid values
             JSONArray jsonX = json.GetArray("Values");
 
-            for (int x = 0; x < (int)gridSize.X; x++)
+            for (int x = 0; x < (int) gridSize.X; x++)
             {
                 JSONArray jsonY = jsonX[x].Array;
                 for (int y = 0; y < gridSize.Y; y++)

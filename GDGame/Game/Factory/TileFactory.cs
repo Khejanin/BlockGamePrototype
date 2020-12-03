@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using GDGame.Actors;
-using GDGame.Component;
 using GDGame.Enums;
+using GDGame.Game.Parameters.Effect;
+using GDGame.Managers;
 using GDGame.Tiles;
 using GDGame.Utilities;
 using GDLibrary.Containers;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
-using GDGame.Game.Parameters.Effect;
-using GDGame.Managers;
 using JigLibX.Collision;
 using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
@@ -226,19 +225,11 @@ namespace GDGame.Factory
             if (texStringType != "")
             {
                 staticTile = ((Tile) drawnActors["StaticTile"]).Clone() as Tile;
-                if (staticTile != null) ((BasicEffectParameters) staticTile.EffectParameters).Texture = textures[texStringType + texStringTiling];
-                staticTile = ((Tile) drawnActors["StaticTile"]).Clone() as Tile;
-                if (staticTile != null)
+                if (staticTile?.EffectParameters is NormalEffectParameters normalEffectParameters)
                 {
-                    NormalEffectParameters normalEffectParameters =
-                        staticTile.EffectParameters as NormalEffectParameters;
-                    if (normalEffectParameters != null)
-                    {
-                        normalEffectParameters.ColorTexture = textures[texStringType + texStringTiling];
-                        normalEffectParameters.NormalTexture = textures["big-normalmap" + texStringTiling];
-                    }
-                    
-                } 
+                    normalEffectParameters.ColorTexture = textures[texStringType + texStringTiling];
+                    normalEffectParameters.NormalTexture = textures["big-normalmap" + texStringTiling];
+                }
             }
 
             if (staticTile != null)

@@ -5,16 +5,13 @@ using GDGame.Managers;
 using GDGame.Scenes;
 using GDLibrary.Actors;
 using GDLibrary.Containers;
-using GDLibrary.Debug;
 using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.Managers;
 using GDLibrary.Parameters;
-using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace GDGame
 {
@@ -28,9 +25,6 @@ namespace GDGame
 
         #region Constructors
 
-        public BasicEffect UnlitWireframeEffect { get; private set; }
-        
-        public BasicEffect ModelEffectColor { get; private set; }
         public Main()
         {
             Graphics = new GraphicsDeviceManager(this);
@@ -39,11 +33,11 @@ namespace GDGame
         }
 
         #endregion
-        public OurObjectManager ObjectManager { get; private set; }
-        
+
         #region Properties, Indexers
 
         public CameraManager<Camera3D> CameraManager { get; private set; }
+        public ContentDictionary<Effect> Effects { get; private set; }
         public ContentDictionary<SpriteFont> Fonts { get; private set; }
         public ProjectionParameters GlobalProjectionParameters => ProjectionParameters.StandardDeepSixteenTen;
         public GraphicsDeviceManager Graphics { get; }
@@ -53,18 +47,22 @@ namespace GDGame
         public MyMenuManager MenuManager { get; set; }
 
         public BasicEffect ModelEffect { get; private set; }
+
+        public BasicEffect ModelEffectColor { get; private set; }
         public ContentDictionary<Model> Models { get; private set; }
         public MouseManager MouseManager { get; private set; }
+        public OurObjectManager ObjectManager { get; private set; }
         private PhysicsManager PhysicsManager { get; set; }
         private OurRenderManager RenderManager { get; set; }
         public SceneManager SceneManager { get; private set; }
         public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
         public SoundManager SoundManager { get; private set; }
         public ContentDictionary<Texture2D> Textures { get; private set; }
-        public ContentDictionary<Effect> Effects { get; private set; }
 
         public Dictionary<string, DrawnActor2D> UiArchetypes { get; set; }
         public OurUiManager UiManager { get; private set; }
+
+        public BasicEffect UnlitWireframeEffect { get; private set; }
 
         #endregion
 
@@ -133,7 +131,7 @@ namespace GDGame
             Fonts = new ContentDictionary<SpriteFont>("fonts", Content);
             Textures = new ContentDictionary<Texture2D>("textures", Content);
             Models = new ContentDictionary<Model>("models", Content);
-            Effects = new ContentDictionary<Effect>("effects",Content);
+            Effects = new ContentDictionary<Effect>("effects", Content);
         }
 
         private void InitManagers()
@@ -167,7 +165,7 @@ namespace GDGame
             //Components.Add(SoundManager);
 
             //Object
-            ObjectManager = new OurObjectManager(this,StatusType.Off,10,8);
+            ObjectManager = new OurObjectManager(this, StatusType.Off, 10, 8);
             Components.Add(ObjectManager);
 
             //Render

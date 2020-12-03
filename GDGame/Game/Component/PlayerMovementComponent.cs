@@ -29,19 +29,6 @@ namespace GDGame.Component
         {
         }
 
-        private void EventListeners()
-        {
-            EventManager.RegisterListener<MovementEvent>(HandleMovement);
-        }
-
-        private void HandleMovement(MovementEvent movementEvent)
-        {
-            if (movementEvent.type == MovementType.OnMove)
-            {
-                Move(movementEvent.direction);
-            }
-        }
-
         #endregion
 
         #region Override Methode
@@ -61,6 +48,11 @@ namespace GDGame.Component
             PlayerMovementComponent playerMovementComponent = new PlayerMovementComponent(ID, ControllerType);
             playerMovementComponent.EventListeners();
             return playerMovementComponent;
+        }
+
+        private void EventListeners()
+        {
+            EventManager.RegisterListener<MovementEvent>(HandleMovement);
         }
 
         private bool IsMoveValid(Quaternion rotationToApply, Vector3 rotatePoint, Vector3 playerTargetPos, Vector3 offset)
@@ -89,6 +81,15 @@ namespace GDGame.Component
                     movementComponent?.MoveTile();
                 }
             }
+        }
+
+        #endregion
+
+        #region Events
+
+        private void HandleMovement(MovementEvent movementEvent)
+        {
+            if (movementEvent.type == MovementType.OnMove) Move(movementEvent.direction);
         }
 
         #endregion

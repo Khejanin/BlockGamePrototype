@@ -1,5 +1,6 @@
 ﻿using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Game.Parameters.Effect;
 using GDGame.Managers;
 using GDGame.Utilities;
 using GDLibrary.Enums;
@@ -7,7 +8,6 @@ using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using GDGame.Game.Parameters.Effect;
 
 namespace GDGame.Actors
 {

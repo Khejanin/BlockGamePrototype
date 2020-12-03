@@ -1,4 +1,3 @@
-using GDGame.Actors;
 using GDGame.Game.Parameters.Effect;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
@@ -12,53 +11,49 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    /// Allows us to draw a model and add a collision skin and physics response. Use this class to create collidable objects
-    /// and add one or more of the 3 collision primitive types (i.e. Box, Sphere, Capsule). Unlike the TriangleMeshObject
-    /// this class will allow an object to MOVE within the game (e.g. fall, by lifted and dropped, be pushed etc).
+    ///     Allows us to draw a model and add a collision skin and physics response. Use this class to create collidable
+    ///     objects
+    ///     and add one or more of the 3 collision primitive types (i.e. Box, Sphere, Capsule). Unlike the TriangleMeshObject
+    ///     this class will allow an object to MOVE within the game (e.g. fall, by lifted and dropped, be pushed etc).
     /// </summary>
     public class OurCollidableObject : OurModelObject
     {
-        #region Variables
+        #region Private variables
 
-        private Body body;
-        private CollisionSkin collision;
-        private float mass;
+        private Vector3 com;
+        private Matrix it, itCoM;
 
-        #endregion Variables
+        private float junk;
 
-        #region Properties
+        #endregion
 
-        public float Mass
-        {
-            get { return mass; }
-            set { mass = value; }
-        }
-
-        public CollisionSkin Collision
-        {
-            get { return collision; }
-            set { collision = value; }
-        }
-
-        public Body Body
-        {
-            get { return body; }
-            set { body = value; }
-        }
-
-        #endregion Properties
+        #region Constructors
 
         public OurCollidableObject(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
-            body = new Body();
-            body.ExternalData = this;
-            collision = new CollisionSkin(body);
-            body.CollisionSkin = collision;
+            Body = new Body();
+            Body.ExternalData = this;
+            Collision = new CollisionSkin(Body);
+            Body.CollisionSkin = Collision;
 
             //we will only add this event handling in a class that sub-classes CollidableObject e.g. PickupCollidableObject or PlayerCollidableObject
             //this.body.CollisionSkin.callbackFn += CollisionSkin_callbackFn;
         }
+
+        #endregion
+
+        #region Properties, Indexers
+
+        public Body Body { get; set; }
+
+        public CollisionSkin Collision { get; set; }
+
+        public float Mass { get; set; }
+
+        #endregion
+
+        #region Override Methode
 
         //we will only add this method in a class that sub-classes CollidableObject e.g. PickupCollidableObject or PlayerCollidableObject
         //private bool CollisionSkin_callbackFn(CollisionSkin skin0, CollisionSkin skin1)
@@ -69,45 +64,19 @@ namespace GDGame.Actors
         public override Matrix GetWorldMatrix()
         {
             return Matrix.CreateScale(Transform3D.Scale) *
-                   collision.GetPrimitiveLocal(0).Transform.Orientation *
-                   body.Orientation *
+                   Collision.GetPrimitiveLocal(0).Transform.Orientation *
+                   Body.Orientation *
                    Transform3D.Orientation *
-                   Matrix.CreateTranslation(body.Position);
+                   Matrix.CreateTranslation(Body.Position);
         }
 
-        private float junk;
-        private Vector3 com;
-        private Matrix it, itCoM;
+        #endregion
 
-        protected Vector3 SetMass(float mass)
-        {
-            PrimitiveProperties primitiveProperties = new PrimitiveProperties(PrimitiveProperties.MassDistributionEnum.Solid, PrimitiveProperties.MassTypeEnum.Density, mass);
-            collision.GetMassProperties(primitiveProperties, out junk, out com, out it, out itCoM);
-            body.BodyInertia = itCoM;
-            body.Mass = junk;
-
-            return com;
-        }
+        #region Methods
 
         public void AddPrimitive(Primitive primitive, MaterialProperties materialProperties)
         {
-            collision.AddPrimitive(primitive, materialProperties);
-        }
-
-        public virtual void Enable(bool bImmovable, float mass)
-        {
-            this.mass = mass;
-
-            //set whether the object can move
-            body.Immovable = bImmovable;
-            //calculate the centre of mass
-            Vector3 com = SetMass(mass);
-            //adjust skin so that it corresponds to the 3D mesh as drawn on screen
-            body.MoveTo(Transform3D.Translation, Matrix.Identity);
-            //set the centre of mass
-            collision.ApplyLocalTransform(new Transform(-com, Matrix.Identity));
-            //enable so that any applied forces (e.g. gravity) will affect the object
-            body.EnableBody();
+            Collision.AddPrimitive(primitive, materialProperties);
         }
 
         public new object Clone()
@@ -119,5 +88,33 @@ namespace GDGame.Actors
                 EffectParameters.Clone() as OurEffectParameters, //hybrid - shallow (texture and effect) and deep (all other fields)
                 Model); //shallow i.e. a reference
         }
+
+        public virtual void Enable(bool bImmovable, float mass)
+        {
+            this.Mass = mass;
+
+            //set whether the object can move
+            Body.Immovable = bImmovable;
+            //calculate the centre of mass
+            Vector3 com = SetMass(mass);
+            //adjust skin so that it corresponds to the 3D mesh as drawn on screen
+            Body.MoveTo(Transform3D.Translation, Matrix.Identity);
+            //set the centre of mass
+            Collision.ApplyLocalTransform(new Transform(-com, Matrix.Identity));
+            //enable so that any applied forces (e.g. gravity) will affect the object
+            Body.EnableBody();
+        }
+
+        protected Vector3 SetMass(float mass)
+        {
+            PrimitiveProperties primitiveProperties = new PrimitiveProperties(PrimitiveProperties.MassDistributionEnum.Solid, PrimitiveProperties.MassTypeEnum.Density, mass);
+            Collision.GetMassProperties(primitiveProperties, out junk, out com, out it, out itCoM);
+            Body.BodyInertia = itCoM;
+            Body.Mass = junk;
+
+            return com;
+        }
+
+        #endregion
     }
 }
