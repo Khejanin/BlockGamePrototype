@@ -10,9 +10,11 @@ using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.Managers;
 using GDLibrary.Parameters;
+using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace GDGame
 {

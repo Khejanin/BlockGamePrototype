@@ -4,6 +4,7 @@ using GDLibrary.Enums;
 using GDLibrary.GameComponents;
 using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using SharpDX.Direct3D11;
 using BlendState = Microsoft.Xna.Framework.Graphics.BlendState;
 

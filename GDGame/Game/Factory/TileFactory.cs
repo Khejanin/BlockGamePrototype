@@ -214,6 +214,8 @@ namespace GDGame.Factory
             string texStringType = "";
             string texStringTiling = "";
             int randomN = MathHelperFunctions.Rnd.Next(0, 100);
+            if (randomN > 65 && randomN < 71) texStringTiling = "_choco";
+            if (randomN > 60 && randomN < 66) texStringTiling = "_b_logic";
             if (randomN > 70 && randomN < 90) texStringTiling = "4x";
             else if (randomN > 90) texStringTiling = "8x";
 
@@ -228,15 +230,18 @@ namespace GDGame.Factory
                 case BasicTile.EStaticTileType.DarkChocolate:
                     texStringType = "DarkChocolate";
                     break;
-                case BasicTile.EStaticTileType.Plates:
-                    staticTile = ((BasicTile) drawnActors["PlateStackTile"]).Clone() as BasicTile;
-                    break;
             }
 
             if (texStringType != "")
             {
                 staticTile = ((BasicTile) drawnActors["StaticTile"]).Clone() as BasicTile;
-                if (staticTile != null) (staticTile.EffectParameters as BasicEffectParameters).Texture = textures[texStringType + texStringTiling];
+                if (staticTile != null)
+                {
+                    NormalEffectParameters normalEffectParameters =
+                        staticTile.EffectParameters as NormalEffectParameters;
+                    normalEffectParameters.ColorTexture = textures[texStringType + texStringTiling];
+                    normalEffectParameters.NormalTexture = textures["big-normalmap" + texStringTiling];
+                } 
             }
 
             if (staticTile != null)

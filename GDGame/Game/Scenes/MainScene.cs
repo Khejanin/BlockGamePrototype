@@ -43,6 +43,7 @@ namespace GDGame.Scenes
         private OurDrawnActor3D player;
         private Transform3DCurve transform3DCurve;
         private BasicTile test;
+        private Transform3D light;
 
         #endregion
 
@@ -190,6 +191,7 @@ namespace GDGame.Scenes
         private void InitDrawnContent() //formerly InitPrimitives
         {
             //models
+            InitLight();
             InitStaticModels();
             TestingPlatform();
 
@@ -206,6 +208,11 @@ namespace GDGame.Scenes
             InitSkyBox();
 
             //InitDecoration(1010);
+        }
+
+        private void InitLight()
+        {
+            light = new Transform3D(new Vector3(-0.2f,1,0.4f),-Vector3.Forward, Vector3.Up);
         }
 
         private void InitEvents()
@@ -376,7 +383,8 @@ namespace GDGame.Scenes
             #region StaticTiles
 
             BasicEffectParameters effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Chocolate"], Color.White, 1);
-            BasicTile chocolateTile = new BasicTile("ChocolateTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, Main.Models["Cube"],
+            NormalEffectParameters normalEffectParameters = new NormalEffectParameters(Main.Effects["Normal"],Main.Textures["Chocolate"],Main.Textures["big-normalmap"],Main.Textures["big-displacement"],Color.White,1,light);
+            BasicTile chocolateTile = new BasicTile("ChocolateTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, normalEffectParameters, Main.Models["Cube"],
                 ETileType.Static);
             chocolateTile.ControllerList.Add(new CustomBoxColliderController("BasicTileBCC", ControllerType.Collider, ColliderShape.Cube, 1f));
 
@@ -400,7 +408,7 @@ namespace GDGame.Scenes
                 ETileType.Star);
             starPickup.ControllerList.Add(new CustomBoxColliderController("StarPickUpBCC", ControllerType.Collider, ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
-            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
+            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["sugarbox"], Color.White, 1);
             GoalTile goal = new GoalTile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, Main.Models["SugarBox"], ETileType.Win);
             goal.ControllerList.Add(new CustomBoxColliderController("GoalBCC", ControllerType.Collider, ColliderShape.Cube, 1f, ColliderType.CheckOnly));
 
@@ -519,6 +527,8 @@ namespace GDGame.Scenes
 
         protected override void UpdateScene()
         {
+            light.Look = Main.CameraManager.ActiveCamera.Transform3D.Look;
+            
             if (curve3DController != null && curve3DController.ElapsedTimeInMs > 25000)
             {
                 Main.CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Curve Camera");
@@ -623,28 +633,48 @@ namespace GDGame.Scenes
 
             Main.Textures.Load("Assets/Textures/Base/WhiteSquare");
 
-            Main.Textures.Load("Assets/Textures/uvalex", "CoffeeUV");
-            Main.Textures.Load("Assets/Textures/flowmap2", "CoffeeFlow");
-            
             Main.Textures.Load("Assets/Textures/Menu/menubaseres", "options");
             Main.Textures.Load("Assets/Textures/Menu/button", "optionsButton");
 
+            //Skybox
             Main.Textures.Load("Assets/Textures/Skybox/kWall1");
             Main.Textures.Load("Assets/Textures/Skybox/kWall2");
             Main.Textures.Load("Assets/Textures/Skybox/kWall3");
             Main.Textures.Load("Assets/Textures/Skybox/kWall4");
             Main.Textures.Load("Assets/Textures/Skybox/tiles", "floor2");
 
-            Main.Textures.Load("Assets/Textures/Props/GameTextures/choco-tile", "Chocolate");
-            Main.Textures.Load("Assets/Textures/Props/GameTextures/choco-tile4x", "Chocolate4x");
-            Main.Textures.Load("Assets/Textures/Props/GameTextures/choco-tile8x", "Chocolate8x");
-            Main.Textures.Load("Assets/Textures/Props/GameTextures/choco-tile-white", "WhiteChocolate");
-            Main.Textures.Load("Assets/Textures/Props/GameTextures/choco-tile-white4x", "WhiteChocolate4x");
-            Main.Textures.Load("Assets/Textures/Props/GameTextures/choco-tile-white8x", "WhiteChocolate8x");
-            Main.Textures.Load("Assets/Textures/Props/GameTextures/dark_choco-tile", "DarkChocolate");
-            Main.Textures.Load("Assets/Textures/Props/GameTextures/dark_choco-tile4x", "DarkChocolate4x");
-            Main.Textures.Load("Assets/Textures/Props/GameTextures/dark_choco-tile8x", "DarkChocolate8x");
-
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/sugarbox");
+            
+            //Normals
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-normalmap");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-normalmap-choco","big-normalmap_choco");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-normalmap-choco","big-normalmap_b_logic");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-normalmap4x");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-normalmap8x");
+            
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/DisplacementMap","big-displacement");
+            
+            //Chocolate
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco", "Chocolate");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco_choco", "Chocolate_choco");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco_b_logic", "Chocolate_b_logic");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco-4x", "Chocolate4x");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco-8x", "Chocolate8x");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco-white", "WhiteChocolate");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco-white_choco", "WhiteChocolate_choco");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco-white_b_logic", "WhiteChocolate_b_logic");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco-white4x", "WhiteChocolate4x");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco-white8x", "WhiteChocolate8x");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco-dark", "DarkChocolate");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco-dark_choco", "DarkChocolate_choco"); 
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco-dark_b_logic", "DarkChocolate_b_logic");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco-dark4x", "DarkChocolate4x");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco-dark8x", "DarkChocolate8x");
+            
+            //Coffee
+            Main.Textures.Load("Assets/Textures/uvalex", "CoffeeUV");
+            Main.Textures.Load("Assets/Textures/flowmap2", "CoffeeFlow");
+            
             Main.Textures.Load("Assets/Textures/Props/GameTextures/ceramicColoring", "Ceramic");
 
             Main.Textures.Load("Assets/Textures/Props/GameTextures/sugar01", "SugarW");
