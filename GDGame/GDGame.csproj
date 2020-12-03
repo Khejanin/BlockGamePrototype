@@ -95,6 +95,10 @@
 	  <None Remove="Content\Assets\Textures\Skybox\right.bmp" />
 	  <None Remove="Content\Assets\Textures\Block\block_green.png" />
 	  <None Remove="Content\Assets\Textures\UI\Backgrounds\exitmenuwithtrans.png" />
+	  <None Remove="Game\LevelFiles\BridgeLevel2.json" />
+	  <Content Include="Game\LevelFiles\BridgeLevel2.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Remove="Game\Actors\Drawn\**" />

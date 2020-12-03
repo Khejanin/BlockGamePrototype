@@ -44,6 +44,7 @@ namespace GDGame.Scenes
         private Transform3DCurve transform3DCurve;
         private BasicTile test;
         private Transform3D light;
+        private float currentMovementCoolDown;
 
         #endregion
 
@@ -461,10 +462,10 @@ namespace GDGame.Scenes
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
             MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Platform, StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
-                Main.Models["SinglePlate"], ETileType.MovingPlatform, 3, -1); //-1 = X, 1 = Y, 0 = Z
+                Main.Models["SinglePlate"], ETileType.MovingPlatform); //-1 = X, 1 = Y, 0 = Z
             platform.ControllerList.Add(new CustomBoxColliderController("PlatformBCC", ControllerType.Collider, ColliderShape.Cube, 1f));
-            platform.ControllerList.Add(new TileMovementComponent("PlatformMC", ControllerType.Movement, 300, new Curve1D(CurveLoopType.Cycle)));
-
+            platform.ControllerList.Add(new PathMovementComponent("platformpmc",ControllerType.Movement,ActivationType.AlwaysOn,0.5f,Smoother.SmoothingMethod.Decelerate));
+            
             #endregion MovableTiles
 
             drawnActors = new Dictionary<string, OurDrawnActor3D>
@@ -525,9 +526,17 @@ namespace GDGame.Scenes
             Main.Textures.Dispose();
         }
 
-        protected override void UpdateScene()
+        protected override void UpdateScene(GameTime gameTime)
         {
             light.Look = Main.CameraManager.ActiveCamera.Transform3D.Look;
+            
+            if (currentMovementCoolDown <= 0)
+            {
+                currentMovementCoolDown = Constants.GameConstants.MOVEMENT_COOLDOWN;
+                EventManager.FireEvent(new MovingTilesEventInfo());
+            }
+
+            currentMovementCoolDown -= (float) gameTime.ElapsedGameTime.TotalSeconds;
             
             if (curve3DController != null && curve3DController.ElapsedTimeInMs > 25000)
             {

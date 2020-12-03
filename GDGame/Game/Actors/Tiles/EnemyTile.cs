@@ -17,17 +17,14 @@ namespace GDGame.Actors
         #region Private variables
 
         private bool canMove;
-        private float currentMovementCoolDown;
-        private float movementCoolDown;
 
         #endregion
 
         #region Constructors
 
-        public EnemyTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model, ETileType tileType,
-            float movementCoolDown = 0.5f) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
+        public EnemyTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
-            this.movementCoolDown = movementCoolDown;
+            EventManager.RegisterListener<MovingTilesEventInfo>(OnMovingTileEvent);
         }
 
         #endregion
@@ -36,7 +33,6 @@ namespace GDGame.Actors
 
         public override void InitializeTile()
         {
-            currentMovementCoolDown = movementCoolDown;
             canMove = true;
             base.InitializeTile();
         }
@@ -56,19 +52,19 @@ namespace GDGame.Actors
         {
             base.OnMoveEnd();
             canMove = true;
-            currentMovementCoolDown = movementCoolDown;
+        }
+
+        private void OnMovingTileEvent(MovingTilesEventInfo info)
+        {
+            if (canMove)
+            {
+                canMove = false;
+                MoveToNextPoint();
+            }
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (canMove && currentMovementCoolDown <= 0)
-            {
-                canMove = false;
-                MoveToNextPoint();
-                return;
-            }
-
-            currentMovementCoolDown -= (float) gameTime.ElapsedGameTime.TotalSeconds;
             base.Update(gameTime);
         }
 

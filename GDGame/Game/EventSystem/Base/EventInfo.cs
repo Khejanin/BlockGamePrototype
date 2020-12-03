@@ -41,6 +41,11 @@ namespace GDGame.EventSystem
         #endregion
     }
 
+    public class MovingTilesEventInfo : EventInfo
+    {
+        
+    }
+
     public class GameStateMessageEventInfo : EventInfo
     {
         #region Public variables

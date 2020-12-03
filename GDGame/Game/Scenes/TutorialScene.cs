@@ -48,7 +48,7 @@ namespace GDGame.Scenes
             Main.Textures.Dispose();
         }
 
-        protected override void UpdateScene()
+        protected override void UpdateScene(GameTime gameTime)
         {
             if (Main.KeyboardManager.IsFirstKeyPress(Keys.Space)) Main.SceneManager.NextScene();
         }

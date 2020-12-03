@@ -49,7 +49,7 @@ namespace GDGame.Scenes
             Main.CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Menu_Camera");
         }
 
-        protected override void UpdateScene()
+        protected override void UpdateScene(GameTime gameTime)
         {
             if (Main.KeyboardManager.IsFirstKeyPress(Keys.Space)) Main.SceneManager.NextScene();
         }

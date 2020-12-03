@@ -85,7 +85,7 @@ namespace GDGame.Scenes
 
             if (!terminateOnNextTick)
             {
-                UpdateScene();
+                UpdateScene(gameTime);
                 uiSceneManager.Update(gameTime);
             }
             else
@@ -94,7 +94,7 @@ namespace GDGame.Scenes
             }
         }
 
-        protected abstract void UpdateScene();
+        protected abstract void UpdateScene(GameTime gameTime);
 
         #endregion
     }

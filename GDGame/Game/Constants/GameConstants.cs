@@ -26,6 +26,8 @@ namespace GDGame.Constants
         public static readonly float mediumAngularSpeed = lowAngularSpeed * angularSpeedMultiplier;
         public static readonly float hiAngularSpeed = mediumAngularSpeed * angularSpeedMultiplier;
 
+        public static readonly float MOVEMENT_COOLDOWN = 2f;
+
         #endregion
     }
 }

@@ -39,7 +39,7 @@ namespace GDGame.Scenes
         {
         }
 
-        protected override void UpdateScene()
+        protected override void UpdateScene(GameTime gameTime)
         {
         }
 
