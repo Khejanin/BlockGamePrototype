@@ -11,14 +11,15 @@ float4x4 World;
 float4x4 View;
 float4x4 Projection;
 
-Texture2D Displacement;
-Texture2D FlowMap;
+Texture2D Displacement : t0;
+Texture2D FlowMap : t1;
+Texture2D test : t2;
 
 float4 coffeeColor;
 
 float time;
 
-SamplerState Sampler;
+SamplerState Sampler : register(s0);
 
 struct VertexShaderInput
 {
@@ -39,7 +40,10 @@ VertexShaderOutput MainVS(VertexShaderInput input)
     
     float4 WorldPosition = mul(input.Position, World);
     float4 ViewPosition = mul(WorldPosition,View);
+    
     output.Position = mul(ViewPosition,Projection);
+    
+    
     
     output.TexCoord = input.TexCoord;
     
@@ -75,7 +79,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	
 	float4 finalTex = tex1+tex2;
 	
-	return finalTex * coffeeColor;
+	return finalTex * coffeeColor ;
 }
 
 

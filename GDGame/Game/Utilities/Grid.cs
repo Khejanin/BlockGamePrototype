@@ -71,11 +71,11 @@ namespace GDGame.Utilities
             _grid = new Tile[(int) data.gridSize.X, (int) data.gridSize.Y, (int) data.gridSize.Z];
             Vector3 pos = Vector3.Zero;
 
-            for (int x = 0; x < data.gridSize.X; x++)
+            for (int x = 0; x < (int)data.gridSize.X; x++)
             {
-                for (int y = 0; y < data.gridSize.Y; y++)
+                for (int y = 0; y < (int)data.gridSize.Y; y++)
                 {
-                    for (int z = 0; z < data.gridSize.Z; z++)
+                    for (int z = 0; z < (int)data.gridSize.Z; z++)
                     {
                         if (data.gridValues[x, y, z] != ETileType.None)
                         {
@@ -85,23 +85,17 @@ namespace GDGame.Utilities
 
                             for (int i = -1; i <= 1; i += 2)
                             {
-                                if (x + i >= 0 && x + i < data.gridSize.X)
+                                if (x + i >= 0 && x + i < (int)data.gridSize.X)
                                     count += data.gridValues[x + i, y, z] == ETileType.Static ? 1 : 0;
-                                if (y + i >= 0 && y + i < data.gridSize.Y)
+                                if (y + i >= 0 && y + i < (int)data.gridSize.Y)
                                     count += data.gridValues[x, y + i, z] == ETileType.Static ? 1 : 0;
-                                if (z + i >= 0 && z + i < data.gridSize.Z)
+                                if (z + i >= 0 && z + i < (int)data.gridSize.Z)
                                     count += data.gridValues[x, y, z + i] == ETileType.Static ? 1 : 0;
                             }
 
-                            if (y - 1 >= 0 && count == 1 && data.gridValues[x, y - 1, z] == ETileType.Static)
-                            {
-                                staticTileType = Tile.EStaticTileType.Plates;
-                            }
-                            else
-                            {
-                                if (count > 4) staticTileType = Tile.EStaticTileType.WhiteChocolate;
-                                else if (count > 3) staticTileType = Tile.EStaticTileType.Chocolate;
-                            }
+                            
+                            if (count > 4) staticTileType = Tile.EStaticTileType.WhiteChocolate;
+                            else if (count > 3) staticTileType = Tile.EStaticTileType.Chocolate;
 
                             Tile tile = tileFactory.CreateTile(pos + new Vector3(0, 0, data.gridSize.Z - 1), data.gridValues[x, y, z], staticTileType);
                             tile?.InitializeTile();
