@@ -1,5 +1,6 @@
 ﻿using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Game.Parameters.Effect;
 using GDGame.Managers;
 using GDGame.Utilities;
 using GDLibrary.Enums;
@@ -7,8 +8,6 @@ using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using GDGame.Game.Parameters.Effect;
 
 namespace GDGame.Actors
 {
@@ -91,7 +90,7 @@ namespace GDGame.Actors
             Vector3 direction = Vector3.Normalize(destination - origin);
 
             Raycaster.HitResult hit = RaycastManager.Instance.Raycast(this, Transform3D.Translation, direction, true, 1f);
-            if (hit == null || hit.actor is PlayerTile || hit.actor is AttachableTile)
+            if (hit == null || hit.actor is PlayerTile || hit.actor is MovableTile)
                 return direction;
 
             pathDir *= -1;
@@ -111,10 +110,15 @@ namespace GDGame.Actors
 
         private void OnCollide(Raycaster.HitResult hitInfo)
         {
-            if (hitInfo?.actor is PlayerTile)
-                EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.Die});
-            else if (hitInfo?.actor is AttachableTile tile)
-                EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.AttachedTileDie, attachedTile = tile});
+            switch (hitInfo?.actor)
+            {
+                case PlayerTile _:
+                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.Die});
+                    break;
+                case AttachableTile tile:
+                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.MovableTileDie, movableTile = tile});
+                    break;
+            }
         }
 
         #endregion

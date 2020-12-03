@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using GDGame.Actors;
 using GDGame.Managers;
 using GDLibrary.Actors;
-using GDLibrary.Managers;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Utilities

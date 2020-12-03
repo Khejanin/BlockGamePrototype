@@ -39,7 +39,7 @@
     {
         Move,
         Die,
-        AttachedTileDie,
+        MovableTileDie,
         SetCheckpoint,
         OnMove,
         OnEnemyMove

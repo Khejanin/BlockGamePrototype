@@ -19,7 +19,7 @@ namespace GDGame.Tiles
 
         #region Properties, Indexers
 
-        public List<AttachableTile> AttachableTiles { get; set; }
+        public List<AttachableTile> AttachableTiles { get; }
 
         #endregion
 

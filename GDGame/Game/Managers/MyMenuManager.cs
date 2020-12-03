@@ -19,7 +19,8 @@ namespace GDGame.Managers
 
         #region Constructors
 
-        public MyMenuManager(Microsoft.Xna.Framework.Game main, StatusType statusType, SpriteBatch spriteBatch, MouseManager mouseManager, KeyboardManager keyboardManager) : base(main, statusType,
+        public MyMenuManager(Microsoft.Xna.Framework.Game main, StatusType statusType, SpriteBatch spriteBatch, MouseManager mouseManager, KeyboardManager keyboardManager) : base(
+            main, statusType,
             spriteBatch)
         {
             this.mouseManager = mouseManager;

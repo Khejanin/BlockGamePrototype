@@ -1,16 +1,16 @@
-﻿using GDGame.Enums;
+﻿using System;
+using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Game.Parameters.Effect;
 using GDGame.Interfaces;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using GDGame.Game.Parameters.Effect;
 
 namespace GDGame.Actors
 {
-    public class ButtonTile : BasicTile, IActivatable
+    public class ActivatableTile : Tile, IActivatable
     {
         #region Private variables
 
@@ -22,10 +22,28 @@ namespace GDGame.Actors
 
         //public List<IActivatable> Targets { get; set; }
 
-        public ButtonTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model, ETileType tileType) : base(
+        public ActivatableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model,
+            ETileType tileType) : base(
             id, actorType, statusType, transform, effectParameters, model, tileType)
         {
             //Targets = new List<IActivatable>();
+        }
+
+        #endregion
+
+        #region Override Methode
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((ActivatableTile) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(base.GetHashCode(), isActivated);
         }
 
         #endregion
@@ -43,15 +61,15 @@ namespace GDGame.Actors
 
         public new object Clone()
         {
-            ButtonTile buttonTile = new ButtonTile("clone - " + ID, ActorType, StatusType,
+            ActivatableTile activatableTile = new ActivatableTile("clone - " + ID, ActorType, StatusType,
                 Transform3D.Clone() as Transform3D,
                 EffectParameters.Clone() as OurEffectParameters, Model, TileType);
 
             if (ControllerList != null)
                 foreach (IController controller in ControllerList)
-                    buttonTile.ControllerList.Add(controller.Clone() as IController);
+                    activatableTile.ControllerList.Add(controller.Clone() as IController);
 
-            return buttonTile;
+            return activatableTile;
         }
 
         public void Deactivate()
@@ -61,6 +79,11 @@ namespace GDGame.Actors
             //    target.Activate();
 
             isActivated = false;
+        }
+
+        protected bool Equals(ActivatableTile other)
+        {
+            return base.Equals(other) && isActivated == other.isActivated;
         }
 
         public void ToggleActivation()

@@ -20,7 +20,8 @@ namespace GDGame.Actors
 
         #region Constructors
 
-        public FallingTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model, ETileType tileType) : base(
+        public FallingTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model,
+            ETileType tileType) : base(
             id, actorType, statusType, transform, effectParameters, model, tileType)
         {
         }
