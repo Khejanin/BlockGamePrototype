@@ -194,9 +194,9 @@ namespace GDGame.Game.Parameters.Effect
 
     public class NormalEffectParameters : OurEffectParameters
     {
-        protected  Texture2D colorTexture, normalTexture;
-        protected Color ambientColor, diffuseColor;
-        protected float ambientIntensity, diffuseIntensity;
+        protected  Texture2D colorTexture, normalTexture, displacement;
+        protected Color diffuseColor;
+        protected float diffuseIntensity;
         protected Transform3D lightTransform;
 
         public Texture2D ColorTexture
@@ -211,25 +211,22 @@ namespace GDGame.Game.Parameters.Effect
             set => normalTexture = value;
         }
 
-        public NormalEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D colorTexture, Texture2D normalTexture, Color diffuseColor, Color ambientColor, float ambientIntensity, float diffuseIntensity,Transform3D lightTransform) : base(effect)
+        public NormalEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D colorTexture, Texture2D normalTexture, Texture2D displacement, Color diffuseColor,float diffuseIntensity,Transform3D lightTransform) : base(effect)
         {
             this.effect = effect;
             this.colorTexture = colorTexture;
             this.normalTexture = normalTexture;
             this.diffuseColor = diffuseColor;
-            this.ambientColor = ambientColor;
-            this.ambientIntensity = ambientIntensity;
             this.diffuseIntensity = diffuseIntensity;
             this.lightTransform = lightTransform;
+            this.displacement = displacement;
         }
 
         protected override void SetupMaterial(Matrix world, Camera3D camera3D,GameTime gameTime)
         {
-            effect.Parameters["AmbientColor"].SetValue(Color.Black.ToVector4());
-            effect.Parameters["AmbientIntensity"].SetValue(1f);
-            effect.Parameters["DiffuseColor"].SetValue(Vector4.One);
-            effect.Parameters["DiffuseIntensity"].SetValue(1f);
-            effect.Parameters["Light"].SetValue(Vector3.Normalize(lightTransform.RotationInDegrees));
+            effect.Parameters["DiffuseColor"].SetValue(diffuseColor.ToVector4());
+            effect.Parameters["DiffuseIntensity"].SetValue(diffuseIntensity);
+            effect.Parameters["Light"].SetValue(Vector3.Normalize(lightTransform.Look));
             effect.Parameters["ColorMap"].SetValue(colorTexture);
             effect.Parameters["NormalMap"].SetValue(normalTexture);
         }
@@ -241,13 +238,13 @@ namespace GDGame.Game.Parameters.Effect
 
         public override object Clone()
         {
-            return new NormalEffectParameters(effect,colorTexture,normalTexture,diffuseColor,ambientColor,ambientIntensity,diffuseIntensity,lightTransform);
+            return new NormalEffectParameters(effect,colorTexture,normalTexture,displacement,diffuseColor,diffuseIntensity,lightTransform);
         }
     }
     
     public class CoffeeEffectParameters : OurEffectParameters
     {
-        protected  Texture2D uvTilesTexture, flowTexture;
+        protected Texture2D uvTilesTexture, flowTexture;
         protected Color coffeeColor;
         
         public CoffeeEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D uvTilesTexture,Texture2D flowTexture, Color coffeeColor) : base(effect)

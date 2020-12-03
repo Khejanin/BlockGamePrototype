@@ -94,15 +94,9 @@ namespace GDGame.Utilities
                                     count += data.gridValues[x, y, z + i] == ETileType.Static ? 1 : 0;
                             }
 
-                            if (y - 1 >= 0 && count == 1 && data.gridValues[x, y - 1, z] == ETileType.Static)
-                            {
-                                staticTileType = BasicTile.EStaticTileType.Plates;
-                            }
-                            else
-                            {
-                                if (count > 4) staticTileType = BasicTile.EStaticTileType.WhiteChocolate;
-                                else if (count > 3) staticTileType = BasicTile.EStaticTileType.Chocolate;
-                            }
+                            
+                            if (count > 4) staticTileType = BasicTile.EStaticTileType.WhiteChocolate;
+                            else if (count > 3) staticTileType = BasicTile.EStaticTileType.Chocolate;
 
                             BasicTile tile = tileFactory.CreateTile(pos + new Vector3(0, 0, data.gridSize.Z - 1), data.gridValues[x, y, z], staticTileType);
                             tile?.InitializeTile();
