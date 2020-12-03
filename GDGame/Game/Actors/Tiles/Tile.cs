@@ -1,9 +1,8 @@
 using System;
-using GDGame.Game.Parameters.Effect;
 using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Game.Parameters.Effect;
 using GDGame.Tiles;
-using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
@@ -11,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
-    public class BasicTile : OurCollidableObject
+    public class Tile : OurCollidableObject
     {
         #region Enums
 
@@ -39,7 +38,7 @@ namespace GDGame.Actors
 
         #region Constructors
 
-        public BasicTile(string id, ActorType actorType, StatusType statusType,
+        public Tile(string id, ActorType actorType, StatusType statusType,
             Transform3D transform, OurEffectParameters effectParameters, Model model, ETileType tileType)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
@@ -51,8 +50,7 @@ namespace GDGame.Actors
         #region Properties, Indexers
 
         public Shape Shape { get; set; }
-
-        protected ETileType TileType { get; }
+        public ETileType TileType { get; }
 
         #endregion
 
@@ -66,14 +64,34 @@ namespace GDGame.Actors
 
         #endregion
 
+        #region Override Methode
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((Tile) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(base.GetHashCode(), activatorId, spawnPos, Shape, (int) TileType);
+        }
+
+        #endregion
+
         #region Methods
 
         public new object Clone()
         {
-            BasicTile basicTile = new BasicTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as OurEffectParameters, Model,
-                TileType);
-            basicTile.ControllerList.AddRange(GetControllerListClone());
-            return basicTile;
+            Tile tile = new Tile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as OurEffectParameters, Model, TileType);
+            tile.ControllerList.AddRange(GetControllerListClone());
+            return tile;
+        }
+
+        protected bool Equals(Tile other)
+        {
+            return base.Equals(other) && activatorId == other.activatorId && spawnPos.Equals(other.spawnPos) && Equals(Shape, other.Shape) && TileType == other.TileType;
         }
 
         public void Respawn()

@@ -24,7 +24,7 @@ namespace GDGame.EventSystem
     {
         #region Public variables
 
-        public AttachableTile attachedTile;
+        public AttachableTile movableTile;
         public Vector3? position;
         public PlayerEventType type;
 

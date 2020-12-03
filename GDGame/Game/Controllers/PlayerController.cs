@@ -52,17 +52,7 @@ namespace GDGame.Controllers
             return new PlayerController(ID, ControllerType, keyboardManager, cameraManager);
         }
 
-        public bool IsMoveValid(PlayerTile playerTile, Quaternion rotationToApply, Vector3 rotatePoint, Vector3 playerTargetPos, Vector3 offset)
-        {
-            List<Vector3> initials = playerTile.AttachedTiles.Select(i => i.Transform3D.Translation).ToList();
-            initials.Insert(0, playerTile.Transform3D.Translation);
-            List<Vector3> ends = playerTile.AttachedTiles.Select(i => i.CalculateTargetPosition(rotatePoint, rotationToApply)).ToList();
-            ends.Insert(0, playerTargetPos);
-            List<Raycaster.HitResult> results = new List<Raycaster.HitResult>();
-            List<Raycaster.FloorHitResult> floorHitResults = new List<Raycaster.FloorHitResult>();
-            RaycastManager.Instance.RaycastAll(playerTile, offset, initials, ends, ref results, ref floorHitResults);
-            return results.Count == 0 && floorHitResults.Count > 0;
-        }
+        
 
         #endregion
 
@@ -93,7 +83,7 @@ namespace GDGame.Controllers
                 else if (keyboardManager.IsKeyDown(Keys.Right) || keyboardManager.IsKeyDown(Keys.D)) moveDir = right;
 
                 if (moveDir != Vector3.Zero)
-                    EventManager.FireEvent(new MovementEvent {type = MovementType.OnMove, tile = playerTile, direction = moveDir, onMoveEnd = playerTile.OnMoveEnd});
+                    EventManager.FireEvent(new MovementEvent {type = MovementType.OnMove, direction = moveDir, onMoveEnd = playerTile.OnMoveEnd});
             }
         }
 

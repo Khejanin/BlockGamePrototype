@@ -34,14 +34,6 @@ namespace GDGame.Actors
             starPos = currentPos = Transform3D.Translation;
             this.dir = dir;
             this.tileMoves = tileMoves;
-
-            if (dir == -1)
-                endPos = new Vector3(starPos.X + tileMoves, starPos.Y, StartPos.Z);
-            else if (dir == 1)
-                endPos = new Vector3(starPos.X, starPos.Y + tileMoves, StartPos.Z);
-            else
-                endPos = new Vector3(starPos.X, starPos.Y, starPos.Z + tileMoves);
-
             oppDir = IsOppDir();
             max = false;
         }

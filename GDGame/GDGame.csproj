@@ -89,12 +89,23 @@
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
 	  <None Remove="Game\Actors\Drawn\**" />
+	  <None Remove="Content\Assets\Textures\UI\Controls\reticuleOpen.png" />
+	  <None Remove="Content\Assets\Textures\UI\Controls\reticuleClosed.png" />
+	  <None Remove="Content\Assets\Textures\Skybox\floor_neon.png" />
+	  <None Remove="Content\Assets\Textures\Skybox\right.bmp" />
+	  <None Remove="Content\Assets\Textures\Block\block_green.png" />
+	  <None Remove="Content\Assets\Textures\UI\Backgrounds\exitmenuwithtrans.png" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Remove="Game\Actors\Drawn\**" />
 	</ItemGroup>
 	<ItemGroup>
 	  <EmbeddedResource Remove="Game\Actors\Drawn\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Content\Assets\Textures\Foliage\Ground" />
+	  <Folder Include="Content\Assets\Textures\Foliage\Trees" />
+	  <Folder Include="Content\Assets\Textures\Props\Crates" />
 	</ItemGroup>
 	<Import Project="..\GDLibrary\GDLibrary.projitems" Label="Shared" />
 	<Import Project="..\JigLibX\JigLibX.projitems" Label="Shared" />

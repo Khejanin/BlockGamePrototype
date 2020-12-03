@@ -13,7 +13,7 @@ namespace GDGame.Utilities
     {
         #region Static Fields and Constants
 
-        private static BasicTile[,,] _grid;
+        private static Tile[,,] _grid;
         private static Dictionary<int, Shape> _shapes;
 
         #endregion
@@ -37,13 +37,12 @@ namespace GDGame.Utilities
 
         #region Methods
 
-        private void CreateShapes(LevelData data, BasicTile[,,] grid)
+        private void CreateShapes(LevelData data, Tile[,,] grid)
         {
             foreach (double shapesKey in data.shapes.Keys)
             {
                 Shape newShape = tileFactory.CreateShape();
-                foreach (AttachableTile tile in data.shapes[shapesKey]
-                    .Select(shape => grid[(int) shape.X, (int) shape.Y, (int) data.gridSize.Z - 1 - (int) shape.Z] as AttachableTile))
+                foreach (AttachableTile tile in data.shapes[shapesKey].Select(shape => (grid[(int) shape.X, (int) shape.Y, (int) data.gridSize.Z - 1 - (int) shape.Z] as AttachableTile)))
                 {
                     newShape.AddTile(tile);
                     if (tile != null) tile.Shape = newShape;
@@ -69,7 +68,7 @@ namespace GDGame.Utilities
             }
 
             data = LevelDataConverter.ConvertJsonToLevelData(jsonString);
-            _grid = new BasicTile[(int) data.gridSize.X, (int) data.gridSize.Y, (int) data.gridSize.Z];
+            _grid = new Tile[(int) data.gridSize.X, (int) data.gridSize.Y, (int) data.gridSize.Z];
             Vector3 pos = Vector3.Zero;
 
             for (int x = 0; x < data.gridSize.X; x++)
@@ -81,7 +80,7 @@ namespace GDGame.Utilities
                         if (data.gridValues[x, y, z] != ETileType.None)
                         {
                             //Super duper algorithm to determine what the current tile looks like!
-                            BasicTile.EStaticTileType staticTileType = BasicTile.EStaticTileType.DarkChocolate;
+                            Tile.EStaticTileType staticTileType = Tile.EStaticTileType.DarkChocolate;
                             int count = 0;
 
                             for (int i = -1; i <= 1; i += 2)
@@ -96,15 +95,15 @@ namespace GDGame.Utilities
 
                             if (y - 1 >= 0 && count == 1 && data.gridValues[x, y - 1, z] == ETileType.Static)
                             {
-                                staticTileType = BasicTile.EStaticTileType.Plates;
+                                staticTileType = Tile.EStaticTileType.Plates;
                             }
                             else
                             {
-                                if (count > 4) staticTileType = BasicTile.EStaticTileType.WhiteChocolate;
-                                else if (count > 3) staticTileType = BasicTile.EStaticTileType.Chocolate;
+                                if (count > 4) staticTileType = Tile.EStaticTileType.WhiteChocolate;
+                                else if (count > 3) staticTileType = Tile.EStaticTileType.Chocolate;
                             }
 
-                            BasicTile tile = tileFactory.CreateTile(pos + new Vector3(0, 0, data.gridSize.Z - 1), data.gridValues[x, y, z], staticTileType);
+                            Tile tile = tileFactory.CreateTile(pos + new Vector3(0, 0, data.gridSize.Z - 1), data.gridValues[x, y, z], staticTileType);
                             tile?.InitializeTile();
 
                             _grid[x, y, (int) data.gridSize.Z - 1 - z] = tile;
@@ -135,7 +134,7 @@ namespace GDGame.Utilities
             return data.gridSize;
         }
 
-        private void SetActivatorIds(LevelData data, BasicTile[,,] grid)
+        private void SetActivatorIds(LevelData data, Tile[,,] grid)
         {
             foreach (Vector3 targetKey in data.activatorTargets.Keys)
                 //List<IActivatable> targets = new List<IActivatable>();
@@ -151,7 +150,7 @@ namespace GDGame.Utilities
                     data.activatorTargets[targetKey];
         }
 
-        private void SetPaths(LevelData data, BasicTile[,,] grid)
+        private void SetPaths(LevelData data, Tile[,,] grid)
         {
             foreach (Vector3 pathTileKey in data.movingTilePaths.Keys)
             {
@@ -159,13 +158,12 @@ namespace GDGame.Utilities
                     grid[(int) pathTileKey.X, (int) pathTileKey.Y,
                         (int) data.gridSize.Z - 1 - (int) pathTileKey.Z] as PathMoveTile;
 
-                foreach (Vector3 tilePath in data.movingTilePaths[pathTileKey])
+                foreach (Vector3 pathPoint in data.movingTilePaths[pathTileKey].Select(tilePath => new Vector3(tilePath.X, tilePath.Y, data.gridSize.Z - 1 - tilePath.Z)))
                 {
-                    Vector3 pathPoint = new Vector3(tilePath.X, tilePath.Y, data.gridSize.Z - 1 - tilePath.Z);
-                    moveTile.path.Add(pathPoint);
+                    moveTile?.path.Add(pathPoint);
                 }
 
-                if (moveTile.path.Count > 0)
+                if (moveTile?.path.Count > 0)
                     moveTile.currentPositionIndex = 0;
             }
         }

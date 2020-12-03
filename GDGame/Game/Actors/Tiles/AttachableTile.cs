@@ -1,10 +1,11 @@
-﻿using GDGame.Actors;
-using GDGame.Game.Parameters.Effect;
+﻿using System;
 using System.Diagnostics;
 using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Game.Parameters.Effect;
 using GDGame.Managers;
 using GDGame.Utilities;
+using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
@@ -14,57 +15,80 @@ namespace GDGame.Actors
 {
     public class AttachableTile : MovableTile
     {
+        #region Private variables
+
+        protected Vector3 backwardRotatePoint;
+        protected Vector3 forwardRotatePoint;
+        protected Vector3 leftRotatePoint;
+        protected Vector3 rightRotatePoint;
+
+        #endregion
+
         #region Constructors
 
-        public AttachableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
-            OurEffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType,
-            transform, effectParameters, model, tileType)
+        public AttachableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model, ETileType tileType) :
+            base(id, actorType, statusType, transform, effectParameters, model, tileType)
         {
+            IsAttached = false;
+            RotatePoint = Vector3.Zero;
         }
+
+        #endregion
+
+        #region Properties, Indexers
+
+        public bool IsAttached { get; set; }
+        public Vector3 RotatePoint { get; set; }
 
         #endregion
 
         #region Methods
 
+        public Vector3 CalculateTargetPosition(Vector3 rotatePoint, Quaternion rotationToApply)
+        {
+            //offset between the player and the point to rotate around
+            Vector3 offset = Transform3D.Translation - rotatePoint;
+            Vector3 targetPosition = Vector3.Transform(offset, rotationToApply); //Rotate around the offset point
+            targetPosition += Transform3D.Translation - offset;
+            return targetPosition;
+        }
+
         private void CheckCollision(Raycaster.HitResult hit)
         {
             if (hit?.actor == null) return;
 
-            switch (hit.actor)
+            Actor3D actor3D = hit.actor;
+            Tile tile = actor3D as Tile;
+            switch (tile?.TileType)
             {
-                case SpikeTile _:
-                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.AttachedTileDie, attachedTile = this});
+                case ETileType.Spike:
+                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.MovableTileDie, movableTile = this});
                     break;
-                case CheckpointTile checkpointTile:
-                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.SetCheckpoint, position = checkpointTile.Transform3D.Translation});
+                case ETileType.Checkpoint:
+                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.SetCheckpoint, position = tile.Transform3D.Translation});
                     break;
-                case ButtonTile buttonTile:
-                    buttonTile.Activate();
+                case ETileType.Button:
+                    ActivatableTile b = tile as ActivatableTile;
+                    b?.Activate();
                     break;
             }
         }
 
         public new object Clone()
         {
-            AttachableTile enemyTile = new AttachableTile("clone - " + ID, ActorType, StatusType,
-                Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as OurEffectParameters, Model, TileType);
-
-            enemyTile.ControllerList.AddRange(GetControllerListClone());
-
-            return enemyTile;
+            AttachableTile attachableTile = new AttachableTile(ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as OurEffectParameters,
+                Model, TileType);
+            attachableTile.ControllerList.AddRange(GetControllerListClone());
+            return attachableTile;
         }
 
         #endregion
 
         #region Events
 
-        public void OnMoveEnd()
+        public virtual void OnMoveEnd()
         {
-            CheckCollision(RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f));
-            Raycaster.HitResult hit = RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f);
-            if (hit?.actor is SpikeTile)
-                Debug.WriteLine(ID + " is ded!");
+            
         }
 
         #endregion
