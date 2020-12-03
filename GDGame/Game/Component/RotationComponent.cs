@@ -38,7 +38,7 @@ namespace GDGame.Component
             MovableTile movableTile = actor;
             UpdateRotatePoints(movableTile);
 
-            Vector3 rotatePoint;
+            Vector3 rotatePoint = Vector3.Zero;
 
             if (direction == Vector3.UnitX)
                 rotatePoint = rightRotatePoint;
@@ -48,8 +48,8 @@ namespace GDGame.Component
                 rotatePoint = forwardRotatePoint;
             else if (direction == Vector3.UnitZ)
                 rotatePoint = backwardRotatePoint;
-            else
-                throw new ArgumentException("Invalid direction!");
+            //else
+            //    throw new ArgumentException("Invalid direction!");
 
             movableTile.RotatePoint = rotatePoint;
 
