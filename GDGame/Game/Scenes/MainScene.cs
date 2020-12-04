@@ -386,8 +386,6 @@ namespace GDGame.Scenes
 
             #region StaticTiles
 
-            BasicEffectParameters effectParameters =
-                new BasicEffectParameters(Main.ModelEffect, Main.Textures["Chocolate"], Color.White, 1);
             NormalEffectParameters normalEffectParameters = new NormalEffectParameters(Main.Effects["Normal"],
                 Main.Textures["Chocolate"], Main.Textures["big-normalmap"],
                 Main.Textures["big-displacement"], Color.White, 1, light);
@@ -395,21 +393,21 @@ namespace GDGame.Scenes
                 transform3D, normalEffectParameters, Main.Models["Cube"],
                 true, ETileType.Static);
 
-            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Ceramic"], Color.White, 1);
+            BasicEffectParameters effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Ceramic"], Color.White, 1);
             Tile plateStackTile = new Tile("plateStackTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, Main.Models["PlateStack"],
                 true, ETileType.Static);
 
-            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
+            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Button"], Color.White, 1);
             ActivatableTile activatable = new ActivatableTile("Button", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
                 Main.Models["Button"], false, ETileType.Button);
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
             Tile spike = new Tile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, Main.Models["Pyramid"], false,ETileType.Spike);
+                effectParameters, Main.Models["Puddle"], false,ETileType.Spike);
 
-            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
+            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Mug"], Color.White, 1);
             Tile starPickup = new Tile("Star", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, Main.Models["Mug"], false,ETileType.Star);
 
@@ -417,11 +415,11 @@ namespace GDGame.Scenes
             Tile goal = new Tile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, Main.Models["SugarBox"], false,ETileType.Win);
 
+            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Knife"], Color.White, 1);
             Tile checkpoint = new Tile("Checkpoint", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, Main.Models["Knife"],
                 false, ETileType.Checkpoint);
-
-            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
+            
             OurModelObject forkModelObject =
                 new OurModelObject("fork", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D,
                     effectParameters, Main.Models["Fork"]);
@@ -433,7 +431,7 @@ namespace GDGame.Scenes
                 Main.Models["PlateStack"]);
             //plateModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
 
-            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
+            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Knife"], Color.White, 1);
             OurModelObject knifeModelObject =
                 new OurModelObject("knife", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D,
                     effectParameters, Main.Models["Knife"]);
@@ -639,6 +637,7 @@ namespace GDGame.Scenes
             Main.Models.Load("Assets/Models/Decor/cat01", "Cat");
             Main.Models.Load("Assets/Models/Decor/bed01", "CatBed");
             Main.Models.Load("Assets/Models/plane", "CoffeePlane");
+            Main.Models.Load("Assets/Models/Puddle");
         }
 
         private void LoadSounds()
@@ -714,6 +713,10 @@ namespace GDGame.Scenes
 
             Main.Textures.Load("Assets/Textures/Props/GameTextures/sugar01", "SugarW");
             Main.Textures.Load("Assets/Textures/Props/GameTextures/sugar02", "SugarB");
+            
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/MugTexture", "Mug");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/KnifeTexture", "Knife");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/ButtonTexture", "Button");
 
             Main.Textures.Load("Assets/Textures/Props/GameTextures/wood", "Wood");
             Main.Textures.Load("Assets/Textures/Props/GameTextures/blackTile");
