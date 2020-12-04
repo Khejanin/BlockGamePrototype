@@ -7,7 +7,6 @@ using GDGame.Interfaces;
 using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
-using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Component

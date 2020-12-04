@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using GDGame.EventSystem;
 using GDGame.Utilities;
 using GDLibrary.Actors;
@@ -11,7 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Managers
 {
-    public delegate void Process(Vector3 input);
+   
 
     public delegate Vector3 Lerp(Vector3 first, Vector3 second, float percent);
 
@@ -22,18 +20,18 @@ namespace GDGame.Managers
         private int maxTime;
         private int step = 1;
         protected Vector3 start;
+        protected Vector3 lastPoint = Vector3.Zero;
         private Vector3 destination;
         private LoopMethod loopMethod;
         private Smoother.SmoothingMethod smoothing;
         protected Process process;
         protected bool isRelative;
-        private float previousPercent;
 
-        public AnimationInformation(Actor3D target,bool isRelative,
+        public AnimationInformation(Actor3D actor,bool isRelative,
             Vector3 destination, int maxTime, Smoother.SmoothingMethod smoothingMethod,
             LoopMethod loopMethod = LoopMethod.PlayOnce, Body body = null)
         {
-            actor = target;
+            this.actor = actor;
             this.destination = destination;
             this.maxTime = maxTime;
             smoothing = smoothingMethod;
@@ -49,16 +47,17 @@ namespace GDGame.Managers
 
                 float timePercent = (float) currentTime / maxTime;
                 float smoothedPercent = Smoother.SmoothValue(smoothing, timePercent);
-
-                //test
-                previousPercent = smoothedPercent;
                 
                 Vector3 currentPoint;
                 
                 if (isRelative) currentPoint = Vector3.Lerp(Vector3.Zero, destination, smoothedPercent);
                 else currentPoint = Vector3.Lerp(start, destination, smoothedPercent);
+
+                FinalOperation finalOperation = PerformOperation(currentPoint, lastPoint);
+
+                process(finalOperation);
                 
-                process(currentPoint);
+                lastPoint = currentPoint;
 
                 currentTime += gameTime.ElapsedGameTime.Milliseconds * step;
 
@@ -66,6 +65,25 @@ namespace GDGame.Managers
             }
 
             return false;
+        }
+
+        public delegate void Process(FinalOperation finalOperation);
+        
+        public delegate Vector3 FinalOperation(Vector3 target);
+
+        private FinalOperation PerformOperation(Vector3 currentPoint, Vector3 lastPoint)
+        {
+            if (isRelative && loopMethod == LoopMethod.PingPongOnce)
+            {
+                return target => { return target + currentPoint; };
+            }
+            
+            if (isRelative)
+            {
+                return target => { return target + currentPoint - lastPoint; };
+            }
+            
+            return vector3 => { return currentPoint; };
         }
 
         private Vector3 StandardLerp(Vector3 start, Vector3 dest, float percent)
@@ -76,74 +94,66 @@ namespace GDGame.Managers
 
     public class AnimateCustomInformation : AnimationInformation
     {
-        public AnimateCustomInformation(Actor3D target,bool isRelative, Process process, Vector3 destination, int maxTime,
+        public AnimateCustomInformation(Actor3D actor,bool isRelative, Process process, Vector3 destination, int maxTime,
             Smoother.SmoothingMethod smoothingMethod, LoopMethod loopMethod = LoopMethod.PlayOnce, Body body = null) :
-            base(target,isRelative, destination, maxTime, smoothingMethod, loopMethod, body)
+            base(actor,isRelative, destination, maxTime, smoothingMethod, loopMethod, body)
         {
             this.process = process;
         }
+        
     }
 
     public class MovementInformation : AnimationInformation
     {
         private Body body;
 
-        public MovementInformation(Actor3D target, Vector3 destination, int maxTime, bool isRelative,
+        public MovementInformation(Actor3D actor, Vector3 destination, int maxTime, bool isRelative,
             Smoother.SmoothingMethod smoothingMethod, LoopMethod loopMethod = LoopMethod.PlayOnce, Body body = null) :
-            base(target,isRelative, destination, maxTime, smoothingMethod, loopMethod, body)
+            base(actor,isRelative, destination, maxTime, smoothingMethod, loopMethod, body)
         {
             this.isRelative = isRelative;
-            start = actor.Transform3D.Translation;
+            start = base.actor.Transform3D.Translation;
             this.body = body;
             process = ApplyAnimation;
         }
 
-        protected void ApplyAnimation(Vector3 target)
+        protected void ApplyAnimation(FinalOperation finalOperation)
         {
-            if (isRelative) actor.Transform3D.Translation += target;
-            else actor.Transform3D.Translation = target;
-
+            actor.Transform3D.Translation = finalOperation.Invoke(actor.Transform3D.Translation);
             if (body != null) body.MoveTo(actor.Transform3D.Translation, Matrix.Identity);
         }
     }
 
     public class ScaleInformation : AnimationInformation
     {
-        public ScaleInformation(Actor3D target,bool isRelative, Vector3 destination, int maxTime,
+        public ScaleInformation(Actor3D actor,bool isRelative, Vector3 destination, int maxTime,
             Smoother.SmoothingMethod smoothingMethod, LoopMethod loopMethod = LoopMethod.PlayOnce, Body body = null) :
-            base(target,isRelative, destination, maxTime, smoothingMethod, loopMethod, body)
+            base(actor,isRelative, destination, maxTime, smoothingMethod, loopMethod, body)
         {
-            start = actor.Transform3D.Scale;
+            start = base.actor.Transform3D.Scale;
             process = ApplyAnimation;
         }
 
-        protected void ApplyAnimation(Vector3 target)
+        protected void ApplyAnimation(FinalOperation finalOperation)
         {
-            if (isRelative) actor.Transform3D.Scale += target;
-            else actor.Transform3D.Scale = target;
+            actor.Transform3D.Scale = finalOperation.Invoke(actor.Transform3D.Scale);
         }
     }
 
     public class RotationInformation : AnimationInformation
     {
-        private Vector3 lastRotation = Vector3.Zero;
         
-        public RotationInformation(Actor3D target,bool isRelative, Vector3 destination, int maxTime,
+        public RotationInformation(Actor3D actor,bool isRelative, Vector3 destination, int maxTime,
             Smoother.SmoothingMethod smoothingMethod, LoopMethod loopMethod = LoopMethod.PlayOnce, Body body = null) :
-            base(target, isRelative,destination, maxTime, smoothingMethod, loopMethod, body)
+            base(actor, isRelative,destination, maxTime, smoothingMethod, loopMethod, body)
         {
             start = actor.Transform3D.RotationInDegrees;
             process = ApplyAnimation;
         }
 
-        protected void ApplyAnimation(Vector3 target)
+        protected void ApplyAnimation(FinalOperation finalOperation)
         {
-            if (isRelative)
-            {
-                actor.Transform3D.RotationInDegrees += target - lastRotation;
-                lastRotation = target;
-            }
-            else actor.Transform3D.RotationInDegrees = target;
+            actor.Transform3D.RotationInDegrees = finalOperation.Invoke(actor.Transform3D.RotationInDegrees);
         }
     }
 
