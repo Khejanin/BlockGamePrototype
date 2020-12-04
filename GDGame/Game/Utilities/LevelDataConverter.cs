@@ -1,16 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using GDGame.Enums;
+using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Utilities
 {
+    public struct CoffeeInfo
+    {
+        public float Y;
+        public float TimeInMs;
+        public float SetBackY;
+    }
+
     [Serializable]
     public struct LevelData
     {
         public Vector3 gridSize;
         public Vector3 tileSize;
         public ETileType[,,] gridValues;
+        public Transform3DCurve startCameraCurve;
+        public List<CoffeeInfo> coffeeInfo;
         public Dictionary<double, List<Vector3>> shapes;
         public Dictionary<Vector3, List<Vector3>> movingTilePaths;
         public Dictionary<Vector3, int> activatorTargets;
@@ -36,10 +46,35 @@ namespace GDGame.Utilities
                 gridSize = gridSize,
                 tileSize = tileSize,
                 gridValues = new ETileType[(int) gridSize.X, (int) gridSize.Y, (int) gridSize.Z],
+                startCameraCurve = new Transform3DCurve(CurveLoopType.Oscillate),
+                coffeeInfo = new List<CoffeeInfo>(),
                 shapes = new Dictionary<double, List<Vector3>>(),
                 movingTilePaths = new Dictionary<Vector3, List<Vector3>>(),
                 activatorTargets = new Dictionary<Vector3, int>()
             };
+
+            //Set Camera Curve points
+            JSONArray cameraInfoArray = json.GetArray("StartCameraInfo");
+            foreach (JSONValue value in cameraInfoArray)
+            {
+                JSONObject obj = value.Obj;
+                Vector3 translation = new Vector3((int)obj.GetNumber("X"), (int)obj.GetNumber("Y"), (int)obj.GetNumber("Z"));
+                Vector3 look = new Vector3((int)obj.GetNumber("LookX"), (int)obj.GetNumber("LookY"), (int)obj.GetNumber("LookZ"));
+                Vector3 up = new Vector3((int)obj.GetNumber("UpX"), (int)obj.GetNumber("UpY"), (int)obj.GetNumber("UpZ"));
+                int time = (int)obj.GetNumber("MS");
+                data.startCameraCurve.Add(translation, look, up, time);
+            }
+
+            //Ser Coffee Rising information
+            JSONArray coffeeInfoArray = json.GetArray("CoffeeInfo");
+            foreach (JSONValue value in coffeeInfoArray)
+            {
+                JSONObject obj = value.Obj;
+                float y = (float)obj.GetNumber("Y");
+                float time = (float) obj.GetNumber("MS");
+                float setBackY = (float) obj.GetNumber("SetBackY");
+                data.coffeeInfo.Add(new CoffeeInfo { Y = y, TimeInMs = time, SetBackY = setBackY });
+            }
 
             //populate Grid values
             JSONArray jsonX = json.GetArray("Values");
@@ -87,7 +122,7 @@ namespace GDGame.Utilities
                             if (data.gridValues[x, y, z] == ETileType.Button)
                                 //JSONArray targets = obj.GetArray("TargetGridPositions");
                                 //List<Vector3> targetGridPositions = targets.Select(t => t.Obj).Select(pathObj => new Vector3((int)pathObj["X"].Number, (int)pathObj["Y"].Number, (int)pathObj["Z"].Number)).ToList();
-                                data.activatorTargets.Add(new Vector3(x, y, z), (int) obj.GetNumber("ShapeId"));
+                                data.activatorTargets.Add(new Vector3(x, y, z), (int) obj.GetNumber("ActivatorId"));
                         }
                 }
             }

@@ -28,6 +28,7 @@ namespace GDGame.Scenes
         #region Private variables
 
         private readonly string levelName;
+        private LevelData levelData;
 
         ////FOR SKYBOX____ TEMP
         private OurPrimitiveObject archetypalTexturedQuad, primitiveObject;
@@ -221,7 +222,7 @@ namespace GDGame.Scenes
         {
             Grid grid = new Grid(new TileFactory(Main.ObjectManager, drawnActors, Main.Textures));
             levelBounds = grid.GetGridBounds();
-            grid.GenerateGrid(levelName);
+            levelData = grid.GenerateGrid(levelName);
         }
 
         public override void Initialize()
