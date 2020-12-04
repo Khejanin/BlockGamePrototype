@@ -276,6 +276,27 @@ namespace GDGame.Scenes
             cat.Enable(true, 1);
             Main.ObjectManager.Add(cat);
 
+            //Tile coffeePot = new Tile("CoffeePot", ActorType.Primitive,
+            //    StatusType.Drawn, transform3D, effectParameters, Main.Models["Pot"], true, ETileType.Static)
+            //{
+            //    Transform3D = { Scale = scale }
+            //};
+            //coffeePot.AddPrimitive(new Box(coffeePot.Transform3D.Translation, Matrix.Identity, coffeePot.Transform3D.Scale),
+            //    new MaterialProperties(0.2f, 0.8f, 0.7f));
+            //coffeePot.Enable(true, 1);
+            //Main.ObjectManager.Add(coffeePot);
+
+            //effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["coffeeSpill"], Color.White, 1);
+            //Tile coffeeSpill = new Tile("coffeeSpill", ActorType.Primitive,
+            //    StatusType.Drawn, transform3D, effectParameters, Main.Models["Spill"], true, ETileType.Static)
+            //{
+            //    Transform3D = { Scale = scale }
+            //};
+            //coffeeSpill.AddPrimitive(new Box(coffeeSpill.Transform3D.Translation, Matrix.Identity, coffeeSpill.Transform3D.Scale),
+            //    new MaterialProperties(0.2f, 0.8f, 0.7f));
+            //coffeeSpill.Enable(true, 1);
+            //Main.ObjectManager.Add(coffeeSpill);
+
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Checkers"], Color.White, 1);
             Tile catBed = new Tile("Catbed", ActorType.Primitive,
                 StatusType.Drawn, transform3D, effectParameters, Main.Models["CatBed"], true,ETileType.Static)
@@ -634,6 +655,8 @@ namespace GDGame.Scenes
             Main.Models.Load("Assets/Models/Decor/cat01", "Cat");
             Main.Models.Load("Assets/Models/Decor/bed01", "CatBed");
             Main.Models.Load("Assets/Models/plane", "CoffeePlane");
+            //Main.Models.Load("Assets/Models/coffeePot02", "Pot");
+            //Main.Models.Load("Assets/Models/coffee spill", "Spill");
         }
 
         private void LoadSounds()
@@ -714,6 +737,7 @@ namespace GDGame.Scenes
             Main.Textures.Load("Assets/Textures/Props/GameTextures/wood", "Wood");
             Main.Textures.Load("Assets/Textures/Props/GameTextures/blackTile");
             Main.Textures.Load("Assets/Textures/Props/GameTextures/checkers", "Checkers");
+            //Main.Textures.Load("Assets/Textures/Props/GameTextures/coffeeStrip", "coffeeSpill");
         }
 
         #endregion
