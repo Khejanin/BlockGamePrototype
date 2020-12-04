@@ -265,6 +265,12 @@ namespace GDGame.Game.Parameters.Effect
 
         #endregion
 
+        public Color CoffeeColor
+        {
+            get => coffeeColor;
+            set => coffeeColor = value;
+        }
+
         #region Constructors
 
         public CoffeeEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D uvTilesTexture, Texture2D flowTexture, Color coffeeColor) : base(effect)

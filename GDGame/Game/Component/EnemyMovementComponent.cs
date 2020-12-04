@@ -17,7 +17,7 @@ namespace GDGame.Component
             base.MoveToNextPoint();
             parent.MoveTo(true,Vector3.Up, movementTime/2,Smoother.SmoothingMethod.Accelerate,LoopMethod.PingPongOnce);
             parent.ScaleTo(false,Vector3.One*0.5f,movementTime/2,Smoother.SmoothingMethod.Smooth,LoopMethod.PingPongOnce);
-            //parent.RotateTo(true,Vector3.Up* 360,movementTime,Smoother.SmoothingMethod.Smooth);
+            parent.RotateTo(true,Vector3.Up* 360,movementTime,Smoother.SmoothingMethod.Smooth);
         }
 
         public new object Clone()
