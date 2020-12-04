@@ -92,8 +92,8 @@ namespace GDGame.Scenes
         {
             Transform3D transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
             Camera3D mainCamera = new Camera3D("MainCamera", ActorType.Camera3D, StatusType.Update, transform3D,
-                ProjectionParameters.StandardDeepFourThree,
-                new Viewport(0, 0, 1024, 768));
+                ProjectionParameters.StandardDeepSixteenTen,
+                new Viewport(0, 0, 1920, 1080));
             mainCamera.ControllerList.Add(new RotationAroundActor("RAAC", ControllerType.FlightCamera,
                 Main.KeyboardManager, 35, 20));
             Main.CameraManager.Add(mainCamera);
@@ -566,7 +566,7 @@ namespace GDGame.Scenes
 
             if (currentMovementCoolDown <= 0)
             {
-                currentMovementCoolDown = Constants.GameConstants.MOVEMENT_COOLDOWN;
+                currentMovementCoolDown = Constants.GameConstants.MovementCooldown;
                 EventManager.FireEvent(new MovingTilesEventInfo());
             }
 
@@ -687,6 +687,8 @@ namespace GDGame.Scenes
             Main.Textures.Load("Assets/Textures/Props/GameTextures/TextureCube", "Finish");
 
             Main.Textures.Load("Assets/Textures/Base/WhiteSquare");
+            Main.Textures.Load("Assets/Textures/UI/TopBar");
+            
 
             Main.Textures.Load("Assets/Textures/Menu/menubaseres", "options");
             Main.Textures.Load("Assets/Textures/Menu/button", "optionsButton");

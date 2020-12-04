@@ -107,7 +107,7 @@ namespace GDGame
         {
             Window.Title = "B_Logic";
 
-            InitGraphics(1024, 768);
+            InitGraphics(1920, 1080);
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             InitManagers();

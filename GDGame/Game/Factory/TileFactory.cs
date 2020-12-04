@@ -153,11 +153,11 @@ namespace GDGame.Factory
                 pickupTile.Transform3D.Translation = position;
                 pickupTile.AddPrimitive(new Box(pickupTile.Transform3D.Translation, Matrix.Identity, pickupTile.Transform3D.Scale), new MaterialProperties(0.3f, 0.5f, 0.3f));
                 pickupTile.Enable(true, 1);
-                pickupTile.ScaleTo(true,new Vector3(-0.2f,-0.2f,-0.2f),(int) (Constants.GameConstants.MOVEMENT_COOLDOWN*1000),Smoother.SmoothingMethod.Accelerate,LoopMethod.PlayOnce);
-                pickupTile.ScaleTo(true,new Vector3(-0.3f,-0.3f,-0.3f),(int) (Constants.GameConstants.MOVEMENT_COOLDOWN*1000)*10,Smoother.SmoothingMethod.Decelerate,LoopMethod.PingPongLoop);
-                pickupTile.MoveTo(true,new Vector3(0,0.5f,0),(int) (Constants.GameConstants.MOVEMENT_COOLDOWN*1000)*5,Smoother.SmoothingMethod.Smooth,LoopMethod.PingPongLoop);
-                pickupTile.RotateTo(true, new Vector3(0,0,40), (int) (Constants.GameConstants.MOVEMENT_COOLDOWN*1000)*10,Smoother.SmoothingMethod.Smooth,LoopMethod.PingPongLoop);
-                pickupTile.RotateTo(true,new Vector3(0,360,0),(int) (Constants.GameConstants.MOVEMENT_COOLDOWN*1000)*30,Smoother.SmoothingMethod.Smooth,LoopMethod.PingPongLoop);
+                pickupTile.ScaleTo(true,new Vector3(-0.2f,-0.2f,-0.2f),(int) (Constants.GameConstants.MovementCooldown*1000),Smoother.SmoothingMethod.Accelerate,LoopMethod.PlayOnce);
+                pickupTile.ScaleTo(true,new Vector3(-0.3f,-0.3f,-0.3f),(int) (Constants.GameConstants.MovementCooldown*1000)*10,Smoother.SmoothingMethod.Decelerate,LoopMethod.PingPongLoop);
+                pickupTile.MoveTo(true,new Vector3(0,0.5f,0),(int) (Constants.GameConstants.MovementCooldown*1000)*5,Smoother.SmoothingMethod.Smooth,LoopMethod.PingPongLoop);
+                pickupTile.RotateTo(true, new Vector3(0,0,40), (int) (Constants.GameConstants.MovementCooldown*1000)*10,Smoother.SmoothingMethod.Smooth,LoopMethod.PingPongLoop);
+                pickupTile.RotateTo(true,new Vector3(0,360,0),(int) (Constants.GameConstants.MovementCooldown*1000)*30,Smoother.SmoothingMethod.Smooth,LoopMethod.PingPongLoop);
             }
 
             objectManager.Add(pickupTile);
