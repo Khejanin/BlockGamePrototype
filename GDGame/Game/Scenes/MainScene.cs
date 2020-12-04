@@ -119,7 +119,7 @@ namespace GDGame.Scenes
 
             Main.CameraManager.ActiveCameraIndex = 2;
         }
-        
+
         /*
         private void InitDecoration(int n)
         {
@@ -231,7 +231,7 @@ namespace GDGame.Scenes
             Transform3D transform3D = new Transform3D(new Vector3(10, -15, 15), Vector3.UnitZ, Vector3.UnitY);
 
             Tile table = new Tile("Table", ActorType.Primitive,
-                StatusType.Drawn, transform3D, effectParameters, Main.Models["Table"], true,ETileType.Static)
+                StatusType.Drawn, transform3D, effectParameters, Main.Models["Table"], true, ETileType.Static)
             {
                 Transform3D = {Scale = scale}
             };
@@ -242,7 +242,7 @@ namespace GDGame.Scenes
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Ceramic"], Color.White, 1);
             Tile cups = new Tile("Cups", ActorType.Primitive,
-                StatusType.Drawn, transform3D, effectParameters, Main.Models["Cups"], false,ETileType.Static)
+                StatusType.Drawn, transform3D, effectParameters, Main.Models["Cups"], false, ETileType.Static)
             {
                 Transform3D = {Scale = scale}
             };
@@ -255,7 +255,7 @@ namespace GDGame.Scenes
             effectParameters =
                 new BasicEffectParameters(Main.ModelEffect, Main.Textures["WhiteChocolate"], Color.White, 1);
             Tile choco = new Tile("Chocolate", ActorType.Primitive,
-                StatusType.Drawn, transform3D, effectParameters, Main.Models["Chocolate"], true,ETileType.Static)
+                StatusType.Drawn, transform3D, effectParameters, Main.Models["Chocolate"], true, ETileType.Static)
             {
                 Transform3D = {Scale = scale}
             };
@@ -268,7 +268,7 @@ namespace GDGame.Scenes
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["blackTile"], Color.White, 1);
             Tile cat = new Tile("Cat", ActorType.Primitive, StatusType.Drawn, transform3D, effectParameters,
-                Main.Models["Cat"], true,ETileType.Static)
+                Main.Models["Cat"], true, ETileType.Static)
             {
                 Transform3D = {Scale = scale}
             };
@@ -300,7 +300,7 @@ namespace GDGame.Scenes
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Checkers"], Color.White, 1);
             Tile catBed = new Tile("Catbed", ActorType.Primitive,
-                StatusType.Drawn, transform3D, effectParameters, Main.Models["CatBed"], true,ETileType.Static)
+                StatusType.Drawn, transform3D, effectParameters, Main.Models["CatBed"], true, ETileType.Static)
             {
                 Transform3D = {Scale = scale}
             };
@@ -401,7 +401,8 @@ namespace GDGame.Scenes
                 transform3D, normalEffectParameters, Main.Models["Cube"],
                 true, ETileType.Static);
 
-            BasicEffectParameters effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Ceramic"], Color.White, 1);
+            BasicEffectParameters effectParameters =
+                new BasicEffectParameters(Main.ModelEffect, Main.Textures["Ceramic"], Color.White, 1);
             Tile plateStackTile = new Tile("plateStackTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, Main.Models["PlateStack"],
                 true, ETileType.Static);
@@ -413,15 +414,15 @@ namespace GDGame.Scenes
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
             Tile spike = new Tile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, Main.Models["Puddle"], false,ETileType.Spike);
+                effectParameters, Main.Models["Puddle"], false, ETileType.Spike);
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Mug"], Color.White, 1);
             Tile starPickup = new Tile("Star", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, Main.Models["Mug"], false,ETileType.Star);
+                effectParameters, Main.Models["Mug"], false, ETileType.Star);
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["sugarbox"], Color.White, 1);
             Tile goal = new Tile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, Main.Models["SugarBox"], false,ETileType.Win);
+                effectParameters, Main.Models["SugarBox"], false, ETileType.Win);
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Knife"], Color.White, 1);
             Tile checkpoint = new Tile("Checkpoint", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
@@ -429,13 +430,13 @@ namespace GDGame.Scenes
                 false, ETileType.Checkpoint);
 
             Color coffeeColor = new Color(111 / 255.0f, 78 / 255.0f, 55 / 255.0f, 0.95f);
-            
+
             CoffeeEffectParameters coffeeEffect = new CoffeeEffectParameters(Main.Effects["Coffee"],
-                Main.Textures["CoffeeUV"], Main.Textures["CoffeeFlow"],coffeeColor);
+                Main.Textures["CoffeeUV"], Main.Textures["CoffeeFlow"], coffeeColor);
             transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up);
             OurModelObject coffee = new OurModelObject("coffee - plane", ActorType.Primitive,
-                StatusType.Update | StatusType.Drawn,
-                transform3D, coffeeEffect, Main.Models["CoffeePlane"]);
+                StatusType.Update | StatusType.Drawn, transform3D, coffeeEffect,
+                Main.Models["CoffeePlane"]);
             Main.ObjectManager.Add(coffee);
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
@@ -484,18 +485,20 @@ namespace GDGame.Scenes
                 300, new Curve1D(CurveLoopType.Cycle));
             playerTile.ControllerList.Add(tileMovementComponent);
             playerTile.ControllerList.Add(new PlayerMovementComponent("PlayerMC", ControllerType.Movement));
-            
-            coffeeColor = new Color(coffeeColor,255);
-            coffeeEffect = new CoffeeEffectParameters(Main.Effects["Coffee"], Main.Textures["DropUV"],Main.Textures["CoffeeFlow"],coffeeColor);
+
+            coffeeColor = new Color(coffeeColor, 255);
+            coffeeEffect = new CoffeeEffectParameters(Main.Effects["Coffee"], Main.Textures["DropUV"],
+                Main.Textures["CoffeeFlow"], coffeeColor);
             EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update,
                 transform3D, coffeeEffect, Main.Models["Drop"],
-                false,ETileType.Enemy);
-            enemy.ControllerList.Add(new EnemyMovementComponent("emc",ControllerType.Movement,ActivationType.AlwaysOn,0.5f,Smoother.SmoothingMethod.Smooth));
+                false, ETileType.Enemy);
+            enemy.ControllerList.Add(new EnemyMovementComponent("emc", ControllerType.Movement, ActivationType.AlwaysOn,
+                0.5f, Smoother.SmoothingMethod.Smooth));
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
             MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Platform,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
-                Main.Models["SinglePlate"],true, ETileType.MovingPlatform); //-1 = X, 1 = Y, 0 = Z
+                Main.Models["SinglePlate"], true, ETileType.MovingPlatform); //-1 = X, 1 = Y, 0 = Z
             platform.ControllerList.Add(new PathMovementComponent("platformpmc", ControllerType.Movement,
                 ActivationType.Activated, 0.5f, Smoother.SmoothingMethod.Decelerate));
 
@@ -732,7 +735,7 @@ namespace GDGame.Scenes
 
             Main.Textures.Load("Assets/Textures/Props/GameTextures/sugar01", "SugarW");
             Main.Textures.Load("Assets/Textures/Props/GameTextures/sugar02", "SugarB");
-            
+
             Main.Textures.Load("Assets/Textures/Props/GameTextures/MugTexture", "Mug");
             Main.Textures.Load("Assets/Textures/Props/GameTextures/KnifeTexture", "Knife");
             Main.Textures.Load("Assets/Textures/Props/GameTextures/ButtonTexture", "Button");
@@ -754,7 +757,7 @@ namespace GDGame.Scenes
                 new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
             Transform3D transform3D = new Transform3D(new Vector3(5, 0, 0), Vector3.UnitZ, Vector3.UnitY);
             test = new Tile("StaticTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, Main.Models["Knife"], true,ETileType.Static);
+                effectParameters, Main.Models["Knife"], true, ETileType.Static);
             drawnActors.Add("StaticTile2", test);
 
             test.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale),
