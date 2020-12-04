@@ -660,8 +660,8 @@ namespace GDGame.Scenes
             Main.Models.Load("Assets/Models/Decor/cat01", "Cat");
             Main.Models.Load("Assets/Models/Decor/bed01", "CatBed");
             Main.Models.Load("Assets/Models/plane", "CoffeePlane");
-            //Main.Models.Load("Assets/Models/coffeePot02", "Pot");
-            //Main.Models.Load("Assets/Models/coffee spill", "Spill");
+            //Main.Models.Load("Assets/Models/coffeePot03", "Pot");
+            //Main.Models.Load("Assets/Models/coffeeSpill", "Spill");
         }
 
         private void LoadSounds()
