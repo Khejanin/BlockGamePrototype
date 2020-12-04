@@ -18,6 +18,7 @@ namespace GDGame.Utilities
     {
         public Vector3 gridSize;
         public Vector3 tileSize;
+        public Vector3 gridBoundsOffset;
         public ETileType[,,] gridValues;
         public Transform3DCurve startCameraCurve;
         public List<CoffeeInfo> coffeeInfo;
@@ -35,16 +36,20 @@ namespace GDGame.Utilities
             JSONObject json = JSONObject.Parse(jsonLevelString);
             JSONObject gridSizeJSON = json.GetObject("GridSize");
             JSONObject tileSizeJSON = json.GetObject("TileSize");
+            JSONObject boundsOffsetJSON = json.GetObject("BoundsOffset");
 
             Vector3 gridSize = new Vector3((float) gridSizeJSON.GetNumber("X"), (float) gridSizeJSON.GetNumber("Y"),
                 (float) gridSizeJSON.GetNumber("Z"));
             Vector3 tileSize = new Vector3((float) tileSizeJSON.GetNumber("X"), (float) tileSizeJSON.GetNumber("Y"),
                 (float) tileSizeJSON.GetNumber("Z"));
+            Vector3 gridBoundsOffset = new Vector3((float) boundsOffsetJSON.GetNumber("X"), (float) boundsOffsetJSON.GetNumber("Y"),
+                (float) boundsOffsetJSON.GetNumber("Z"));
 
             LevelData data = new LevelData
             {
                 gridSize = gridSize,
                 tileSize = tileSize,
+                gridBoundsOffset = gridBoundsOffset,
                 gridValues = new ETileType[(int) gridSize.X, (int) gridSize.Y, (int) gridSize.Z],
                 startCameraCurve = new Transform3DCurve(CurveLoopType.Oscillate),
                 coffeeInfo = new List<CoffeeInfo>(),
@@ -58,9 +63,9 @@ namespace GDGame.Utilities
             foreach (JSONValue value in cameraInfoArray)
             {
                 JSONObject obj = value.Obj;
-                Vector3 translation = new Vector3((int)obj.GetNumber("X"), (int)obj.GetNumber("Y"), (int)obj.GetNumber("Z"));
-                Vector3 look = new Vector3((int)obj.GetNumber("LookX"), (int)obj.GetNumber("LookY"), (int)obj.GetNumber("LookZ"));
-                Vector3 up = new Vector3((int)obj.GetNumber("UpX"), (int)obj.GetNumber("UpY"), (int)obj.GetNumber("UpZ"));
+                Vector3 translation = new Vector3((float)obj.GetNumber("X") - gridBoundsOffset.X, (float)obj.GetNumber("Y") - gridBoundsOffset.Y, -(float)obj.GetNumber("Z") + gridSize.Z + gridBoundsOffset.Z - 1);
+                Vector3 look = new Vector3((float)obj.GetNumber("LookX"), (float)obj.GetNumber("LookY"), -(float)obj.GetNumber("LookZ"));
+                Vector3 up = new Vector3((float)obj.GetNumber("UpX"), (float)obj.GetNumber("UpY"), -(float)obj.GetNumber("UpZ"));
                 int time = (int)obj.GetNumber("MS");
                 data.startCameraCurve.Add(translation, look, up, time);
             }

@@ -12,6 +12,7 @@ using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
+using GDLibrary.Managers;
 using GDLibrary.Parameters;
 using JigLibX.Collision;
 using JigLibX.Geometry;
@@ -111,9 +112,9 @@ namespace GDGame.Scenes
             if (camera3D != null)
             {
                 camera3D.ID = "CurveCamera";
-                camera3D.ControllerList.Clear();
-                curve3DController = new Curve3DController("CCFC", ControllerType.Curve, transform3DCurve);
-                camera3D.ControllerList.Add(curve3DController);
+                //camera3D.ControllerList.Clear();
+                //curve3DController = new Curve3DController("CCFC", ControllerType.Curve, transform3DCurve);
+                //camera3D.ControllerList.Add(curve3DController);
                 Main.CameraManager.Add(camera3D);
             }
 
@@ -209,11 +210,13 @@ namespace GDGame.Scenes
             Grid grid = new Grid(new TileFactory(Main.ObjectManager, drawnActors, Main.Textures));
             levelBounds = grid.GetGridBounds();
             levelData = grid.GenerateGrid(levelName);
+
+            Main.CameraManager.ActiveCamera.ControllerList.Add(new Curve3DController("CCFC", ControllerType.Curve, levelData.startCameraCurve));
         }
 
         public override void Initialize()
         {
-            InitTransform3DCurve();
+            //InitTransform3DCurve();
             InitCameras3D();
             InitLoadContent();
             InitDrawnContent();
