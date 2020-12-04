@@ -183,7 +183,7 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Models/Decor/choco01.FBX
 
-#begin Assets/Models/Decor/coffee spill.FBX
+#begin Assets/Models/Decor/coffeePot03.FBX
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -200,9 +200,9 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Decor/coffee spill.FBX
+/build:Assets/Models/Decor/coffeePot03.FBX
 
-#begin Assets/Models/Decor/coffeePot.FBX
+#begin Assets/Models/Decor/coffeeSpill.FBX
 /importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
@@ -219,26 +219,7 @@
 /processorParam:Scale=1
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
-/build:Assets/Models/Decor/coffeePot.FBX
-
-#begin Assets/Models/Decor/coffeePot02.FBX
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Assets/Models/Decor/coffeePot02.FBX
+/build:Assets/Models/Decor/coffeeSpill.FBX
 
 #begin Assets/Models/Decor/cups01.FBX
 /importer:FbxImporter

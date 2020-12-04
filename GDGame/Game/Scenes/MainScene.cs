@@ -119,7 +119,7 @@ namespace GDGame.Scenes
 
             Main.CameraManager.ActiveCameraIndex = 2;
         }
-
+        
         /*
         private void InitDecoration(int n)
         {
