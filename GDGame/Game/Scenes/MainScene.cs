@@ -28,6 +28,7 @@ namespace GDGame.Scenes
         #region Private variables
 
         private readonly string levelName;
+        private LevelData levelData;
 
         ////FOR SKYBOX____ TEMP
         private OurPrimitiveObject archetypalTexturedQuad, primitiveObject;
@@ -118,21 +119,7 @@ namespace GDGame.Scenes
 
             Main.CameraManager.ActiveCameraIndex = 2;
         }
-
-        private void InitCoffee()
-        {
-            /*BasicEffectParameters coffeeEffect = new BasicEffectParameters(Main.ModelEffect,Main.Textures["CoffeeUV"],Color.White, 0.8f);*/
-            CoffeeEffectParameters coffeeEffect = new CoffeeEffectParameters(Main.Effects["Coffee"],
-                Main.Textures["CoffeeUV"], Main.Textures["CoffeeFlow"],
-                new Color(111 / 255.0f, 78 / 255.0f, 55 / 255.0f, 0.95f));
-            Transform3D transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up);
-            OurModelObject coffee = new OurModelObject("coffee - plane", ActorType.Primitive,
-                StatusType.Update | StatusType.Drawn,
-                transform3D, coffeeEffect, Main.Models["CoffeePlane"]);
-            Main.ObjectManager.Add(coffee);
-        }
-
-
+        
         /*
         private void InitDecoration(int n)
         {
@@ -221,7 +208,7 @@ namespace GDGame.Scenes
         {
             Grid grid = new Grid(new TileFactory(Main.ObjectManager, drawnActors, Main.Textures));
             levelBounds = grid.GetGridBounds();
-            grid.GenerateGrid(levelName);
+            levelData = grid.GenerateGrid(levelName);
         }
 
         public override void Initialize()
@@ -442,6 +429,16 @@ namespace GDGame.Scenes
                 transform3D, effectParameters, Main.Models["Knife"],
                 false, ETileType.Checkpoint);
 
+            Color coffeeColor = new Color(111 / 255.0f, 78 / 255.0f, 55 / 255.0f, 0.95f);
+            
+            CoffeeEffectParameters coffeeEffect = new CoffeeEffectParameters(Main.Effects["Coffee"],
+                Main.Textures["CoffeeUV"], Main.Textures["CoffeeFlow"],coffeeColor);
+            transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up);
+            OurModelObject coffee = new OurModelObject("coffee - plane", ActorType.Primitive,
+                StatusType.Update | StatusType.Drawn,
+                transform3D, coffeeEffect, Main.Models["CoffeePlane"]);
+            Main.ObjectManager.Add(coffee);
+
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
             OurModelObject forkModelObject =
                 new OurModelObject("fork", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D,
@@ -488,10 +485,11 @@ namespace GDGame.Scenes
                 300, new Curve1D(CurveLoopType.Cycle));
             playerTile.ControllerList.Add(tileMovementComponent);
             playerTile.ControllerList.Add(new PlayerMovementComponent("PlayerMC", ControllerType.Movement));
-
-            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
+            
+            coffeeColor = new Color(coffeeColor,255);
+            coffeeEffect = new CoffeeEffectParameters(Main.Effects["Coffee"], Main.Textures["DropUV"],Main.Textures["CoffeeFlow"],coffeeColor);
             EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, Main.Models["Drop"],
+                transform3D, coffeeEffect, Main.Models["Drop"],
                 false,ETileType.Enemy);
             enemy.ControllerList.Add(new EnemyMovementComponent("emc",ControllerType.Movement,ActivationType.AlwaysOn,0.5f,Smoother.SmoothingMethod.Smooth));
 
@@ -521,8 +519,6 @@ namespace GDGame.Scenes
                 {"Fork", forkModelObject},
                 {"SinglePlate", singlePlateModelObject}
             };
-
-            InitCoffee();
         }
 
         private void InitTransform3DCurve()
@@ -706,7 +702,7 @@ namespace GDGame.Scenes
             //Normals
             Main.Textures.Load("Assets/Textures/Props/GameTextures/big-normalmap");
             Main.Textures.Load("Assets/Textures/Props/GameTextures/big-normalmap-choco", "big-normalmap_choco");
-            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-normalmap-choco", "big-normalmap_b_logic");
+            Main.Textures.Load("Assets/Textures/Props/GameTextures/big-normalmap-b_logic", "big-normalmap_b_logic");
             Main.Textures.Load("Assets/Textures/Props/GameTextures/big-normalmap4x");
             Main.Textures.Load("Assets/Textures/Props/GameTextures/big-normalmap8x");
 
@@ -731,6 +727,7 @@ namespace GDGame.Scenes
 
             //Coffee
             Main.Textures.Load("Assets/Textures/uvalex", "CoffeeUV");
+            Main.Textures.Load("Assets/Textures/uvCoffeeDrop", "DropUV");
             Main.Textures.Load("Assets/Textures/flowmap2", "CoffeeFlow");
 
             Main.Textures.Load("Assets/Textures/Props/GameTextures/ceramicColoring", "Ceramic");

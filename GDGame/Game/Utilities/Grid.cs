@@ -53,7 +53,7 @@ namespace GDGame.Utilities
             }
         }
 
-        public void GenerateGrid(string levelFilePath)
+        public LevelData GenerateGrid(string levelFilePath)
         {
             string jsonString = "";
 
@@ -122,6 +122,8 @@ namespace GDGame.Utilities
             CreateShapes(data, _grid);
             SetPaths(data, _grid);
             SetActivatorIds(data, _grid);
+
+            return data;
         }
 
         public Vector3 GetGridBounds()
