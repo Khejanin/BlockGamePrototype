@@ -239,7 +239,8 @@ namespace GDGame.Factory
                 if (tileType != Tile.EStaticTileType.WhiteChocolate)
                 {
                     staticTile.AddPrimitive(
-                        new Box(staticTile.Transform3D.Translation, Matrix.Identity, staticTile.Transform3D.Scale),
+                        //*0.99f Saves you around 200 FPS
+                        new Box(staticTile.Transform3D.Translation, Matrix.Identity, staticTile.Transform3D.Scale*0.99f),
                         new MaterialProperties(0.3f, 0.5f, 0.3f));
                     staticTile.Enable(true, 1);
                 }
