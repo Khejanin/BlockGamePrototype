@@ -87,7 +87,7 @@ namespace GDGame.Utilities
                             if (data.gridValues[x, y, z] == ETileType.Button)
                                 //JSONArray targets = obj.GetArray("TargetGridPositions");
                                 //List<Vector3> targetGridPositions = targets.Select(t => t.Obj).Select(pathObj => new Vector3((int)pathObj["X"].Number, (int)pathObj["Y"].Number, (int)pathObj["Z"].Number)).ToList();
-                                data.activatorTargets.Add(new Vector3(x, y, z), (int) obj.GetNumber("ActivatorID"));
+                                data.activatorTargets.Add(new Vector3(x, y, z), (int) obj.GetNumber("ShapeId"));
                         }
                 }
             }

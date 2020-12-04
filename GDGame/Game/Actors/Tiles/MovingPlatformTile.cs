@@ -33,8 +33,8 @@ namespace GDGame.Actors
         #region Constructors
 
         public MovingPlatformTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
-            OurEffectParameters effectParameters, Model model, ETileType tileType) : base(id, actorType, statusType,
-            transform, effectParameters, model, tileType)
+            OurEffectParameters effectParameters, Model model,bool isBlocking, ETileType tileType) : base(id, actorType, statusType,
+            transform, effectParameters, model,isBlocking, tileType)
         {
         }
 
@@ -80,7 +80,7 @@ namespace GDGame.Actors
         {
             MovingPlatformTile platform = new MovingPlatformTile("clone - " + ID, ActorType, StatusType,
                 Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as OurEffectParameters, Model, TileType);
+                EffectParameters.Clone() as OurEffectParameters, Model,isBlocking, TileType);
             
             platform.ControllerList.AddRange(GetControllerListClone());
 

@@ -39,8 +39,8 @@ namespace GDGame.Actors
         #region Constructors
 
         public Tile(string id, ActorType actorType, StatusType statusType,
-            Transform3D transform, OurEffectParameters effectParameters, Model model, ETileType tileType)
-            : base(id, actorType, statusType, transform, effectParameters, model)
+            Transform3D transform, OurEffectParameters effectParameters, Model model,bool isBlocking, ETileType tileType)
+            : base(id, actorType, statusType, transform, effectParameters, model,isBlocking)
         {
             TileType = tileType;
         }
@@ -84,7 +84,7 @@ namespace GDGame.Actors
 
         public new object Clone()
         {
-            Tile tile = new Tile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as OurEffectParameters, Model, TileType);
+            Tile tile = new Tile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as OurEffectParameters, Model,isBlocking, TileType);
             tile.ControllerList.AddRange(GetControllerListClone());
             return tile;
         }

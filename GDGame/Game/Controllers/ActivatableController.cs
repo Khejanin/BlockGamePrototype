@@ -1,5 +1,6 @@
 using System;
 using GDGame.Actors;
+using GDGame.Component;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Interfaces;
@@ -17,9 +18,9 @@ namespace GDGame.Controllers
         Activated
     }
     
-    public abstract class ActivatableController : Controller, IActivatable
+    public abstract class ActivatableController : Controller, IActivatable,ICloneable
     {
-        protected BasicTile parent;
+        protected Tile parent;
         private bool getParent = false;
         protected ActivationType activationType;
         protected bool active;
@@ -27,6 +28,10 @@ namespace GDGame.Controllers
         public ActivatableController(string id, ControllerType controllerType,ActivationType activationType) : base(id,controllerType)
         {
             this.activationType = activationType;
+        }
+
+        protected virtual void OnClone()
+        {
             switch (activationType)
             {
                 case ActivationType.AlwaysOn:
@@ -43,7 +48,7 @@ namespace GDGame.Controllers
         public override void Update(GameTime gameTime, IActor actor)
         {
             if (getParent && parent == null)
-                parent = (BasicTile) actor;
+                parent = (Tile) actor;
         }
 
         private void OnActivatorEvent(ActivatorEventInfo obj)
@@ -83,7 +88,6 @@ namespace GDGame.Controllers
             if(active) Deactivate();
             else Activate();
         }
-        
-        
+
     }
 }

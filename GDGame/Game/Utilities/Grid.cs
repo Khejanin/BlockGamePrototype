@@ -141,8 +141,7 @@ namespace GDGame.Utilities
 
                 //button.Targets = targets;
 
-                grid[(int) targetKey.X, (int) targetKey.Y, (int) data.gridSize.Z - 1 - (int) targetKey.Z].activatorId =
-                    data.activatorTargets[targetKey];
+                grid[(int) targetKey.X, (int) targetKey.Y, (int) data.gridSize.Z - 1 - (int) targetKey.Z].activatorId = data.activatorTargets[targetKey];
         }
 
         private void SetPaths(LevelData data, Tile[,,] grid)

@@ -51,12 +51,16 @@ namespace GDGame.Utilities
             foreach (Actor3D actor3D in allObjects)
                 if (actor3D is OurCollidableObject collidableObject)
                 {
-                    float? dist;
-                    bool collidableObjectCheck = (dist = ray.Intersects(collidableObject.Collision.WorldBoundingBox)) != null;
-                    if (collidableObjectCheck && dist < maxDist)
+                    if (collidableObject.IsBlocking || !onlyCheckBlocking)
                     {
-                        HitResult result = new HitResult {actor = actor3D, distance = (float) dist};
-                        hit.Add(result);
+                        float? dist;
+                        bool collidableObjectCheck =
+                            (dist = ray.Intersects(collidableObject.Collision.WorldBoundingBox)) != null;
+                        if (collidableObjectCheck && dist < maxDist)
+                        {
+                            HitResult result = new HitResult {actor = actor3D, distance = (float) dist};
+                            hit.Add(result);
+                        }
                     }
                 }
 

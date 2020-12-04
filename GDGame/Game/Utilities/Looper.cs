@@ -16,7 +16,11 @@ namespace GDGame.Utilities
             switch (loopMethod)
             {
                 case LoopMethod.PlayOnce:
-                    if (x > max) return true;
+                    if (x > max)
+                    {
+                        x = max;
+                        return true;
+                    }
                     break;
                 case LoopMethod.Loop:
                     if (x > max) x = 0;
@@ -27,7 +31,11 @@ namespace GDGame.Utilities
                         step = -1;
                         x = max;
                     }
-                    if (max < 0) return true;
+                    if (x < 0)
+                    {
+                        x = 0;
+                        return true;
+                    }
                     break;
                 case LoopMethod.PingPongLoop:
                     if (x > max)

@@ -153,6 +153,7 @@ namespace GDGame.Factory
                 pickupTile.Transform3D.Translation = position;
                 pickupTile.AddPrimitive(new Box(pickupTile.Transform3D.Translation, Matrix.Identity, pickupTile.Transform3D.Scale), new MaterialProperties(0.3f, 0.5f, 0.3f));
                 pickupTile.Enable(true, 1);
+                pickupTile.ScaleTo(false,new Vector3(2,2,2),(int) (Constants.GameConstants.MOVEMENT_COOLDOWN*1000/2),Smoother.SmoothingMethod.Smooth,LoopMethod.PingPongLoop);
             }
 
             objectManager.Add(pickupTile);
@@ -235,8 +236,13 @@ namespace GDGame.Factory
             if (staticTile != null)
             {
                 staticTile.Transform3D.Translation = position;
-                staticTile.AddPrimitive(new Box(staticTile.Transform3D.Translation, Matrix.Identity, staticTile.Transform3D.Scale), new MaterialProperties(0.3f, 0.5f, 0.3f));
-                staticTile.Enable(true, 1);
+                if (tileType != Tile.EStaticTileType.WhiteChocolate)
+                {
+                    staticTile.AddPrimitive(
+                        new Box(staticTile.Transform3D.Translation, Matrix.Identity, staticTile.Transform3D.Scale),
+                        new MaterialProperties(0.3f, 0.5f, 0.3f));
+                    staticTile.Enable(true, 1);
+                }
             }
 
             objectManager.Add(staticTile);

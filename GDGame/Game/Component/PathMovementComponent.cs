@@ -7,6 +7,7 @@ using GDGame.Interfaces;
 using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
+using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Component
@@ -40,8 +41,9 @@ namespace GDGame.Component
 
         #region Events
 
-        private void EventListeners()
+        protected override void OnClone()
         {
+            base.OnClone();
             EventManager.RegisterListener<MovingTilesEventInfo>(OnMovingTileEvent);
         }
         
@@ -66,9 +68,21 @@ namespace GDGame.Component
         }
 
         //There is a lot of magic in here
-        protected void MoveToNextPoint()
+        protected virtual void MoveToNextPoint()
         {
-            parent.Transform3D.MoveTo(NextPathPoint(), movementTime, smoothingMethod,LoopMethod.PlayOnce,parent.Body);
+            Vector3 next = NextPathPoint();
+            parent.MoveTo(false,next, movementTime, smoothingMethod,LoopMethod.PlayOnce,parent.Body);
+            //@TODO Fix the look rotation
+            /*
+            Vector3 newLook = parent.Transform3D.Translation - next;
+            double angle = Math.Acos((Vector3.Dot(newLook, parent.Transform3D.Look) / newLook.Length() * parent.Transform3D.Look.Length()));
+            float floatAngle = MathHelper.ToDegrees((float) angle);
+            floatAngle -= parent.Transform3D.RotationInDegrees.Y;
+            if (floatAngle != 0)
+            {
+                parent.RotateTo(true,Vector3.Up*(floatAngle),movementTime,Smoother.SmoothingMethod.Smooth);
+            }
+            */
         }
 
         #endregion
@@ -102,14 +116,14 @@ namespace GDGame.Component
         
         public override void Update(GameTime gameTime, IActor actor)
         {
-            if (parent == null) parent = (BasicTile) actor;
+            if (parent == null) parent = (Tile) actor;
             
         }
 
         public new object Clone()
         {
             PathMovementComponent pathMovementComponent = new PathMovementComponent(ID + " - clone", ControllerType, activationType,timePercent,smoothingMethod);
-            pathMovementComponent.EventListeners();
+            pathMovementComponent.OnClone();
             return pathMovementComponent;
         }
     }

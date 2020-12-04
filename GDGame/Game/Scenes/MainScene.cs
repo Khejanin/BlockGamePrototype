@@ -41,15 +41,14 @@ namespace GDGame.Scenes
         private OurDrawnActor3D player;
         private Tile test;
         private Transform3DCurve transform3DCurve;
-        private BasicTile test;
-        private Transform3D light;
         private float currentMovementCoolDown;
 
         #endregion
 
         #region Constructors
 
-        public MainScene(Main main, string levelName, SceneType sceneType = SceneType.Game, bool unloadsContent = false) : base(main, sceneType, unloadsContent)
+        public MainScene(Main main, string levelName, SceneType sceneType = SceneType.Game, bool unloadsContent = false)
+            : base(main, sceneType, unloadsContent)
         {
             this.levelName = @"Game\LevelFiles\" + levelName;
         }
@@ -78,8 +77,10 @@ namespace GDGame.Scenes
                 TextureEnabled = true
             };
 
-            Transform3D transform3D = new Transform3D(Vector3.Zero, Vector3.Zero, Vector3.One, Vector3.UnitZ, Vector3.UnitY);
-            BasicEffectParameters effectParameters = new BasicEffectParameters(unlitTexturedEffect, Main.Textures["kWall1"], Color.White, 1);
+            Transform3D transform3D =
+                new Transform3D(Vector3.Zero, Vector3.Zero, Vector3.One, Vector3.UnitZ, Vector3.UnitY);
+            BasicEffectParameters effectParameters =
+                new BasicEffectParameters(unlitTexturedEffect, Main.Textures["kWall1"], Color.White, 1);
             IVertexData vertexData =
                 new VertexData<VertexPositionColorTexture>(vertices, PrimitiveType.TriangleStrip, 2);
             archetypalTexturedQuad = new OurPrimitiveObject("original texture quad", ActorType.Decorator,
@@ -122,7 +123,8 @@ namespace GDGame.Scenes
         {
             /*BasicEffectParameters coffeeEffect = new BasicEffectParameters(Main.ModelEffect,Main.Textures["CoffeeUV"],Color.White, 0.8f);*/
             CoffeeEffectParameters coffeeEffect = new CoffeeEffectParameters(Main.Effects["Coffee"],
-                Main.Textures["CoffeeUV"], Main.Textures["CoffeeFlow"], new Color(111 / 255.0f, 78 / 255.0f, 55 / 255.0f, 0.95f));
+                Main.Textures["CoffeeUV"], Main.Textures["CoffeeFlow"],
+                new Color(111 / 255.0f, 78 / 255.0f, 55 / 255.0f, 0.95f));
             Transform3D transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up);
             OurModelObject coffee = new OurModelObject("coffee - plane", ActorType.Primitive,
                 StatusType.Update | StatusType.Drawn,
@@ -237,36 +239,41 @@ namespace GDGame.Scenes
             float size = 1.5f;
             Vector3 scale = new Vector3(size, size, size);
 
-            BasicEffectParameters effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Wood"], Color.White, 1);
+            BasicEffectParameters effectParameters =
+                new BasicEffectParameters(Main.ModelEffect, Main.Textures["Wood"], Color.White, 1);
             Transform3D transform3D = new Transform3D(new Vector3(10, -15, 15), Vector3.UnitZ, Vector3.UnitY);
 
             Tile table = new Tile("Table", ActorType.Primitive,
-                StatusType.Drawn, transform3D, effectParameters, Main.Models["Table"], ETileType.Static)
+                StatusType.Drawn, transform3D, effectParameters, Main.Models["Table"], true,ETileType.Static)
             {
                 Transform3D = {Scale = scale}
             };
-            table.AddPrimitive(new Box(table.Transform3D.Translation, Matrix.Identity, table.Transform3D.Scale), new MaterialProperties(0.2f, 0.8f, 0.7f));
+            table.AddPrimitive(new Box(table.Transform3D.Translation, Matrix.Identity, table.Transform3D.Scale),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
             table.Enable(true, 1);
             Main.ObjectManager.Add(table);
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Ceramic"], Color.White, 1);
             Tile cups = new Tile("Cups", ActorType.Primitive,
-                StatusType.Drawn, transform3D, effectParameters, Main.Models["Cups"], ETileType.Static)
+                StatusType.Drawn, transform3D, effectParameters, Main.Models["Cups"], false,ETileType.Static)
             {
                 Transform3D = {Scale = scale}
             };
-            cups.AddPrimitive(new Box(cups.Transform3D.Translation, Matrix.Identity, cups.Transform3D.Scale), new MaterialProperties(0.2f, 0.8f, 0.7f));
+            cups.AddPrimitive(new Box(cups.Transform3D.Translation, Matrix.Identity, cups.Transform3D.Scale),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
             cups.Enable(true, 1);
             drawnActors.Add("Cups", cups);
             Main.ObjectManager.Add(cups);
 
-            effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["WhiteChocolate"], Color.White, 1);
+            effectParameters =
+                new BasicEffectParameters(Main.ModelEffect, Main.Textures["WhiteChocolate"], Color.White, 1);
             Tile choco = new Tile("Chocolate", ActorType.Primitive,
-                StatusType.Drawn, transform3D, effectParameters, Main.Models["Chocolate"], ETileType.Static)
+                StatusType.Drawn, transform3D, effectParameters, Main.Models["Chocolate"], true,ETileType.Static)
             {
                 Transform3D = {Scale = scale}
             };
-            choco.AddPrimitive(new Box(choco.Transform3D.Translation, Matrix.Identity, choco.Transform3D.Scale), new MaterialProperties(0.2f, 0.8f, 0.7f));
+            choco.AddPrimitive(new Box(choco.Transform3D.Translation, Matrix.Identity, choco.Transform3D.Scale),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
             choco.Enable(true, 1);
             Main.ObjectManager.Add(choco);
 
@@ -274,21 +281,23 @@ namespace GDGame.Scenes
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["blackTile"], Color.White, 1);
             Tile cat = new Tile("Cat", ActorType.Primitive, StatusType.Drawn, transform3D, effectParameters,
-                Main.Models["Cat"], ETileType.Static)
+                Main.Models["Cat"], true,ETileType.Static)
             {
                 Transform3D = {Scale = scale}
             };
-            cat.AddPrimitive(new Box(cat.Transform3D.Translation, Matrix.Identity, cat.Transform3D.Scale), new MaterialProperties(0.2f, 0.8f, 0.7f));
+            cat.AddPrimitive(new Box(cat.Transform3D.Translation, Matrix.Identity, cat.Transform3D.Scale),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
             cat.Enable(true, 1);
             Main.ObjectManager.Add(cat);
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Checkers"], Color.White, 1);
             Tile catBed = new Tile("Catbed", ActorType.Primitive,
-                StatusType.Drawn, transform3D, effectParameters, Main.Models["CatBed"], ETileType.Static)
+                StatusType.Drawn, transform3D, effectParameters, Main.Models["CatBed"], true,ETileType.Static)
             {
                 Transform3D = {Scale = scale}
             };
-            catBed.AddPrimitive(new Box(catBed.Transform3D.Translation, Matrix.Identity, catBed.Transform3D.Scale), new MaterialProperties(0.2f, 0.8f, 0.7f));
+            catBed.AddPrimitive(new Box(catBed.Transform3D.Translation, Matrix.Identity, catBed.Transform3D.Scale),
+                new MaterialProperties(0.2f, 0.8f, 0.7f));
             catBed.Enable(true, 1);
             Main.ObjectManager.Add(catBed);
         }
@@ -377,49 +386,62 @@ namespace GDGame.Scenes
 
             #region StaticTiles
 
-            BasicEffectParameters effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Chocolate"], Color.White, 1);
-            NormalEffectParameters normalEffectParameters = new NormalEffectParameters(Main.Effects["Normal"], Main.Textures["Chocolate"], Main.Textures["big-normalmap"],
+            BasicEffectParameters effectParameters =
+                new BasicEffectParameters(Main.ModelEffect, Main.Textures["Chocolate"], Color.White, 1);
+            NormalEffectParameters normalEffectParameters = new NormalEffectParameters(Main.Effects["Normal"],
+                Main.Textures["Chocolate"], Main.Textures["big-normalmap"],
                 Main.Textures["big-displacement"], Color.White, 1, light);
-            Tile chocolateTile = new Tile("ChocolateTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, normalEffectParameters, Main.Models["Cube"],
-                ETileType.Static);
+            Tile chocolateTile = new Tile("ChocolateTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
+                transform3D, normalEffectParameters, Main.Models["Cube"],
+                true, ETileType.Static);
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Ceramic"], Color.White, 1);
-            Tile plateStackTile = new Tile("plateStackTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, Main.Models["PlateStack"],
-                ETileType.Static);
+            Tile plateStackTile = new Tile("plateStackTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, Main.Models["PlateStack"],
+                true, ETileType.Static);
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
-            ActivatableTile activatable = new ActivatableTile("Button", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
-                Main.Models["Button"], ETileType.Button);
+            ActivatableTile activatable = new ActivatableTile("Button", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
+                Main.Models["Button"], false, ETileType.Button);
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
-            Tile spike = new Tile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, Main.Models["Pyramid"], ETileType.Spike);
+            Tile spike = new Tile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, Main.Models["Pyramid"], false,ETileType.Spike);
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
-            Tile starPickup = new Tile("Star", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, Main.Models["Mug"], ETileType.Star);
+            Tile starPickup = new Tile("Star", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, Main.Models["Mug"], false,ETileType.Star);
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["sugarbox"], Color.White, 1);
-            Tile goal = new Tile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, Main.Models["SugarBox"], ETileType.Win);
+            Tile goal = new Tile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, Main.Models["SugarBox"], false,ETileType.Win);
 
-            Tile checkpoint = new Tile("Checkpoint", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, Main.Models["Knife"],
-                ETileType.Checkpoint);
+            Tile checkpoint = new Tile("Checkpoint", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, Main.Models["Knife"],
+                false, ETileType.Checkpoint);
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
             OurModelObject forkModelObject =
-                new OurModelObject("fork", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, Main.Models["Fork"]);
+                new OurModelObject("fork", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D,
+                    effectParameters, Main.Models["Fork"]);
             //forkModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
-            OurModelObject plateModelObject = new OurModelObject("plates", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
+            OurModelObject plateModelObject = new OurModelObject("plates", ActorType.Decorator,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
                 Main.Models["PlateStack"]);
             //plateModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
             OurModelObject knifeModelObject =
-                new OurModelObject("knife", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, Main.Models["Knife"]);
+                new OurModelObject("knife", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D,
+                    effectParameters, Main.Models["Knife"]);
             //knifeModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
-            OurModelObject singlePlateModelObject = new OurModelObject("singlePlate", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
+            OurModelObject singlePlateModelObject = new OurModelObject("singlePlate", ActorType.Decorator,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
                 Main.Models["SinglePlate"]);
             //singlePlateModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
 
@@ -428,28 +450,37 @@ namespace GDGame.Scenes
             #region MovableTiles
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["SugarB"], Color.White, 1);
-            AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
+            AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
                 Main.Models["Cube"], ETileType.Attachable);
-            attachableTile.ControllerList.Add(new TileMovementComponent("AttachableTileMC", ControllerType.Movement, 300, new Curve1D(CurveLoopType.Cycle)));
+            attachableTile.ControllerList.Add(new TileMovementComponent("AttachableTileMC", ControllerType.Movement,
+                300, new Curve1D(CurveLoopType.Cycle)));
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["SugarW"], Color.White, 1);
-            PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn, transform3D, effectParameters, Main.Models["Cube"], ETileType.PlayerStart);
-            playerTile.ControllerList.Add(new PlayerController("PlayerPC", ControllerType.Player, Main.KeyboardManager, Main.CameraManager));
-            playerTile.ControllerList.Add(new SoundController("PlayerSC", ControllerType.Sound, Main.KeyboardManager, Main.SoundManager, "playerMove", "playerAttach"));
-            TileMovementComponent tileMovementComponent = new TileMovementComponent("PTMC", ControllerType.Movement, 300, new Curve1D(CurveLoopType.Cycle));
+            PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn, transform3D,
+                effectParameters, Main.Models["Cube"], ETileType.PlayerStart);
+            playerTile.ControllerList.Add(new PlayerController("PlayerPC", ControllerType.Player, Main.KeyboardManager,
+                Main.CameraManager));
+            playerTile.ControllerList.Add(new SoundController("PlayerSC", ControllerType.Sound, Main.KeyboardManager,
+                Main.SoundManager, "playerMove", "playerAttach"));
+            TileMovementComponent tileMovementComponent = new TileMovementComponent("PTMC", ControllerType.Movement,
+                300, new Curve1D(CurveLoopType.Cycle));
             playerTile.ControllerList.Add(tileMovementComponent);
             playerTile.ControllerList.Add(new PlayerMovementComponent("PlayerMC", ControllerType.Movement));
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
-            EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, Main.Models["Drop"],
-                ETileType.Enemy);
+            EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, Main.Models["Drop"],
+                false,ETileType.Enemy);
+            enemy.ControllerList.Add(new EnemyMovementComponent("emc",ControllerType.Movement,ActivationType.AlwaysOn,0.5f,Smoother.SmoothingMethod.Smooth));
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
-            MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Platform, StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
-                Main.Models["SinglePlate"], ETileType.MovingPlatform); //-1 = X, 1 = Y, 0 = Z
-            platform.ControllerList.Add(new CustomBoxColliderController("PlatformBCC", ControllerType.Collider, ColliderShape.Cube, 1f));
-            platform.ControllerList.Add(new PathMovementComponent("platformpmc",ControllerType.Movement,ActivationType.AlwaysOn,0.5f,Smoother.SmoothingMethod.Decelerate));
-            
+            MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Platform,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
+                Main.Models["SinglePlate"],true, ETileType.MovingPlatform); //-1 = X, 1 = Y, 0 = Z
+            platform.ControllerList.Add(new PathMovementComponent("platformpmc", ControllerType.Movement,
+                ActivationType.Activated, 0.5f, Smoother.SmoothingMethod.Decelerate));
+
             #endregion MovableTiles
 
             drawnActors = new Dictionary<string, OurDrawnActor3D>
@@ -513,7 +544,7 @@ namespace GDGame.Scenes
         protected override void UpdateScene(GameTime gameTime)
         {
             light.Look = Main.CameraManager.ActiveCamera.Transform3D.Look;
-            
+
             if (currentMovementCoolDown <= 0)
             {
                 currentMovementCoolDown = Constants.GameConstants.MOVEMENT_COOLDOWN;
@@ -521,7 +552,7 @@ namespace GDGame.Scenes
             }
 
             currentMovementCoolDown -= (float) gameTime.ElapsedGameTime.TotalSeconds;
-            
+
             if (curve3DController != null && curve3DController.ElapsedTimeInMs > 25000)
             {
                 Main.CameraManager.RemoveFirstIf(camera3D => camera3D.ID == "Curve Camera");
@@ -532,8 +563,10 @@ namespace GDGame.Scenes
 
             if (player == null)
             {
-                OurDrawnActor3D drawnActor3D = Main.ObjectManager.OpaqueList.Find(actor3D => actor3D.ID == "clone - Player");
-                if (Main.CameraManager.ActiveCamera.ControllerList[0] is RotationAroundActor cam && drawnActor3D != null)
+                OurDrawnActor3D drawnActor3D =
+                    Main.ObjectManager.OpaqueList.Find(actor3D => actor3D.ID == "clone - Player");
+                if (Main.CameraManager.ActiveCamera.ControllerList[0] is RotationAroundActor cam &&
+                    drawnActor3D != null)
                 {
                     cam.Target = drawnActor3D;
                     player = drawnActor3D;
@@ -560,12 +593,15 @@ namespace GDGame.Scenes
                 EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PauseMusic});
             //Volume Changes
             if (Main.KeyboardManager.IsFirstKeyPress(Keys.L))
-                EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.IncreaseVolume, soundVolumeType = SoundVolumeType.Master});
+                EventManager.FireEvent(new SoundEventInfo
+                    {soundEventType = SoundEventType.IncreaseVolume, soundVolumeType = SoundVolumeType.Master});
             else if (Main.KeyboardManager.IsFirstKeyPress(Keys.K))
-                EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.DecreaseVolume, soundVolumeType = SoundVolumeType.Master});
+                EventManager.FireEvent(new SoundEventInfo
+                    {soundEventType = SoundEventType.DecreaseVolume, soundVolumeType = SoundVolumeType.Master});
             //Pause/resume music
             if (Main.KeyboardManager.IsFirstKeyPress(Keys.P))
-                EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.ToggleMusicPlayback, soundVolumeType = SoundVolumeType.Master});
+                EventManager.FireEvent(new SoundEventInfo
+                    {soundEventType = SoundEventType.ToggleMusicPlayback, soundVolumeType = SoundVolumeType.Master});
 
             //Test
             if (Main.KeyboardManager.IsFirstKeyPress(Keys.G))
@@ -691,12 +727,15 @@ namespace GDGame.Scenes
         //TEMP
         private void TestingPlatform()
         {
-            BasicEffectParameters effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
+            BasicEffectParameters effectParameters =
+                new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
             Transform3D transform3D = new Transform3D(new Vector3(5, 0, 0), Vector3.UnitZ, Vector3.UnitY);
-            test = new Tile("StaticTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D, effectParameters, Main.Models["Knife"], ETileType.Static);
+            test = new Tile("StaticTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, Main.Models["Knife"], true,ETileType.Static);
             drawnActors.Add("StaticTile2", test);
 
-            test.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale), MaterialProperties.Unset);
+            test.AddPrimitive(new Box(transform3D.Translation, Matrix.Identity, transform3D.Scale),
+                MaterialProperties.Unset);
             test.Enable(true, 1);
             Main.ObjectManager.Add(test);
         }

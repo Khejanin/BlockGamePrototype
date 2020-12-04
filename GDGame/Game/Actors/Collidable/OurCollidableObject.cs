@@ -22,16 +22,20 @@ namespace GDGame.Actors
 
         private Vector3 com;
         private Matrix it, itCoM;
+        protected bool isBlocking = true;
 
         private float junk;
 
         #endregion
 
+        public bool IsBlocking => isBlocking;
+
         #region Constructors
 
-        public OurCollidableObject(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model)
+        public OurCollidableObject(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model,bool isBlocking)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
+            this.isBlocking = isBlocking;
             Body = new Body();
             Body.ExternalData = this;
             Collision = new CollisionSkin(Body);
@@ -86,7 +90,7 @@ namespace GDGame.Actors
                 StatusType,
                 Transform3D.Clone() as Transform3D, //deep
                 EffectParameters.Clone() as OurEffectParameters, //hybrid - shallow (texture and effect) and deep (all other fields)
-                Model); //shallow i.e. a reference
+                Model,isBlocking); //shallow i.e. a reference
         }
 
         public virtual void Enable(bool bImmovable, float mass)

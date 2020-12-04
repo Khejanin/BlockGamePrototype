@@ -99,6 +99,10 @@
 	  <Content Include="Game\LevelFiles\BridgeLevel2.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
+	  <None Remove="Game\LevelFiles\BridgeLevel3.json" />
+	  <Content Include="Game\LevelFiles\BridgeLevel3.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Remove="Game\Actors\Drawn\**" />

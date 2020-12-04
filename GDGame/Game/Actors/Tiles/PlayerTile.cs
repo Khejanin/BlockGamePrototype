@@ -60,7 +60,7 @@ namespace GDGame.Actors
             CheckAndProcessSurroundings(GetSurroundings(Transform3D.Translation));
             if (IsAttached) Attach();
 
-            CheckCollision(RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f));
+            CheckCollision(RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f,false));
         }
 
         #endregion
@@ -249,8 +249,8 @@ namespace GDGame.Actors
         private void HandleMovementEvent(MovementEvent movementEvent)
         {
             if (movementEvent.type == MovementType.OnPlayerMoved)
-                foreach (MovableTile movableTile in AttachedTiles)
-                    EventManager.FireEvent(new MovementEvent {type = MovementType.OnMove, direction = movementEvent.direction, onMoveEnd = OnMoveEnd, tile = movableTile});
+                foreach (AttachableTile attachable in AttachedTiles)
+                    EventManager.FireEvent(new MovementEvent {type = MovementType.OnMove, direction = movementEvent.direction, onMoveEnd = OnMoveEnd, tile = attachable});
         }
 
         private void HandlePlayerEvent(PlayerEventInfo info)

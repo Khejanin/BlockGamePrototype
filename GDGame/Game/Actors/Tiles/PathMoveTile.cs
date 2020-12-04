@@ -27,8 +27,8 @@ namespace GDGame.Actors
         #region Constructors
 
         protected PathMoveTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model,
-            ETileType tileType) : base(id, actorType,
-            statusType, transform, effectParameters, model, tileType)
+            bool isBlocking,ETileType tileType) : base(id, actorType,
+            statusType, transform, effectParameters, model,isBlocking, tileType)
         {
             path = new List<Vector3>();
         }

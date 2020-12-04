@@ -24,7 +24,7 @@ namespace GDGame.Actors
         #region Constructors
 
         public AttachableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model, ETileType tileType) :
-            base(id, actorType, statusType, transform, effectParameters, model, tileType)
+            base(id, actorType, statusType, transform, effectParameters, model,true, tileType)
         {
             IsAttached = false;
             RotatePoint = Vector3.Zero;
