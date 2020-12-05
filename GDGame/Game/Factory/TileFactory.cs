@@ -193,6 +193,13 @@ namespace GDGame.Factory
                 spikeTile.Transform3D.Translation = position;
                 spikeTile.AddPrimitive(new Box(spikeTile.Transform3D.Translation, Matrix.Identity, spikeTile.Transform3D.Scale), new MaterialProperties(0.3f, 0.5f, 0.3f));
                 spikeTile.Enable(true, 1);
+                
+                CoffeeEffectParameters effectParameters = spikeTile.EffectParameters as CoffeeEffectParameters;
+
+                if (effectParameters != null)
+                {
+                    effectParameters.Phase += (MathHelperFunctions.Rnd.Next() % 100) / 100.0f;
+                }
             }
 
             objectManager.Add(spikeTile);

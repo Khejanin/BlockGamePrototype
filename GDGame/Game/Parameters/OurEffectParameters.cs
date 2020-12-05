@@ -262,6 +262,7 @@ namespace GDGame.Game.Parameters.Effect
 
         protected Color coffeeColor;
         protected Texture2D uvTilesTexture, flowTexture;
+        protected float phase;
 
         #endregion
 
@@ -271,10 +272,29 @@ namespace GDGame.Game.Parameters.Effect
             set => coffeeColor = value;
         }
 
+        public float Phase
+        {
+            get => phase;
+            set => phase = value;
+        }
+
+        public Texture2D UvTilesTexture
+        {
+            get => uvTilesTexture;
+            set => uvTilesTexture = value;
+        }
+
+        public Texture2D FlowTexture
+        {
+            get => flowTexture;
+            set => flowTexture = value;
+        }
+
         #region Constructors
 
         public CoffeeEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D uvTilesTexture, Texture2D flowTexture, Color coffeeColor) : base(effect)
         {
+            phase = 0f;
             this.uvTilesTexture = uvTilesTexture;
             this.flowTexture = flowTexture;
             this.coffeeColor = coffeeColor;
@@ -300,7 +320,7 @@ namespace GDGame.Game.Parameters.Effect
             effect.Parameters["Displacement"].SetValue(uvTilesTexture);
             effect.Parameters["FlowMap"].SetValue(flowTexture);
             effect.Parameters["coffeeColor"].SetValue(coffeeColor.ToVector4());
-            effect.Parameters["time"].SetValue((float) gameTime.TotalGameTime.TotalSeconds);
+            effect.Parameters["time"].SetValue(((float) gameTime.TotalGameTime.TotalSeconds) + phase);
         }
 
         #endregion
