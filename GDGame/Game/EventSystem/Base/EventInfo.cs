@@ -27,6 +27,7 @@ namespace GDGame.EventSystem
         public AttachableTile movableTile;
         public Vector3? position;
         public PlayerEventType type;
+        public Tile tile;
 
         #endregion
     }
