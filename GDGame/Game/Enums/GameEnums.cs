@@ -41,6 +41,7 @@
         Die,
         MovableTileDie,
         SetCheckpoint,
+        PickupMug,
         OnMove,
         OnEnemyMove
     }

@@ -5,9 +5,11 @@ using GDGame.EventSystem;
 using GDGame.Game.Parameters.Effect;
 using GDGame.Managers;
 using GDGame.Tiles;
+using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
+using JigLibX.Collision;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using static GDGame.Utilities.Raycaster;
@@ -48,6 +50,7 @@ namespace GDGame.Actors
         {
             EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
             EventManager.RegisterListener<MovementEvent>(HandleMovementEvent);
+            this.Body.CollisionSkin.callbackFn += HandleCollision;
             lastCheckpoint = Transform3D.Translation;
         }
 
@@ -60,7 +63,7 @@ namespace GDGame.Actors
             CheckAndProcessSurroundings(GetSurroundings(Transform3D.Translation));
             if (IsAttached) Attach();
 
-            CheckCollision(RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f,false));
+            CheckCollision(RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Up, true, 0.5f,false));
         }
 
         #endregion
@@ -104,7 +107,9 @@ namespace GDGame.Actors
 
             Actor3D actor3D = hit.actor;
             Tile tile = actor3D as Tile;
-            switch (tile?.TileType)
+            if (tile == null) return;
+
+            switch (tile.TileType)
             {
                 case ETileType.Win:
                     EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Won));
@@ -118,6 +123,9 @@ namespace GDGame.Actors
                 case ETileType.Button:
                     ActivatableTile b = tile as ActivatableTile;
                     b?.Activate();
+                    break;
+                case ETileType.Star:
+                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.PickupMug, tile = tile });
                     break;
             }
         }
@@ -246,6 +254,12 @@ namespace GDGame.Actors
 
         #region Events
 
+        private bool HandleCollision(CollisionSkin collider, CollisionSkin collidee)
+        {
+            //System.Diagnostics.Debug.WriteLine(collidee.Owner.ExternalData.GetType());
+            return false;
+        }
+
         private void HandleMovementEvent(MovementEvent movementEvent)
         {
             if (movementEvent.type == MovementType.OnPlayerMoved)
@@ -266,6 +280,11 @@ namespace GDGame.Actors
                 case PlayerEventType.MovableTileDie:
                     AttachedTiles.Remove(info.movableTile);
                     info.movableTile.Respawn();
+                    break;
+                case PlayerEventType.PickupMug:
+                    //info.tile.MoveTo(true, Vector3.Up, 300, Smoother.SmoothingMethod.Smooth, LoopMethod.PingPongOnce);
+                    //info.tile.ScaleTo(false, Vector3.One * 1.5f, 1000, Smoother.SmoothingMethod.Smooth, LoopMethod.PingPongOnce);
+                    //info.tile.RotateTo(true, Vector3.Up * 720, 1000, Smoother.SmoothingMethod.Smooth);
                     break;
             }
         }
