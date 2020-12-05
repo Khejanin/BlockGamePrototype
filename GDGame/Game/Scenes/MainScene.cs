@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GDGame.Actors;
 using GDGame.Component;
+using GDGame.Constants;
 using GDGame.Controllers;
 using GDGame.Enums;
 using GDGame.EventSystem;
@@ -12,6 +13,7 @@ using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
+using GDLibrary.Managers;
 using GDLibrary.Parameters;
 using JigLibX.Collision;
 using JigLibX.Geometry;
@@ -92,8 +94,8 @@ namespace GDGame.Scenes
         {
             Transform3D transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
             Camera3D mainCamera = new Camera3D("MainCamera", ActorType.Camera3D, StatusType.Update, transform3D,
-                ProjectionParameters.StandardDeepFourThree,
-                new Viewport(0, 0, 1024, 768));
+                ProjectionParameters.StandardDeepSixteenTen,
+                new Viewport(0, 0, GameConstants.ScreenWidth, GameConstants.ScreenHeight));
             mainCamera.ControllerList.Add(new RotationAroundActor("RAAC", ControllerType.FlightCamera,
                 Main.KeyboardManager, 35, 20));
             Main.CameraManager.Add(mainCamera);
@@ -111,15 +113,15 @@ namespace GDGame.Scenes
             if (camera3D != null)
             {
                 camera3D.ID = "CurveCamera";
-                camera3D.ControllerList.Clear();
-                curve3DController = new Curve3DController("CCFC", ControllerType.Curve, transform3DCurve);
-                camera3D.ControllerList.Add(curve3DController);
+                //camera3D.ControllerList.Clear();
+                //curve3DController = new Curve3DController("CCFC", ControllerType.Curve, transform3DCurve);
+                //camera3D.ControllerList.Add(curve3DController);
                 Main.CameraManager.Add(camera3D);
             }
 
             Main.CameraManager.ActiveCameraIndex = 2;
         }
-        
+
         /*
         private void InitDecoration(int n)
         {
@@ -209,11 +211,14 @@ namespace GDGame.Scenes
             Grid grid = new Grid(new TileFactory(Main.ObjectManager, drawnActors, Main.Textures));
             levelBounds = grid.GetGridBounds();
             levelData = grid.GenerateGrid(levelName);
+
+            Main.CameraManager.ActiveCamera.ControllerList.Add(new Curve3DController("CCFC", ControllerType.Curve,
+                levelData.startCameraCurve));
         }
 
         public override void Initialize()
         {
-            InitTransform3DCurve();
+            //InitTransform3DCurve();
             InitCameras3D();
             InitLoadContent();
             InitDrawnContent();
@@ -427,10 +432,12 @@ namespace GDGame.Scenes
             coffeeEffect.CoffeeColor = new Color(coffeeEffect.CoffeeColor * 0.8f,255);
             Tile spike = new Tile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 coffeeEffect, Main.Models["Puddle"], false, ETileType.Spike);
+            spike.ControllerList.Add(new HostileColliderHandler("HCH", ControllerType.Collider));
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Mug"], Color.White, 1);
             Tile starPickup = new Tile("Star", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, Main.Models["Mug"], false, ETileType.Star);
+            starPickup.ControllerList.Add(new PlayerDeathComponent("PDC", ControllerType.Event));
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["sugarbox"], Color.White, 1);
             Tile goal = new Tile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
@@ -475,10 +482,11 @@ namespace GDGame.Scenes
                 Main.Models["Cube"], ETileType.Attachable);
             attachableTile.ControllerList.Add(new TileMovementComponent("AttachableTileMC", ControllerType.Movement,
                 300, new Curve1D(CurveLoopType.Cycle)));
+            attachableTile.ControllerList.Add(new PlayerDeathComponent("PDC", ControllerType.Event));
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["SugarW"], Color.White, 1);
             PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn, transform3D,
-                effectParameters, Main.Models["Cube"], ETileType.PlayerStart);
+                effectParameters, Main.Models["Cube"], ETileType.Player);
             playerTile.ControllerList.Add(new PlayerController("PlayerPC", ControllerType.Player, Main.KeyboardManager,
                 Main.CameraManager));
             playerTile.ControllerList.Add(new SoundController("PlayerSC", ControllerType.Sound, Main.KeyboardManager,
@@ -487,15 +495,13 @@ namespace GDGame.Scenes
                 300, new Curve1D(CurveLoopType.Cycle));
             playerTile.ControllerList.Add(tileMovementComponent);
             playerTile.ControllerList.Add(new PlayerMovementComponent("PlayerMC", ControllerType.Movement));
+            playerTile.ControllerList.Add(new PlayerDeathComponent("PDC", ControllerType.Event));
 
             coffeeColor = new Color(coffeeColor, 255);
-            coffeeEffect = new CoffeeEffectParameters(Main.Effects["Coffee"], Main.Textures["DropUV"],
-                Main.Textures["CoffeeFlow"], coffeeColor);
-            EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update,
-                transform3D, coffeeEffect, Main.Models["Drop"],
-                false, ETileType.Enemy);
-            enemy.ControllerList.Add(new EnemyMovementComponent("emc", ControllerType.Movement, ActivationType.AlwaysOn,
-                0.5f, Smoother.SmoothingMethod.Smooth));
+            coffeeEffect = new CoffeeEffectParameters(Main.Effects["Coffee"], Main.Textures["DropUV"], Main.Textures["CoffeeFlow"], coffeeColor);
+            PathMoveTile enemy = new PathMoveTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update, transform3D, coffeeEffect, Main.Models["Drop"], false, ETileType.Enemy);
+            enemy.ControllerList.Add(new EnemyMovementComponent("emc", ControllerType.Movement, ActivationType.AlwaysOn, 0.5f, Smoother.SmoothingMethod.Smooth));
+            enemy.ControllerList.Add(new HostileColliderHandler("HCH", ControllerType.Collider));
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
             MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Platform,
@@ -568,7 +574,7 @@ namespace GDGame.Scenes
 
             if (currentMovementCoolDown <= 0)
             {
-                currentMovementCoolDown = Constants.GameConstants.MOVEMENT_COOLDOWN;
+                currentMovementCoolDown = Constants.GameConstants.MovementCooldown;
                 EventManager.FireEvent(new MovingTilesEventInfo());
             }
 
@@ -689,6 +695,8 @@ namespace GDGame.Scenes
             Main.Textures.Load("Assets/Textures/Props/GameTextures/TextureCube", "Finish");
 
             Main.Textures.Load("Assets/Textures/Base/WhiteSquare");
+            Main.Textures.Load("Assets/Textures/UI/TopBar");
+
 
             Main.Textures.Load("Assets/Textures/Menu/menubaseres", "options");
             Main.Textures.Load("Assets/Textures/Menu/button", "optionsButton");

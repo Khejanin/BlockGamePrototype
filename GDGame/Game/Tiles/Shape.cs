@@ -10,7 +10,8 @@ namespace GDGame.Tiles
     {
         #region Constructors
 
-        public Shape(string id, ActorType actorType, StatusType statusType, Transform3D transform3D) : base(id, actorType, statusType, transform3D)
+        public Shape(string id, ActorType actorType, StatusType statusType, Transform3D transform3D) : base(id,
+            actorType, statusType, transform3D)
         {
             AttachableTiles = new List<AttachableTile>();
         }

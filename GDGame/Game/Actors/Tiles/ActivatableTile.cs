@@ -10,6 +10,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
+    /// <summary>
+    /// The Activatable Tile is a BasicTile which implements IActivatable giving it the possibility to have Activation functionality like a Button. 
+    /// </summary>
     public class ActivatableTile : Tile, IActivatable
     {
         #region Private variables
@@ -22,9 +25,10 @@ namespace GDGame.Actors
 
         //public List<IActivatable> Targets { get; set; }
 
-        public ActivatableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model,bool isBlocking,
+        public ActivatableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
+            OurEffectParameters effectParameters, Model model, bool isBlocking,
             ETileType tileType) : base(
-            id, actorType, statusType, transform, effectParameters, model, isBlocking,tileType)
+            id, actorType, statusType, transform, effectParameters, model, isBlocking, tileType)
         {
             //Targets = new List<IActivatable>();
         }
@@ -53,9 +57,6 @@ namespace GDGame.Actors
         public void Activate()
         {
             EventManager.FireEvent(new ActivatorEventInfo {type = ActivatorEventType.Activate, id = activatorId});
-            //foreach (IActivatable target in Targets)
-            //    target.Activate();
-
             isActivated = true;
         }
 
@@ -63,7 +64,7 @@ namespace GDGame.Actors
         {
             ActivatableTile activatableTile = new ActivatableTile("clone - " + ID, ActorType, StatusType,
                 Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as OurEffectParameters, Model, isBlocking,TileType);
+                EffectParameters.Clone() as OurEffectParameters, Model, IsBlocking, TileType);
 
             if (ControllerList != null)
                 foreach (IController controller in ControllerList)
@@ -75,13 +76,10 @@ namespace GDGame.Actors
         public void Deactivate()
         {
             EventManager.FireEvent(new ActivatorEventInfo {type = ActivatorEventType.Deactivate, id = activatorId});
-            //foreach (IActivatable target in Targets)
-            //    target.Activate();
-
             isActivated = false;
         }
 
-        protected bool Equals(ActivatableTile other)
+        private bool Equals(ActivatableTile other)
         {
             return base.Equals(other) && isActivated == other.isActivated;
         }

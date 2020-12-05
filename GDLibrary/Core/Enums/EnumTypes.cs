@@ -1,4 +1,6 @@
-﻿namespace GDLibrary.Enums
+﻿using System;
+
+namespace GDLibrary.Enums
 {
     /// <summary>
     /// Used to indicate if single or multiple cameras are drawn to the screen at the same time
@@ -41,6 +43,7 @@
     /// Possible status types for an actor within the game (e.g. Update | Drawn, Update, Drawn, Off)
     /// </summary>
     /// <see cref="GDLibrary.Actors.Actor.Actor(string, ActorType, StatusType)"/>
+    [Flags]
     public enum StatusType
     {
         //used for enabling objects for updating and drawing e.g. a model or a camera, or a controller
@@ -86,7 +89,8 @@
         Ui,
         Movement,
         Collider,
-        Sound
+        Sound,
+        Event
     }
 
     /// <summary>

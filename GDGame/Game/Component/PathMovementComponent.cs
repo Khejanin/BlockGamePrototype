@@ -25,7 +25,7 @@ namespace GDGame.Component
             get
             {
                 if(pathMoveTileParent == null) pathMoveTileParent = parent as PathMoveTile;
-                return pathMoveTileParent.path;
+                return pathMoveTileParent.Path;
             }
         }
 
@@ -34,7 +34,7 @@ namespace GDGame.Component
             float timePercent, Smoother.SmoothingMethod smoothingMethod) : base(id, controllerType, activationType)
         {
             this.timePercent = timePercent;
-            movementTime = (int) (Constants.GameConstants.MOVEMENT_COOLDOWN * timePercent * 1000);
+            movementTime = (int) (Constants.GameConstants.MovementCooldown * timePercent * 1000);
             this.smoothingMethod = smoothingMethod;
         }
 

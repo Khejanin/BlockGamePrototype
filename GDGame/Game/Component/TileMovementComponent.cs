@@ -20,6 +20,7 @@ namespace GDGame.Component
         private Vector3 diff;
         private Action endMoveCallback;
         private Vector3 endPos;
+        private bool isDirty;
         private int movementTime;
         private Action<Raycaster.HitResult> onCollideCallback;
         private Quaternion rotationQuaternion;
@@ -55,8 +56,8 @@ namespace GDGame.Component
         public override void Update(GameTime gameTime, IActor actor)
         {
             Tile ??= actor as AttachableTile;
-
-            if (Tile != null && Tile.IsMoving)
+            if (Tile == null) return;
+            if (Tile.IsMoving)
             {
                 endMoveCallback ??= Tile.OnMoveEnd;
                 if (currentMovementTime <= 0)
@@ -65,6 +66,7 @@ namespace GDGame.Component
                     currentMovementTime = 0;
                     startRotation = rotationQuaternion;
                     endMoveCallback?.Invoke();
+                    isDirty = true;
                 }
 
                 float t = 1 - (float) currentMovementTime / movementTime;
@@ -86,14 +88,33 @@ namespace GDGame.Component
                     }
                 }
 
-                Tile.Transform3D.Translation = trans;
-                Tile.Body.MoveTo(trans, Matrix.Identity);
+                if (currentMovementTime <= 0)
+                    trans = new Vector3((float) Math.Round(trans.X), (float) Math.Round(trans.Y),
+                        (float) Math.Round(trans.Z));
+
+                Tile.SetTranslation(trans);
                 currentMovementTime -= (int) gameTime.ElapsedGameTime.TotalMilliseconds;
-                Tile.Body.SetInactive();
+                if (currentMovementTime <= 0) Tile.IsDirty = false;
             }
 
-            if (Tile != null && !Tile.IsMoving && !Tile.IsAttached)
-                Tile.Body.SetActive();
+            if (isDirty && !Tile.IsMoving && !Tile.IsAttached && !Tile.Body.ApplyGravity)
+            {
+                Tile.Body.ApplyGravity = true;
+                Tile.Body.Immovable = false;
+                isDirty = false;
+            }
+            else if (!Tile.IsMoving && !Tile.IsDirty)
+            {
+                Tile.Body.Velocity = Vector3.UnitY * Tile.Body.Velocity.Y;
+                Tile.Body.Torque = Vector3.UnitY * Tile.Body.Torque.Y;
+                Tile.Body.AngularVelocity = Vector3.UnitY * Tile.Body.AngularVelocity.Y;
+
+                Tile.Transform3D.Translation = Tile.Body.Position;
+            }
+            else if (!Tile.IsMoving)
+            {
+                Tile.SetTranslation(Tile.Transform3D.Translation);
+            }
         }
 
         #endregion
@@ -117,7 +138,8 @@ namespace GDGame.Component
 
         public new object Clone()
         {
-            TileMovementComponent tileMovementComponent = new TileMovementComponent(ID, ControllerType, movementTime, new Curve1D(curve1D.CurveLookType));
+            TileMovementComponent tileMovementComponent =
+                new TileMovementComponent(ID, ControllerType, movementTime, new Curve1D(curve1D.CurveLookType));
             return tileMovementComponent;
         }
 

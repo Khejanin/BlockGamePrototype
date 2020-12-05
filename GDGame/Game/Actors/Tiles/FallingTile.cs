@@ -10,6 +10,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
+    /// <summary>
+    /// The Falling tile is a tile which should only fall.
+    /// </summary>
     internal class FallingTile : PathMoveTile, IActivatable
     {
         #region Private variables
@@ -24,6 +27,7 @@ namespace GDGame.Actors
             bool isBlocking,ETileType tileType) : base(
             id, actorType, statusType, transform, effectParameters, model, isBlocking,tileType)
         {
+            currentPos = transform.Translation;
         }
 
         #endregion
@@ -38,18 +42,6 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Override Methode
-
-        protected override void MoveToNextPoint()
-        {
-        }
-
-        protected override void OnMoveEnd()
-        {
-            base.OnMoveEnd();
-        }
-
-        #endregion
 
         #region Methods
 
@@ -62,7 +54,7 @@ namespace GDGame.Actors
         {
             FallingTile platform = new FallingTile("clone - " + ID, ActorType, StatusType,
                 Transform3D.Clone() as Transform3D,
-                EffectParameters.Clone() as OurEffectParameters, Model,isBlocking, TileType);
+                EffectParameters.Clone() as OurEffectParameters, Model,IsBlocking, TileType);
 
             if (ControllerList != null)
                 foreach (IController controller in ControllerList)
@@ -74,7 +66,7 @@ namespace GDGame.Actors
         {
         }
 
-        public void Fall()
+        private void Fall()
         {
             Transform3D.TranslateBy(new Vector3(0, 0, currentPos.Z - 1));
             Transform3D.TranslateBy(new Vector3(0, 0, currentPos.Z - 1));
