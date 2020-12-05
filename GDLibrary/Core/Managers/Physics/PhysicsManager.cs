@@ -88,7 +88,7 @@ namespace GDLibrary.Managers
             physicSystem.Gravity = gravity;
 
             //prevents bug where objects would show correct CDCR response when velocity == Vector3.Zero
-            physicSystem.EnableFreezing = true;
+            physicSystem.EnableFreezing = false;
 
             physicSystem.SolverType = PhysicsSystem.Solver.Normal;
             physicSystem.CollisionSystem.UseSweepTests = true;

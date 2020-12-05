@@ -10,6 +10,7 @@ using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
+using MovementEvent = GDGame.EventSystem.MovementEvent;
 
 namespace GDGame.Component
 {
@@ -69,16 +70,20 @@ namespace GDGame.Component
 
         private void Move(Vector3 direction)
         {
-            playerTile.SetRotatePoint(direction);
-            tileMovementComponent.CalculateEndPos(direction, out Vector3 endPos, out Quaternion q, out Vector3 o);
-            if (IsMoveValid(q, playerTile.RotatePoint, endPos, o))
+            if (playerTile.IsAlive)
             {
-                tileMovementComponent.MoveTile();
-                foreach (TileMovementComponent movementComponent in playerTile.AttachedTiles.Select(attachedTile =>
-                    attachedTile.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement) as TileMovementComponent))
+                playerTile.SetRotatePoint(direction);
+                tileMovementComponent.CalculateEndPos(direction, out Vector3 endPos, out Quaternion q, out Vector3 o);
+                if (IsMoveValid(q, playerTile.RotatePoint, endPos, o))
                 {
-                    movementComponent?.CalculateEndPos(direction, out endPos, out q, out o);
-                    movementComponent?.MoveTile();
+                    tileMovementComponent.MoveTile();
+                    foreach (TileMovementComponent movementComponent in playerTile.AttachedTiles.Select(attachedTile =>
+                        attachedTile.ControllerList.Find(controller =>
+                            controller.GetControllerType() == ControllerType.Movement) as TileMovementComponent))
+                    {
+                        movementComponent?.CalculateEndPos(direction, out endPos, out q, out o);
+                        movementComponent?.MoveTile();
+                    }
                 }
             }
         }

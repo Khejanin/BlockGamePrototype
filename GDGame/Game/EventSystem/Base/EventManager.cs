@@ -14,8 +14,8 @@ namespace GDGame.EventSystem
 
         #region Static Fields and Constants
 
-        private static Dictionary<Type, Dictionary<int, EventListener>> EventListeners;
-        private static Queue<EventInfo> EventsToTrigger;
+        private static Dictionary<Type, Dictionary<int, EventListener>> _eventListeners;
+        private static Queue<EventInfo> _eventsToTrigger;
 
         #endregion
 
@@ -23,8 +23,8 @@ namespace GDGame.EventSystem
 
         public EventManager(Microsoft.Xna.Framework.Game game) : base(game)
         {
-            EventListeners = new Dictionary<Type, Dictionary<int, EventListener>>();
-            EventsToTrigger = new Queue<EventInfo>();
+            _eventListeners = new Dictionary<Type, Dictionary<int, EventListener>>();
+            _eventsToTrigger = new Queue<EventInfo>();
         }
 
         #endregion
@@ -33,7 +33,7 @@ namespace GDGame.EventSystem
 
         public override void Update(GameTime gameTime)
         {
-            while (EventsToTrigger.Count != 0) ProcessEvent(EventsToTrigger.Dequeue());
+            while (_eventsToTrigger.Count != 0) ProcessEvent(_eventsToTrigger.Dequeue());
 
             base.Update(gameTime);
         }
@@ -44,36 +44,36 @@ namespace GDGame.EventSystem
 
         public static void FireEvent(EventInfo eventInfo)
         {
-            EventsToTrigger.Enqueue(eventInfo);
+            if (!_eventsToTrigger.Contains(eventInfo)) _eventsToTrigger.Enqueue(eventInfo);
         }
 
         private void ProcessEvent(EventInfo eventInfo)
         {
             Type trueEventInfoClass = eventInfo.GetType();
-            if (EventListeners == null || !EventListeners.ContainsKey(trueEventInfoClass))
+            if (_eventListeners == null || !_eventListeners.ContainsKey(trueEventInfoClass))
                 // No one is listening, we are done.
                 return;
 
-            foreach (EventListener el in EventListeners[trueEventInfoClass].Values) el(eventInfo);
+            foreach (EventListener el in _eventListeners[trueEventInfoClass].Values) el(eventInfo);
         }
 
         public static void RegisterListener<T>(Action<T> listener) where T : EventInfo
         {
             Type eventType = typeof(T);
 
-            if (!EventListeners.ContainsKey(eventType) || EventListeners[eventType] == null)
-                EventListeners[eventType] = new Dictionary<int, EventListener>();
+            if (!_eventListeners.ContainsKey(eventType) || _eventListeners[eventType] == null)
+                _eventListeners[eventType] = new Dictionary<int, EventListener>();
 
-            EventListeners[eventType][listener.GetHashCode()] = ei => { listener((T) ei); };
+            _eventListeners[eventType][listener.GetHashCode()] = ei => { listener((T) ei); };
         }
 
         public static void UnregisterListener<T>(Action<T> listener) where T : EventInfo
         {
             Type eventType = typeof(T);
 
-            if (EventListeners != null)
-                if (EventListeners.ContainsKey(eventType) && EventListeners[eventType] != null)
-                    EventListeners[eventType].Remove(listener.GetHashCode());
+            if (_eventListeners != null)
+                if (_eventListeners.ContainsKey(eventType) && _eventListeners[eventType] != null)
+                    _eventListeners[eventType].Remove(listener.GetHashCode());
         }
 
         #endregion

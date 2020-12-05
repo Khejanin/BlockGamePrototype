@@ -5,16 +5,21 @@ using GDGame.Game.Parameters.Effect;
 using GDGame.Tiles;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
+using JigLibX.Collision;
+using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
+    /// <summary>
+    /// Tile is the BasicTile from which other Tiles inherit
+    /// </summary>
     public class Tile : OurCollidableObject
     {
         #region Enums
 
-        public enum EStaticTileType
+        public enum StaticTileType
         {
             Chocolate,
             DarkChocolate,
@@ -25,6 +30,8 @@ namespace GDGame.Actors
         #endregion
 
         #region Public variables
+
+        public bool canDie;
 
         public int activatorId = -1;
 
@@ -38,9 +45,9 @@ namespace GDGame.Actors
 
         #region Constructors
 
-        public Tile(string id, ActorType actorType, StatusType statusType,
-            Transform3D transform, OurEffectParameters effectParameters, Model model,bool isBlocking, ETileType tileType)
-            : base(id, actorType, statusType, transform, effectParameters, model,isBlocking)
+        public Tile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
+            OurEffectParameters effectParameters, Model model, bool isBlocking, ETileType tileType) : base(id,
+            actorType, statusType, transform, effectParameters, model, isBlocking)
         {
             TileType = tileType;
         }
@@ -48,6 +55,8 @@ namespace GDGame.Actors
         #endregion
 
         #region Properties, Indexers
+
+        public bool IsDirty { get; set; }
 
         public Shape Shape { get; set; }
         public ETileType TileType { get; }
@@ -65,6 +74,12 @@ namespace GDGame.Actors
         #endregion
 
         #region Override Methode
+
+        public override void Enable(bool bImmovable, float mass)
+        {
+            base.Enable(bImmovable, mass);
+            Body.ApplyGravity = false;
+        }
 
         public override bool Equals(object obj)
         {
@@ -84,19 +99,36 @@ namespace GDGame.Actors
 
         public new object Clone()
         {
-            Tile tile = new Tile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as OurEffectParameters, Model,isBlocking, TileType);
+            Tile tile = new Tile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D,
+                EffectParameters.Clone() as OurEffectParameters, Model, IsBlocking, TileType);
             tile.ControllerList.AddRange(GetControllerListClone());
             return tile;
         }
 
+        public virtual void Die()
+        {
+            Respawn();
+        }
+
         protected bool Equals(Tile other)
         {
-            return base.Equals(other) && activatorId == other.activatorId && spawnPos.Equals(other.spawnPos) && Equals(Shape, other.Shape) && TileType == other.TileType;
+            return base.Equals(other) && activatorId == other.activatorId && spawnPos.Equals(other.spawnPos) &&
+                   Equals(Shape, other.Shape) && TileType == other.TileType;
         }
 
         public void Respawn()
         {
-            Transform3D.Translation = spawnPos;
+            SetTranslation(spawnPos);
+        }
+
+        public void SetTranslation(Vector3 translation)
+        {
+            Transform3D.Translation = translation;
+            Body.MoveTo(translation, Matrix.Identity);
+            Body.ApplyGravity = false;
+            Body.Immovable = true;
+            Body.SetInactive();
+            IsDirty = true;
         }
 
         #endregion
@@ -105,10 +137,7 @@ namespace GDGame.Actors
 
         private void HandleTileEvent(TileEventInfo info)
         {
-            if (info.targetedTileType != ETileType.None && info.targetedTileType != TileType)
-                return;
-
-            switch (info.type)
+            switch (info.Type)
             {
                 case TileEventType.Reset:
                     Respawn();
@@ -117,5 +146,13 @@ namespace GDGame.Actors
         }
 
         #endregion
+
+        public void InitializeCollision(Vector3 position, float factor = 1f)
+        {
+            SetTranslation(position);
+            AddPrimitive(new Box(Transform3D.Translation, Matrix.Identity, Transform3D.Scale * factor),
+                new MaterialProperties(0.3f, 0.5f, 0.3f));
+            Enable(true, 1);
+        }
     }
 }

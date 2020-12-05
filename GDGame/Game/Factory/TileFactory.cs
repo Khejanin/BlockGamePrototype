@@ -25,31 +25,43 @@ namespace GDGame.Factory
 
         #endregion
 
-        #region Constructors
+        #region Public Methods
 
-        public TileFactory(OurObjectManager objectManager, Dictionary<string, OurDrawnActor3D> drawnActors, ContentDictionary<Texture2D> textures)
+        public Shape CreateShape()
         {
-            this.objectManager = objectManager;
-            this.drawnActors = drawnActors;
-            this.textures = textures;
+            return new Shape("Shape", ActorType.NonPlayer, StatusType.Update,
+                new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY));
+        }
+
+        public Tile CreateTile(Vector3 position, ETileType type, Tile.StaticTileType staticTileType)
+        {
+            Tile tile = type switch
+            {
+                ETileType.Player => CreatePlayer(position),
+                ETileType.Static => CreateStatic(position, staticTileType),
+                ETileType.Attachable => CreateAttachable(position),
+                ETileType.Win => CreateTile("GoalTile", position),
+                ETileType.Enemy => CreateEnemy(position),
+                ETileType.Button => CreateButton(position),
+                ETileType.MovingPlatform => CreateMovingPlatform(position),
+                ETileType.Spike => CreateTile("SpikeTile", position),
+                ETileType.Star => CreatePickup(position),
+                ETileType.Checkpoint => CreateTile("CheckpointTile", position),
+                _ => null
+            };
+
+            return tile;
         }
 
         #endregion
 
-        #region Methods
+        #region Private Methods
 
         private Tile CreateAttachable(Vector3 position)
         {
             AttachableTile attachableTile = (AttachableTile) drawnActors["AttachableBlock"];
             attachableTile = attachableTile.Clone() as AttachableTile;
-            if (attachableTile != null)
-            {
-                attachableTile.Transform3D.Translation = position;
-                attachableTile.AddPrimitive(new Box(attachableTile.Transform3D.Translation, Matrix.Identity, attachableTile.Transform3D.Scale),
-                    new MaterialProperties(0.3f, 0.5f, 0.3f));
-                attachableTile.Enable(false, 1);
-            }
-
+            attachableTile?.InitializeCollision(position);
             objectManager.Add(attachableTile);
             return attachableTile;
         }
@@ -58,88 +70,25 @@ namespace GDGame.Factory
         {
             ActivatableTile activatable = (ActivatableTile) drawnActors["ButtonTile"];
             activatable = activatable.Clone() as ActivatableTile;
-            if (activatable != null)
-            {
-                activatable.Transform3D.Translation = position;
-                activatable.AddPrimitive(new Box(activatable.Transform3D.Translation, Matrix.Identity, activatable.Transform3D.Scale), new MaterialProperties(0.3f, 0.5f, 0.3f));
-                activatable.Enable(true, 1);
-            }
-
+            activatable?.InitializeCollision(position);
             objectManager.Add(activatable);
             return activatable;
         }
 
-        private Tile CreateCheckpoint(Vector3 position)
-        {
-            Tile checkpoint = (Tile) drawnActors["CheckpointTile"];
-            checkpoint = checkpoint.Clone() as Tile;
-            if (checkpoint != null)
-            {
-                checkpoint.Transform3D.Translation = position;
-                checkpoint.AddPrimitive(new Box(checkpoint.Transform3D.Translation, Matrix.Identity, checkpoint.Transform3D.Scale), new MaterialProperties(0.3f, 0.5f, 0.3f));
-                checkpoint.Enable(true, 1);
-            }
-
-            objectManager.Add(checkpoint);
-            return checkpoint;
-        }
-
         private Tile CreateEnemy(Vector3 position)
         {
-            EnemyTile enemy = (EnemyTile) drawnActors["EnemyTile"];
-            enemy = enemy.Clone() as EnemyTile;
-            if (enemy != null)
-            {
-                enemy.Transform3D.Translation = position;
-                enemy.AddPrimitive(new Box(enemy.Transform3D.Translation, Matrix.Identity, enemy.Transform3D.Scale), new MaterialProperties(0.3f, 0.5f, 0.3f));
-                enemy.Enable(false, 1);
-            }
-
+            PathMoveTile enemy = (PathMoveTile) drawnActors["EnemyTile"];
+            enemy = enemy.Clone() as PathMoveTile;
+            enemy?.InitializeCollision(position, 0.8f);
             objectManager.Add(enemy);
             return enemy;
-        }
-
-        private Tile CreateFallingPlatform(Vector3 position)
-        {
-            FallingTile fallingTile = (FallingTile) drawnActors["FallingTile"];
-            fallingTile = fallingTile.Clone() as FallingTile;
-            if (fallingTile != null)
-            {
-                fallingTile.Transform3D.Translation = position;
-                fallingTile.AddPrimitive(new Box(fallingTile.Transform3D.Translation, Matrix.Identity, fallingTile.Transform3D.Scale), new MaterialProperties(0.3f, 0.5f, 0.3f));
-                fallingTile.Enable(true, 1);
-            }
-
-            objectManager.Add(fallingTile);
-            return fallingTile;
-        }
-
-        private Tile CreateGoal(Vector3 position)
-        {
-            Tile goal = (Tile) drawnActors["GoalTile"];
-            goal = goal.Clone() as Tile;
-            if (goal != null)
-            {
-                goal.Transform3D.Translation = position;
-                goal.AddPrimitive(new Box(goal.Transform3D.Translation, Matrix.Identity, goal.Transform3D.Scale), new MaterialProperties(0.3f, 0.5f, 0.3f));
-                goal.Enable(true, 1);
-            }
-
-            objectManager.Add(goal);
-            return goal;
         }
 
         private Tile CreateMovingPlatform(Vector3 position)
         {
             MovingPlatformTile platform = (MovingPlatformTile) drawnActors["MovingPlatformTile"];
             platform = platform.Clone() as MovingPlatformTile;
-            if (platform != null)
-            {
-                platform.Transform3D.Translation = position;
-                platform.AddPrimitive(new Box(platform.Transform3D.Translation, Matrix.Identity, platform.Transform3D.Scale), new MaterialProperties(0.3f, 0.5f, 0.3f));
-                platform.Enable(true, 1);
-            }
-
+            platform?.InitializeCollision(position, 0.9f);
             objectManager.Add(platform);
             return platform;
         }
@@ -148,16 +97,43 @@ namespace GDGame.Factory
         {
             Tile pickupTile = (Tile) drawnActors["StarPickupTile"];
             pickupTile = pickupTile.Clone() as Tile;
+            pickupTile?.InitializeCollision(position, 0.9f);
             if (pickupTile != null)
             {
-                pickupTile.Transform3D.Translation = position;
-                pickupTile.AddPrimitive(new Box(pickupTile.Transform3D.Translation, Matrix.Identity, pickupTile.Transform3D.Scale), new MaterialProperties(0.3f, 0.5f, 0.3f));
-                pickupTile.Enable(true, 1);
-                pickupTile.ScaleTo(true,new Vector3(-0.2f,-0.2f,-0.2f),(int) (Constants.GameConstants.MOVEMENT_COOLDOWN*1000),Smoother.SmoothingMethod.Accelerate,LoopMethod.PlayOnce);
-                pickupTile.ScaleTo(true,new Vector3(-0.3f,-0.3f,-0.3f),(int) (Constants.GameConstants.MOVEMENT_COOLDOWN*1000)*10,Smoother.SmoothingMethod.Decelerate,LoopMethod.PingPongLoop);
-                pickupTile.MoveTo(true,new Vector3(0,0.5f,0),(int) (Constants.GameConstants.MOVEMENT_COOLDOWN*1000)*5,Smoother.SmoothingMethod.Smooth,LoopMethod.PingPongLoop);
-                pickupTile.RotateTo(true, new Vector3(0,0,40), (int) (Constants.GameConstants.MOVEMENT_COOLDOWN*1000)*10,Smoother.SmoothingMethod.Smooth,LoopMethod.PingPongLoop);
-                pickupTile.RotateTo(true,new Vector3(0,360,0),(int) (Constants.GameConstants.MOVEMENT_COOLDOWN*1000)*30,Smoother.SmoothingMethod.Smooth,LoopMethod.PingPongLoop);
+                pickupTile.ScaleTo(new AnimationEventData()
+                {
+                    isRelative = true, destination = new Vector3(-0.2f, -0.2f, -0.2f),
+                    maxTime = (int) (Constants.GameConstants.MovementCooldown * 1000),
+                    smoothing = Smoother.SmoothingMethod.Accelerate
+                });
+
+                pickupTile.ScaleTo(new AnimationEventData()
+                {
+                    isRelative = true, destination = new Vector3(-0.3f, -0.3f, -0.3f),
+                    maxTime = (int) (Constants.GameConstants.MovementCooldown * 1000) * 10,
+                    smoothing = Smoother.SmoothingMethod.Accelerate, loopMethod = LoopMethod.PingPongLoop
+                });
+
+                pickupTile.MoveTo(new AnimationEventData()
+                {
+                    isRelative = true, destination = new Vector3(0, 0.5f, 0),
+                    maxTime = (int) (Constants.GameConstants.MovementCooldown * 1000) * 5,
+                    smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PingPongLoop
+                });
+
+                pickupTile.RotateTo(new AnimationEventData()
+                {
+                    isRelative = true, destination = new Vector3(0, 0, 40),
+                    maxTime = (int) (Constants.GameConstants.MovementCooldown * 1000) * 10,
+                    smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PingPongLoop
+                });
+                
+                pickupTile.RotateTo(new AnimationEventData()
+                {
+                    isRelative = true, destination = new Vector3(0, 360, 0),
+                    maxTime = (int) (Constants.GameConstants.MovementCooldown * 1000) * 30,
+                    smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PingPongLoop
+                });
             }
 
             objectManager.Add(pickupTile);
@@ -168,20 +144,9 @@ namespace GDGame.Factory
         {
             PlayerTile playerTile = (PlayerTile) drawnActors["PlayerBlock"];
             playerTile = playerTile.Clone() as PlayerTile;
-            if (playerTile != null)
-            {
-                playerTile.Transform3D.Translation = position;
-                playerTile.AddPrimitive(new Box(playerTile.Transform3D.Translation, Matrix.Identity, playerTile.Transform3D.Scale), new MaterialProperties(0.3f, 0.5f, 0.3f));
-                playerTile.Enable(false, 1);
-            }
-
+            playerTile?.InitializeCollision(position);
             objectManager.Add(playerTile);
             return playerTile;
-        }
-
-        public Shape CreateShape()
-        {
-            return new Shape("Shape", ActorType.NonPlayer, StatusType.Update, new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY));
         }
 
         private Tile CreateSpike(Vector3 position)
@@ -191,15 +156,24 @@ namespace GDGame.Factory
             if (spikeTile != null)
             {
                 spikeTile.Transform3D.Translation = position;
-                spikeTile.AddPrimitive(new Box(spikeTile.Transform3D.Translation, Matrix.Identity, spikeTile.Transform3D.Scale), new MaterialProperties(0.3f, 0.5f, 0.3f));
+                spikeTile.AddPrimitive(
+                    new Box(spikeTile.Transform3D.Translation, Matrix.Identity, spikeTile.Transform3D.Scale),
+                    new MaterialProperties(0.3f, 0.5f, 0.3f));
                 spikeTile.Enable(true, 1);
+
+                CoffeeEffectParameters effectParameters = spikeTile.EffectParameters as CoffeeEffectParameters;
+
+                if (effectParameters != null)
+                {
+                    effectParameters.Phase += (MathHelperFunctions.Rnd.Next() % 100) / 100.0f;
+                }
             }
 
             objectManager.Add(spikeTile);
             return spikeTile;
         }
 
-        private Tile CreateStatic(Vector3 position, Tile.EStaticTileType tileType)
+        private Tile CreateStatic(Vector3 position, Tile.StaticTileType tileType)
         {
             Tile staticTile = null;
 
@@ -213,16 +187,16 @@ namespace GDGame.Factory
 
             switch (tileType)
             {
-                case Tile.EStaticTileType.Chocolate:
+                case Tile.StaticTileType.Chocolate:
                     texStringType = "Chocolate";
                     break;
-                case Tile.EStaticTileType.WhiteChocolate:
+                case Tile.StaticTileType.WhiteChocolate:
                     texStringType = "WhiteChocolate";
                     break;
-                case Tile.EStaticTileType.DarkChocolate:
+                case Tile.StaticTileType.DarkChocolate:
                     texStringType = "DarkChocolate";
                     break;
-                case Tile.EStaticTileType.Plates:
+                case Tile.StaticTileType.Plates:
                     staticTile = ((Tile) drawnActors["PlateStackTile"]).Clone() as Tile;
                     break;
             }
@@ -237,43 +211,28 @@ namespace GDGame.Factory
                 }
             }
 
-            if (staticTile != null)
-            {
-                staticTile.Transform3D.Translation = position;
-                if (tileType != Tile.EStaticTileType.WhiteChocolate)
-                {
-                    staticTile.AddPrimitive(
-                        //*0.99f Saves you around 200 FPS
-                        new Box(staticTile.Transform3D.Translation, Matrix.Identity, staticTile.Transform3D.Scale*0.99f),
-                        new MaterialProperties(0.3f, 0.5f, 0.3f));
-                    staticTile.Enable(true, 1);
-                }
-            }
-
+            staticTile?.InitializeCollision(position, 0.99f);
             objectManager.Add(staticTile);
             return staticTile;
         }
 
-        public Tile CreateTile(Vector3 position, ETileType type, Tile.EStaticTileType staticTileType)
+        private Tile CreateTile(string actor, Vector3 position)
         {
-            Tile tile = type switch
-            {
-                ETileType.PlayerStart => CreatePlayer(position),
-                ETileType.Static => CreateStatic(position, staticTileType),
-                ETileType.Attachable => CreateAttachable(position),
-                ETileType.Win => CreateGoal(position),
-                ETileType.Enemy => CreateEnemy(position),
-                ETileType.Button => CreateButton(position),
-                ETileType.MovingPlatform => CreateMovingPlatform(position),
-                ETileType.Spike => CreateSpike(position),
-                ETileType.Star => CreatePickup(position),
-                ETileType.Checkpoint => CreateCheckpoint(position),
-                _ => null
-            };
-
+            Tile tile = (Tile) drawnActors[actor];
+            tile = tile.Clone() as Tile;
+            tile?.InitializeCollision(position, 0.9f);
+            objectManager.Add(tile);
             return tile;
         }
 
         #endregion
+
+        public TileFactory(OurObjectManager objectManager, Dictionary<string, OurDrawnActor3D> drawnActors,
+            ContentDictionary<Texture2D> textures)
+        {
+            this.objectManager = objectManager;
+            this.drawnActors = drawnActors;
+            this.textures = textures;
+        }
     }
 }

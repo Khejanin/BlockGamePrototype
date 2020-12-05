@@ -12,10 +12,10 @@ namespace GDGame.EventSystem
 
     public class TileEventInfo : EventInfo
     {
-        #region Public variables
+        #region Properties, Indexers
 
-        public ETileType targetedTileType;
-        public TileEventType type;
+        public string TileId { get; set; }
+        public TileEventType Type { get; set; }
 
         #endregion
     }
@@ -44,7 +44,6 @@ namespace GDGame.EventSystem
 
     public class MovingTilesEventInfo : EventInfo
     {
-        
     }
 
     public class GameStateMessageEventInfo : EventInfo
@@ -93,9 +92,6 @@ namespace GDGame.EventSystem
         #region Public variables
 
         public Vector3 direction;
-        public Action<Raycaster.HitResult> onCollideCallback;
-        public Action onMoveEnd;
-        public MovableTile tile;
         public MovementType type;
 
         #endregion

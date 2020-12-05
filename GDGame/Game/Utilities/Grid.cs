@@ -81,7 +81,7 @@ namespace GDGame.Utilities
                         if (data.gridValues[x, y, z] != ETileType.None)
                         {
                             //Super duper algorithm to determine what the current tile looks like!
-                            Tile.EStaticTileType staticTileType = Tile.EStaticTileType.DarkChocolate;
+                            Tile.StaticTileType staticTileType = Tile.StaticTileType.DarkChocolate;
                             int count = 0;
 
                             for (int i = -1; i <= 1; i += 2)
@@ -95,8 +95,8 @@ namespace GDGame.Utilities
                             }
 
 
-                            if (count > 4) staticTileType = Tile.EStaticTileType.WhiteChocolate;
-                            else if (count > 3) staticTileType = Tile.EStaticTileType.Chocolate;
+                            if (count > 4) staticTileType = Tile.StaticTileType.WhiteChocolate;
+                            else if (count > 3) staticTileType = Tile.StaticTileType.Chocolate;
 
                             Tile tile = tileFactory.CreateTile(pos + new Vector3(0, 0, data.gridSize.Z - 1), data.gridValues[x, y, z], staticTileType);
                             tile?.InitializeTile();
@@ -156,11 +156,12 @@ namespace GDGame.Utilities
 
                 foreach (Vector3 pathPoint in data.movingTilePaths[pathTileKey].Select(tilePath => new Vector3(tilePath.X, tilePath.Y, data.gridSize.Z - 1 - tilePath.Z)))
                 {
-                    moveTile?.path.Add(pathPoint);
+                    moveTile?.Path.Add(pathPoint);
                 }
 
-                if (moveTile?.path.Count > 0)
-                    moveTile.currentPositionIndex = 0;
+                if (moveTile?.Path.Count > 0)
+                {
+                }
             }
         }
 

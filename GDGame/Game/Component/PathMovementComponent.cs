@@ -4,6 +4,7 @@ using GDGame.Actors;
 using GDGame.Controllers;
 using GDGame.EventSystem;
 using GDGame.Interfaces;
+using GDGame.Managers;
 using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
@@ -25,7 +26,7 @@ namespace GDGame.Component
             get
             {
                 if(pathMoveTileParent == null) pathMoveTileParent = parent as PathMoveTile;
-                return pathMoveTileParent.path;
+                return pathMoveTileParent.Path;
             }
         }
 
@@ -34,7 +35,7 @@ namespace GDGame.Component
             float timePercent, Smoother.SmoothingMethod smoothingMethod) : base(id, controllerType, activationType)
         {
             this.timePercent = timePercent;
-            movementTime = (int) (Constants.GameConstants.MOVEMENT_COOLDOWN * timePercent * 1000);
+            movementTime = (int) (Constants.GameConstants.MovementCooldown * timePercent * 1000);
             this.smoothingMethod = smoothingMethod;
         }
 
@@ -70,7 +71,14 @@ namespace GDGame.Component
         protected virtual void MoveToNextPoint()
         {
             Vector3 next = NextPathPoint();
-            parent.MoveTo(false,next, movementTime, smoothingMethod,LoopMethod.PlayOnce,parent.Body);
+            parent.MoveTo(new AnimationEventData()
+            {
+                isRelative = false, destination = next,
+                maxTime = movementTime,
+                smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PlayOnce,
+                body = parent.Body
+            });
+
             //@TODO Fix the look rotation
             /*
             Vector3 newLook = parent.Transform3D.Translation - next;
