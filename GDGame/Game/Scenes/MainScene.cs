@@ -432,12 +432,44 @@ namespace GDGame.Scenes
             coffeeEffect.CoffeeColor = new Color(coffeeEffect.CoffeeColor * 0.8f,255);
             Tile spike = new Tile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 coffeeEffect, Main.Models["Puddle"], false, ETileType.Spike);
-            spike.ControllerList.Add(new HostileColliderHandler("HCH", ControllerType.Collider));
+            spike.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, (skin0, skin1) =>
+            {
+                if (skin1.Owner.ExternalData is Tile collide)
+                {
+                    switch (collide.TileType)
+                    {
+                        case ETileType.Attachable:
+                            EventManager.FireEvent(new TileEventInfo
+                                {Type = TileEventType.AttachableKill, TileId = collide.ID});
+                            break;
+                        case ETileType.Player:
+                            if(((PlayerTile) collide).IsAlive)
+                                EventManager.FireEvent(new TileEventInfo
+                                    {Type = TileEventType.PlayerKill, TileId = collide.ID});
+                            break;
+                    }
+                }
+                return true;
+            }));
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Mug"], Color.White, 1);
             Tile starPickup = new Tile("Star", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, Main.Models["Mug"], false, ETileType.Star);
             starPickup.ControllerList.Add(new PlayerDeathComponent("PDC", ControllerType.Event));
+            starPickup.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, (skin0, skin1) =>
+            {
+                if (skin1.Owner.ExternalData is Tile collide)
+                {
+                    switch (collide.TileType)
+                    {
+                        case ETileType.Player:
+                            EventManager.FireEvent(new PlayerEventInfo { type = PlayerEventType.PickupMug, tile = skin0.Owner.ExternalData as Tile});
+                            break;
+                    }
+                }
+
+                return true;
+            }));
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["sugarbox"], Color.White, 1);
             Tile goal = new Tile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
@@ -501,7 +533,26 @@ namespace GDGame.Scenes
             coffeeEffect = new CoffeeEffectParameters(Main.Effects["Coffee"], Main.Textures["DropUV"], Main.Textures["CoffeeFlow"], coffeeColor);
             PathMoveTile enemy = new PathMoveTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update, transform3D, coffeeEffect, Main.Models["Drop"], false, ETileType.Enemy);
             enemy.ControllerList.Add(new EnemyMovementComponent("emc", ControllerType.Movement, ActivationType.AlwaysOn, 0.5f, Smoother.SmoothingMethod.Smooth));
-            enemy.ControllerList.Add(new HostileColliderHandler("HCH", ControllerType.Collider));
+            enemy.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, (skin0, skin1) =>
+                {
+                    if (skin1.Owner.ExternalData is Tile collide)
+                    {
+                        switch (collide.TileType)
+                        {
+                            case ETileType.Attachable:
+                                EventManager.FireEvent(new TileEventInfo
+                                    {Type = TileEventType.AttachableKill, TileId = collide.ID});
+                                break;
+                            case ETileType.Player:
+                                if(((PlayerTile) collide).IsAlive)
+                                    EventManager.FireEvent(new TileEventInfo
+                                        {Type = TileEventType.PlayerKill, TileId = collide.ID});
+                                break;
+                        }
+                    }
+
+                    return true;
+                }));
 
             effectParameters = new BasicEffectParameters(Main.ModelEffect, Main.Textures["Finish"], Color.White, 1);
             MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Platform,

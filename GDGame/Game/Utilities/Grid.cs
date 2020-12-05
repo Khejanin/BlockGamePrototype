@@ -122,6 +122,7 @@ namespace GDGame.Utilities
             CreateShapes(data, _grid);
             SetPaths(data, _grid);
             SetActivatorIds(data, _grid);
+            SetCollectibleIds(data, _grid);
 
             return data;
         }
@@ -144,6 +145,12 @@ namespace GDGame.Utilities
                 //button.Targets = targets;
 
                 grid[(int) targetKey.X, (int) targetKey.Y, (int) data.gridSize.Z - 1 - (int) targetKey.Z].activatorId = data.activatorTargets[targetKey];
+        }
+
+        private void SetCollectibleIds(LevelData data, Tile[,,] grid)
+        {
+            foreach (Vector3 key in data.collectibles.Keys)
+                grid[(int) key.X, (int) key.Y, (int) data.gridSize.Z - 1 - (int) key.Z].ID = data.collectibles[key];
         }
 
         private void SetPaths(LevelData data, Tile[,,] grid)

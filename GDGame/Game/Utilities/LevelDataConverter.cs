@@ -25,6 +25,7 @@ namespace GDGame.Utilities
         public Dictionary<double, List<Vector3>> shapes;
         public Dictionary<Vector3, List<Vector3>> movingTilePaths;
         public Dictionary<Vector3, int> activatorTargets;
+        public Dictionary<Vector3, string> collectibles;
     }
 
     public static class LevelDataConverter
@@ -55,7 +56,8 @@ namespace GDGame.Utilities
                 coffeeInfo = new List<CoffeeInfo>(),
                 shapes = new Dictionary<double, List<Vector3>>(),
                 movingTilePaths = new Dictionary<Vector3, List<Vector3>>(),
-                activatorTargets = new Dictionary<Vector3, int>()
+                activatorTargets = new Dictionary<Vector3, int>(),
+                collectibles = new Dictionary<Vector3, string>()
             };
 
             //Set Camera Curve points
@@ -99,6 +101,11 @@ namespace GDGame.Utilities
                         {
                             JSONObject obj = jsonZ[z].Obj;
                             data.gridValues[x, y, z] = (ETileType) obj.GetNumber("TileType");
+
+                            //check if collectible and store collectibleId to data
+                            string collectibleId = obj.GetString("CollectibleID");
+                            if(collectibleId != string.Empty)
+                                data.collectibles.Add(new Vector3(x, y, z), collectibleId);
 
                             //check if part of shape and store it separately
                             double shapeId = obj.GetNumber("ShapeId");
