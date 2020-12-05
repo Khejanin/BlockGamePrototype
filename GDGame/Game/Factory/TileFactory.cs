@@ -8,6 +8,8 @@ using GDGame.Utilities;
 using GDLibrary.Containers;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
+using JigLibX.Collision;
+using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
