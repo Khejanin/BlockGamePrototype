@@ -696,6 +696,7 @@ namespace GDGame.Scenes
 
             Main.Textures.Load("Assets/Textures/Base/WhiteSquare");
             Main.Textures.Load("Assets/Textures/UI/TopBar");
+            Main.Textures.Load("Assets/Textures/UI/Mug-Collected");
 
 
             Main.Textures.Load("Assets/Textures/Menu/menubaseres", "options");

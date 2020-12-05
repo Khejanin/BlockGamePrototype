@@ -21,14 +21,14 @@ namespace GDGame.Component
                 {
                     switch (collide.TileType)
                     {
-                            
                         case ETileType.Attachable:
                             EventManager.FireEvent(new TileEventInfo
                                 {Type = TileEventType.AttachableKill, TileId = collide.ID});
                             break;
                         case ETileType.Player:
-                            EventManager.FireEvent(new TileEventInfo
-                                {Type = TileEventType.PlayerKill, TileId = collide.ID});
+                            if(((PlayerTile) collide).IsAlive)
+                                EventManager.FireEvent(new TileEventInfo
+                                    {Type = TileEventType.PlayerKill, TileId = collide.ID});
                             break;
                     }
                 }

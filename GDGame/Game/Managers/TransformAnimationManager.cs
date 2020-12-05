@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using GDGame.EventSystem;
 using GDGame.Utilities;
@@ -9,7 +10,21 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Managers
 {
-    public abstract class AnimationInformation : EventInfo
+
+    public struct AnimationEventData
+    {
+        public Actor3D actor;
+        public int maxTime;
+        public Vector3 destination;
+        public LoopMethod loopMethod;
+        public Smoother.SmoothingMethod smoothing;
+        public bool isRelative;
+        public Body body;
+        public Action callback;
+        public bool resetAferDone;
+    }
+    
+    public abstract class AnimationEvent : EventInfo
     {
         protected Actor3D actor;
         private int currentTime;
@@ -23,18 +38,20 @@ namespace GDGame.Managers
         protected Process process;
         protected bool isRelative;
         protected Body body;
+        protected Action callback;
+        protected bool resetAfterDone;
 
-        protected AnimationInformation(Actor3D actor,bool isRelative,
-            Vector3 destination, int maxTime, Smoother.SmoothingMethod smoothingMethod,
-            LoopMethod loopMethod = LoopMethod.PlayOnce, Body body = null)
+        protected AnimationEvent(AnimationEventData animationEventData)
         {
-            this.actor = actor;
-            this.destination = destination;
-            this.maxTime = maxTime;
-            smoothing = smoothingMethod;
-            this.loopMethod = loopMethod;
-            this.isRelative = isRelative;
-            this.body = body;
+            this.actor = animationEventData.actor;
+            this.destination = animationEventData.destination;
+            this.maxTime = animationEventData.maxTime;
+            smoothing = animationEventData.smoothing;
+            this.loopMethod = animationEventData.loopMethod;
+            this.isRelative = animationEventData.isRelative;
+            this.body = animationEventData.body;
+            this.callback = animationEventData.callback;
+            this.resetAfterDone = animationEventData.resetAferDone;
         }
 
         public bool Tick(GameTime gameTime)
@@ -55,6 +72,13 @@ namespace GDGame.Managers
                 lastPoint = currentPoint;
 
                 currentTime += gameTime.ElapsedGameTime.Milliseconds * step;
+
+                if (done)
+                {
+                    if (resetAfterDone) 
+                        process(target => { return start; });
+                    callback?.Invoke();
+                }
 
                 return done;
             }
@@ -87,25 +111,20 @@ namespace GDGame.Managers
         }
     }
 
-    public class AnimateCustomInformation : AnimationInformation
+    public class AnimateCustomEvent : AnimationEvent
     {
-        public AnimateCustomInformation(Actor3D actor,bool isRelative, Process process, Vector3 destination, int maxTime,
-            Smoother.SmoothingMethod smoothingMethod, LoopMethod loopMethod = LoopMethod.PlayOnce, Body body = null) :
-            base(actor,isRelative, destination, maxTime, smoothingMethod, loopMethod, body)
+        public AnimateCustomEvent(AnimationEventData animationEventData) : base(animationEventData)
         {
             this.process = process;
         }
         
     }
 
-    public class MovementInformation : AnimationInformation
+    public class MovementEvent : AnimationEvent
     {
 
-        public MovementInformation(Actor3D actor, Vector3 destination, int maxTime, bool isRelative,
-            Smoother.SmoothingMethod smoothingMethod, LoopMethod loopMethod = LoopMethod.PlayOnce, Body body = null) :
-            base(actor,isRelative, destination, maxTime, smoothingMethod, loopMethod, body)
+        public MovementEvent(AnimationEventData animationEventData) : base(animationEventData)
         {
-            this.isRelative = isRelative;
             start = this.actor.Transform3D.Translation;
             process = ApplyAnimation;
         }
@@ -117,11 +136,9 @@ namespace GDGame.Managers
         }
     }
 
-    public class ScaleInformation : AnimationInformation
+    public class ScaleEvent : AnimationEvent
     {
-        public ScaleInformation(Actor3D actor,bool isRelative, Vector3 destination, int maxTime,
-            Smoother.SmoothingMethod smoothingMethod, LoopMethod loopMethod = LoopMethod.PlayOnce, Body body = null) :
-            base(actor,isRelative, destination, maxTime, smoothingMethod, loopMethod, body)
+        public ScaleEvent(AnimationEventData animationEventData) : base(animationEventData)
         {
             start = this.actor.Transform3D.Scale;
             process = ApplyAnimation;
@@ -133,12 +150,10 @@ namespace GDGame.Managers
         }
     }
 
-    public class RotationInformation : AnimationInformation
+    public class RotationEvent : AnimationEvent
     {
         
-        public RotationInformation(Actor3D actor,bool isRelative, Vector3 destination, int maxTime,
-            Smoother.SmoothingMethod smoothingMethod, LoopMethod loopMethod = LoopMethod.PlayOnce, Body body = null) :
-            base(actor, isRelative,destination, maxTime, smoothingMethod, loopMethod, body)
+        public RotationEvent(AnimationEventData animationEventData) : base(animationEventData)
         {
             start = actor.Transform3D.RotationInDegrees;
             process = ApplyAnimation;
@@ -152,19 +167,19 @@ namespace GDGame.Managers
 
     public class TransformAnimationManager : PausableGameComponent
     {
-        private List<AnimationInformation> movementInformationList = new List<AnimationInformation>();
+        private List<AnimationEvent> movementInformationList = new List<AnimationEvent>();
 
         public TransformAnimationManager(Microsoft.Xna.Framework.Game game, StatusType statusType) : base(game,
             statusType)
         {
-            EventManager.RegisterListener<MovementInformation>(HandleAnimationInformationEvent);
-            EventManager.RegisterListener<ScaleInformation>(HandleAnimationInformationEvent);
-            EventManager.RegisterListener<RotationInformation>(HandleAnimationInformationEvent);
+            EventManager.RegisterListener<MovementEvent>(HandleAnimationInformationEvent);
+            EventManager.RegisterListener<ScaleEvent>(HandleAnimationInformationEvent);
+            EventManager.RegisterListener<RotationEvent>(HandleAnimationInformationEvent);
         }
 
-        private void HandleAnimationInformationEvent(AnimationInformation information)
+        private void HandleAnimationInformationEvent(AnimationEvent @event)
         {
-            movementInformationList.Add(information);
+            movementInformationList.Add(@event);
         }
 
         protected override void ApplyUpdate(GameTime gameTime)

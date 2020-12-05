@@ -6,11 +6,11 @@ namespace GDGame.Utilities
     {
         public enum SmoothingMethod
         {
-            Linear,
             Smooth,
             Accelerate,
             Decelerate,
-            Back
+            Back,
+            Linear
         }
 
         //This is a bit of a replacement of the curves, small but powerful and quite simple

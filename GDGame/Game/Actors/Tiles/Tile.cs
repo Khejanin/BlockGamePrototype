@@ -31,6 +31,8 @@ namespace GDGame.Actors
 
         #region Public variables
 
+        public bool canDie;
+
         public int activatorId = -1;
 
         #endregion

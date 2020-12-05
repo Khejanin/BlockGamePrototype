@@ -165,12 +165,13 @@ namespace GDGame
             RenderManager = new OurRenderManager(this, StatusType.Drawn, ScreenLayoutType.Single, ObjectManager,
                 CameraManager);
             Components.Add(RenderManager);
-
-            //Movement
-            TransformAnimationManager transformAnimationManager =
-                new TransformAnimationManager(this, StatusType.Update);
-            Components.Add(transformAnimationManager);
-
+            
+            //Animation
+            Components.Add(new TransformAnimationManager(this, StatusType.Update));
+            
+            //Timing
+            Components.Add(new TimeManager(this,StatusType.Update));
+            
             //UI
             UiManager = new OurUiManager(this, StatusType.Off, spriteBatch, 10);
             Components.Add(UiManager);

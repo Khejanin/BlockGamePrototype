@@ -22,8 +22,6 @@ namespace GDGame.Component
             parent ??= actor as Tile;
         }
 
-        
-        
         public new object Clone()
         {
             PlayerDeathComponent playerDeathComponent = new PlayerDeathComponent(ID, ControllerType);

@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Game.Parameters.Effect;
 using GDGame.Managers;
 using GDGame.Tiles;
+using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
@@ -60,7 +64,17 @@ namespace GDGame.Actors
 
         public override void Die()
         {
-            RespawnAtLastCheckpoint();
+            IsAlive = false;
+            this.ScaleTo(new AnimationEventData()
+            {
+                isRelative = false, destination = Vector3.Zero,
+                maxTime = 1000,
+                smoothing = Smoother.SmoothingMethod.Accelerate, loopMethod = LoopMethod.PlayOnce,
+                callback = RespawnAtLastCheckpoint, resetAferDone = true
+            });
+
+            this.RotateTo(new AnimationEventData()
+                {isRelative = true, destination = Vector3.Up * 360, maxTime = 1000, resetAferDone = true});
         }
 
         public override void OnMoveEnd()
@@ -158,7 +172,7 @@ namespace GDGame.Actors
         {
             SetTranslation(lastCheckpoint);
             Transform3D.RotationInDegrees = Vector3.Zero;
-            IsAlive = false;
+            IsAlive = true;
         }
 
         private void SetCheckpoint(Vector3? position)
@@ -232,9 +246,9 @@ namespace GDGame.Actors
         {
             switch (info.type)
             {
-                case PlayerEventType.Die:
+                /*case PlayerEventType.Die:
                     RespawnAtLastCheckpoint();
-                    break;
+                    break;*/
                 case PlayerEventType.SetCheckpoint:
                     SetCheckpoint(info.position);
                     break;

@@ -74,6 +74,46 @@ namespace GDGame.Managers
                 uiTextureObject.Transform2D.Translation = Scene.Main.ScreenCentre;
                 Scene.Main.UiManager.Add(uiTextureObject);
             }
+            
+            uiTextureObject = ((UITextureObject) Scene.Main.UiArchetypes["texture"]).Clone() as UITextureObject;
+            if (uiTextureObject != null)
+            {
+                Texture2D texture = Scene.Main.Textures["Mug-Collected"];
+                uiTextureObject.ID = "TopBar";
+                uiTextureObject.Texture = texture;
+                Vector2 offset = new Vector2(332 ,130);
+                uiTextureObject.Transform2D.Origin = new Vector2(0,  0);
+                uiTextureObject.SourceRectangle = new Rectangle(0,0, texture.Width, texture.Height);
+                uiTextureObject.Transform2D.Translation = offset;
+                Scene.Main.UiManager.Add(uiTextureObject);
+            }
+            
+            
+            uiTextureObject = ((UITextureObject) Scene.Main.UiArchetypes["texture"]).Clone() as UITextureObject;
+            if (uiTextureObject != null)
+            {
+                Texture2D texture = Scene.Main.Textures["Mug-Collected"];
+                uiTextureObject.ID = "TopBar";
+                uiTextureObject.Texture = texture;
+                Vector2 offset = new Vector2(508 ,130);
+                uiTextureObject.Transform2D.Origin = new Vector2(0,  0);
+                uiTextureObject.SourceRectangle = new Rectangle(0,0, texture.Width, texture.Height);
+                uiTextureObject.Transform2D.Translation = offset;
+                Scene.Main.UiManager.Add(uiTextureObject);
+            }
+            
+            uiTextureObject = ((UITextureObject) Scene.Main.UiArchetypes["texture"]).Clone() as UITextureObject;
+            if (uiTextureObject != null)
+            {
+                Texture2D texture = Scene.Main.Textures["Mug-Collected"];
+                uiTextureObject.ID = "TopBar";
+                uiTextureObject.Texture = texture;
+                Vector2 offset = new Vector2(332 + (508-332) *2 ,130);
+                uiTextureObject.Transform2D.Origin = new Vector2(0,  0);
+                uiTextureObject.SourceRectangle = new Rectangle(0,0, texture.Width, texture.Height);
+                uiTextureObject.Transform2D.Translation = offset;
+                Scene.Main.UiManager.Add(uiTextureObject);
+            }
 
 
             if (((UITextObject) Scene.Main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)

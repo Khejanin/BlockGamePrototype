@@ -64,7 +64,6 @@ namespace GDGame.Controllers
             {
                 actor.IsAlive = true;
             }
-            
         }
 
         private void HandlePlayerMovement(PlayerTile playerTile)
