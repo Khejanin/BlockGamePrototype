@@ -10,6 +10,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
+    /// <summary>
+    /// The Falling tile is a tile which should only fall.
+    /// </summary>
     internal class FallingTile : PathMoveTile, IActivatable
     {
         #region Private variables

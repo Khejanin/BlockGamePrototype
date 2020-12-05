@@ -25,7 +25,7 @@ namespace GDGame.Component
             get
             {
                 if(pathMoveTileParent == null) pathMoveTileParent = parent as PathMoveTile;
-                return pathMoveTileParent.path;
+                return pathMoveTileParent.Path;
             }
         }
 

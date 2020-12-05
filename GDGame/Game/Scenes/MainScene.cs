@@ -497,7 +497,7 @@ namespace GDGame.Scenes
 
             coffeeColor = new Color(coffeeColor, 255);
             coffeeEffect = new CoffeeEffectParameters(Main.Effects["Coffee"], Main.Textures["DropUV"], Main.Textures["CoffeeFlow"], coffeeColor);
-            EnemyTile enemy = new EnemyTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update, transform3D, coffeeEffect, Main.Models["Drop"], false, ETileType.Enemy);
+            PathMoveTile enemy = new PathMoveTile("Enemy", ActorType.NonPlayer, StatusType.Drawn | StatusType.Update, transform3D, coffeeEffect, Main.Models["Drop"], false, ETileType.Enemy);
             enemy.ControllerList.Add(new EnemyMovementComponent("emc", ControllerType.Movement, ActivationType.AlwaysOn, 0.5f, Smoother.SmoothingMethod.Smooth));
             enemy.ControllerList.Add(new HostileColliderHandler("HCH", ControllerType.Collider));
 

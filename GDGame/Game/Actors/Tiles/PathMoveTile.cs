@@ -8,52 +8,35 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
-    public abstract class PathMoveTile : MovableTile
+    /// <summary>
+    ///     The PathMoveTile is an extension from the MovableTile. A PathMoveTile has a predefined path on which it moves.
+    /// </summary>
+    public class PathMoveTile : MovableTile
     {
-        #region Public variables
-
-        public int currentPositionIndex;
-
-        public List<Vector3> path;
-
-        #endregion
-
-        #region Private variables
-
-        protected int pathDir = 1;
-
-        #endregion
-
         #region Constructors
 
-        protected PathMoveTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model,
-            bool isBlocking,ETileType tileType) : base(id, actorType,
-            statusType, transform, effectParameters, model,isBlocking, tileType)
+        public PathMoveTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
+            OurEffectParameters effectParameters, Model model, bool isBlocking, ETileType tileType) : base(id,
+            actorType, statusType, transform, effectParameters, model, isBlocking, tileType)
         {
-            path = new List<Vector3>();
+            Path = new List<Vector3>();
         }
 
         #endregion
 
-        #region Methods
+        #region Properties, Indexers
 
-        protected Vector3 NextPathPoint()
-        {
-            if (currentPositionIndex + pathDir == path.Count || currentPositionIndex + pathDir == -1)
-                pathDir *= -1;
-
-            return path[currentPositionIndex + pathDir];
-        }
+        public List<Vector3> Path { get; }
 
         #endregion
 
-        #region Events
-
-        protected virtual void OnMoveEnd()
+        public new object Clone()
         {
-            currentPositionIndex += pathDir;
+            PathMoveTile pathMoveTile = new PathMoveTile(ID, ActorType, StatusType, Transform3D.Clone() as Transform3D,
+                EffectParameters.Clone() as OurEffectParameters, Model, IsBlocking, TileType);
+            
+            pathMoveTile.ControllerList.AddRange(GetControllerListClone());
+            return pathMoveTile;
         }
-
-        #endregion
     }
 }

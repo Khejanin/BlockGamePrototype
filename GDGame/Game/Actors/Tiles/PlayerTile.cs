@@ -13,6 +13,9 @@ using static GDGame.Utilities.Raycaster;
 
 namespace GDGame.Actors
 {
+    /// <summary>
+    /// This Tile represents the player
+    /// </summary>
     public class PlayerTile : AttachableTile
     {
         #region Private variables

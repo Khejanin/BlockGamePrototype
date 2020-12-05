@@ -89,19 +89,21 @@ namespace GDGame.Component
                 }
 
                 if (currentMovementTime <= 0)
-                    trans = new Vector3((float) Math.Round(trans.X), (float) Math.Round(trans.Y), (float) Math.Round(trans.Z));
+                    trans = new Vector3((float) Math.Round(trans.X), (float) Math.Round(trans.Y),
+                        (float) Math.Round(trans.Z));
 
                 Tile.SetTranslation(trans);
                 currentMovementTime -= (int) gameTime.ElapsedGameTime.TotalMilliseconds;
                 if (currentMovementTime <= 0) Tile.IsDirty = false;
             }
+
             if (isDirty && !Tile.IsMoving && !Tile.IsAttached && !Tile.Body.ApplyGravity)
             {
                 Tile.Body.ApplyGravity = true;
                 Tile.Body.Immovable = false;
                 isDirty = false;
             }
-            if (!Tile.IsMoving && !Tile.IsDirty)
+            else if (!Tile.IsMoving && !Tile.IsDirty)
             {
                 Tile.Body.Velocity = Vector3.UnitY * Tile.Body.Velocity.Y;
                 Tile.Body.Torque = Vector3.UnitY * Tile.Body.Torque.Y;
@@ -109,7 +111,7 @@ namespace GDGame.Component
 
                 Tile.Transform3D.Translation = Tile.Body.Position;
             }
-            if (!Tile.IsMoving)
+            else if (!Tile.IsMoving)
             {
                 Tile.SetTranslation(Tile.Transform3D.Translation);
             }

@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
+    /// <summary>
+    /// The Movable Tile is a Tile which moves
+    /// </summary>
     public class MovableTile : Tile
     {
         #region Constructors

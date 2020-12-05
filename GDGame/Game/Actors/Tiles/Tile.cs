@@ -5,16 +5,21 @@ using GDGame.Game.Parameters.Effect;
 using GDGame.Tiles;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
+using JigLibX.Collision;
+using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
+    /// <summary>
+    /// Tile is the BasicTile from which other Tiles inherit
+    /// </summary>
     public class Tile : OurCollidableObject
     {
         #region Enums
 
-        public enum EStaticTileType
+        public enum StaticTileType
         {
             Chocolate,
             DarkChocolate,
@@ -38,10 +43,9 @@ namespace GDGame.Actors
 
         #region Constructors
 
-        public Tile(string id, ActorType actorType, StatusType statusType,
-            Transform3D transform, OurEffectParameters effectParameters, Model model, bool isBlocking,
-            ETileType tileType)
-            : base(id, actorType, statusType, transform, effectParameters, model, isBlocking)
+        public Tile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
+            OurEffectParameters effectParameters, Model model, bool isBlocking, ETileType tileType) : base(id,
+            actorType, statusType, transform, effectParameters, model, isBlocking)
         {
             TileType = tileType;
         }
@@ -49,6 +53,8 @@ namespace GDGame.Actors
         #endregion
 
         #region Properties, Indexers
+
+        public bool IsDirty { get; set; }
 
         public Shape Shape { get; set; }
         public ETileType TileType { get; }
@@ -123,8 +129,6 @@ namespace GDGame.Actors
             IsDirty = true;
         }
 
-        public bool IsDirty { get; set; }
-
         #endregion
 
         #region Events
@@ -140,5 +144,13 @@ namespace GDGame.Actors
         }
 
         #endregion
+
+        public void InitializeCollision(Vector3 position, float factor = 1f)
+        {
+            SetTranslation(position);
+            AddPrimitive(new Box(Transform3D.Translation, Matrix.Identity, Transform3D.Scale * factor),
+                new MaterialProperties(0.3f, 0.5f, 0.3f));
+            Enable(true, 1);
+        }
     }
 }

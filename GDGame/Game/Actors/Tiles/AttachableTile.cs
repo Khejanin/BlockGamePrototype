@@ -10,6 +10,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
+    /// <summary>
+    /// The attachable tile is a tile which can be attached to the player
+    /// </summary>
     public class AttachableTile : MovableTile
     {
         #region Private variables

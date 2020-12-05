@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
 {
+    /// <summary>
+    /// The moving platform is the Tile representing the platform movement
+    /// </summary>
     public class MovingPlatformTile : PathMoveTile, IActivatable
     {
         #region Constructors
@@ -15,14 +18,6 @@ namespace GDGame.Actors
             OurEffectParameters effectParameters, Model model, bool isBlocking, ETileType tileType) : base(id,
             actorType, statusType,
             transform, effectParameters, model, isBlocking, tileType)
-        {
-        }
-
-        #endregion
-
-        #region Override Methode
-
-        protected virtual void MoveToNextPoint()
         {
         }
 
