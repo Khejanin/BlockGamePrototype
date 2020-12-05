@@ -89,7 +89,8 @@ namespace GDLibrary.Enums
         Ui,
         Movement,
         Collider,
-        Sound
+        Sound,
+        Event
     }
 
     /// <summary>

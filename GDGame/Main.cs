@@ -6,7 +6,6 @@ using GDGame.Managers;
 using GDGame.Scenes;
 using GDLibrary.Actors;
 using GDLibrary.Containers;
-using GDLibrary.Debug;
 using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.Managers;
@@ -50,7 +49,6 @@ namespace GDGame
 
         public BasicEffect ModelEffect { get; private set; }
 
-        public BasicEffect ModelEffectColor { get; private set; }
         public ContentDictionary<Model> Models { get; private set; }
         public MouseManager MouseManager { get; private set; }
         public OurObjectManager ObjectManager { get; private set; }
@@ -64,21 +62,14 @@ namespace GDGame
         public Dictionary<string, DrawnActor2D> UiArchetypes { get; set; }
         public OurUiManager UiManager { get; private set; }
 
-        public BasicEffect UnlitWireframeEffect { get; private set; }
-
         #endregion
 
         #region Initialization
 
         private void InitEffect()
         {
-            //wireframe primitives with no lighting and no texture
-            UnlitWireframeEffect = new BasicEffect(Graphics.GraphicsDevice) {VertexColorEnabled = true};
-
             //model effect
             ModelEffect = new BasicEffect(Graphics.GraphicsDevice) {TextureEnabled = true};
-            //this.modelEffect.LightingEnabled = true;
-            //this.modelEffect.EnableDefaultLighting();
         }
 
         private void InitGraphics(int width, int height)
@@ -188,9 +179,9 @@ namespace GDGame
                 KeyboardManager);
             Components.Add(MenuManager);
 
-            OurPhysicsDebugDrawer physicsDebugDrawer = new OurPhysicsDebugDrawer(this,
-                StatusType.Off, CameraManager, ObjectManager);
-            //Components.Add(physicsDebugDrawer);
+            // OurPhysicsDebugDrawer physicsDebugDrawer = new OurPhysicsDebugDrawer(this,
+            //     StatusType.Off, CameraManager, ObjectManager);
+            // Components.Add(physicsDebugDrawer);
 
             //Raycast
             RaycastManager.Instance.ObjectManager = ObjectManager;
@@ -277,10 +268,10 @@ namespace GDGame
             // SceneManager.AddScene("Tutorial", new TutorialScene(this));
             // SceneManager.AddScene("Level1", new MainScene(this, "Paul_Level_1.json"));
             // SceneManager.AddScene("Level2", new MainScene(this, "Paul_Level_2.json"));
-            //SceneManager.AddScene("Level3", new MainScene(this, "Paul_Level_3.json"));
-            //SceneManager.AddScene("Level4", new MainScene(this, "Paul_Level_4.json"));
-            //SceneManager.AddScene("Level5", new MainScene(this, "Paul_Level_5.json"));
-            //SceneManager.AddScene("Level6", new MainScene(this, "Paul_Level_6.json"));
+            // SceneManager.AddScene("Level3", new MainScene(this, "Paul_Level_3.json"));
+            // SceneManager.AddScene("Level4", new MainScene(this, "Paul_Level_4.json"));
+            // SceneManager.AddScene("Level5", new MainScene(this, "Paul_Level_5.json"));
+            // SceneManager.AddScene("Level6", new MainScene(this, "Paul_Level_6.json"));
         }
 
         #endregion

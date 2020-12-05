@@ -37,8 +37,6 @@ namespace GDGame.Actors
 
         #region Methods
 
-        protected abstract void MoveToNextPoint();
-
         protected Vector3 NextPathPoint()
         {
             if (currentPositionIndex + pathDir == path.Count || currentPositionIndex + pathDir == -1)

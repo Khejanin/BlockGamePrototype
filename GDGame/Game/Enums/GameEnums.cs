@@ -6,7 +6,7 @@
         Static,
         Attachable,
         Trigger,
-        PlayerStart,
+        Player,
         Win,
         Enemy,
         Button,
@@ -47,7 +47,9 @@
 
     public enum TileEventType : sbyte
     {
-        Reset
+        Reset,
+        PlayerKill,
+        AttachableKill
     }
 
     public enum ActivatorEventType : sbyte
@@ -75,11 +77,8 @@
 
     public enum MovementType
     {
-        Rotation,
         OnMove,
-        OnEnemyMove,
-        OnPlayerMoved,
-        OnAttachedMove
+        OnPlayerMoved
     }
 
     public enum SfxType : sbyte

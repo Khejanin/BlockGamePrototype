@@ -20,6 +20,7 @@ namespace GDGame.Component
         private Vector3 diff;
         private Action endMoveCallback;
         private Vector3 endPos;
+        private bool isDirty;
         private int movementTime;
         private Action<Raycaster.HitResult> onCollideCallback;
         private Quaternion rotationQuaternion;
@@ -55,8 +56,8 @@ namespace GDGame.Component
         public override void Update(GameTime gameTime, IActor actor)
         {
             Tile ??= actor as AttachableTile;
-
-            if (Tile != null && Tile.IsMoving)
+            if (Tile == null) return;
+            if (Tile.IsMoving)
             {
                 endMoveCallback ??= Tile.OnMoveEnd;
                 if (currentMovementTime <= 0)
@@ -65,6 +66,7 @@ namespace GDGame.Component
                     currentMovementTime = 0;
                     startRotation = rotationQuaternion;
                     endMoveCallback?.Invoke();
+                    isDirty = true;
                 }
 
                 float t = 1 - (float) currentMovementTime / movementTime;
@@ -87,29 +89,29 @@ namespace GDGame.Component
                 }
 
                 if (currentMovementTime <= 0)
-                {
-                    trans = new Vector3((float) Math.Round(trans.X) , (float) Math.Round(trans.Y), (float) Math.Round(trans.Z));
-                }
+                    trans = new Vector3((float) Math.Round(trans.X), (float) Math.Round(trans.Y), (float) Math.Round(trans.Z));
 
-                Tile.Transform3D.Translation = trans;
-                Tile.Body.MoveTo(trans, Matrix.Identity);
+                Tile.SetTranslation(trans);
                 currentMovementTime -= (int) gameTime.ElapsedGameTime.TotalMilliseconds;
-                Tile.Body.ApplyGravity = false;
-                Tile.Body.Immovable = true;
-                Tile.Body.SetInactive();
+                if (currentMovementTime <= 0) Tile.IsDirty = false;
             }
-
-            if (Tile != null && !Tile.IsMoving && !Tile.IsAttached && !Tile.Body.ApplyGravity)
+            if (isDirty && !Tile.IsMoving && !Tile.IsAttached && !Tile.Body.ApplyGravity)
             {
                 Tile.Body.ApplyGravity = true;
                 Tile.Body.Immovable = false;
+                isDirty = false;
             }
-
-            if (Tile != null && !Tile.IsMoving)
+            if (!Tile.IsMoving && !Tile.IsDirty)
             {
                 Tile.Body.Velocity = Vector3.UnitY * Tile.Body.Velocity.Y;
                 Tile.Body.Torque = Vector3.UnitY * Tile.Body.Torque.Y;
                 Tile.Body.AngularVelocity = Vector3.UnitY * Tile.Body.AngularVelocity.Y;
+
+                Tile.Transform3D.Translation = Tile.Body.Position;
+            }
+            if (!Tile.IsMoving)
+            {
+                Tile.SetTranslation(Tile.Transform3D.Translation);
             }
         }
 

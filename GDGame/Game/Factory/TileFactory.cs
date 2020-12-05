@@ -97,8 +97,7 @@ namespace GDGame.Factory
             if (enemy != null)
             {
                 enemy.Transform3D.Translation = position;
-                enemy.AddPrimitive(new Box(enemy.Transform3D.Translation, Matrix.Identity, enemy.Transform3D.Scale),
-                    new MaterialProperties(0.3f, 0.5f, 0.3f));
+                enemy.AddPrimitive(new Box(enemy.Transform3D.Translation, Matrix.Identity, enemy.Transform3D.Scale * 0.8f), new MaterialProperties(0.3f, 0.5f, 0.3f));
                 enemy.Enable(false, 1);
             }
 
@@ -219,7 +218,7 @@ namespace GDGame.Factory
             {
                 spikeTile.Transform3D.Translation = position;
                 spikeTile.AddPrimitive(
-                    new Box(spikeTile.Transform3D.Translation, Matrix.Identity, spikeTile.Transform3D.Scale),
+                    new Box(spikeTile.Transform3D.Translation, Matrix.Identity, spikeTile.Transform3D.Scale * 0.8f),
                     new MaterialProperties(0.3f, 0.5f, 0.3f));
                 spikeTile.Enable(true, 1);
             }
@@ -284,7 +283,7 @@ namespace GDGame.Factory
         {
             Tile tile = type switch
             {
-                ETileType.PlayerStart => CreatePlayer(position),
+                ETileType.Player => CreatePlayer(position),
                 ETileType.Static => CreateStatic(position, staticTileType),
                 ETileType.Attachable => CreateAttachable(position),
                 ETileType.Win => CreateGoal(position),

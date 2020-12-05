@@ -11,7 +11,8 @@ namespace GDGame.Actors
     {
         #region Constructors
 
-        public MovableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model,bool isBlocking, ETileType tileType) :
+        public MovableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
+            OurEffectParameters effectParameters, Model model, bool isBlocking, ETileType tileType) :
             base(id, actorType, statusType, transform, effectParameters, model, isBlocking, tileType)
         {
             IsMoving = false;
@@ -48,8 +49,9 @@ namespace GDGame.Actors
 
         public new object Clone()
         {
-            MovableTile movableTile = new MovableTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as OurEffectParameters,
-                Model,isBlocking, TileType);
+            MovableTile movableTile = new MovableTile("clone - " + ID, ActorType, StatusType,
+                Transform3D.Clone() as Transform3D, EffectParameters.Clone() as OurEffectParameters, Model, IsBlocking,
+                TileType);
             movableTile.ControllerList.AddRange(GetControllerListClone());
             return movableTile;
         }

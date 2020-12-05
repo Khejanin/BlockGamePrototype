@@ -7,9 +7,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using GDGame.Actors;
-using GDGame.Managers;
 
-namespace GDLibrary.Debug
+namespace GDGame.Managers
 {
     /// <summary>
     /// Renders the collision skins of any collidable objects within the scene. We can disable this component for the release.
@@ -32,7 +31,7 @@ namespace GDLibrary.Debug
 
         #endregion Temp Vars Used In Methods
 
-        public OurPhysicsDebugDrawer(Game game, StatusType statusType, CameraManager<Camera3D> cameraManager,
+        public OurPhysicsDebugDrawer(Microsoft.Xna.Framework.Game game, StatusType statusType, CameraManager<Camera3D> cameraManager,
             OurObjectManager objectManager)
             : base(game, statusType)
         {

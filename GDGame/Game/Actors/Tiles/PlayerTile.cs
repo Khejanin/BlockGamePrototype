@@ -5,7 +5,6 @@ using GDGame.EventSystem;
 using GDGame.Game.Parameters.Effect;
 using GDGame.Managers;
 using GDGame.Tiles;
-using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
@@ -30,6 +29,7 @@ namespace GDGame.Actors
         {
             AttachedTiles = new List<AttachableTile>();
             AttachCandidates = new List<Shape>();
+            IsAlive = true;
         }
 
         #endregion
@@ -39,6 +39,7 @@ namespace GDGame.Actors
         public List<Shape> AttachCandidates { get; }
 
         public List<AttachableTile> AttachedTiles { get; }
+        public bool IsAlive { get; set; }
 
         #endregion
 
@@ -47,7 +48,6 @@ namespace GDGame.Actors
         public override void InitializeTile()
         {
             EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
-            EventManager.RegisterListener<MovementEvent>(HandleMovementEvent);
             lastCheckpoint = Transform3D.Translation;
         }
 
@@ -55,12 +55,15 @@ namespace GDGame.Actors
 
         #region Override Methode
 
+        public override void Die()
+        {
+            RespawnAtLastCheckpoint();
+        }
+
         public override void OnMoveEnd()
         {
             CheckAndProcessSurroundings(GetSurroundings(Transform3D.Translation));
             if (IsAttached) Attach();
-
-            CheckCollision(RaycastManager.Instance.Raycast(this, Transform3D.Translation, Vector3.Down, true, 0.5f,false));
         }
 
         #endregion
@@ -97,36 +100,10 @@ namespace GDGame.Actors
             UpdateAttachCandidates(detectedAttachableTiles);
         }
 
-        //replace with proper collision detection
-        private void CheckCollision(HitResult hit)
-        {
-            if (hit?.actor == null) return;
-
-            Actor3D actor3D = hit.actor;
-            Tile tile = actor3D as Tile;
-            switch (tile?.TileType)
-            {
-                case ETileType.Win:
-                    EventManager.FireEvent(new GameStateMessageEventInfo(GameState.Won));
-                    break;
-                case ETileType.Spike:
-                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.Die});
-                    break;
-                case ETileType.Checkpoint:
-                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.SetCheckpoint, position = tile.Transform3D.Translation});
-                    break;
-                case ETileType.Button:
-                    ActivatableTile b = tile as ActivatableTile;
-                    b?.Activate();
-                    break;
-            }
-        }
-
         public new object Clone()
         {
-            PlayerTile playerTile = new PlayerTile("clone - " + ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as OurEffectParameters,
-                Model,
-                TileType);
+            PlayerTile playerTile = new PlayerTile("clone - " + ID, ActorType, StatusType,
+                Transform3D.Clone() as Transform3D, EffectParameters.Clone() as OurEffectParameters, Model, TileType);
 
             playerTile.ControllerList.AddRange(GetControllerListClone());
 
@@ -149,7 +126,8 @@ namespace GDGame.Actors
         {
             List<PlayerSurroundCheck> result = new List<PlayerSurroundCheck>();
 
-            PlayerSurroundCheck surroundCheck = new PlayerSurroundCheck {hit = RaycastManager.Instance.Raycast(this, translation, Vector3.Right, true, 1f)};
+            PlayerSurroundCheck surroundCheck = new PlayerSurroundCheck
+                {hit = RaycastManager.Instance.Raycast(this, translation, Vector3.Right, true, 1f)};
             result.Add(surroundCheck);
 
             surroundCheck.hit = RaycastManager.Instance.Raycast(this, translation, Vector3.Left, true, 1f);
@@ -175,8 +153,9 @@ namespace GDGame.Actors
 
         private void RespawnAtLastCheckpoint()
         {
-            EventManager.FireEvent(new TileEventInfo {type = TileEventType.Reset, targetedTileType = ETileType.Attachable});
-            Transform3D.Translation = lastCheckpoint;
+            SetTranslation(lastCheckpoint);
+            Transform3D.RotationInDegrees = Vector3.Zero;
+            IsAlive = false;
         }
 
         private void SetCheckpoint(Vector3? position)
@@ -204,7 +183,7 @@ namespace GDGame.Actors
             foreach (AttachableTile tile in AttachedTiles) tile.RotatePoint = RotatePoint;
         }
 
-        private void UpdateAttachCandidates(List<MovableTile> detectedAttachableTiles)
+        private void UpdateAttachCandidates(IEnumerable<MovableTile> detectedAttachableTiles)
         {
             AttachCandidates.Clear();
 
@@ -245,13 +224,6 @@ namespace GDGame.Actors
         #endregion
 
         #region Events
-
-        private void HandleMovementEvent(MovementEvent movementEvent)
-        {
-            if (movementEvent.type == MovementType.OnPlayerMoved)
-                foreach (AttachableTile attachable in AttachedTiles)
-                    EventManager.FireEvent(new MovementEvent {type = MovementType.OnMove, direction = movementEvent.direction, onMoveEnd = OnMoveEnd, tile = attachable});
-        }
 
         private void HandlePlayerEvent(PlayerEventInfo info)
         {
