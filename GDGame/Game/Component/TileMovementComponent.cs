@@ -86,14 +86,31 @@ namespace GDGame.Component
                     }
                 }
 
+                if (currentMovementTime <= 0)
+                {
+                    trans = new Vector3((float) Math.Round(trans.X) , (float) Math.Round(trans.Y), (float) Math.Round(trans.Z));
+                }
+
                 Tile.Transform3D.Translation = trans;
                 Tile.Body.MoveTo(trans, Matrix.Identity);
                 currentMovementTime -= (int) gameTime.ElapsedGameTime.TotalMilliseconds;
+                Tile.Body.ApplyGravity = false;
+                Tile.Body.Immovable = true;
                 Tile.Body.SetInactive();
             }
 
-            if (Tile != null && !Tile.IsMoving && !Tile.IsAttached)
-                Tile.Body.SetActive();
+            if (Tile != null && !Tile.IsMoving && !Tile.IsAttached && !Tile.Body.ApplyGravity)
+            {
+                Tile.Body.ApplyGravity = true;
+                Tile.Body.Immovable = false;
+            }
+
+            if (Tile != null && !Tile.IsMoving)
+            {
+                Tile.Body.Velocity = Vector3.UnitY * Tile.Body.Velocity.Y;
+                Tile.Body.Torque = Vector3.UnitY * Tile.Body.Torque.Y;
+                Tile.Body.AngularVelocity = Vector3.UnitY * Tile.Body.AngularVelocity.Y;
+            }
         }
 
         #endregion
@@ -117,7 +134,8 @@ namespace GDGame.Component
 
         public new object Clone()
         {
-            TileMovementComponent tileMovementComponent = new TileMovementComponent(ID, ControllerType, movementTime, new Curve1D(curve1D.CurveLookType));
+            TileMovementComponent tileMovementComponent =
+                new TileMovementComponent(ID, ControllerType, movementTime, new Curve1D(curve1D.CurveLookType));
             return tileMovementComponent;
         }
 

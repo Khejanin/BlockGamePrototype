@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GDGame.Actors;
 using GDGame.Component;
+using GDGame.Constants;
 using GDGame.Controllers;
 using GDGame.Enums;
 using GDGame.EventSystem;
@@ -94,7 +95,7 @@ namespace GDGame.Scenes
             Transform3D transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
             Camera3D mainCamera = new Camera3D("MainCamera", ActorType.Camera3D, StatusType.Update, transform3D,
                 ProjectionParameters.StandardDeepSixteenTen,
-                new Viewport(0, 0, 1920, 1080));
+                new Viewport(0, 0, GameConstants.ScreenWidth, GameConstants.ScreenHeight));
             mainCamera.ControllerList.Add(new RotationAroundActor("RAAC", ControllerType.FlightCamera,
                 Main.KeyboardManager, 35, 20));
             Main.CameraManager.Add(mainCamera);
@@ -120,7 +121,7 @@ namespace GDGame.Scenes
 
             Main.CameraManager.ActiveCameraIndex = 2;
         }
-        
+
         /*
         private void InitDecoration(int n)
         {
@@ -211,7 +212,8 @@ namespace GDGame.Scenes
             levelBounds = grid.GetGridBounds();
             levelData = grid.GenerateGrid(levelName);
 
-            Main.CameraManager.ActiveCamera.ControllerList.Add(new Curve3DController("CCFC", ControllerType.Curve, levelData.startCameraCurve));
+            Main.CameraManager.ActiveCamera.ControllerList.Add(new Curve3DController("CCFC", ControllerType.Curve,
+                levelData.startCameraCurve));
         }
 
         public override void Initialize()
@@ -691,7 +693,7 @@ namespace GDGame.Scenes
 
             Main.Textures.Load("Assets/Textures/Base/WhiteSquare");
             Main.Textures.Load("Assets/Textures/UI/TopBar");
-            
+
 
             Main.Textures.Load("Assets/Textures/Menu/menubaseres", "options");
             Main.Textures.Load("Assets/Textures/Menu/button", "optionsButton");

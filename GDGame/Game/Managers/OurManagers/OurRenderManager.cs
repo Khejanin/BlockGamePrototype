@@ -1,3 +1,4 @@
+using System.Linq;
 using GDGame.Actors;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
@@ -62,15 +63,15 @@ namespace GDGame.Managers
         {
             GraphicsDevice.Viewport = activeCamera.Viewport;
 
-            foreach (OurDrawnActor3D actor in objectManager.OpaqueList)
-                if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
-                    actor.Draw(gameTime, activeCamera, GraphicsDevice);
+            foreach (OurDrawnActor3D actor in objectManager.OpaqueList.Where(actor =>
+                (actor.StatusType & StatusType.Drawn) == StatusType.Drawn))
+                actor.Draw(gameTime, activeCamera, GraphicsDevice);
 
             GraphicsDevice.BlendState = BlendState.AlphaBlend;
 
-            foreach (OurDrawnActor3D actor in objectManager.TransparentList)
-                if ((actor.StatusType & StatusType.Drawn) == StatusType.Drawn)
-                    actor.Draw(gameTime, activeCamera, GraphicsDevice);
+            foreach (OurDrawnActor3D actor in objectManager.TransparentList.Where(actor =>
+                (actor.StatusType & StatusType.Drawn) == StatusType.Drawn))
+                actor.Draw(gameTime, activeCamera, GraphicsDevice);
 
             GraphicsDevice.BlendState = BlendState.Opaque;
         }

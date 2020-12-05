@@ -62,11 +62,6 @@ namespace GDGame.Actors
             }
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        }
-
         #endregion
 
         #region Methods

@@ -11,8 +11,8 @@ namespace GDGame.Constants
         public static readonly Keys[] keysOne = {Keys.W, Keys.S, Keys.A, Keys.D};
         public static readonly Keys[] keysTwo = {Keys.U, Keys.J, Keys.H, Keys.K};
 
-        public static readonly int screenWidth = 1024;
-        public static readonly int screenHeight = 768;
+        public const int ScreenWidth = 1920;
+        public const int ScreenHeight = 1080;
 
         private const float MoveSpeed = 0.1f;
         public static readonly float strafeSpeed = StrafeSpeedMultiplier * MoveSpeed;

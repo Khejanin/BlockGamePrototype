@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using GDGame.Constants;
 using GDGame.Controllers;
 using GDGame.EventSystem;
 using GDGame.Managers;
 using GDGame.Scenes;
 using GDLibrary.Actors;
 using GDLibrary.Containers;
+using GDLibrary.Debug;
 using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.Managers;
@@ -106,8 +108,8 @@ namespace GDGame
         protected override void Initialize()
         {
             Window.Title = "B_Logic";
+            InitGraphics(GameConstants.ScreenWidth, GameConstants.ScreenHeight);
 
-            InitGraphics(1920, 1080);
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             InitManagers();
@@ -169,19 +171,26 @@ namespace GDGame
             Components.Add(ObjectManager);
 
             //Render
-            RenderManager = new OurRenderManager(this, StatusType.Drawn, ScreenLayoutType.Single, ObjectManager, CameraManager);
+            RenderManager = new OurRenderManager(this, StatusType.Drawn, ScreenLayoutType.Single, ObjectManager,
+                CameraManager);
             Components.Add(RenderManager);
 
             //Movement
-            TransformAnimationManager transformAnimationManager = new TransformAnimationManager(this,StatusType.Update);
+            TransformAnimationManager transformAnimationManager =
+                new TransformAnimationManager(this, StatusType.Update);
             Components.Add(transformAnimationManager);
-            
+
             //UI
             UiManager = new OurUiManager(this, StatusType.Off, spriteBatch, 10);
             Components.Add(UiManager);
 
-            MenuManager = new MyMenuManager(this, StatusType.Drawn | StatusType.Update, spriteBatch, MouseManager, KeyboardManager);
+            MenuManager = new MyMenuManager(this, StatusType.Drawn | StatusType.Update, spriteBatch, MouseManager,
+                KeyboardManager);
             Components.Add(MenuManager);
+
+            OurPhysicsDebugDrawer physicsDebugDrawer = new OurPhysicsDebugDrawer(this,
+                StatusType.Off, CameraManager, ObjectManager);
+            //Components.Add(physicsDebugDrawer);
 
             //Raycast
             RaycastManager.Instance.ObjectManager = ObjectManager;
@@ -195,13 +204,15 @@ namespace GDGame
             Texture2D texture = Textures["bStart"];
             Integer2 dimensions = new Integer2(texture.Width, texture.Height);
             Transform2D transform2D = new Transform2D(Vector2.Zero, 0, Vector2.One, Vector2.Zero, dimensions);
-            UITextureObject uiTextureObject = new UITextureObject("texture", ActorType.UITextureObject, StatusType.Drawn | StatusType.Update, transform2D, Color.White, 0.6f,
+            UITextureObject uiTextureObject = new UITextureObject("texture", ActorType.UITextureObject,
+                StatusType.Drawn | StatusType.Update, transform2D, Color.White, 0.6f,
                 SpriteEffects.None, texture, new Rectangle(0, 0, texture.Width, texture.Height));
 
             string text = "";
             dimensions = new Integer2(Fonts["Arial"].MeasureString(text));
             transform2D = new Transform2D(Vector2.Zero, 0, Vector2.One, Vector2.Zero, dimensions);
-            UITextObject uiTextObject = new UITextObject("text", ActorType.UIText, StatusType.Drawn | StatusType.Update, transform2D, Color.Black, 0.1f,
+            UITextObject uiTextObject = new UITextObject("text", ActorType.UIText, StatusType.Drawn | StatusType.Update,
+                transform2D, Color.Black, 0.1f,
                 SpriteEffects.None, text, Fonts["Arial"]);
 
             text = "";
@@ -209,9 +220,12 @@ namespace GDGame
             dimensions = new Integer2(texture.Width, texture.Height);
             Vector2 origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
             transform2D = new Transform2D(Vector2.Zero, 0, Vector2.One, origin, dimensions);
-            UIButtonObject uiButtonObject = new UIButtonObject("button", ActorType.UIButtonObject, StatusType.Update | StatusType.Drawn, transform2D, Color.White, 0.5f,
-                SpriteEffects.None, texture, new Rectangle(0, 0, texture.Width, texture.Height), text, Fonts["Arial"], Vector2.One, Color.White, Vector2.Zero);
-            uiButtonObject.ControllerList.Add(new UiScaleLerpController("USC", ControllerType.Ui, MouseManager, new TrigonometricParameters(0.05f, 0.1f, 180)));
+            UIButtonObject uiButtonObject = new UIButtonObject("button", ActorType.UIButtonObject,
+                StatusType.Update | StatusType.Drawn, transform2D, Color.White, 0.5f,
+                SpriteEffects.None, texture, new Rectangle(0, 0, texture.Width, texture.Height), text, Fonts["Arial"],
+                Vector2.One, Color.White, Vector2.Zero);
+            uiButtonObject.ControllerList.Add(new UiScaleLerpController("USC", ControllerType.Ui, MouseManager,
+                new TrigonometricParameters(0.05f, 0.1f, 180)));
 
             UiArchetypes.Add("button", uiButtonObject);
             UiArchetypes.Add("texture", uiTextureObject);

@@ -99,6 +99,13 @@ namespace GDGame.Actors
             Transform3D.Translation = spawnPos;
         }
 
+
+        public override void Update(GameTime gameTime)
+        {
+            Transform3D.Translation = Body.Position;
+            base.Update(gameTime);
+        }
+
         #endregion
 
         #region Events
