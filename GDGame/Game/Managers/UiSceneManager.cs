@@ -78,6 +78,7 @@ namespace GDGame.Managers
             uiTextureObject = ((UITextureObject) Scene.Main.UiArchetypes["texture"]).Clone() as UITextureObject;
             if (uiTextureObject != null)
             {
+                uiTextureObject.StatusType = StatusType.Off;
                 Texture2D texture = Scene.Main.Textures["Mug-Collected"];
                 uiTextureObject.ID = "Mug1";
                 uiTextureObject.Texture = texture;
@@ -92,6 +93,7 @@ namespace GDGame.Managers
             uiTextureObject = ((UITextureObject) Scene.Main.UiArchetypes["texture"]).Clone() as UITextureObject;
             if (uiTextureObject != null)
             {
+                uiTextureObject.StatusType = StatusType.Off;
                 Texture2D texture = Scene.Main.Textures["Mug-Collected"];
                 uiTextureObject.ID = "Mug2";
                 uiTextureObject.Texture = texture;
@@ -105,6 +107,7 @@ namespace GDGame.Managers
             uiTextureObject = ((UITextureObject) Scene.Main.UiArchetypes["texture"]).Clone() as UITextureObject;
             if (uiTextureObject != null)
             {
+                uiTextureObject.StatusType = StatusType.Off;
                 Texture2D texture = Scene.Main.Textures["Mug-Collected"];
                 uiTextureObject.ID = "Mug3";
                 uiTextureObject.Texture = texture;
