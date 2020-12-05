@@ -542,7 +542,7 @@ namespace GDGame.Utilities
             JSONValue value = GetValue(key);
             if (value == null)
             {
-                JSONLogger.Error(key + "(string) == null");
+                //JSONLogger.Error(key + "(string) == null");
                 return string.Empty;
             }
 

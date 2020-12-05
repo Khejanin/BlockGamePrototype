@@ -59,11 +59,6 @@ namespace GDGame.Controllers
             {
                 HandlePlayerMovement(actor);
             }
-
-            if (keyboardManager.IsStateChanged())
-            {
-                actor.IsAlive = true;
-            }
         }
 
         private void HandlePlayerMovement(PlayerTile playerTile)

@@ -1,4 +1,5 @@
-﻿using GDGame.Actors;
+﻿using System;
+using GDGame.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
@@ -7,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Component
 {
-    public class ColliderComponent : Controller
+    public class ColliderComponent : Controller, ICloneable
     {
         protected OurCollidableObject parent;
         private bool handleIsSet;

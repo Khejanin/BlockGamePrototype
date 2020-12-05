@@ -204,6 +204,7 @@ namespace GDGame.Scenes
         private void InitEvents()
         {
             EventManager.RegisterListener<GameStateMessageEventInfo>(OnGameStateMessageReceived);
+            EventManager.RegisterListener<PlayerEventInfo>(OnPlayerEventMessageReceived);
         }
 
         private void InitGrid()
@@ -398,9 +399,9 @@ namespace GDGame.Scenes
             Transform3D transform3D = new Transform3D(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY);
 
             #region StaticTiles
-            
+
             Color coffeeColor = new Color(111 / 255.0f, 78 / 255.0f, 55 / 255.0f, 0.95f);
-            
+
             CoffeeEffectParameters coffeeEffect = new CoffeeEffectParameters(Main.Effects["Coffee"],
                 Main.Textures["CoffeeUV"], Main.Textures["CoffeeFlow"], coffeeColor);
             transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up);
@@ -408,7 +409,7 @@ namespace GDGame.Scenes
                 StatusType.Update | StatusType.Drawn, transform3D, coffeeEffect,
                 Main.Models["CoffeePlane"]);
             Main.ObjectManager.Add(coffee);
-            
+
             NormalEffectParameters normalEffectParameters = new NormalEffectParameters(Main.Effects["Normal"],
                 Main.Textures["Chocolate"], Main.Textures["big-normalmap"],
                 Main.Textures["big-displacement"], Color.White, 1, light);
@@ -429,7 +430,7 @@ namespace GDGame.Scenes
 
             coffeeEffect = (CoffeeEffectParameters) coffeeEffect.Clone();
             coffeeEffect.UvTilesTexture = Main.Textures["DropUV"];
-            coffeeEffect.CoffeeColor = new Color(coffeeEffect.CoffeeColor * 0.8f,255);
+            coffeeEffect.CoffeeColor = new Color(coffeeEffect.CoffeeColor * 0.8f, 255);
             Tile spike = new Tile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 coffeeEffect, Main.Models["Puddle"], false, ETileType.Spike);
             spike.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, (skin0, skin1) =>
@@ -846,6 +847,15 @@ namespace GDGame.Scenes
 
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void OnPlayerEventMessageReceived(PlayerEventInfo obj)
+        {
+            if (obj.type == PlayerEventType.PickupMug)
+            {
+                Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID.Equals(obj.tile.ID)).StatusType =
+                    StatusType.Drawn;
             }
         }
 
