@@ -86,7 +86,7 @@ namespace GDGame.Component
                     }
 
                     //Play player move sound
-                    EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerMove, emitterTransform = playerTile.Transform3D });
+                    EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerMove, transform = playerTile.Transform3D });
                 }
             }
         }

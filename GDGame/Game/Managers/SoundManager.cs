@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using GDGame.Enums;
 using GDGame.EventSystem;
+using GDLibrary.Parameters;
 using Microsoft.Xna.Framework.Audio;
 
 namespace GDGame.Managers
@@ -13,6 +14,7 @@ namespace GDGame.Managers
 
         private AudioEmitter emitter;
         private AudioListener listener;
+        private Transform3D listenerTransform;
 
         private int currentMusicIndex;
         private List<SoundEffect> currentMusicQueue;
@@ -42,6 +44,12 @@ namespace GDGame.Managers
         #endregion
 
         #region Methods
+
+        public void SetListenerTransform(Transform3D listenerTransform)
+        {
+            if(listenerTransform != null)
+                this.listenerTransform = listenerTransform;
+        }
 
         public void AddMusic(string id, SoundEffect track)
         {
@@ -134,7 +142,13 @@ namespace GDGame.Managers
             {
                 SoundEffectInstance sei = sfx.CreateInstance();
                 sei.Volume = sfxVolume;
-                if(apply3D) sei.Apply3D(listener, emitter);
+                if (apply3D)
+                {
+                    listener.Position = listenerTransform.Translation;
+                    listener.Forward = listenerTransform.Look;
+                    listener.Up = listenerTransform.Up;
+                    sei.Apply3D(listener, emitter);
+                }
                 sei.Play();
             }
         }
@@ -188,9 +202,9 @@ namespace GDGame.Managers
             switch (info.soundEventType)
             {
                 case SoundEventType.PlaySfx:
-                    if (info.emitterTransform != null)
+                    if (info.transform != null)
                     {
-                        emitter.Position = info.emitterTransform.Translation;
+                        emitter.Position = info.transform.Translation;
                         PlaySoundEffect(info.sfxType, true);
                     }
                     else
@@ -213,6 +227,9 @@ namespace GDGame.Managers
                     break;
                 case SoundEventType.ToggleMusicPlayback:
                     ToggleMusicPlaybackState();
+                    break;
+                case SoundEventType.SetListener:
+                    SetListenerTransform(info.transform);
                     break;
             }
         }

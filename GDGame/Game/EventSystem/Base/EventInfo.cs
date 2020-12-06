@@ -85,7 +85,7 @@ namespace GDGame.EventSystem
         public SfxType sfxType;
         public SoundEventType soundEventType;
         public SoundVolumeType soundVolumeType;
-        public Transform3D emitterTransform;
+        public Transform3D transform;
 
         #endregion
     }
