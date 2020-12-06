@@ -11,6 +11,9 @@ namespace GDGame.Managers
     {
         #region Private variables
 
+        private AudioEmitter emitter;
+        private AudioListener listener;
+
         private int currentMusicIndex;
         private List<SoundEffect> currentMusicQueue;
 
@@ -28,6 +31,8 @@ namespace GDGame.Managers
 
         public SoundManager()
         {
+            emitter = new AudioEmitter();
+            listener = new AudioListener();
             currentMusicQueue = new List<SoundEffect>();
             soundEffects = new Dictionary<SfxType, SoundEffect>();
             musicTracks = new Dictionary<string, SoundEffect>();
@@ -77,7 +82,10 @@ namespace GDGame.Managers
         private void PlayMusic(string id)
         {
             if (!musicTracks.ContainsKey(id))
+            {
                 Debug.WriteLine("No Music for the specified key found!");
+                return;
+            }
 
             SoundEffect track = musicTracks[id];
             if (track != null)
@@ -112,10 +120,13 @@ namespace GDGame.Managers
             PlayMusic(nextSong);
         }
 
-        private void PlaySoundEffect(SfxType sfxType)
+        private void PlaySoundEffect(SfxType sfxType, bool apply3D)
         {
             if (!soundEffects.ContainsKey(sfxType))
+            {
                 Debug.WriteLine("No Sound for the specified key found!");
+                return;
+            }
 
             SoundEffect sfx = soundEffects[sfxType];
 
@@ -123,6 +134,7 @@ namespace GDGame.Managers
             {
                 SoundEffectInstance sei = sfx.CreateInstance();
                 sei.Volume = sfxVolume;
+                if(apply3D) sei.Apply3D(listener, emitter);
                 sei.Play();
             }
         }
@@ -176,7 +188,13 @@ namespace GDGame.Managers
             switch (info.soundEventType)
             {
                 case SoundEventType.PlaySfx:
-                    PlaySoundEffect(info.sfxType);
+                    if (info.emitterTransform != null)
+                    {
+                        emitter.Position = info.emitterTransform.Translation;
+                        PlaySoundEffect(info.sfxType, true);
+                    }
+                    else
+                        PlaySoundEffect(info.sfxType, false);
                     break;
                 case SoundEventType.PlayNextMusic:
                     PlayNextMusic();

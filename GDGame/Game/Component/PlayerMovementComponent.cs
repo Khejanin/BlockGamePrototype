@@ -84,6 +84,9 @@ namespace GDGame.Component
                         movementComponent?.CalculateEndPos(direction, out endPos, out q, out o);
                         movementComponent?.MoveTile();
                     }
+
+                    //Play player move sound
+                    EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerMove, emitterTransform = playerTile.Transform3D });
                 }
             }
         }

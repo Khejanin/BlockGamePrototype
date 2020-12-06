@@ -100,6 +100,7 @@ namespace GDGame.Actors
             }
 
             IsAttached = true;
+            EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach, emitterTransform = Transform3D });
         }
 
         private void CheckAndProcessSurroundings(IEnumerable<PlayerSurroundCheck> surroundings)

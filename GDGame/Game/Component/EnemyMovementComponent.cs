@@ -1,5 +1,7 @@
 using System;
 using GDGame.Controllers;
+using GDGame.Enums;
+using GDGame.EventSystem;
 using GDGame.Managers;
 using GDGame.Utilities;
 using GDLibrary.Enums;
@@ -40,6 +42,8 @@ namespace GDGame.Component
                 maxTime = movementTime,
                 smoothing = Smoother.SmoothingMethod.Smooth
             });
+
+            EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.EnemyMove, emitterTransform = parent.Transform3D});
         }
 
         public new object Clone()
