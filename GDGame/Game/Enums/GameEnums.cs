@@ -32,7 +32,8 @@
     public enum GameState : sbyte
     {
         Won,
-        Lost
+        Lost,
+        Start
     }
 
     public enum PlayerEventType : sbyte
@@ -107,5 +108,10 @@
         Master,
         Sfx,
         Music
+    }
+
+    public enum OptionsType
+    {
+        Toggle
     }
 }

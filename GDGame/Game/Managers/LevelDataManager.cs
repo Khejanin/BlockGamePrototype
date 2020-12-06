@@ -78,7 +78,7 @@ namespace GDGame.Managers
 
         private void HandleSceneEvent(SceneEventInfo sceneEventInfo)
         {
-            switch (sceneEventInfo.sceneActionType)
+            switch (sceneEventInfo.SceneActionType)
             {
                 case SceneActionType.OnSceneChange:
                     HandelSceneEventInfoOnSceneChange();

@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    /// Tile is the BasicTile from which other Tiles inherit
+    ///     Tile is the BasicTile from which other Tiles inherit
     /// </summary>
     public class Tile : OurCollidableObject
     {
@@ -31,9 +31,9 @@ namespace GDGame.Actors
 
         #region Public variables
 
-        public bool canDie;
-
         public int activatorId = -1;
+
+        public bool canDie;
 
         #endregion
 
@@ -64,6 +64,14 @@ namespace GDGame.Actors
         #endregion
 
         #region Initialization
+
+        public void InitializeCollision(Vector3 position, float factor = 1f)
+        {
+            SetTranslation(position);
+            AddPrimitive(new Box(Transform3D.Translation, Matrix.Identity, Transform3D.Scale * factor),
+                new MaterialProperties(0.3f, 0.5f, 0.3f));
+            Enable(true, 1);
+        }
 
         public virtual void InitializeTile()
         {
@@ -146,13 +154,5 @@ namespace GDGame.Actors
         }
 
         #endregion
-
-        public void InitializeCollision(Vector3 position, float factor = 1f)
-        {
-            SetTranslation(position);
-            AddPrimitive(new Box(Transform3D.Translation, Matrix.Identity, Transform3D.Scale * factor),
-                new MaterialProperties(0.3f, 0.5f, 0.3f));
-            Enable(true, 1);
-        }
     }
 }

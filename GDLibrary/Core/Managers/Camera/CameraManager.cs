@@ -124,5 +124,10 @@ namespace GDLibrary.Managers
         }
 
         #endregion Constructors & Core
+
+        public void Clear()
+        {
+            list.Clear();
+        }
     }
 }

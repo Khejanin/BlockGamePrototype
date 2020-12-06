@@ -1,4 +1,7 @@
-﻿using GDLibrary.Actors;
+﻿using System.Collections.Generic;
+using GDGame.Enums;
+using GDGame.EventSystem;
+using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.Managers;
@@ -19,13 +22,20 @@ namespace GDGame.Managers
 
         #region Constructors
 
-        public MyMenuManager(Microsoft.Xna.Framework.Game main, StatusType statusType, SpriteBatch spriteBatch, MouseManager mouseManager, KeyboardManager keyboardManager) : base(
+        public MyMenuManager(Microsoft.Xna.Framework.Game main, StatusType statusType, SpriteBatch spriteBatch,
+            MouseManager mouseManager, KeyboardManager keyboardManager) : base(
             main, statusType,
             spriteBatch)
         {
             this.mouseManager = mouseManager;
             this.keyboardManager = keyboardManager;
         }
+
+        #endregion
+
+        #region Properties, Indexers
+
+        public List<DrawnActor2D> DrawnActor2D => ActiveList;
 
         #endregion
 
@@ -54,8 +64,6 @@ namespace GDGame.Managers
                 EventDispatcher.Publish(StatusType == StatusType.Off
                     ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
                     : new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
-
-            base.HandleKeyboard(gameTime);
         }
 
         protected override void HandleMouse(GameTime gameTime)
@@ -64,21 +72,20 @@ namespace GDGame.Managers
                 if (actor is UIButtonObject buttonObject)
                     if (buttonObject.Transform2D.Bounds.Contains(mouseManager.Bounds))
                         if (mouseManager.IsLeftButtonClickedOnce())
-                            HandleClickedButton(gameTime, buttonObject);
-
-            base.HandleMouse(gameTime);
+                            HandleClickedButton(buttonObject);
         }
 
         #endregion
 
         #region Events
 
-        private void HandleClickedButton(GameTime gameTime, Actor uIButtonObject)
+        private void HandleClickedButton(Actor uIButtonObject)
         {
             switch (uIButtonObject.ID)
             {
                 case "Play":
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
+                    EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Start});
                     break;
 
                 case "Options":
@@ -87,12 +94,16 @@ namespace GDGame.Managers
 
                 case "Resume":
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
+                    EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Start});
                     break;
 
                 case "Back":
                     SetScene("MainMenu");
                     break;
 
+                case "Difficulty":
+                    EventManager.FireEvent(new OptionsEventInfo {Type = OptionsType.Toggle, Id = "Difficulty"});
+                    break;
                 case "Quit":
                     Game.Exit();
                     break;

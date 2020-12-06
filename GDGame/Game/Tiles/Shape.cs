@@ -24,7 +24,7 @@ namespace GDGame.Tiles
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public void AddTile(AttachableTile tile)
         {

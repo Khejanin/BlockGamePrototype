@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using GDGame.Actors;
+using GDGame.Constants;
 using GDGame.Enums;
 using GDGame.Game.Parameters.Effect;
 using GDGame.Managers;
@@ -22,6 +23,20 @@ namespace GDGame.Factory
         private readonly Dictionary<string, OurDrawnActor3D> drawnActors;
         private readonly OurObjectManager objectManager;
         private readonly ContentDictionary<Texture2D> textures;
+        private bool mode;
+
+        #endregion
+
+        #region Constructors
+
+        public TileFactory(OurObjectManager objectManager, Dictionary<string, OurDrawnActor3D> drawnActors,
+            ContentDictionary<Texture2D> textures, bool mode)
+        {
+            this.objectManager = objectManager;
+            this.drawnActors = drawnActors;
+            this.textures = textures;
+            this.mode = mode;
+        }
 
         #endregion
 
@@ -46,7 +61,7 @@ namespace GDGame.Factory
                 ETileType.MovingPlatform => CreateMovingPlatform(position),
                 ETileType.Spike => CreateTile("SpikeTile", position),
                 ETileType.Star => CreatePickup(position),
-                ETileType.Checkpoint => CreateTile("CheckpointTile", position),
+                ETileType.Checkpoint => mode ? CreateTile("CheckpointTile", position) : null,
                 _ => null
             };
 
@@ -100,38 +115,38 @@ namespace GDGame.Factory
             pickupTile?.InitializeCollision(position, 0.9f);
             if (pickupTile != null)
             {
-                pickupTile.ScaleTo(new AnimationEventData()
+                pickupTile.ScaleTo(new AnimationEventData
                 {
                     isRelative = true, destination = new Vector3(-0.2f, -0.2f, -0.2f),
-                    maxTime = (int) (Constants.GameConstants.MovementCooldown * 1000),
+                    maxTime = (int) (GameConstants.MovementCooldown * 1000),
                     smoothing = Smoother.SmoothingMethod.Accelerate
                 });
 
-                pickupTile.ScaleTo(new AnimationEventData()
+                pickupTile.ScaleTo(new AnimationEventData
                 {
                     isRelative = true, destination = new Vector3(-0.3f, -0.3f, -0.3f),
-                    maxTime = (int) (Constants.GameConstants.MovementCooldown * 1000) * 10,
+                    maxTime = (int) (GameConstants.MovementCooldown * 1000) * 10,
                     smoothing = Smoother.SmoothingMethod.Accelerate, loopMethod = LoopMethod.PingPongLoop
                 });
 
-                pickupTile.MoveTo(new AnimationEventData()
+                pickupTile.MoveTo(new AnimationEventData
                 {
                     isRelative = true, destination = new Vector3(0, 0.5f, 0),
-                    maxTime = (int) (Constants.GameConstants.MovementCooldown * 1000) * 5,
+                    maxTime = (int) (GameConstants.MovementCooldown * 1000) * 5,
                     smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PingPongLoop
                 });
 
-                pickupTile.RotateTo(new AnimationEventData()
+                pickupTile.RotateTo(new AnimationEventData
                 {
                     isRelative = true, destination = new Vector3(0, 0, 40),
-                    maxTime = (int) (Constants.GameConstants.MovementCooldown * 1000) * 10,
+                    maxTime = (int) (GameConstants.MovementCooldown * 1000) * 10,
                     smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PingPongLoop
                 });
-                
-                pickupTile.RotateTo(new AnimationEventData()
+
+                pickupTile.RotateTo(new AnimationEventData
                 {
                     isRelative = true, destination = new Vector3(0, 360, 0),
-                    maxTime = (int) (Constants.GameConstants.MovementCooldown * 1000) * 30,
+                    maxTime = (int) (GameConstants.MovementCooldown * 1000) * 30,
                     smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PingPongLoop
                 });
             }
@@ -163,10 +178,7 @@ namespace GDGame.Factory
 
                 CoffeeEffectParameters effectParameters = spikeTile.EffectParameters as CoffeeEffectParameters;
 
-                if (effectParameters != null)
-                {
-                    effectParameters.Phase += (MathHelperFunctions.Rnd.Next() % 100) / 100.0f;
-                }
+                if (effectParameters != null) effectParameters.Phase += MathHelperFunctions.Rnd.Next() % 100 / 100.0f;
             }
 
             objectManager.Add(spikeTile);
@@ -226,13 +238,5 @@ namespace GDGame.Factory
         }
 
         #endregion
-
-        public TileFactory(OurObjectManager objectManager, Dictionary<string, OurDrawnActor3D> drawnActors,
-            ContentDictionary<Texture2D> textures)
-        {
-            this.objectManager = objectManager;
-            this.drawnActors = drawnActors;
-            this.textures = textures;
-        }
     }
 }

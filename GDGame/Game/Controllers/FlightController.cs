@@ -1,4 +1,5 @@
 ﻿using System;
+using GDGame.Constants;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
@@ -16,16 +17,15 @@ namespace GDGame.Controllers
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
         private float moveSpeed, strafeSpeed, rotationSpeed;
+        private Vector3 move;
 
         #endregion
 
         #region Constructors
 
-        public FlightController(string id, ControllerType controllerType,
-            KeyboardManager keyboardManager,
-            MouseManager mouseManager,
-            float moveSpeed,
-            float strafeSpeed, float rotationSpeed) : base(id, controllerType)
+        public FlightController(string id, ControllerType controllerType, KeyboardManager keyboardManager,
+            MouseManager mouseManager, float moveSpeed, float strafeSpeed, float rotationSpeed) : base(id,
+            controllerType)
         {
             this.keyboardManager = keyboardManager;
             this.mouseManager = mouseManager;
@@ -53,8 +53,8 @@ namespace GDGame.Controllers
 
         public new object Clone()
         {
-            return new FirstPersonController(ID, ControllerType, keyboardManager,
-                mouseManager, moveSpeed, strafeSpeed, rotationSpeed);
+            return new FirstPersonController(ID, ControllerType, keyboardManager, mouseManager, moveSpeed, strafeSpeed,
+                rotationSpeed);
         }
 
         #endregion
@@ -78,10 +78,21 @@ namespace GDGame.Controllers
 
         private void HandleMouseInput(GameTime gameTime, Actor3D parent)
         {
-            Vector2 mouseDelta = mouseManager.GetDeltaFromCentre(new Vector2(512, 384));
-            mouseDelta *= rotationSpeed * gameTime.ElapsedGameTime.Milliseconds;
+            Vector2 mouseDelta =
+                mouseManager.GetDeltaFromCentre(new Vector2(GameConstants.ScreenWidth / 2f,
+                    GameConstants.ScreenHeight / 2f));
+            mouseDelta *= rotationSpeed * gameTime.ElapsedGameTime.Milliseconds * rotationSpeed;
 
-            if (mouseDelta.Length() != 0) parent.Transform3D.RotateBy(new Vector3(-1 * mouseDelta, 0));
+            if (!(mouseManager.Position.X < GameConstants.ScreenWidth / 2f + GameConstants.ScreenWidth * 0.1f &&
+                  mouseManager.Position.X > GameConstants.ScreenWidth / 2f - GameConstants.ScreenWidth * 0.1f &&
+                  mouseManager.Position.Y < GameConstants.ScreenHeight / 2f + GameConstants.ScreenHeight * 0.1f &&
+                  mouseManager.Position.Y > GameConstants.ScreenHeight / 2f - GameConstants.ScreenHeight * 0.1f))
+            {
+                move += new Vector3(-1 * mouseDelta.X, mouseDelta.Y, 0);
+            }
+
+            if (move.Length() != 0)
+                parent.Transform3D.RotateBy(move);
         }
 
         #endregion

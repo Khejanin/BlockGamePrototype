@@ -33,10 +33,10 @@ namespace GDGame.Component
                 maxTime = movementTime / 2,
                 smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PingPongOnce
             });
-            
+
             parent.RotateTo(new AnimationEventData()
             {
-                isRelative = true, destination = Vector3.Up*360,
+                isRelative = true, destination = Vector3.Up * 360,
                 maxTime = movementTime,
                 smoothing = Smoother.SmoothingMethod.Smooth
             });

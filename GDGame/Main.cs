@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
+using GDGame.Actors;
 using GDGame.Constants;
 using GDGame.Controllers;
+using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Game.Parameters.Effect;
 using GDGame.Managers;
-using GDGame.Scenes;
 using GDLibrary.Actors;
 using GDLibrary.Containers;
 using GDLibrary.Enums;
 using GDLibrary.Events;
+using GDLibrary.Interfaces;
 using GDLibrary.Managers;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
@@ -20,7 +23,12 @@ namespace GDGame
     {
         #region Private variables
 
+        private float currentMovementCoolDown;
+        private GameManager game;
+        private OurDrawnActor3D player;
+
         private SpriteBatch spriteBatch;
+        private UiSceneManager uiSceneManager;
 
         #endregion
 
@@ -31,34 +39,32 @@ namespace GDGame
             Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            IsEasy = true;
         }
 
         #endregion
 
         #region Properties, Indexers
 
-        public CameraManager<Camera3D> CameraManager { get; private set; }
+        public OurPrimitiveObject ArchetypalTexturedQuad { get; private set; }
+
+        public CameraManager<Camera3D> CameraManager { get; set; }
         public ContentDictionary<Effect> Effects { get; private set; }
         public ContentDictionary<SpriteFont> Fonts { get; private set; }
-        public ProjectionParameters GlobalProjectionParameters => ProjectionParameters.StandardDeepSixteenTen;
-        public GraphicsDeviceManager Graphics { get; }
+        private GraphicsDeviceManager Graphics { get; }
+        public bool IsEasy { get; set; }
         public KeyboardManager KeyboardManager { get; private set; }
         public LevelDataManager LevelDataManager { get; private set; }
-
-        public MyMenuManager MenuManager { get; set; }
-
-        public BasicEffect ModelEffect { get; private set; }
-
+        public MyMenuManager MenuManager { get; private set; }
+        public BasicEffect ModelEffect { get; set; }
         public ContentDictionary<Model> Models { get; private set; }
         public MouseManager MouseManager { get; private set; }
         public OurObjectManager ObjectManager { get; private set; }
         private PhysicsManager PhysicsManager { get; set; }
         private OurRenderManager RenderManager { get; set; }
-        public SceneManager SceneManager { get; private set; }
         public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
         public SoundManager SoundManager { get; private set; }
         public ContentDictionary<Texture2D> Textures { get; private set; }
-
         public Dictionary<string, DrawnActor2D> UiArchetypes { get; set; }
         public OurUiManager UiManager { get; private set; }
 
@@ -66,11 +72,77 @@ namespace GDGame
 
         #region Initialization
 
+        private void InitArchetypalQuad()
+        {
+            //SKYBOX
+            float halfLength = 0.5f;
+            VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[4];
+            vertices[0] = new VertexPositionColorTexture(new Vector3(-halfLength, halfLength, 0), Color.White,
+                new Vector2(0, 0));
+            vertices[1] = new VertexPositionColorTexture(new Vector3(-halfLength, -halfLength, 0), Color.White,
+                new Vector2(0, 1));
+            vertices[2] = new VertexPositionColorTexture(new Vector3(halfLength, halfLength, 0), Color.White,
+                new Vector2(1, 0));
+            vertices[3] = new VertexPositionColorTexture(new Vector3(halfLength, -halfLength, 0), Color.White,
+                new Vector2(1, 1));
+
+            BasicEffect unlitTexturedEffect = new BasicEffect(Graphics.GraphicsDevice)
+            {
+                VertexColorEnabled = true,
+                TextureEnabled = true
+            };
+
+            Transform3D transform3D =
+                new Transform3D(Vector3.Zero, Vector3.Zero, Vector3.One, Vector3.UnitZ, Vector3.UnitY);
+            BasicEffectParameters effectParameters =
+                new BasicEffectParameters(unlitTexturedEffect, Textures["kWall1"], Color.White, 1);
+            IVertexData vertexData =
+                new VertexData<VertexPositionColorTexture>(vertices, PrimitiveType.TriangleStrip, 2);
+            ArchetypalTexturedQuad = new OurPrimitiveObject("original texture quad", ActorType.Decorator,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters, vertexData);
+        }
+
+        private void InitCameras3D()
+        {
+            Transform3D transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
+            Camera3D mainCamera = new Camera3D("MainCamera", ActorType.Camera3D, StatusType.Update, transform3D,
+                ProjectionParameters.StandardDeepSixteenTen,
+                new Viewport(0, 0, GameConstants.ScreenWidth, GameConstants.ScreenHeight));
+            mainCamera.ControllerList.Add(new RotationAroundActor("RAAC", ControllerType.FlightCamera,
+                KeyboardManager, 35, 20));
+            CameraManager.Add(mainCamera);
+
+            if (mainCamera.Clone() is Camera3D camera3D)
+            {
+                camera3D.ID = "FlightCamera";
+                camera3D.ControllerList.Clear();
+                camera3D.ControllerList.Add(new FlightController("FPC", ControllerType.FlightCamera,
+                    KeyboardManager, MouseManager, 0.01f, 0.01f, 0.01f));
+                //CameraManager.Add(camera3D);
+            }
+
+            CameraManager.ActiveCameraIndex = 0;
+        }
+
+
         private void InitEffect()
         {
             //model effect
             ModelEffect = new BasicEffect(Graphics.GraphicsDevice) {TextureEnabled = true};
         }
+
+        private void InitEvents()
+        {
+            EventManager.RegisterListener<OptionsEventInfo>(HandleOptionsEvent);
+            EventManager.RegisterListener<GameStateMessageEventInfo>(HandleGameStateEvent);
+        }
+
+        private void InitGame()
+        {
+            game = new GameManager(this);
+            game.Init();
+        }
+
 
         private void InitGraphics(int width, int height)
         {
@@ -96,6 +168,7 @@ namespace GDGame
             Graphics.GraphicsDevice.SamplerStates[0] = samplerState;
         }
 
+
         protected override void Initialize()
         {
             Window.Title = "B_Logic";
@@ -106,13 +179,16 @@ namespace GDGame
             InitManagers();
             InitializeDictionaries();
 
-            CreateScenes();
-            InitEffect();
-            LoadFonts();
-            LoadBasicTextures();
+            InitEvents();
 
+            InitEffect();
+            LoadContent();
+
+            InitArchetypalQuad();
             InitUiArchetypes();
 
+            InitUi();
+            InitCameras3D();
 
             base.Initialize();
         }
@@ -141,10 +217,6 @@ namespace GDGame
             CameraManager = new CameraManager<Camera3D>(this, StatusType.Off);
             Components.Add(CameraManager);
 
-            //Scene
-            SceneManager = new SceneManager(this, StatusType.Off);
-            Components.Add(SceneManager);
-
             //Keyboard
             KeyboardManager = new KeyboardManager(this);
             Components.Add(KeyboardManager);
@@ -165,13 +237,13 @@ namespace GDGame
             RenderManager = new OurRenderManager(this, StatusType.Drawn, ScreenLayoutType.Single, ObjectManager,
                 CameraManager);
             Components.Add(RenderManager);
-            
+
             //Animation
             Components.Add(new TransformAnimationManager(this, StatusType.Update));
-            
+
             //Timing
-            Components.Add(new TimeManager(this,StatusType.Update));
-            
+            Components.Add(new TimeManager(this, StatusType.Update));
+
             //UI
             UiManager = new OurUiManager(this, StatusType.Off, spriteBatch, 10);
             Components.Add(UiManager);
@@ -189,6 +261,13 @@ namespace GDGame
 
             //LevelData
             LevelDataManager = new LevelDataManager();
+        }
+
+
+        private void InitUi()
+        {
+            uiSceneManager = new UiSceneManager(this);
+            uiSceneManager.InitUi();
         }
 
         private void InitUiArchetypes()
@@ -226,7 +305,7 @@ namespace GDGame
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         protected override void Draw(GameTime gameTime)
         {
@@ -234,8 +313,66 @@ namespace GDGame
             base.Draw(gameTime);
         }
 
+        protected override void LoadContent()
+        {
+            LoadManager loadManager = new LoadManager(this);
+            loadManager.InitLoad();
+        }
+
         protected override void Update(GameTime gameTime)
         {
+            game?.Update();
+
+            if (currentMovementCoolDown <= 0)
+            {
+                currentMovementCoolDown = GameConstants.MovementCooldown;
+                EventManager.FireEvent(new MovingTilesEventInfo());
+            }
+
+            currentMovementCoolDown -= (float) gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (player == null)
+            {
+                OurDrawnActor3D drawnActor3D =
+                    ObjectManager.OpaqueList.Find(actor3D => actor3D.ID == "clone - Player");
+                if (CameraManager.ActiveCamera.ControllerList[0] is RotationAroundActor cam &&
+                    drawnActor3D != null)
+                {
+                    cam.Target = drawnActor3D;
+                    player = drawnActor3D;
+                    drawnActor3D.StatusType = StatusType.Drawn | StatusType.Update;
+                }
+            }
+
+            if (player != null)
+                player.StatusType = CameraManager.ActiveCameraIndex switch
+                {
+                    0 => StatusType.Drawn | StatusType.Update,
+                    1 => StatusType.Drawn,
+                    2 => StatusType.Drawn,
+                    _ => player.StatusType
+                };
+
+            if (KeyboardManager.IsFirstKeyPress(Keys.C)) CameraManager.CycleActiveCamera();
+
+            //Cycle Through Audio
+            if (KeyboardManager.IsFirstKeyPress(Keys.M))
+                EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PlayNextMusic});
+            //Stop Music
+            if (KeyboardManager.IsKeyDown(Keys.N))
+                EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PauseMusic});
+            //Volume Changes
+            if (KeyboardManager.IsFirstKeyPress(Keys.L))
+                EventManager.FireEvent(new SoundEventInfo
+                    {soundEventType = SoundEventType.IncreaseVolume, soundVolumeType = SoundVolumeType.Master});
+            else if (KeyboardManager.IsFirstKeyPress(Keys.K))
+                EventManager.FireEvent(new SoundEventInfo
+                    {soundEventType = SoundEventType.DecreaseVolume, soundVolumeType = SoundVolumeType.Master});
+            //Pause/resume music
+            if (KeyboardManager.IsFirstKeyPress(Keys.P))
+                EventManager.FireEvent(new SoundEventInfo
+                    {soundEventType = SoundEventType.ToggleMusicPlayback, soundVolumeType = SoundVolumeType.Master});
+
             if (KeyboardManager.IsFirstKeyPress(Keys.Escape))
                 Exit();
 
@@ -244,35 +381,52 @@ namespace GDGame
 
         #endregion
 
-        #region Load Methods
+        #region Private Method
 
-        private void LoadBasicTextures()
+        private void DestroyGame()
         {
-            Textures.Load("Assets/Textures/Menu/button", "bStart");
+            game?.UnRegisterGame();
+            game?.RemoveCamera();
+            ObjectManager.RemoveAll(actor3D => actor3D != null);
+            Components.Remove(PhysicsManager);
+            PhysicsManager = new PhysicsManager(this, StatusType.Update);
+            Components.Add(PhysicsManager);
+            player = null;
         }
 
-        private void LoadFonts()
+
+        private void ToggleOptions()
         {
-            Fonts.Load("Assets/Fonts/Arial");
+            IsEasy = !IsEasy;
         }
 
         #endregion
 
-        #region Methods
+        #region Events
 
-        private void CreateScenes()
+        private void HandleGameStateEvent(GameStateMessageEventInfo eventInfo)
         {
-            //SceneManager.AddScene("Test", new MainScene(this, "test_Enemy_path.json"));
-            SceneManager.AddScene("Level 7", new MainScene(this, "Big_Level.json"));
+            switch (eventInfo.GameState)
+            {
+                case GameState.Start:
+                    DestroyGame();
+                    InitGame();
+                    break;
+                case GameState.Lost:
+                    break;
+                case GameState.Won:
+                    break;
+            }
+        }
 
-
-            // SceneManager.AddScene("Tutorial", new TutorialScene(this));
-            // SceneManager.AddScene("Level1", new MainScene(this, "Paul_Level_1.json"));
-            // SceneManager.AddScene("Level2", new MainScene(this, "Paul_Level_2.json"));
-            // SceneManager.AddScene("Level3", new MainScene(this, "Paul_Level_3.json"));
-            // SceneManager.AddScene("Level4", new MainScene(this, "Paul_Level_4.json"));
-            // SceneManager.AddScene("Level5", new MainScene(this, "Paul_Level_5.json"));
-            // SceneManager.AddScene("Level6", new MainScene(this, "Paul_Level_6.json"));
+        private void HandleOptionsEvent(OptionsEventInfo obj)
+        {
+            switch (obj.Type)
+            {
+                case OptionsType.Toggle:
+                    ToggleOptions();
+                    break;
+            }
         }
 
         #endregion

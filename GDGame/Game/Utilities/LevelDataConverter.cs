@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using GDGame.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
@@ -18,7 +19,6 @@ namespace GDGame.Utilities
     {
         public Vector3 gridSize;
         public Vector3 tileSize;
-        public Vector3 gridBoundsOffset;
         public ETileType[,,] gridValues;
         public Transform3DCurve startCameraCurve;
         public List<CoffeeInfo> coffeeInfo;
@@ -26,6 +26,7 @@ namespace GDGame.Utilities
         public Dictionary<Vector3, List<Vector3>> movingTilePaths;
         public Dictionary<Vector3, int> activatorTargets;
         public Dictionary<Vector3, string> collectibles;
+        public int cameraMaxTime;
     }
 
     public static class LevelDataConverter
@@ -35,29 +36,30 @@ namespace GDGame.Utilities
         public static LevelData ConvertJsonToLevelData(string jsonLevelString)
         {
             JSONObject json = JSONObject.Parse(jsonLevelString);
-            JSONObject gridSizeJSON = json.GetObject("GridSize");
-            JSONObject tileSizeJSON = json.GetObject("TileSize");
-            JSONObject boundsOffsetJSON = json.GetObject("BoundsOffset");
+            JSONObject gridSizeJson = json.GetObject("GridSize");
+            JSONObject tileSizeJson = json.GetObject("TileSize");
+            JSONObject boundsOffsetJson = json.GetObject("BoundsOffset");
 
-            Vector3 gridSize = new Vector3((float) gridSizeJSON.GetNumber("X"), (float) gridSizeJSON.GetNumber("Y"),
-                (float) gridSizeJSON.GetNumber("Z"));
-            Vector3 tileSize = new Vector3((float) tileSizeJSON.GetNumber("X"), (float) tileSizeJSON.GetNumber("Y"),
-                (float) tileSizeJSON.GetNumber("Z"));
-            Vector3 gridBoundsOffset = new Vector3((float) boundsOffsetJSON.GetNumber("X"), (float) boundsOffsetJSON.GetNumber("Y"),
-                (float) boundsOffsetJSON.GetNumber("Z"));
+            Vector3 gridSize = new Vector3((float) gridSizeJson.GetNumber("X"), (float) gridSizeJson.GetNumber("Y"),
+                (float) gridSizeJson.GetNumber("Z"));
+            Vector3 tileSize = new Vector3((float) tileSizeJson.GetNumber("X"), (float) tileSizeJson.GetNumber("Y"),
+                (float) tileSizeJson.GetNumber("Z"));
+            Vector3 gridBoundsOffset = new Vector3((float) boundsOffsetJson.GetNumber("X"),
+                (float) boundsOffsetJson.GetNumber("Y"),
+                (float) boundsOffsetJson.GetNumber("Z"));
 
             LevelData data = new LevelData
             {
                 gridSize = gridSize,
                 tileSize = tileSize,
-                gridBoundsOffset = gridBoundsOffset,
                 gridValues = new ETileType[(int) gridSize.X, (int) gridSize.Y, (int) gridSize.Z],
                 startCameraCurve = new Transform3DCurve(CurveLoopType.Oscillate),
                 coffeeInfo = new List<CoffeeInfo>(),
                 shapes = new Dictionary<double, List<Vector3>>(),
                 movingTilePaths = new Dictionary<Vector3, List<Vector3>>(),
                 activatorTargets = new Dictionary<Vector3, int>(),
-                collectibles = new Dictionary<Vector3, string>()
+                collectibles = new Dictionary<Vector3, string>(),
+                cameraMaxTime = 0
             };
 
             //Set Camera Curve points
@@ -65,11 +67,16 @@ namespace GDGame.Utilities
             foreach (JSONValue value in cameraInfoArray)
             {
                 JSONObject obj = value.Obj;
-                Vector3 translation = new Vector3((float)obj.GetNumber("X") - gridBoundsOffset.X, (float)obj.GetNumber("Y") - gridBoundsOffset.Y, -(float)obj.GetNumber("Z") + gridSize.Z + gridBoundsOffset.Z - 1);
-                Vector3 look = new Vector3((float)obj.GetNumber("LookX"), (float)obj.GetNumber("LookY"), -(float)obj.GetNumber("LookZ"));
-                Vector3 up = new Vector3((float)obj.GetNumber("UpX"), (float)obj.GetNumber("UpY"), -(float)obj.GetNumber("UpZ"));
-                int time = (int)obj.GetNumber("MS");
+                Vector3 translation = new Vector3((float) obj.GetNumber("X") - gridBoundsOffset.X,
+                    (float) obj.GetNumber("Y") - gridBoundsOffset.Y,
+                    -(float) obj.GetNumber("Z") + gridSize.Z + gridBoundsOffset.Z - 1);
+                Vector3 look = new Vector3((float) obj.GetNumber("LookX"), (float) obj.GetNumber("LookY"),
+                    -(float) obj.GetNumber("LookZ"));
+                Vector3 up = new Vector3((float) obj.GetNumber("UpX"), (float) obj.GetNumber("UpY"),
+                    -(float) obj.GetNumber("UpZ"));
+                int time = (int) obj.GetNumber("MS");
                 data.startCameraCurve.Add(translation, look, up, time);
+                data.cameraMaxTime = time;
             }
 
             //Ser Coffee Rising information
@@ -77,10 +84,10 @@ namespace GDGame.Utilities
             foreach (JSONValue value in coffeeInfoArray)
             {
                 JSONObject obj = value.Obj;
-                float y = (float)obj.GetNumber("Y");
+                float y = (float) obj.GetNumber("Y");
                 float time = (float) obj.GetNumber("MS");
                 float setBackY = (float) obj.GetNumber("SetBackY");
-                data.coffeeInfo.Add(new CoffeeInfo { Y = y, TimeInMs = time, SetBackY = setBackY });
+                data.coffeeInfo.Add(new CoffeeInfo {Y = y, TimeInMs = time, SetBackY = setBackY});
             }
 
             //populate Grid values
@@ -104,7 +111,7 @@ namespace GDGame.Utilities
 
                             //check if collectible and store collectibleId to data
                             string collectibleId = obj.GetString("CollectibleID");
-                            if(collectibleId != string.Empty)
+                            if (collectibleId != string.Empty)
                                 data.collectibles.Add(new Vector3(x, y, z), collectibleId);
 
                             //check if part of shape and store it separately
@@ -116,16 +123,13 @@ namespace GDGame.Utilities
                                     data.shapes.Add(shapeId, new List<Vector3> {new Vector3(x, y, z)});
 
                             //check if path moving tile and add paths to data
-                            if (data.gridValues[x, y, z] == ETileType.Enemy || data.gridValues[x, y, z] == ETileType.MovingPlatform)
+                            if (data.gridValues[x, y, z] == ETileType.Enemy ||
+                                data.gridValues[x, y, z] == ETileType.MovingPlatform)
                             {
                                 JSONArray path = obj.GetArray("Path");
-                                List<Vector3> pathPositions = new List<Vector3>();
-
-                                for (int i = 0; i < path.Length; i++)
-                                {
-                                    JSONObject pathObj = path[i].Obj;
-                                    pathPositions.Add(new Vector3((int) pathObj["X"].Number, (int) pathObj["Y"].Number, (int) pathObj["Z"].Number));
-                                }
+                                List<Vector3> pathPositions = path.Select(t => t.Obj).Select(pathObj =>
+                                    new Vector3((int) pathObj["X"].Number, (int) pathObj["Y"].Number,
+                                        (int) pathObj["Z"].Number)).ToList();
 
                                 data.movingTilePaths.Add(new Vector3(x, y, z), pathPositions);
                             }

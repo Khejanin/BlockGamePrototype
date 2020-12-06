@@ -1,7 +1,5 @@
-﻿using System;
-using GDGame.Actors;
+﻿using GDGame.Actors;
 using GDGame.Enums;
-using GDGame.Utilities;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.EventSystem
@@ -14,7 +12,6 @@ namespace GDGame.EventSystem
     {
         #region Properties, Indexers
 
-        public string TileId { get; set; }
         public TileEventType Type { get; set; }
 
         #endregion
@@ -26,8 +23,8 @@ namespace GDGame.EventSystem
 
         public AttachableTile movableTile;
         public Vector3? position;
-        public PlayerEventType type;
         public Tile tile;
+        public PlayerEventType type;
 
         #endregion
     }
@@ -50,40 +47,22 @@ namespace GDGame.EventSystem
     {
         #region Public variables
 
-        public GameState gameState;
-
-        #endregion
-
-        #region Constructors
-
-        public GameStateMessageEventInfo(GameState gameState)
-        {
-            this.gameState = gameState;
-        }
+        public GameState GameState { get; set; }
 
         #endregion
     }
 
     public class SceneEventInfo : EventInfo
     {
-        #region Public variables
-
-        public SceneActionType sceneActionType;
-
-        #endregion
-
         #region Properties, Indexers
 
         public string LevelName { get; set; }
+        public SceneActionType SceneActionType { get; set; }
 
         #endregion
     }
 
     public class DataManagerEvent : EventInfo
-    {
-    }
-
-    public class CameraEvent : EventInfo
     {
     }
 
@@ -104,6 +83,16 @@ namespace GDGame.EventSystem
         public SfxType sfxType;
         public SoundEventType soundEventType;
         public SoundVolumeType soundVolumeType;
+
+        #endregion
+    }
+
+    public class OptionsEventInfo : EventInfo
+    {
+        #region Properties, Indexers
+
+        public string Id { get; set; }
+        public OptionsType Type { get; set; }
 
         #endregion
     }

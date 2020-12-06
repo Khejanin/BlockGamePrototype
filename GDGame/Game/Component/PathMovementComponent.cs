@@ -14,19 +14,19 @@ namespace GDGame.Component
 {
     public class PathMovementComponent : ActivatableController, IActivatable, ICloneable
     {
-        public int currentPositionIndex;
+        private int currentPositionIndex;
         protected int movementTime;
         protected float timePercent;
         protected Smoother.SmoothingMethod smoothingMethod;
-        protected int pathDir = 1;
-        protected PathMoveTile pathMoveTileParent;
+        private int pathDir = 1;
+        private PathMoveTile pathMoveTileParent;
 
-        protected List<Vector3> path
+        private List<Vector3> Path
         {
             get
             {
-                if(pathMoveTileParent == null) pathMoveTileParent = parent as PathMoveTile;
-                return pathMoveTileParent.Path;
+                pathMoveTileParent ??= parent as PathMoveTile;
+                return pathMoveTileParent?.Path;
             }
         }
 
@@ -59,12 +59,12 @@ namespace GDGame.Component
 
         #region Pathing
 
-        protected Vector3 NextPathPoint()
+        private Vector3 NextPathPoint()
         {
-            if (currentPositionIndex + pathDir == path.Count || currentPositionIndex + pathDir == -1)
+            if (currentPositionIndex + pathDir == Path.Count || currentPositionIndex + pathDir == -1)
                 pathDir *= -1;
 
-            return path[currentPositionIndex += pathDir];
+            return Path[currentPositionIndex += pathDir];
         }
 
         //There is a lot of magic in here
@@ -96,7 +96,7 @@ namespace GDGame.Component
 
         #region Activation
 
-        public void Activate()
+        public new void Activate()
         {
             active = true;
         }
@@ -105,7 +105,7 @@ namespace GDGame.Component
         {
         }
 
-        public void Deactivate()
+        public new void Deactivate()
         {
             active = false;
         }
@@ -114,7 +114,7 @@ namespace GDGame.Component
         {
         }
 
-        public void ToggleActivation()
+        public new void ToggleActivation()
         {
             active = !active;
         }
@@ -123,8 +123,7 @@ namespace GDGame.Component
         
         public override void Update(GameTime gameTime, IActor actor)
         {
-            if (parent == null) parent = (Tile) actor;
-            
+            parent ??= (Tile) actor;
         }
 
         public new object Clone()
