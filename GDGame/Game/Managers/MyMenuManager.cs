@@ -15,8 +15,6 @@ namespace GDGame.Managers
     {
         #region Private variables
 
-        private bool isMenu = true;
-
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
 

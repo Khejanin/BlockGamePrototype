@@ -48,10 +48,10 @@ namespace GDGame.Managers
         protected Actor3D actor;
         protected Vector3 start;
         protected Process process;
-        protected bool isRelative;
+        private bool isRelative;
         protected Body body;
         protected Action callback;
-        protected bool resetAfterDone;
+        private bool resetAfterDone;
 
         protected AnimationEvent(AnimationEventData animationEventData)
         {
