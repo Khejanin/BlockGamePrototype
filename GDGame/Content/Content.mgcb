@@ -980,6 +980,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Menu/button.png
 
+#begin Assets/Textures/Menu/EndScreen.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Menu/EndScreen.png
+
 #begin Assets/Textures/Menu/logo.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1904,6 +1916,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/Controls/reticuleOpen.png
 
+#begin Assets/Textures/UI/GreenSticker.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/GreenSticker.png
+
 #begin Assets/Textures/UI/Mug-Collected.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1915,6 +1939,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/Mug-Collected.png
+
+#begin Assets/Textures/UI/RedSticker.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/RedSticker.png
+
+#begin Assets/Textures/UI/Sad.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/Sad.png
 
 #begin Assets/Textures/UI/TopBar.png
 /importer:TextureImporter

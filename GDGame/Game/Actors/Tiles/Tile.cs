@@ -113,18 +113,13 @@ namespace GDGame.Actors
             return tile;
         }
 
-        public virtual void Die()
-        {
-            Respawn();
-        }
-
         protected bool Equals(Tile other)
         {
             return base.Equals(other) && activatorId == other.activatorId && spawnPos.Equals(other.spawnPos) &&
                    Equals(Shape, other.Shape) && TileType == other.TileType;
         }
 
-        public void Respawn()
+        public virtual void Respawn()
         {
             SetTranslation(spawnPos);
         }
@@ -148,7 +143,15 @@ namespace GDGame.Actors
             switch (info.Type)
             {
                 case TileEventType.Reset:
-                    Respawn();
+                    if (info.IsEasy)
+                    {
+                        Respawn();
+                    }
+                    else
+                    {
+                        EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Lost});
+                    }
+
                     break;
             }
         }

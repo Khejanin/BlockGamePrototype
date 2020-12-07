@@ -62,7 +62,7 @@ namespace GDGame.Actors
 
         #region Override Methode
 
-        public override void Die()
+        public override void Respawn()
         {
             IsAlive = false;
             this.ScaleTo(new AnimationEventData()

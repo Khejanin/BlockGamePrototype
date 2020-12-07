@@ -11,6 +11,7 @@ using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
+using JigLibX.Collision;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Managers
@@ -254,42 +255,13 @@ namespace GDGame.Managers
             coffeeEffect.CoffeeColor = new Color(coffeeEffect.CoffeeColor * 0.8f, 255);
             Tile spike = new Tile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 coffeeEffect, main.Models["Puddle"], false, ETileType.Spike);
-            spike.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, (skin0, skin1) =>
-            {
-                if (skin1.Owner.ExternalData is Tile collide)
-                    switch (collide.TileType)
-                    {
-                        case ETileType.Attachable:
-                            EventManager.FireEvent(new TileEventInfo
-                                {Type = TileEventType.AttachableKill});
-                            break;
-                        case ETileType.Player:
-                            if (((PlayerTile) collide).IsAlive)
-                                EventManager.FireEvent(new TileEventInfo
-                                    {Type = TileEventType.PlayerKill});
-                            break;
-                    }
-
-                return true;
-            }));
+            spike.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnHostileCollision));
 
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Mug"], Color.White, 1);
             Tile starPickup = new Tile("Star", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, main.Models["Mug"], false, ETileType.Star);
             starPickup.ControllerList.Add(new PlayerDeathComponent("PDC", ControllerType.Event));
-            starPickup.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, (skin0, skin1) =>
-            {
-                if (skin1.Owner.ExternalData is Tile collide)
-                    switch (collide.TileType)
-                    {
-                        case ETileType.Player:
-                            EventManager.FireEvent(new PlayerEventInfo
-                                {type = PlayerEventType.PickupMug, tile = skin0.Owner.ExternalData as Tile});
-                            break;
-                    }
-
-                return true;
-            }));
+            starPickup.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnCollectibleCollision));
 
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["sugarbox"], Color.White, 1);
             Tile goal = new Tile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
@@ -351,24 +323,7 @@ namespace GDGame.Managers
                 transform3D, coffeeEffect, main.Models["Drop"], false, ETileType.Enemy);
             enemy.ControllerList.Add(new EnemyMovementComponent("emc", ControllerType.Movement, ActivationType.AlwaysOn,
                 0.5f, Smoother.SmoothingMethod.Smooth));
-            enemy.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, (skin0, skin1) =>
-            {
-                if (skin1.Owner.ExternalData is Tile collide)
-                    switch (collide.TileType)
-                    {
-                        case ETileType.Attachable:
-                            EventManager.FireEvent(new TileEventInfo
-                                {Type = TileEventType.AttachableKill});
-                            break;
-                        case ETileType.Player:
-                            if (((PlayerTile) collide).IsAlive)
-                                EventManager.FireEvent(new TileEventInfo
-                                    {Type = TileEventType.PlayerKill});
-                            break;
-                    }
-
-                return true;
-            }));
+            enemy.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnHostileCollision));
 
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Finish"], Color.White, 1);
             MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Platform,
@@ -402,6 +357,11 @@ namespace GDGame.Managers
 
         #region Public Method
 
+        public void RemoveCamera()
+        {
+            main.CameraManager.RemoveFirstIf(camera3D => camera3D.ID == curveCamera.ID);
+        }
+
         public void UnRegisterGame()
         {
             EventManager.UnregisterListener<PlayerEventInfo>(OnPlayerEventMessageReceived);
@@ -422,6 +382,37 @@ namespace GDGame.Managers
 
         #region Events
 
+        private bool OnCollectibleCollision(CollisionSkin skin0, CollisionSkin skin1)
+        {
+            if (skin1.Owner.ExternalData is Tile collide)
+                switch (collide.TileType)
+                {
+                    case ETileType.Player:
+                        EventManager.FireEvent(new PlayerEventInfo
+                            {type = PlayerEventType.PickupMug, tile = skin0.Owner.ExternalData as Tile});
+                        break;
+                }
+
+            return true;
+        }
+
+        private bool OnHostileCollision(CollisionSkin skin0, CollisionSkin skin1)
+        {
+            if (skin1.Owner.ExternalData is Tile collide)
+                switch (collide.TileType)
+                {
+                    case ETileType.Attachable:
+                        EventManager.FireEvent(new TileEventInfo {Type = TileEventType.AttachableKill});
+                        break;
+                    case ETileType.Player:
+                        if (((PlayerTile) collide).IsAlive)
+                            EventManager.FireEvent(new TileEventInfo {Type = TileEventType.PlayerKill, IsEasy = main.IsEasy});
+                        break;
+                }
+
+            return true;
+        }
+
         private void OnPlayerEventMessageReceived(PlayerEventInfo obj)
         {
             if (obj.type == PlayerEventType.PickupMug)
@@ -432,10 +423,5 @@ namespace GDGame.Managers
         }
 
         #endregion
-
-        public void RemoveCamera()
-        {
-            main.CameraManager.RemoveFirstIf(camera3D => camera3D.ID == curveCamera.ID);
-        }
     }
 }

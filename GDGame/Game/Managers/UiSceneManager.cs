@@ -41,17 +41,38 @@ namespace GDGame.Managers
 
         private void InitEndUi()
         {
-            string text = "You won!!! Press ESC to close the Game!";
-            Vector2 origin = new Vector2(Main.Fonts["Arial"].MeasureString(text).X / 2,
-                Main.Fonts["Arial"].MeasureString(text).Y / 2);
-            Integer2 dimensions = new Integer2(Main.Fonts["Arial"].MeasureString(text));
-            Transform2D transform2D = new Transform2D(Main.ScreenCentre, 0, Vector2.One, origin, dimensions);
+            
+            if (((UITextureObject) Main.UiArchetypes["texture"]).Clone() is UITextureObject uiTextureObject)
+            {
+                Texture2D texture2D = Main.Textures["EndScreen"];
+                uiTextureObject.Texture = texture2D;
+                uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                uiTextureObject.Transform2D.Origin = new Vector2(texture2D.Width / 2f, texture2D.Height / 2f);
+                uiTextureObject.Transform2D.Translation = Main.ScreenCentre;
+                Main.MenuManager.Add("LoseScreen", uiTextureObject);
+            }
 
-            UITextObject uITextObject = new UITextObject("WinText", ActorType.UIText, StatusType.Drawn, transform2D,
-                Color.Wheat, 0, SpriteEffects.None, text, Main.Fonts["Arial"]);
-
-
-            Main.MenuManager.Add("EndScene", uITextObject);
+            if (((UITextObject) Main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
+            {
+                string text = "You have been dissolved";
+                uiTextObject.ID = "LoseText";
+                uiTextObject.Text = text;
+                uiTextObject.Color = Color.Yellow;
+                uiTextObject.Transform2D.Origin = new Vector2(Main.Fonts["Arial"].MeasureString(text).X / 2,
+                    Main.Fonts["Arial"].MeasureString(text).Y / 2);
+                uiTextObject.Transform2D.Translation = Main.ScreenCentre - Vector2.UnitY * 250;
+                Main.MenuManager.Add("LoseScreen", uiTextObject);
+            }
+            uiTextureObject = ((UITextureObject)Main.UiArchetypes["texture"]).Clone() as UITextureObject;
+            if (uiTextureObject != null)
+            {
+                Texture2D texture2D = Main.Textures["Sad"];
+                uiTextureObject.Texture = texture2D;
+                uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                uiTextureObject.Transform2D.Origin = new Vector2(texture2D.Width / 2f, texture2D.Height / 2f);
+                uiTextureObject.Transform2D.Translation = Main.ScreenCentre - Vector2.UnitX * 250;
+                Main.MenuManager.Add("LoseScreen", uiTextureObject);
+            }
         }
 
         private void InitEventListeners()
@@ -73,7 +94,7 @@ namespace GDGame.Managers
                 uiTextureObject.Transform2D.Origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
                 uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
                 uiTextureObject.Transform2D.Translation = Main.ScreenCentre;
-                Main.UiManager.Add(uiTextureObject);
+                Main.MenuManager.Add("Game", uiTextureObject);
             }
 
             uiTextureObject = ((UITextureObject) Main.UiArchetypes["texture"]).Clone() as UITextureObject;
@@ -87,7 +108,7 @@ namespace GDGame.Managers
                 uiTextureObject.Transform2D.Origin = new Vector2(0, 0);
                 uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
                 uiTextureObject.Transform2D.Translation = offset;
-                Main.UiManager.Add(uiTextureObject);
+                Main.MenuManager.Add("Game", uiTextureObject);
             }
 
 
@@ -102,7 +123,7 @@ namespace GDGame.Managers
                 uiTextureObject.Transform2D.Origin = new Vector2(0, 0);
                 uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
                 uiTextureObject.Transform2D.Translation = offset;
-                Main.UiManager.Add(uiTextureObject);
+                Main.MenuManager.Add("Game", uiTextureObject);
             }
 
             uiTextureObject = ((UITextureObject) Main.UiArchetypes["texture"]).Clone() as UITextureObject;
@@ -116,7 +137,7 @@ namespace GDGame.Managers
                 uiTextureObject.Transform2D.Origin = new Vector2(0, 0);
                 uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
                 uiTextureObject.Transform2D.Translation = offset;
-                Main.UiManager.Add(uiTextureObject);
+                Main.MenuManager.Add("Game", uiTextureObject);
             }
 
 
@@ -132,7 +153,7 @@ namespace GDGame.Managers
                 Vector2 xPosition = -Vector2.UnitX * screenWidth / 5 - Vector2.UnitX * 15;
                 uiTextObject.Transform2D.Translation = Main.ScreenCentre + yPosition + xPosition;
                 uiTextObject.Color = GameConstants.colorGold;
-                Main.UiManager.Add(uiTextObject);
+                Main.MenuManager.Add("Game", uiTextObject);
             }
 
             uiTextObject = ((UITextObject) Main.UiArchetypes["text"]).Clone() as UITextObject;
@@ -147,7 +168,7 @@ namespace GDGame.Managers
                 Vector2 xPosition = Vector2.UnitX * screenWidth / 5 - Vector2.UnitX * 15;
                 uiTextObject.Transform2D.Translation = Main.ScreenCentre + yPosition + xPosition;
                 uiTextObject.Color = GameConstants.colorGold;
-                Main.UiManager.Add(uiTextObject);
+                Main.MenuManager.Add("Game", uiTextObject);
             }
 
             uiTextObject = ((UITextObject) Main.UiArchetypes["text"]).Clone() as UITextObject;
@@ -157,7 +178,7 @@ namespace GDGame.Managers
                 uiTextObject.ID = "AttachToolTipText";
                 uiTextObject.Text = text;
                 uiTextObject.StatusType = StatusType.Off;
-                Main.UiManager.Add(uiTextObject);
+                Main.MenuManager.Add("Game", uiTextObject);
             }
 
             uiTextureObject = ((UITextureObject) Main.UiArchetypes["texture"]).Clone() as UITextureObject;
@@ -170,7 +191,7 @@ namespace GDGame.Managers
                 uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
                 uiTextureObject.Transform2D.Translation = Main.ScreenCentre;
                 uiTextureObject.StatusType = StatusType.Off;
-                Main.UiManager.Add(uiTextureObject);
+                Main.MenuManager.Add("Game", uiTextureObject);
             }
 
             if (((UIButtonObject) Main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)
@@ -179,7 +200,7 @@ namespace GDGame.Managers
                 uiButtonObject.Text = "Resume";
                 uiButtonObject.Transform2D.Translation = Main.ScreenCentre;
                 uiButtonObject.StatusType = StatusType.Off;
-                Main.UiManager.Add(uiButtonObject);
+                Main.MenuManager.Add("Game", uiButtonObject);
             }
         }
 
@@ -196,6 +217,7 @@ namespace GDGame.Managers
                 Main.UiManager.Add(uiTextureObject);
             }
 
+            
             if (((UITextObject) Main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
             {
                 string text = "Press SPACEBAR to continue!";
@@ -210,6 +232,7 @@ namespace GDGame.Managers
 
         private void InitMenuUi()
         {
+            //Background
             if (((UITextureObject) Main.UiArchetypes["texture"]).Clone() is UITextureObject uiTextureObject)
             {
                 Texture2D texture2D = Main.Textures["Menu"];
@@ -222,7 +245,7 @@ namespace GDGame.Managers
 
 
             Vector2 xPosition = Vector2.UnitX * 500;
-            
+
             //Play Button
             string text = "Play";
             if (((UIButtonObject) Main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)

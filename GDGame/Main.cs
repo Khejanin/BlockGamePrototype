@@ -56,7 +56,7 @@ namespace GDGame
         public KeyboardManager KeyboardManager { get; private set; }
         public LevelDataManager LevelDataManager { get; private set; }
         public MyMenuManager MenuManager { get; private set; }
-        public BasicEffect ModelEffect { get; set; }
+        public BasicEffect ModelEffect { get; private set; }
         public ContentDictionary<Model> Models { get; private set; }
         public MouseManager MouseManager { get; private set; }
         public OurObjectManager ObjectManager { get; private set; }
@@ -411,8 +411,11 @@ namespace GDGame
                 case GameState.Start:
                     DestroyGame();
                     InitGame();
+                    MenuManager.SetScene("Game");
                     break;
                 case GameState.Lost:
+                    DestroyGame();
+                    MenuManager.SetScene("LoseScreen");
                     break;
                 case GameState.Won:
                     break;

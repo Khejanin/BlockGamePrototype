@@ -17,6 +17,7 @@ namespace GDGame.Managers
 
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
+        private bool isMenu = true;
 
         #endregion
 
@@ -41,17 +42,6 @@ namespace GDGame.Managers
 
         #region Override Methode
 
-        protected override void HandleEvent(EventData eventData)
-        {
-            if (eventData.EventCategoryType == EventCategoryType.Menu)
-                StatusType = eventData.EventActionType switch
-                {
-                    EventActionType.OnPause => StatusType.Drawn | StatusType.Update,
-                    EventActionType.OnPlay => StatusType.Off,
-                    _ => StatusType
-                };
-        }
-
         protected override void HandleInput(GameTime gameTime)
         {
             HandleMouse(gameTime);
@@ -61,9 +51,10 @@ namespace GDGame.Managers
         protected override void HandleKeyboard(GameTime gameTime)
         {
             if (keyboardManager.IsFirstKeyPress(Keys.M))
-                EventDispatcher.Publish(StatusType == StatusType.Off
-                    ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
-                    : new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
+            {
+                bool scene = isMenu ? SetScene("MainMenu") : SetScene("Game");
+                isMenu = !isMenu;
+            }
         }
 
         protected override void HandleMouse(GameTime gameTime)

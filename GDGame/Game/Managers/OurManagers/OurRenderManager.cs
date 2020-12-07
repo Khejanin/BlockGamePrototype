@@ -16,6 +16,8 @@ namespace GDGame.Managers
         private CameraManager<Camera3D> cameraManager;
         private OurObjectManager objectManager;
         private ScreenLayoutType screenLayoutType;
+        private RasterizerState rasterizerStateOpaque;
+        private RasterizerState rasterizerStateTransparent;
 
         #endregion
 
@@ -29,6 +31,8 @@ namespace GDGame.Managers
             this.screenLayoutType = screenLayoutType;
             this.objectManager = objectManager;
             this.cameraManager = cameraManager;
+            
+            InitializeGraphics();
         }
 
         #endregion
@@ -63,19 +67,49 @@ namespace GDGame.Managers
         {
             GraphicsDevice.Viewport = activeCamera.Viewport;
 
+            SetGraphicsStateObjects(true);
             foreach (OurDrawnActor3D actor in objectManager.OpaqueList.Where(actor =>
                 (actor.StatusType & StatusType.Drawn) == StatusType.Drawn))
                 actor.Draw(gameTime, activeCamera, GraphicsDevice);
 
-            GraphicsDevice.BlendState = BlendState.AlphaBlend;
-
+            SetGraphicsStateObjects(false);
             foreach (OurDrawnActor3D actor in objectManager.TransparentList.Where(actor =>
                 (actor.StatusType & StatusType.Drawn) == StatusType.Drawn))
                 actor.Draw(gameTime, activeCamera, GraphicsDevice);
-
-            GraphicsDevice.BlendState = BlendState.Opaque;
         }
 
         #endregion
+        
+        private void InitializeGraphics()
+        {
+            SamplerState samplerState = new SamplerState
+            {
+                AddressU = TextureAddressMode.Mirror, AddressV = TextureAddressMode.Mirror
+            };
+            Game.GraphicsDevice.SamplerStates[0] = samplerState;
+
+            //opaque objects
+            rasterizerStateOpaque = new RasterizerState {CullMode = CullMode.CullCounterClockwiseFace};
+
+            //transparent objects
+            rasterizerStateTransparent = new RasterizerState {CullMode = CullMode.None};
+        }
+        
+        private void SetGraphicsStateObjects(bool isOpaque)
+        {
+            Game.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
+
+            if (isOpaque)
+            {
+                Game.GraphicsDevice.RasterizerState = rasterizerStateOpaque;
+                Game.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            }
+            else
+            {
+                Game.GraphicsDevice.RasterizerState = rasterizerStateTransparent;
+                Game.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                Game.GraphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
+            }
+        }
     }
 }
