@@ -37,7 +37,8 @@ namespace GDGame.Component
         public override void Update(GameTime gameTime, IActor actor)
         {
             playerTile ??= actor as PlayerTile;
-            tileMovementComponent ??= (TileMovementComponent) playerTile?.ControllerList.Find(controller => controller.GetControllerType() == ControllerType.Movement);
+            tileMovementComponent ??= (TileMovementComponent) playerTile?.ControllerList.Find(controller =>
+                controller.GetControllerType() == ControllerType.Movement);
         }
 
         #endregion
@@ -56,11 +57,13 @@ namespace GDGame.Component
             EventManager.RegisterListener<MovementEvent>(HandleMovement);
         }
 
-        private bool IsMoveValid(Quaternion rotationToApply, Vector3 rotatePoint, Vector3 playerTargetPos, Vector3 offset)
+        private bool IsMoveValid(Quaternion rotationToApply, Vector3 rotatePoint, Vector3 playerTargetPos,
+            Vector3 offset)
         {
             List<Vector3> initials = playerTile.AttachedTiles.Select(i => i.Transform3D.Translation).ToList();
             initials.Insert(0, playerTile.Transform3D.Translation);
-            List<Vector3> ends = playerTile.AttachedTiles.Select(i => i.CalculateTargetPosition(rotatePoint, rotationToApply)).ToList();
+            List<Vector3> ends = playerTile.AttachedTiles
+                .Select(i => i.CalculateTargetPosition(rotatePoint, rotationToApply)).ToList();
             ends.Insert(0, playerTargetPos);
             List<Raycaster.HitResult> results = new List<Raycaster.HitResult>();
             List<Raycaster.FloorHitResult> floorHitResults = new List<Raycaster.FloorHitResult>();
@@ -70,7 +73,7 @@ namespace GDGame.Component
 
         private void Move(Vector3 direction)
         {
-            if (playerTile.IsAlive)
+            if (playerTile != null && playerTile.IsAlive)
             {
                 playerTile.SetRotatePoint(direction);
                 tileMovementComponent.CalculateEndPos(direction, out Vector3 endPos, out Quaternion q, out Vector3 o);
@@ -86,7 +89,11 @@ namespace GDGame.Component
                     }
 
                     //Play player move sound
-                    EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerMove, transform = playerTile.Transform3D });
+                    EventManager.FireEvent(new SoundEventInfo
+                    {
+                        soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerMove,
+                        transform = playerTile.Transform3D
+                    });
                 }
             }
         }

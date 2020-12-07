@@ -269,8 +269,8 @@ namespace GDGame.Managers
 
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Knife"], Color.White, 1);
             Tile checkpoint = new Tile("Checkpoint", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, main.Models["Knife"],
-                false, ETileType.Checkpoint);
+                transform3D, effectParameters, main.Models["Knife"], false, ETileType.Checkpoint);
+            checkpoint.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnCheckPointCollision));
 
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Finish"], Color.White, 1);
             OurModelObject forkModelObject =
@@ -380,6 +380,22 @@ namespace GDGame.Managers
 
         #region Events
 
+        private bool OnCheckPointCollision(CollisionSkin skin0, CollisionSkin skin1)
+        {
+            if (skin1.Owner.ExternalData is Tile collide)
+            {
+                switch (collide.TileType)
+                {
+                    case ETileType.Player:
+                        EventManager.FireEvent(new PlayerEventInfo
+                            {type = PlayerEventType.SetCheckpoint, position = skin0.Owner.Position});
+                        break;
+                }
+            }
+
+            return true;
+        }
+
         private bool OnCollectibleCollision(CollisionSkin skin0, CollisionSkin skin1)
         {
             if (skin1.Owner.ExternalData is Tile collide)
@@ -400,11 +416,12 @@ namespace GDGame.Managers
                 switch (collide.TileType)
                 {
                     case ETileType.Attachable:
-                        EventManager.FireEvent(new TileEventInfo {Type = TileEventType.AttachableKill});
+                        EventManager.FireEvent(new TileEventInfo {Type = TileEventType.Reset, IsEasy = main.IsEasy});
                         break;
                     case ETileType.Player:
                         if (((PlayerTile) collide).IsAlive)
-                            EventManager.FireEvent(new TileEventInfo {Type = TileEventType.PlayerKill, IsEasy = main.IsEasy});
+                            EventManager.FireEvent(new TileEventInfo
+                                {Type = TileEventType.PlayerKill, IsEasy = main.IsEasy});
                         break;
                 }
 

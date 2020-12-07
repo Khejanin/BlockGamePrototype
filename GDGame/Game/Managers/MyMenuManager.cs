@@ -15,9 +15,10 @@ namespace GDGame.Managers
     {
         #region Private variables
 
+        private bool isMenu = true;
+
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
-        private bool isMenu = true;
 
         #endregion
 
@@ -40,21 +41,34 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
+
+        protected override void HandleEvent(EventData eventData)
+        {
+            if (eventData.EventCategoryType == EventCategoryType.Menu)
+                StatusType = eventData.EventActionType switch
+                {
+                    EventActionType.OnPause => StatusType.Drawn | StatusType.Update,
+                    EventActionType.OnPlay => StatusType.Off,
+                    _ => StatusType
+                };
+        }
 
         protected override void HandleInput(GameTime gameTime)
         {
-            HandleMouse(gameTime);
-            HandleKeyboard(gameTime);
+            if ((StatusType & StatusType.Update) != 0)
+            {
+                HandleMouse(gameTime);
+                HandleKeyboard(gameTime);
+            }
         }
 
         protected override void HandleKeyboard(GameTime gameTime)
         {
             if (keyboardManager.IsFirstKeyPress(Keys.M))
-            {
-                bool scene = isMenu ? SetScene("MainMenu") : SetScene("Game");
-                isMenu = !isMenu;
-            }
+                EventDispatcher.Publish(StatusType == StatusType.Off
+                    ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
+                    : new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
         }
 
         protected override void HandleMouse(GameTime gameTime)
@@ -89,9 +103,9 @@ namespace GDGame.Managers
                     break;
 
                 case "Back":
+                case "Continue":
                     SetScene("MainMenu");
                     break;
-
                 case "Difficulty":
                     EventManager.FireEvent(new OptionsEventInfo {Type = OptionsType.Toggle, Id = "Difficulty"});
                     break;

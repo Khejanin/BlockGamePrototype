@@ -50,8 +50,7 @@
     public enum TileEventType : sbyte
     {
         Reset,
-        PlayerKill,
-        AttachableKill
+        PlayerKill
     }
 
     public enum ActivatorEventType : sbyte

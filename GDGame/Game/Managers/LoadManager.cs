@@ -151,6 +151,7 @@ namespace GDGame.Managers
             main.Textures.Load("Assets/Textures/UI/Sad");
             main.Textures.Load("Assets/Textures/UI/RedSticker");
             main.Textures.Load("Assets/Textures/UI/GreenSticker");
+            main.Textures.Load("Assets/Textures/UI/YellowSticker");
             
         }
 

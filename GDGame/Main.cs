@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GDGame.Actors;
 using GDGame.Constants;
 using GDGame.Controllers;
@@ -48,11 +49,11 @@ namespace GDGame
 
         public OurPrimitiveObject ArchetypalTexturedQuad { get; private set; }
 
-        public CameraManager<Camera3D> CameraManager { get; set; }
+        public CameraManager<Camera3D> CameraManager { get; private set; }
         public ContentDictionary<Effect> Effects { get; private set; }
         public ContentDictionary<SpriteFont> Fonts { get; private set; }
         private GraphicsDeviceManager Graphics { get; }
-        public bool IsEasy { get; set; }
+        public bool IsEasy { get; private set; }
         public KeyboardManager KeyboardManager { get; private set; }
         public LevelDataManager LevelDataManager { get; private set; }
         public MyMenuManager MenuManager { get; private set; }
@@ -65,8 +66,8 @@ namespace GDGame
         public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
         public SoundManager SoundManager { get; private set; }
         public ContentDictionary<Texture2D> Textures { get; private set; }
-        public Dictionary<string, DrawnActor2D> UiArchetypes { get; set; }
-        public OurUiManager UiManager { get; private set; }
+        public Dictionary<string, DrawnActor2D> UiArchetypes { get; private set; }
+        public UIManager UiManager { get; private set; }
 
         #endregion
 
@@ -245,16 +246,16 @@ namespace GDGame
             Components.Add(new TimeManager(this, StatusType.Update));
 
             //UI
-            UiManager = new OurUiManager(this, StatusType.Off, spriteBatch, 10);
+            UiManager = new UIManager(this, StatusType.Off, spriteBatch, 10);
             Components.Add(UiManager);
 
             MenuManager = new MyMenuManager(this, StatusType.Drawn | StatusType.Update, spriteBatch, MouseManager,
                 KeyboardManager);
             Components.Add(MenuManager);
 
-            // OurPhysicsDebugDrawer physicsDebugDrawer = new OurPhysicsDebugDrawer(this,
-            //     StatusType.Off, CameraManager, ObjectManager);
-            // Components.Add(physicsDebugDrawer);
+            OurPhysicsDebugDrawer physicsDebugDrawer = new OurPhysicsDebugDrawer(this,
+                StatusType.Off, CameraManager, ObjectManager);
+            Components.Add(physicsDebugDrawer);
 
             //Raycast
             RaycastManager.Instance.ObjectManager = ObjectManager;
@@ -353,6 +354,11 @@ namespace GDGame
                     _ => player.StatusType
                 };
 
+            if (KeyboardManager.IsFirstKeyPress(Keys.M))
+                EventDispatcher.Publish(MenuManager.StatusType == StatusType.Off
+                    ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
+                    : new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
+            
             if (KeyboardManager.IsFirstKeyPress(Keys.C)) CameraManager.CycleActiveCamera();
 
             //Cycle Through Audio
@@ -392,6 +398,7 @@ namespace GDGame
             PhysicsManager = new PhysicsManager(this, StatusType.Update);
             Components.Add(PhysicsManager);
             player = null;
+            CameraManager.ActiveCameraIndex = 0;
         }
 
 
@@ -411,14 +418,16 @@ namespace GDGame
                 case GameState.Start:
                     DestroyGame();
                     InitGame();
-                    MenuManager.SetScene("Game");
                     break;
                 case GameState.Lost:
                     DestroyGame();
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPause, null));
                     MenuManager.SetScene("LoseScreen");
                     break;
                 case GameState.Won:
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -429,6 +438,8 @@ namespace GDGame
                 case OptionsType.Toggle:
                     ToggleOptions();
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 

@@ -247,9 +247,6 @@ namespace GDGame.Actors
         {
             switch (info.type)
             {
-                /*case PlayerEventType.Die:
-                    RespawnAtLastCheckpoint();
-                    break;*/
                 case PlayerEventType.SetCheckpoint:
                     SetCheckpoint(info.position);
                     break;
