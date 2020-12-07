@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Game.Parameters.Effect;
@@ -253,6 +250,9 @@ namespace GDGame.Actors
                 case PlayerEventType.MovableTileDie:
                     AttachedTiles.Remove(info.movableTile);
                     info.movableTile.Respawn();
+                    break;
+                case PlayerEventType.PickupMug:
+
                     break;
             }
         }

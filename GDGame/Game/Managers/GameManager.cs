@@ -258,10 +258,10 @@ namespace GDGame.Managers
             spike.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnHostileCollision));
 
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Mug"], Color.White, 1);
-            Tile starPickup = new Tile("Star", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
+            Tile pickup = new Tile("Mug", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, main.Models["Mug"], false, ETileType.Star);
-            starPickup.ControllerList.Add(new PlayerDeathComponent("PDC", ControllerType.Event));
-            starPickup.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnCollectibleCollision));
+            pickup.ControllerList.Add(new PlayerDeathComponent("PDC", ControllerType.Event));
+            pickup.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnCollectibleCollision));
 
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["sugarbox"], Color.White, 1);
             Tile goal = new Tile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
@@ -343,7 +343,7 @@ namespace GDGame.Managers
                 {"ButtonTile", activatable},
                 {"MovingPlatformTile", platform},
                 {"SpikeTile", spike},
-                {"StarPickupTile", starPickup},
+                {"StarPickupTile", pickup},
                 {"CheckpointTile", checkpoint},
                 {"Knife", knifeModelObject},
                 {"Fork", forkModelObject},
@@ -402,8 +402,34 @@ namespace GDGame.Managers
                 switch (collide.TileType)
                 {
                     case ETileType.Player:
-                        EventManager.FireEvent(new PlayerEventInfo
-                            {type = PlayerEventType.PickupMug, tile = skin0.Owner.ExternalData as Tile});
+                        Tile collectible = skin0.Owner.ExternalData as Tile;
+                        EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.PickupMug, tile = collectible});
+                        
+                        //Trigger Collectible animation
+                        collectible.MoveTo(new AnimationEventData()
+                        {
+                            isRelative = false, destination = collectible.Transform3D.Translation + Vector3.Up,
+                            maxTime = 500,
+                            smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PlayOnce,
+                            body = collectible.Body
+                        });
+
+                        collectible.ScaleTo(new AnimationEventData()
+                        {
+                            isRelative = false, destination = Vector3.One * 1.5f,
+                            maxTime = 1000,
+                            smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PingPongOnce
+                        });
+
+                        collectible.RotateTo(new AnimationEventData()
+                        {
+                            isRelative = true, destination = Vector3.Up * 720,
+                            maxTime = 1000,
+                            smoothing = Smoother.SmoothingMethod.Smooth
+                            //callback = () => {EventManager.FireEvent();}
+                        });
+
+                        EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.CollectibleCollected, transform = collectible.Transform3D});
                         break;
                 }
 

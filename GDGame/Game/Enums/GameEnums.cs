@@ -86,7 +86,8 @@
     {
         PlayerMove,
         PlayerAttach,
-        EnemyMove
+        EnemyMove,
+        CollectibleCollected
     }
 
     public enum SoundEventType : sbyte
