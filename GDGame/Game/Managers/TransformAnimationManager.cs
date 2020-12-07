@@ -153,6 +153,13 @@ namespace GDGame.Managers
         }
     }
 
+    public class GroupAnimationEvent : AnimationEvent
+    {
+        public GroupAnimationEvent(AnimationEventData animationEventData) : base(animationEventData)
+        {
+        }
+    }
+
     public class AnimateCustomEvent : AnimationEvent
     {
         public AnimateCustomEvent(AnimationEventData animationEventData) : base(animationEventData)

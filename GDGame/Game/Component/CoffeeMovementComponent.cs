@@ -14,8 +14,11 @@ namespace GDGame.Component
     {
         private Coffee coffeeParent;
         
-        public CoffeeMovementComponent(string id, ControllerType controllerType, ActivationType activationType, float timePercent, Smoother.SmoothingMethod smoothingMethod) : base(id, controllerType, activationType, timePercent, smoothingMethod)
+        public CoffeeMovementComponent(string id, ControllerType controllerType, ActivationType activationType, float timePercent, Smoother.SmoothingMethod smoothingMethod,Coffee coffee) : base(id, controllerType, activationType, timePercent, smoothingMethod)
         {
+            parent = coffee;
+            coffeeParent = coffee;
+            MoveToNextPoint();
         }
 
         protected override void MoveToNextPoint()
@@ -26,14 +29,15 @@ namespace GDGame.Component
             {
                 callback = PointReached,
                 destination = nextPoint,
+                body = parent.Body,
                 isRelative = false,
-                maxTime = (int) (coffeeParent ?? parent as Coffee).CoffeeInfo[currentPositionIndex].TimeInMs
+                maxTime = (int) coffeeParent.CoffeeInfo[currentPositionIndex].TimeInMs
             });
         }
 
         protected void PointReached()
         {
-            
+            MoveToNextPoint();
         }
         
     }

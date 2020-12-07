@@ -66,16 +66,7 @@ namespace GDGame.Actors
         public override void Respawn()
         {
             IsAlive = false;
-            this.ScaleTo(new AnimationEventData()
-            {
-                isRelative = false, destination = Vector3.Zero,
-                maxTime = 1000,
-                smoothing = Smoother.SmoothingMethod.Accelerate, loopMethod = LoopMethod.PlayOnce,
-                callback = RespawnAtLastCheckpoint, resetAferDone = true
-            });
-
-            this.RotateTo(new AnimationEventData()
-                {isRelative = true, destination = Vector3.Up * 360, maxTime = 1000, resetAferDone = true});
+            Die(RespawnAtLastCheckpoint);
         }
 
         public override void OnMoveEnd()

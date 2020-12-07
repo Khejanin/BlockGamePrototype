@@ -1,6 +1,10 @@
-﻿using GDGame.Actors;
+﻿using System;
+using System.Collections.Generic;
+using GDGame.Actors;
 using GDGame.Enums;
+using GDLibrary.Actors;
 using GDLibrary.Parameters;
+using JigLibX.Physics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
@@ -13,7 +17,8 @@ namespace GDGame.EventSystem
     public class TileEventInfo : EventInfo
     {
         #region Properties, Indexers
-
+        
+        
         public TileEventType Type { get; set; }
         public bool IsEasy { get; set; }
 
@@ -30,6 +35,13 @@ namespace GDGame.EventSystem
         public PlayerEventType type;
 
         #endregion
+    }
+
+    public class RemoveActorEvent : EventInfo
+    {
+        public Body body;
+        public Actor3D actor3D;
+        public Actor2D actor2D;
     }
 
     public class ActivatorEventInfo : EventInfo

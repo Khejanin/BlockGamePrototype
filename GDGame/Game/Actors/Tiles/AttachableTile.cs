@@ -43,6 +43,8 @@ namespace GDGame.Actors
         #endregion
 
         #region Methods
+        
+        
 
         public Vector3 CalculateTargetPosition(Vector3 rotatePoint, Quaternion rotationToApply)
         {
@@ -51,27 +53,6 @@ namespace GDGame.Actors
             Vector3 targetPosition = Vector3.Transform(offset, rotationToApply); //Rotate around the offset point
             targetPosition += Transform3D.Translation - offset;
             return targetPosition;
-        }
-
-        private void CheckCollision(Raycaster.HitResult hit)
-        {
-            if (hit?.actor == null) return;
-
-            Actor3D actor3D = hit.actor;
-            Tile tile = actor3D as Tile;
-            switch (tile?.TileType)
-            {
-                case ETileType.Spike:
-                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.MovableTileDie, movableTile = this});
-                    break;
-                case ETileType.Checkpoint:
-                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.SetCheckpoint, position = tile.Transform3D.Translation});
-                    break;
-                case ETileType.Button:
-                    ActivatableTile b = tile as ActivatableTile;
-                    b?.Activate();
-                    break;
-            }
         }
 
         public new object Clone()

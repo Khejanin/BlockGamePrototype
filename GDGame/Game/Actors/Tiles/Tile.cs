@@ -2,7 +2,9 @@ using System;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Game.Parameters.Effect;
+using GDGame.Managers;
 using GDGame.Tiles;
+using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using JigLibX.Collision;
@@ -63,7 +65,7 @@ namespace GDGame.Actors
 
         #region Initialization
 
-        public void InitializeCollision(Vector3 position, float factor = 1f)
+        public virtual void InitializeCollision(Vector3 position, float factor = 1f)
         {
             SetTranslation(position);
             AddPrimitive(new Box(Transform3D.Translation, Matrix.Identity, Transform3D.Scale * factor),
@@ -122,7 +124,7 @@ namespace GDGame.Actors
             SetTranslation(spawnPos);
         }
 
-        public void SetTranslation(Vector3 translation)
+        public virtual void SetTranslation(Vector3 translation)
         {
             Transform3D.Translation = translation;
             Body.MoveTo(translation, Matrix.Identity);
@@ -130,6 +132,20 @@ namespace GDGame.Actors
             Body.Immovable = true;
             Body.SetInactive();
             IsDirty = true;
+        }
+
+        protected virtual void Die(Action callbackAfterDeath)
+        {
+            this.ScaleTo(new AnimationEventData()
+            {
+                isRelative = false, destination = Vector3.Zero,
+                maxTime = 1000,
+                smoothing = Smoother.SmoothingMethod.Accelerate, loopMethod = LoopMethod.PlayOnce,
+                callback = callbackAfterDeath, resetAferDone = true
+            });
+            
+            this.RotateTo(new AnimationEventData()
+                {isRelative = true, destination = Vector3.Up * 360, maxTime = 1000, resetAferDone = true});
         }
 
         #endregion
@@ -143,13 +159,15 @@ namespace GDGame.Actors
                 case TileEventType.Reset:
                     if (info.IsEasy)
                     {
-                        Respawn();
+                        Die(Respawn);
                     }
                     else
                     {
                         EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Lost});
                     }
-
+                    break;
+                case TileEventType.Consumed:
+                    Die(() => { EventManager.FireEvent(new RemoveActorEvent() {actor3D = this}); });
                     break;
             }
         }
