@@ -9,8 +9,6 @@ using GDGame.Utilities;
 using GDLibrary.Containers;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
-using JigLibX.Collision;
-using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -94,7 +92,7 @@ namespace GDGame.Factory
         {
             PathMoveTile enemy = (PathMoveTile) drawnActors["EnemyTile"];
             enemy = enemy.Clone() as PathMoveTile;
-            enemy?.InitializeCollision(position, 0.8f);
+            enemy?.InitializeCollision(position, 0.7f);
             objectManager.Add(enemy);
             return enemy;
         }
@@ -164,27 +162,6 @@ namespace GDGame.Factory
             return playerTile;
         }
 
-        private Tile CreateSpike(Vector3 position)
-        {
-            Tile spikeTile = (Tile) drawnActors["SpikeTile"];
-            spikeTile = spikeTile.Clone() as Tile;
-            if (spikeTile != null)
-            {
-                spikeTile.Transform3D.Translation = position;
-                spikeTile.AddPrimitive(
-                    new Box(spikeTile.Transform3D.Translation, Matrix.Identity, spikeTile.Transform3D.Scale),
-                    new MaterialProperties(0.3f, 0.5f, 0.3f));
-                spikeTile.Enable(true, 1);
-
-                CoffeeEffectParameters effectParameters = spikeTile.EffectParameters as CoffeeEffectParameters;
-
-                if (effectParameters != null) effectParameters.Phase += MathHelperFunctions.Rnd.Next() % 100 / 100.0f;
-            }
-
-            objectManager.Add(spikeTile);
-            return spikeTile;
-        }
-
         private Tile CreateStatic(Vector3 position, Tile.StaticTileType tileType)
         {
             Tile staticTile = null;
@@ -232,7 +209,7 @@ namespace GDGame.Factory
         {
             Tile tile = (Tile) drawnActors[actor];
             tile = tile.Clone() as Tile;
-            tile?.InitializeCollision(position, 0.9f);
+            tile?.InitializeCollision(position, 0.8f);
             objectManager.Add(tile);
             return tile;
         }

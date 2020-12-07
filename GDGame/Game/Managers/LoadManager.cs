@@ -147,6 +147,12 @@ namespace GDGame.Managers
 
             main.Textures.Load("Assets/Textures/Menu/menubaseres", "Menu");
             main.Textures.Load("Assets/Textures/Menu/Options");
+            main.Textures.Load("Assets/Textures/Menu/EndScreen");
+            main.Textures.Load("Assets/Textures/UI/Sad");
+            main.Textures.Load("Assets/Textures/UI/RedSticker");
+            main.Textures.Load("Assets/Textures/UI/GreenSticker");
+            main.Textures.Load("Assets/Textures/UI/YellowSticker");
+            
         }
 
         #endregion

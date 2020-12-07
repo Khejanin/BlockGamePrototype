@@ -39,10 +39,20 @@ namespace GDGame.Component
             switch (tileEventInfo.Type)
             {
                 case TileEventType.PlayerKill:
-                    parent?.Die();
-                    if (parent is MovableTile movableTile)
+                    if (tileEventInfo.IsEasy)
                     {
-                        movableTile.IsMoving = false;
+                        parent?.Respawn();
+                        if (parent is MovableTile movableTile)
+                        {
+                            movableTile.IsMoving = false;
+                        }
+                    }
+                    else
+                    {
+                        if (parent is PlayerTile)
+                        {
+                            EventManager.FireEvent(new TileEventInfo{Type = TileEventType.Reset, IsEasy = tileEventInfo.IsEasy});
+                        }
                     }
                     break;
             }

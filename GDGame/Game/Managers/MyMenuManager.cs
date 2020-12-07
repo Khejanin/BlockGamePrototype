@@ -15,6 +15,8 @@ namespace GDGame.Managers
     {
         #region Private variables
 
+        private bool isMenu = true;
+
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
 
@@ -39,7 +41,7 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         protected override void HandleEvent(EventData eventData)
         {
@@ -54,8 +56,11 @@ namespace GDGame.Managers
 
         protected override void HandleInput(GameTime gameTime)
         {
-            HandleMouse(gameTime);
-            HandleKeyboard(gameTime);
+            if ((StatusType & StatusType.Update) != 0)
+            {
+                HandleMouse(gameTime);
+                HandleKeyboard(gameTime);
+            }
         }
 
         protected override void HandleKeyboard(GameTime gameTime)
@@ -98,9 +103,9 @@ namespace GDGame.Managers
                     break;
 
                 case "Back":
+                case "Continue":
                     SetScene("MainMenu");
                     break;
-
                 case "Difficulty":
                     EventManager.FireEvent(new OptionsEventInfo {Type = OptionsType.Toggle, Id = "Difficulty"});
                     break;

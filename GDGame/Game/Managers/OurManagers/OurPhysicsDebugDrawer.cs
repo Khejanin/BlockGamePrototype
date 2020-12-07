@@ -72,7 +72,7 @@ namespace GDGame.Managers
             for (int i = 0; i < objectManager.OpaqueList.Count; i++)
             {
                 actor = objectManager.OpaqueList[i];
-                if (actor is OurCollidableObject)
+                if (actor is OurCollidableObject && actor.ID != "clone - ChocolateTile")
                     AddCollisionSkinVertexData(actor as OurCollidableObject);
             }
 

@@ -9,7 +9,7 @@ namespace GDGame.Managers
 {
     public class TimeManager : PausableGameComponent
     {
-        struct Timer
+        private struct Timer
         {
             private Action toCall;
             private float delayInSeconds;
@@ -36,11 +36,11 @@ namespace GDGame.Managers
 
         }
 
-        private static List<Timer> timers = new List<Timer>();
+        private static List<Timer> _timers = new List<Timer>();
 
         public static void CallFunctionInSeconds(Action action, float seconds)
         {
-            timers.Add(new Timer(action,seconds));
+            _timers.Add(new Timer(action,seconds));
         }
         
         public TimeManager(Microsoft.Xna.Framework.Game game, StatusType statusType) : base(game, statusType)
@@ -49,9 +49,9 @@ namespace GDGame.Managers
 
         protected override void ApplyUpdate(GameTime gameTime)
         {
-            for (int i = 0; i < timers.Count; i++)
+            for (int i = 0; i < _timers.Count; i++)
             {
-                if (timers[i].Tick(gameTime)) timers.RemoveAt(i--);
+                if (_timers[i].Tick(gameTime)) _timers.RemoveAt(i--);
             }
             base.ApplyUpdate(gameTime);
         }
