@@ -86,7 +86,10 @@
     {
         PlayerMove,
         PlayerAttach,
-        EnemyMove
+        EnemyMove,
+        TrapDeath,
+        MenuButtonClick,
+        TrapDeathWater
     }
 
     public enum SoundEventType : sbyte
