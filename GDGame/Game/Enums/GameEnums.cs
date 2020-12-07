@@ -33,7 +33,8 @@
     {
         Won,
         Lost,
-        Start
+        Start,
+        Resume
     }
 
     public enum PlayerEventType : sbyte
@@ -50,7 +51,8 @@
     public enum TileEventType : sbyte
     {
         Reset,
-        PlayerKill
+        PlayerKill,
+        Consumed
     }
 
     public enum ActivatorEventType : sbyte
@@ -87,7 +89,10 @@
         PlayerMove,
         PlayerAttach,
         EnemyMove,
-        CollectibleCollected
+        CollectibleCollected,
+        TrapDeath,
+        MenuButtonClick,
+        TrapDeathWater
     }
 
     public enum SoundEventType : sbyte

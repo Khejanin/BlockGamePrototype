@@ -12,6 +12,11 @@ namespace GDGame.Utilities
     {
         #region Methods
 
+        public static void RemoveAllAnimations(this Actor3D actor3D)
+        {
+            EventManager.FireEvent(new MovementEvent(new AnimationEventData{ type = AnimationEventType.RemoveAllOfActor}));
+        }
+        
         public static void MoveTo(this Actor3D actor3D,AnimationEventData animationEventData)
         {
             if (animationEventData.actor == null) animationEventData.actor = actor3D;

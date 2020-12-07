@@ -43,7 +43,7 @@ namespace GDGame.Actors
         public List<Shape> AttachCandidates { get; }
 
         public List<AttachableTile> AttachedTiles { get; }
-        public bool IsAlive { get; set; }
+        public bool IsAlive { get; private set; }
 
         #endregion
 
@@ -52,8 +52,10 @@ namespace GDGame.Actors
         public override void InitializeTile()
         {
             EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
-            EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.SetListener, transform = Transform3D });
+            EventManager.FireEvent(new SoundEventInfo
+                {soundEventType = SoundEventType.SetListener, transform = Transform3D});
             lastCheckpoint = Transform3D.Translation;
+            base.InitializeTile();
         }
 
         #endregion
@@ -63,16 +65,7 @@ namespace GDGame.Actors
         public override void Respawn()
         {
             IsAlive = false;
-            this.ScaleTo(new AnimationEventData()
-            {
-                isRelative = false, destination = Vector3.Zero,
-                maxTime = 1000,
-                smoothing = Smoother.SmoothingMethod.Accelerate, loopMethod = LoopMethod.PlayOnce,
-                callback = RespawnAtLastCheckpoint, resetAferDone = true
-            });
-
-            this.RotateTo(new AnimationEventData()
-                {isRelative = true, destination = Vector3.Up * 360, maxTime = 1000, resetAferDone = true});
+            Die(RespawnAtLastCheckpoint);
         }
 
         public override void OnMoveEnd()
@@ -97,7 +90,8 @@ namespace GDGame.Actors
             }
 
             IsAttached = true;
-            EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach, transform = Transform3D });
+            EventManager.FireEvent(new SoundEventInfo
+                {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach, transform = Transform3D});
         }
 
         private void CheckAndProcessSurroundings(IEnumerable<PlayerSurroundCheck> surroundings)

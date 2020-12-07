@@ -30,6 +30,7 @@ namespace GDGame
 
         private SpriteBatch spriteBatch;
         private UiSceneManager uiSceneManager;
+        private bool isPlaying;
 
         #endregion
 
@@ -61,7 +62,7 @@ namespace GDGame
         public ContentDictionary<Model> Models { get; private set; }
         public MouseManager MouseManager { get; private set; }
         public OurObjectManager ObjectManager { get; private set; }
-        private PhysicsManager PhysicsManager { get; set; }
+        public OurPhysicsManager PhysicsManager { get; set; }
         private OurRenderManager RenderManager { get; set; }
         public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
         public SoundManager SoundManager { get; private set; }
@@ -211,7 +212,7 @@ namespace GDGame
             Components.Add(new EventDispatcher(this));
 
             //Physics
-            PhysicsManager = new PhysicsManager(this, StatusType.Off);
+            PhysicsManager = new OurPhysicsManager(this, StatusType.Off);
             Components.Add(PhysicsManager);
 
             //Camera
@@ -335,7 +336,7 @@ namespace GDGame
             if (player == null)
             {
                 OurDrawnActor3D drawnActor3D =
-                    ObjectManager.OpaqueList.Find(actor3D => actor3D.ID == "clone - Player");
+                    ObjectManager.OpaqueList.Find(actor3D => actor3D is Tile tile && tile.ActorType == ActorType.Player);
                 if (CameraManager.ActiveCamera.ControllerList[0] is RotationAroundActor cam &&
                     drawnActor3D != null)
                 {
@@ -395,7 +396,7 @@ namespace GDGame
             game?.RemoveCamera();
             ObjectManager.RemoveAll(actor3D => actor3D != null);
             Components.Remove(PhysicsManager);
-            PhysicsManager = new PhysicsManager(this, StatusType.Update);
+            PhysicsManager = new OurPhysicsManager(this, StatusType.Update);
             Components.Add(PhysicsManager);
             player = null;
             CameraManager.ActiveCameraIndex = 0;
@@ -418,13 +419,24 @@ namespace GDGame
                 case GameState.Start:
                     DestroyGame();
                     InitGame();
+                    isPlaying = true;
+                    break;
+                case GameState.Resume:
+                    if (!isPlaying)
+                    {
+                        DestroyGame();
+                        InitGame();
+                        isPlaying = true;
+                    }
                     break;
                 case GameState.Lost:
                     DestroyGame();
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPause, null));
                     MenuManager.SetScene("LoseScreen");
+                    isPlaying = false;
                     break;
                 case GameState.Won:
+                    isPlaying = false;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

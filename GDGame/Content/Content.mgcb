@@ -69,6 +69,25 @@
 /processorParam:Quality=Best
 /build:Assets/GameTracks/track05.mp3
 
+#begin Assets/Models/Biscuit.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=0.01
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Assets/Models/Biscuit.fbx
+
 #begin Assets/Models/BlueCube.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -1417,6 +1436,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Props/GameTextures/big-normalmap-choco.png
+
+#begin Assets/Textures/Props/GameTextures/Biscuit.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Props/GameTextures/Biscuit.png
 
 #begin Assets/Textures/Props/GameTextures/blackTile.png
 /importer:TextureImporter
