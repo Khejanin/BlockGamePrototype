@@ -416,12 +416,12 @@ namespace GDGame.Managers
                 switch (collide.TileType)
                 {
                     case ETileType.Attachable:
-                        EventManager.FireEvent(new TileEventInfo {Type = TileEventType.Reset, IsEasy = main.IsEasy});
+                        EventManager.FireEvent(new TileEventInfo {Type = TileEventType.Reset, IsEasy = main.IsEasy, Id = collide.ID});
                         break;
                     case ETileType.Player:
                         if (((PlayerTile) collide).IsAlive)
                             EventManager.FireEvent(new TileEventInfo
-                                {Type = TileEventType.PlayerKill, IsEasy = main.IsEasy});
+                                {Type = TileEventType.PlayerKill, IsEasy = main.IsEasy, Id = collide.ID});
                         break;
                 }
 

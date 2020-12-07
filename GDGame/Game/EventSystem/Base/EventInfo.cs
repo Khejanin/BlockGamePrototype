@@ -17,6 +17,8 @@ namespace GDGame.EventSystem
         public TileEventType Type { get; set; }
         public bool IsEasy { get; set; }
 
+        public string Id { get; set; }
+
         #endregion
     }
 

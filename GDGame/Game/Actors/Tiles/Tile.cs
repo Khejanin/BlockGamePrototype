@@ -33,8 +33,6 @@ namespace GDGame.Actors
 
         public int activatorId = -1;
 
-        public bool canDie;
-
         #endregion
 
         #region Private variables
@@ -143,15 +141,17 @@ namespace GDGame.Actors
             switch (info.Type)
             {
                 case TileEventType.Reset:
-                    if (info.IsEasy)
+                    if (info.Id == ID)
                     {
-                        Respawn();
+                        if (info.IsEasy)
+                        {
+                            Respawn();
+                        }
+                        else
+                        {
+                            EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Lost});
+                        }
                     }
-                    else
-                    {
-                        EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Lost});
-                    }
-
                     break;
             }
         }
