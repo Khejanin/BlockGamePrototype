@@ -33,7 +33,8 @@
     {
         Won,
         Lost,
-        Start
+        Start,
+        Resume
     }
 
     public enum PlayerEventType : sbyte

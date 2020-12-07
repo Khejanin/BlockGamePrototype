@@ -30,6 +30,7 @@ namespace GDGame
 
         private SpriteBatch spriteBatch;
         private UiSceneManager uiSceneManager;
+        private bool isPlaying;
 
         #endregion
 
@@ -418,13 +419,24 @@ namespace GDGame
                 case GameState.Start:
                     DestroyGame();
                     InitGame();
+                    isPlaying = true;
+                    break;
+                case GameState.Resume:
+                    if (!isPlaying)
+                    {
+                        DestroyGame();
+                        InitGame();
+                        isPlaying = true;
+                    }
                     break;
                 case GameState.Lost:
                     DestroyGame();
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPause, null));
                     MenuManager.SetScene("LoseScreen");
+                    isPlaying = false;
                     break;
                 case GameState.Won:
+                    isPlaying = false;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

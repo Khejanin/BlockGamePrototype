@@ -111,7 +111,7 @@ namespace GDGame.Managers
 
                 case "Resume":
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
-                    EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Start});
+                    EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Resume});
                     break;
 
                 case "Back":
