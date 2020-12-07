@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GDGame.Managers
 {
-    public class MyMenuManager : MenuManager
+    public class OurMenuManager : MenuManager
     {
         #region Private variables
 
@@ -24,7 +24,7 @@ namespace GDGame.Managers
 
         #region Constructors
 
-        public MyMenuManager(Microsoft.Xna.Framework.Game main, StatusType statusType, SpriteBatch spriteBatch,
+        public OurMenuManager(Microsoft.Xna.Framework.Game main, StatusType statusType, SpriteBatch spriteBatch,
             MouseManager mouseManager, KeyboardManager keyboardManager) : base(
             main, statusType,
             spriteBatch)

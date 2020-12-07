@@ -11,10 +11,12 @@ using JigLibX.Collision;
 using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Plane = JigLibX.Geometry.Plane;
 
 namespace GDGame.Game.Actors
 {
+    /// <summary>
+    /// Custom implementation of the PathMoveTile to work for the Coffee.
+    /// </summary>
     public class Coffee : PathMoveTile
     {
         private int setBackIndex = 0;

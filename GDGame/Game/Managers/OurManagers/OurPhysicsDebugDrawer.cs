@@ -13,6 +13,7 @@ namespace GDGame.Managers
 {
     /// <summary>
     /// Renders the collision skins of any collidable objects within the scene. We can disable this component for the release.
+    /// Our Version for Our Actors.
     /// </summary>
     public class OurPhysicsDebugDrawer : PausableDrawableGameComponent
     {

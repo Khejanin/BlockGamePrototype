@@ -1,5 +1,11 @@
-﻿namespace GDGame.Enums
+﻿/*
+ * Collection of Enums
+ */
+namespace GDGame.Enums
 {
+    /// <summary>
+    /// Enums defining a Tile, also used in Level JSON
+    /// </summary>
     public enum ETileType : sbyte
     {
         None,
@@ -23,6 +29,9 @@
         Sphere
     }
 
+    /// <summary>
+    /// Deprecated, now defined in OurCollidableObject.cs
+    /// </summary>
     public enum ColliderType : sbyte
     {
         CheckOnly,

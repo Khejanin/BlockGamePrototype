@@ -10,13 +10,16 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Component
 {
+    /// <summary>
+    /// Class That makes the Player and his Attachable Tiles move.
+    /// As this is not just a one-shot unimportant animation we handle this manually in this code instead of in the TransformAnimationManager.
+    /// </summary>
     public class TileMovementComponent : Controller, ICloneable
     {
         #region Private variables
 
         private int currentMovementTime;
 
-        private Curve1D curve1D;
         private Vector3 diff;
         private Action endMoveCallback;
         private Vector3 endPos;
@@ -31,16 +34,12 @@ namespace GDGame.Component
 
         #region Constructors
 
-        public TileMovementComponent(string id, ControllerType controllerType, int movementTime, Curve1D curve1D) :
+        public TileMovementComponent(string id, ControllerType controllerType, int movementTime) :
             base(id, controllerType)
         {
             this.movementTime = movementTime;
-            this.curve1D = curve1D;
 
             startRotation = rotationQuaternion = Quaternion.Identity;
-
-            this.curve1D.Add(1, 0);
-            this.curve1D.Add(0, movementTime);
         }
 
         #endregion
@@ -60,6 +59,7 @@ namespace GDGame.Component
             if (Tile.IsMoving)
             {
                 endMoveCallback ??= Tile.OnMoveEnd;
+                //Check if done moving.
                 if (currentMovementTime <= 0)
                 {
                     Tile.IsMoving = false;
@@ -69,25 +69,30 @@ namespace GDGame.Component
                     isDirty = true;
                 }
 
-                float t = 1 - (float) currentMovementTime / movementTime;
-                Quaternion quaternion = Quaternion.Slerp(startRotation, rotationQuaternion, t);
+                //The Smoother Replaces Curves as it's easier to have slopes.
+                //We count down so it's inverted.
+                float currentStep = 1-Smoother.SmoothValue(Smoother.SmoothingMethod.Smooth, (float) currentMovementTime / movementTime);
+                Vector3 trans = startPos + diff * currentStep;
+                
+                //Invert Lerp percent and get Rotation
+                Quaternion quaternion = Quaternion.Slerp(startRotation, rotationQuaternion, currentStep);
                 Tile.Transform3D.RotationInDegrees = MathHelperFunctions.QuaternionToEulerAngles(quaternion);
 
-
-                float currentStep = curve1D.Evaluate(currentMovementTime, 5);
-                Vector3 trans = startPos + diff * currentStep;
-
+                //Check if we have a callback that we must invoke if we collide in the move
                 if (onCollideCallback != null)
                 {
+                    //Raycast to check if there's anything
                     Raycaster.HitResult hit = RaycastManager.Instance.Raycast(Tile, trans, Vector3.Up, true, 1f);
 
+                    //Invoke callback if we hit something
                     if (hit != null)
                     {
                         onCollideCallback?.Invoke(hit);
                         onCollideCallback = null;
                     }
                 }
-
+                
+                //Dont go anywhere we don't want the tile to go
                 if (currentMovementTime <= 0)
                     trans = new Vector3((float) Math.Round(trans.X), (float) Math.Round(trans.Y),
                         (float) Math.Round(trans.Z));
@@ -97,6 +102,7 @@ namespace GDGame.Component
                 if (currentMovementTime <= 0) Tile.IsDirty = false;
             }
 
+            //Here we handle whether we activate physics or not.
             if (isDirty && !Tile.IsMoving && !Tile.IsAttached && !Tile.Body.ApplyGravity)
             {
                 Tile.Body.ApplyGravity = true;
@@ -121,6 +127,14 @@ namespace GDGame.Component
 
         #region Methods
 
+        /// <summary>
+        /// This method calculates the end position for this tile given the parameters.
+        /// Offset is very important when rotating like the player does.
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="endPos"></param>
+        /// <param name="rot"></param>
+        /// <param name="offset"></param>
         public void CalculateEndPos(Vector3 direction, out Vector3 endPos, out Quaternion rot, out Vector3 offset)
         {
             startPos = Tile.Transform3D.Translation;
@@ -139,7 +153,7 @@ namespace GDGame.Component
         public new object Clone()
         {
             TileMovementComponent tileMovementComponent =
-                new TileMovementComponent(ID, ControllerType, movementTime, new Curve1D(curve1D.CurveLookType));
+                new TileMovementComponent(ID, ControllerType, movementTime);
             return tileMovementComponent;
         }
 

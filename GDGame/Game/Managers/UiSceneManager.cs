@@ -12,6 +12,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GDGame.Managers
 {
+    /// <summary>
+    /// Class that sets up everything the UI needs for our Scene.
+    /// </summary>
     public class UiSceneManager
     {
         #region Private variables
@@ -40,6 +43,21 @@ namespace GDGame.Managers
 
         #region Initialization
 
+        public void InitUi()
+        {
+            InitMenuUi();
+            InitOptionsUi();
+            InitEndUi();
+            InitGameUi();
+            Main.MenuManager.SetScene("MainMenu");
+        }
+        
+        private void InitEventListeners()
+        {
+            EventManager.RegisterListener<DataManagerEvent>(HandleDataManagerEvent);
+            EventManager.RegisterListener<OptionsEventInfo>(HandleOptionsEvent);
+        }
+        
         private void InitEndUi()
         {
             if (((UITextureObject) Main.UiArchetypes["texture"]).Clone() is UITextureObject uiTextureObject)
@@ -83,12 +101,6 @@ namespace GDGame.Managers
                 uiButtonObject.Transform2D.Translation = Main.ScreenCentre;
                 Main.MenuManager.Add("LoseScreen", uiButtonObject);
             }
-        }
-
-        private void InitEventListeners()
-        {
-            EventManager.RegisterListener<DataManagerEvent>(HandleDataManagerEvent);
-            EventManager.RegisterListener<OptionsEventInfo>(HandleOptionsEvent);
         }
 
         private void InitGameUi()
@@ -238,9 +250,6 @@ namespace GDGame.Managers
                 uiTextObject.Transform2D.Translation = Main.ScreenCentre + Vector2.UnitY * 300;
                 Main.UiManager.Add(uiTextObject);
             }
-            
-            
-            
         }
 
         private void InitMenuUi()
@@ -255,8 +264,7 @@ namespace GDGame.Managers
                 uiTextureObject.Transform2D.Translation = Main.ScreenCentre;
                 Main.MenuManager.Add("MainMenu", uiTextureObject);
             }
-
-
+            
             Vector2 xPosition = Vector2.UnitX * 500;
 
             //Play Button
@@ -383,15 +391,6 @@ namespace GDGame.Managers
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
                 Main.MenuManager.Add("Options", uiButtonObject);
             }
-        }
-
-        public void InitUi()
-        {
-            InitMenuUi();
-            InitOptionsUi();
-            InitEndUi();
-            InitGameUi();
-            Main.MenuManager.SetScene("MainMenu");
         }
 
         #endregion

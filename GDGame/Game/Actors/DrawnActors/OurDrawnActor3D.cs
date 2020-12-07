@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    ///     Base class for all drawn 3D actors used in the engine. This class adds a EffectParameters field.
+    /// Here the "Our" legacy begins for drawn Actors. Due to the custom EffectParameters we needed to have a custom implementation of the drawn Actors.
     /// </summary>
     public class OurDrawnActor3D : Actor3D, I3DDrawable
     {

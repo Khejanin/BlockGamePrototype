@@ -77,6 +77,9 @@ namespace GDGame.Actors
 
         #region Methods
 
+        /// <summary>
+        /// Method to attach to the Attachables around the Player.
+        /// </summary>
         public void Attach()
         {
             if (AttachCandidates.Count == 0 || IsMoving) return;
@@ -94,6 +97,10 @@ namespace GDGame.Actors
                 {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach, transform = Transform3D});
         }
 
+        /// <summary>
+        /// Method that performs raycasts to check what's around the player.
+        /// </summary>
+        /// <param name="surroundings"></param>
         private void CheckAndProcessSurroundings(IEnumerable<PlayerSurroundCheck> surroundings)
         {
             List<MovableTile> detectedAttachableTiles = new List<MovableTile>();

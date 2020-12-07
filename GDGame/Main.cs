@@ -20,6 +20,10 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GDGame
 {
+    /// <summary>
+    /// This is the class that instantiates the Managers, Archetypes and loads the "Scenes", scenes have been replaced by the GameManager.
+    /// This doesn't load content, as the GameManager is supposed to set everything up.
+    /// </summary>
     public class Main : Microsoft.Xna.Framework.Game
     {
         #region Private variables
@@ -46,6 +50,7 @@ namespace GDGame
 
         #endregion
 
+        //Declare all Managers and stuff that should be accessible from the GameManager
         #region Properties, Indexers
 
         public OurPrimitiveObject ArchetypalTexturedQuad { get; private set; }
@@ -57,7 +62,7 @@ namespace GDGame
         public bool IsEasy { get; private set; }
         public KeyboardManager KeyboardManager { get; private set; }
         public LevelDataManager LevelDataManager { get; private set; }
-        public MyMenuManager MenuManager { get; private set; }
+        public OurMenuManager MenuManager { get; private set; }
         public BasicEffect ModelEffect { get; private set; }
         public ContentDictionary<Model> Models { get; private set; }
         public MouseManager MouseManager { get; private set; }
@@ -104,6 +109,7 @@ namespace GDGame
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters, vertexData);
         }
 
+        //The Cameras never change, so we instantiate them here.
         private void InitCameras3D()
         {
             Transform3D transform3D = new Transform3D(new Vector3(0, 0, 0), -Vector3.Forward, Vector3.Up);
@@ -127,9 +133,11 @@ namespace GDGame
         }
 
 
+        /// <summary>
+        /// This is different to LoadManager's LoadEffect() as this one uses the existing BasicEffect provided by MonoGame
+        /// </summary>
         private void InitEffect()
         {
-            //model effect
             ModelEffect = new BasicEffect(Graphics.GraphicsDevice) {TextureEnabled = true};
         }
 
@@ -138,14 +146,16 @@ namespace GDGame
             EventManager.RegisterListener<OptionsEventInfo>(HandleOptionsEvent);
             EventManager.RegisterListener<GameStateMessageEventInfo>(HandleGameStateEvent);
         }
-
+        
+        /// <summary>
+        /// Instantiate the GameManager (NOTHING TO DO WITH XNA GAME CLASS)
+        /// </summary>
         private void InitGame()
         {
             game = new GameManager(this);
             game.Init();
         }
-
-
+        
         private void InitGraphics(int width, int height)
         {
             //set resolution
@@ -169,8 +179,8 @@ namespace GDGame
             };
             Graphics.GraphicsDevice.SamplerStates[0] = samplerState;
         }
-
-
+        
+        
         protected override void Initialize()
         {
             Window.Title = "B_Logic";
@@ -195,16 +205,18 @@ namespace GDGame
             base.Initialize();
         }
 
+        /// <summary>
+        /// Initialize the Dictionaries that we will Load Content From
+        /// </summary>
         private void InitializeDictionaries()
         {
             UiArchetypes = new Dictionary<string, DrawnActor2D>();
-
             Fonts = new ContentDictionary<SpriteFont>("fonts", Content);
             Textures = new ContentDictionary<Texture2D>("textures", Content);
             Models = new ContentDictionary<Model>("models", Content);
             Effects = new ContentDictionary<Effect>("effects", Content);
         }
-
+        
         private void InitManagers()
         {
             //Events
@@ -250,7 +262,7 @@ namespace GDGame
             UiManager = new UIManager(this, StatusType.Off, spriteBatch, 10);
             Components.Add(UiManager);
 
-            MenuManager = new MyMenuManager(this, StatusType.Drawn | StatusType.Update, spriteBatch, MouseManager,
+            MenuManager = new OurMenuManager(this, StatusType.Drawn | StatusType.Update, spriteBatch, MouseManager,
                 KeyboardManager);
             Components.Add(MenuManager);
 
@@ -320,11 +332,13 @@ namespace GDGame
             LoadManager loadManager = new LoadManager(this);
             loadManager.InitLoad();
         }
-
+        
         protected override void Update(GameTime gameTime)
         {
             game?.Update();
 
+            //The game has its own "global timer" that runs out periodically and is defined in the GameConstants.
+            //Lots of temporal elements use this as a reference on how long a "turn" in the game is, its to give the player a sense of rhythm
             if (currentMovementCoolDown <= 0)
             {
                 currentMovementCoolDown = GameConstants.MovementCooldown;
@@ -333,6 +347,7 @@ namespace GDGame
 
             currentMovementCoolDown -= (float) gameTime.ElapsedGameTime.TotalSeconds;
 
+            //Fetch the Player and set the camera to target him is we don't have a reference to him.
             if (player == null)
             {
                 OurDrawnActor3D drawnActor3D =
@@ -346,6 +361,7 @@ namespace GDGame
                 }
             }
 
+            //Don't update the Player if using wrong cam
             if (player != null)
                 player.StatusType = CameraManager.ActiveCameraIndex switch
                 {
@@ -354,7 +370,7 @@ namespace GDGame
                     2 => StatusType.Drawn,
                     _ => player.StatusType
                 };
-
+            
             if (KeyboardManager.IsFirstKeyPress(Keys.M))
                 EventDispatcher.Publish(MenuManager.StatusType == StatusType.Off
                     ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
@@ -390,16 +406,20 @@ namespace GDGame
 
         #region Private Method
 
+        //Do everything to destroy current game instance -> load another on restart.
         private void DestroyGame()
         {
-            game?.UnRegisterGame();
-            game?.RemoveCamera();
-            ObjectManager.RemoveAll(actor3D => actor3D != null);
-            Components.Remove(PhysicsManager);
-            PhysicsManager = new OurPhysicsManager(this, StatusType.Update);
-            Components.Add(PhysicsManager);
-            player = null;
-            CameraManager.ActiveCameraIndex = 0;
+            if (game != null)
+            {
+                game?.UnRegisterGame();
+                game?.RemoveCamera();
+                ObjectManager.RemoveAll(actor3D => actor3D != null);
+                Components.Remove(PhysicsManager);
+                PhysicsManager = new OurPhysicsManager(this, StatusType.Update);
+                Components.Add(PhysicsManager);
+                player = null;
+                CameraManager.ActiveCameraIndex = 0;
+            }
         }
 
 
@@ -412,6 +432,10 @@ namespace GDGame
 
         #region Events
 
+        /// <summary>
+        /// Handle whatever the new GameState is that was just published
+        /// </summary>
+        /// <param name="eventInfo">The event class holding necessary information for this event</param>
         private void HandleGameStateEvent(GameStateMessageEventInfo eventInfo)
         {
             switch (eventInfo.GameState)

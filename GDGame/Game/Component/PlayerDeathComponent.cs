@@ -9,6 +9,9 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Component
 {
+    /// <summary>
+    /// Component that 
+    /// </summary>
     public class PlayerDeathComponent : Controller, ICloneable
     {
         private Tile parent;

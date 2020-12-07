@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GDGame.Controllers
 {
+    /// <summary>
+    /// Player Camera Controller that rotates around the Player Actor.
+    /// </summary>
     public class RotationAroundActor : Controller
     {
         #region Private variables

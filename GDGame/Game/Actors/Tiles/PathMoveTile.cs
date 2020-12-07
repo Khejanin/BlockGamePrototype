@@ -9,7 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    ///     The PathMoveTile is an extension from the MovableTile. A PathMoveTile has a predefined path on which it moves.
+    /// The PathMoveTile is an extension from the MovableTile. A PathMoveTile has a predefined path on which it moves.
+    /// The PathMoveTile actually doesn't move itself, it merely defines the Path. The PathMovementComponent makes sure that it moves.
     /// </summary>
     public class PathMoveTile : MovableTile
     {

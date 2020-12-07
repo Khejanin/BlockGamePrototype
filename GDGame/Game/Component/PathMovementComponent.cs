@@ -12,6 +12,10 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Component
 {
+    /// <summary>
+    /// Component that needs to be added to a PathMoveTile. It inherits from ActivatableController so can be activated in a multitude of ways.
+    /// It uses the TransformAnimationManager to move the tile's transform.
+    /// </summary>
     public class PathMovementComponent : ActivatableController, IActivatable, ICloneable
     {
         protected int currentPositionIndex;
@@ -58,7 +62,8 @@ namespace GDGame.Component
         #endregion
 
         #region Pathing
-
+        
+        //Fetch the next point and go back if you've reached the end.
         protected Vector3 NextPathPoint()
         {
             if (currentPositionIndex + pathDir == Path.Count || currentPositionIndex + pathDir == -1)

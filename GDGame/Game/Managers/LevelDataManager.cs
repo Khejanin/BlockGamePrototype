@@ -6,6 +6,9 @@ using GDGame.Utilities;
 
 namespace GDGame.Managers
 {
+    /// <summary>
+    /// Class that keeps track of the player's progress and moves and saves said progress for the levels.
+    /// </summary>
     public class LevelDataManager
     {
         #region Private variables
@@ -40,7 +43,7 @@ namespace GDGame.Managers
 
         #region Methods
 
-        private void HandelSceneEventInfoOnSceneChange()
+        private void HandleSceneEventInfoOnSceneChange()
         {
             if (!LevelStats.ContainsKey(currentLevel)) LevelStats.Add(currentLevel, new LevelStats());
 
@@ -81,7 +84,7 @@ namespace GDGame.Managers
             switch (sceneEventInfo.SceneActionType)
             {
                 case SceneActionType.OnSceneChange:
-                    HandelSceneEventInfoOnSceneChange();
+                    HandleSceneEventInfoOnSceneChange();
                     break;
                 case SceneActionType.OnSceneLoaded:
                     HandelSceneEventInfoOnSceneLoaded(sceneEventInfo.LevelName);

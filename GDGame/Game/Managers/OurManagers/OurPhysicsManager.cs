@@ -14,7 +14,9 @@ using GDLibrary.Managers;
 //Physics - Step 2
 namespace GDGame.Managers
 {
-
+    /// <summary>
+    /// Subclass of PhysicsManager that removes bodies on events. 
+    /// </summary>
     public class OurPhysicsManager : PhysicsManager
     {
         public OurPhysicsManager(Microsoft.Xna.Framework.Game game, StatusType statusType) : base(game, statusType)

@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Utilities
 {
+    /// <summary>
+    /// Class that performs Raycasts using the JigLib Library. It has a lot of definitions depending on the users choice.
+    /// </summary>
     public static class Raycaster
     {
         #region Methods
@@ -63,23 +66,6 @@ namespace GDGame.Utilities
                         }
                     }
                 }
-
-            // PrimitiveColliderController pcc = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as PrimitiveColliderController;
-            //
-            // CustomBoxColliderController customBoxColliderController = null;
-            // if (pcc == null)
-            //     customBoxColliderController = drawnActor3D.ControllerList.Find(c => c.GetControllerType() == ControllerType.Collider) as CustomBoxColliderController;
-            //
-            // bool pccCheck = pcc != null && (dist = ray.Intersects(pcc.GetBounds(drawnActor3D as PrimitiveObject))) != null &&
-            //                 (pcc.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
-            // bool customBoxColliderCheck = customBoxColliderController != null && (dist = ray.Intersects(customBoxColliderController.GetBounds(drawnActor3D))) != null &&
-            //                               (customBoxColliderController.ColliderType == ColliderType.Blocking || !onlyCheckBlocking);
-            //
-            // if ((pccCheck || customBoxColliderCheck) && dist < maxDist)
-            // {
-            //     HitResult result = new HitResult {actor = drawnActor3D, distance = (float) dist};
-            //     hit.Add(result);
-            // }
         }
 
         private static HitResult Raycast(OurObjectManager objectManager, Vector3 position, Vector3 direction, float maxDist = float.MaxValue, List<Actor3D> ignoreList = null,

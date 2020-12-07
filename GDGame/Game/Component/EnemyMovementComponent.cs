@@ -9,6 +9,9 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Component
 {
+    /// <summary>
+    /// Component that makes the Enemies move.
+    /// </summary>
     public class EnemyMovementComponent : PathMovementComponent, ICloneable
     {
         public EnemyMovementComponent(string id, ControllerType controllerType, ActivationType activationType,
@@ -17,6 +20,9 @@ namespace GDGame.Component
         {
         }
 
+        /// <summary>
+        /// Override of MoveToNextPoint with all the cool animations that the enemies do.
+        /// </summary>
         protected override void MoveToNextPoint()
         {
             base.MoveToNextPoint();

@@ -12,6 +12,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GDGame.Controllers
 {
+    /// <summary>
+    /// Controller that takes input and transforms it into player moves!
+    /// </summary>
     public class PlayerController : Controller, ICloneable
     {
         #region Private variables

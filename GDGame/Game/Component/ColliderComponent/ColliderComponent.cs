@@ -8,6 +8,10 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Component
 {
+    /// <summary>
+    /// Component that Handles collisions for OurCollidableObjects.
+    /// Inheritance is generally not needed as the callback is defined in the Constructor.
+    /// </summary>
     public class ColliderComponent : Controller, ICloneable
     {
         protected OurCollidableObject parent;
@@ -26,7 +30,8 @@ namespace GDGame.Component
         }
 
         public override void Update(GameTime gameTime, IActor actor)
-        {
+        {        
+            //Fetch the Parent in the update
             parent ??= actor as OurCollidableObject;
             if (handleIsSet == false && parent != null)
             {

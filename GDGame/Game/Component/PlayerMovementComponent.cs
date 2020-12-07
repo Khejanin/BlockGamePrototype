@@ -14,6 +14,9 @@ using MovementEvent = GDGame.EventSystem.MovementEvent;
 
 namespace GDGame.Component
 {
+    /// <summary>
+    /// Component that is responsible for making the Player Move checks and setting everything up so that the Move updates in TileMovementComponent.cs can work correctly.
+    /// </summary>
     public class PlayerMovementComponent : Controller, ICloneable
     {
         #region Private variables

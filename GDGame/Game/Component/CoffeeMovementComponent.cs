@@ -10,6 +10,9 @@ using SharpDX.XInput;
 
 namespace GDGame.Component
 {
+    /// <summary>
+    /// Component that handles the Coffee Movement.
+    /// </summary>
     public class CoffeeMovementComponent : PathMovementComponent
     {
         private Coffee coffeeParent;
@@ -21,6 +24,10 @@ namespace GDGame.Component
             MoveToNextPoint();
         }
 
+        /// <summary>
+        /// Override implementation that invokes PointReached when done.
+        /// Because we have custom timings for each point we want to reach we just handle the next MoveToNextPoint() as a callback.
+        /// </summary>
         protected override void MoveToNextPoint()
         {
             Vector3 nextPoint = NextPathPoint();

@@ -20,16 +20,23 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Managers
 {
+    /// <summary>
+    /// Class that sets everything up for the game to start. It loads the level and uses the loaded content to create the objects in the game.
+    /// </summary>
     public class GameManager
     {
         #region Private variables
 
         private Camera3D curveCamera;
+
+        /// <summary>
+        /// Dictionary with all actors that we use in the game. These are not in the ObjectManager and are only slaves that we should Clone.
+        /// </summary>
         private Dictionary<string, OurDrawnActor3D> drawnActors;
+
         private LevelData levelData;
         private string levelName;
         private Transform3D light;
-
         private Main main;
         private Coffee coffee;
 
@@ -60,36 +67,40 @@ namespace GDGame.Managers
         }
 
         private void InitCoffee()
-        { 
+        {
             Color coffeeColor = new Color(111 / 255.0f, 78 / 255.0f, 55 / 255.0f, 0.95f);
             CoffeeEffectParameters coffeeEffect = new CoffeeEffectParameters(main.Effects["Coffee"],
                 main.Textures["CoffeeUV"], main.Textures["CoffeeFlow"], coffeeColor);
             Transform3D transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up);
             coffee = new Coffee("Coffee", ActorType.Primitive,
                 StatusType.Update | StatusType.Drawn, transform3D, coffeeEffect,
-                main.Models["CoffeePlane"],levelData.coffeeInfo);
+                main.Models["CoffeePlane"], levelData.coffeeInfo);
             //Most of these constructor arguments are not used, need to refactor the entire structure.
             coffee.ControllerList.Add(new CoffeeMovementComponent("cmc", ControllerType.Movement,
-                ActivationType.AlwaysOn, 0, Smoother.SmoothingMethod.Smooth,coffee));
-            coffee.ControllerList.Add(new ColliderComponent("cc Coffee",ControllerType.Collider,
+                ActivationType.AlwaysOn, 0, Smoother.SmoothingMethod.Smooth, coffee));
+            coffee.ControllerList.Add(new ColliderComponent("cc Coffee", ControllerType.Collider,
                 (skin0, skin1) =>
                 {
                     Tile tile = skin1.Owner.ExternalData as Tile;
 
                     if (tile != null)
                     {
-                        if(tile.TileType == ETileType.Player) EventManager.FireEvent(new GameStateMessageEventInfo(){GameState = GameState.Lost});
-                        EventManager.FireEvent(new RemoveActorEvent(){body = tile.Body});
-                        EventManager.FireEvent(new TileEventInfo() { Id = tile.ID ,Type = TileEventType.Consumed});
+                        if (tile.TileType == ETileType.Player)
+                            EventManager.FireEvent(new GameStateMessageEventInfo() {GameState = GameState.Lost});
+                        EventManager.FireEvent(new RemoveActorEvent() {body = tile.Body});
+                        EventManager.FireEvent(new TileEventInfo() {Id = tile.ID, Type = TileEventType.Consumed});
                         return true;
                     }
-                    
+
                     return false;
                 }));
-            
+
             main.ObjectManager.Add(coffee);
         }
 
+        /// <summary>
+        /// Creates the Cinematic intro camera.
+        /// </summary>
         private void InitCamera()
         {
             Camera3D camera3D = main.CameraManager.ActiveCamera.Clone() as Camera3D;
@@ -104,12 +115,17 @@ namespace GDGame.Managers
             curveCamera = camera3D;
         }
 
+        /// <summary>
+        /// If we need to initialize listening to any events we do it here.
+        /// </summary>
         private void InitGameEvents()
         {
-            EventManager.RegisterListener<PlayerEventInfo>(OnPlayerEventMessageReceived);
         }
 
 
+        /// <summary>
+        /// Loads the JSON Level File. Clones the archetypes to create the level, establishes all links between objects etc.
+        /// </summary>
         private void InitGrid()
         {
             Grid grid = new Grid(new TileFactory(main.ObjectManager, drawnActors, main.Textures, main.IsEasy));
@@ -119,6 +135,9 @@ namespace GDGame.Managers
                 levelData.startCameraCurve));
         }
 
+        /// <summary>
+        /// Sets and puts level Decor at it's place.
+        /// </summary>
         private void InitLevelDecor()
         {
             float size = 1.5f;
@@ -190,6 +209,9 @@ namespace GDGame.Managers
             light = new Transform3D(new Vector3(-0.2f, 1, 0.4f), -Vector3.Forward, Vector3.Up);
         }
 
+        /// <summary>
+        /// Our beautiful background is created by this method
+        /// </summary>
         private void InitSkyBox()
         {
             float worldScale = 100;
@@ -255,69 +277,58 @@ namespace GDGame.Managers
             }
         }
 
+        /// <summary>
+        /// Our Slave objects that we will later clone are all made here. Like "templates" of objects. (Like Prefabs in Unity)
+        /// </summary>
         private void InitStaticModels()
         {
-            #region StaticTiles
+            /*
+             * Some initialization
+             */
 
             Color coffeeColor = new Color(111 / 255.0f, 78 / 255.0f, 55 / 255.0f, 0.95f);
 
             CoffeeEffectParameters coffeeEffect = new CoffeeEffectParameters(main.Effects["Coffee"],
                 main.Textures["CoffeeUV"], main.Textures["CoffeeFlow"], coffeeColor);
             Transform3D transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up);
-
             NormalEffectParameters normalEffectParameters = new NormalEffectParameters(main.Effects["Normal"],
                 main.Textures["Chocolate"], main.Textures["big-normalmap"],
                 main.Textures["big-displacement"], Color.White, 1, light);
+
+            /*
+             * Here we make the static Tiles.
+             */
+
+            #region StaticTiles
+
+            //Create the Basic Tile
+
             Tile chocolateTile = new Tile("ChocolateTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
                 transform3D, normalEffectParameters, main.Models["Cube"],
                 true, ETileType.Static);
 
+            //Create the Plate Stacks
             BasicEffectParameters effectParameters =
                 new BasicEffectParameters(main.ModelEffect, main.Textures["Ceramic"], Color.White, 1);
             Tile plateStackTile = new Tile("plateStackTile", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
                 transform3D, effectParameters, main.Models["PlateStack"],
                 true, ETileType.Static);
 
-            effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Button"], Color.White, 1);
-            ActivatableTile activatable = new ActivatableTile("Button", ActorType.Primitive,
-                StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
-                main.Models["Button"], false, ETileType.Button);
-
-            coffeeEffect = (CoffeeEffectParameters) coffeeEffect.Clone();
-            coffeeEffect.UvTilesTexture = main.Textures["DropUV"];
-            coffeeEffect.CoffeeColor = new Color(coffeeEffect.CoffeeColor * 0.8f, 255);
-            Tile spike = new Tile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                coffeeEffect, main.Models["Puddle"], false, ETileType.Spike);
-            spike.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnHostileCollision));
-
-            effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Mug"], Color.White, 1);
-            Tile pickup = new Tile("Mug", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, main.Models["Mug"], false, ETileType.Star);
-            pickup.ControllerList.Add(new PlayerDeathComponent("PDC", ControllerType.Event));
-            pickup.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnCollectibleCollision));
-
-            effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["sugarbox"], Color.White, 1);
-            Tile goal = new Tile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
-                effectParameters, main.Models["SugarBox"], false, ETileType.Win);
-
-            effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["WhiteSquare"], Color.White, 1);
-            Tile checkpoint = new Tile("Checkpoint", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, main.Models["Smarties"], false, ETileType.Checkpoint);
-            checkpoint.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnCheckPointCollision));
-
+            //Create the Fork Model
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Finish"], Color.White, 1);
             OurModelObject forkModelObject =
                 new OurModelObject("fork", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D,
                     effectParameters, main.Models["Fork"]);
             //forkModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
 
-
+            //Create the Knife Model
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Knife"], Color.White, 1);
             OurModelObject knifeModelObject =
                 new OurModelObject("knife", ActorType.Decorator, StatusType.Drawn | StatusType.Update, transform3D,
                     effectParameters, main.Models["Knife"]);
             //knifeModelObject.ControllerList.Add(new RandomRotatorController("rotator", ControllerType.Curve));
 
+            //Create the Single Plate Model
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Finish"], Color.White, 1);
             OurModelObject singlePlateModelObject = new OurModelObject("singlePlate", ActorType.Decorator,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
@@ -326,27 +337,75 @@ namespace GDGame.Managers
 
             #endregion StaticTiles
 
+            /*
+             * Here we create the Tiles that interact with you on collision.
+             */
+
+            #region InteractableTiles
+
+            //Create Button Tile
+            effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Button"], Color.White, 1);
+            ActivatableTile activatable = new ActivatableTile("Button", ActorType.Primitive,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
+                main.Models["Button"], false, ETileType.Button);
+
+            //Create the Puddle (We call them spikes because they kill the player on collision)
+            coffeeEffect = (CoffeeEffectParameters) coffeeEffect.Clone();
+            coffeeEffect.UvTilesTexture = main.Textures["DropUV"];
+            coffeeEffect.CoffeeColor = new Color(Color.Green, 255);
+            Tile spike = new Tile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
+                coffeeEffect, main.Models["Puddle"], false, ETileType.Spike);
+            spike.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnHostileCollision));
+
+            //Create the Mug Pickups
+            effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Mug"], Color.White, 1);
+            Tile pickup = new Tile("Mug", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, main.Models["Mug"], false, ETileType.Star);
+            pickup.ControllerList.Add(new PlayerDeathComponent("PDC", ControllerType.Event));
+            pickup.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnCollectibleCollision));
+
+            //Create the Goal Tile
+            effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["sugarbox"], Color.White, 1);
+            Tile goal = new Tile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
+                effectParameters, main.Models["SugarBox"], false, ETileType.Win);
+
+            //Create the Checkpoint Tile
+            effectParameters =
+                new BasicEffectParameters(main.ModelEffect, main.Textures["WhiteSquare"], Color.White, 1);
+            Tile checkpoint = new Tile("Checkpoint", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
+                transform3D, effectParameters, main.Models["Smarties"], false, ETileType.Checkpoint);
+            checkpoint.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnCheckPointCollision));
+
+            #endregion
+
+            /*
+             * Here we create the Tiles that can Move
+             */
+
             #region MovableTiles
 
+            //Create the Attachable Tiles
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["SugarB"], Color.White, 1);
             AttachableTile attachableTile = new AttachableTile("AttachableTile", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
                 main.Models["Cube"], ETileType.Attachable);
             attachableTile.ControllerList.Add(new TileMovementComponent("AttachableTileMC", ControllerType.Movement,
-                300, new Curve1D(CurveLoopType.Cycle)));
+                300));
             attachableTile.ControllerList.Add(new PlayerDeathComponent("PDC", ControllerType.Event));
 
+            //Create the Player Tile
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["SugarW"], Color.White, 1);
             PlayerTile playerTile = new PlayerTile("Player", ActorType.Player, StatusType.Drawn, transform3D,
                 effectParameters, main.Models["Cube"], ETileType.Player);
             playerTile.ControllerList.Add(new PlayerController("PlayerPC", ControllerType.Player, main.KeyboardManager,
                 main.CameraManager));
             TileMovementComponent tileMovementComponent = new TileMovementComponent("PTMC", ControllerType.Movement,
-                300, new Curve1D(CurveLoopType.Cycle));
+                300);
             playerTile.ControllerList.Add(tileMovementComponent);
             playerTile.ControllerList.Add(new PlayerMovementComponent("PlayerMC", ControllerType.Movement));
             playerTile.ControllerList.Add(new PlayerDeathComponent("PDC", ControllerType.Event));
 
+            //Create the Enemy Tiles
             coffeeColor = new Color(coffeeColor, 255);
             coffeeEffect = new CoffeeEffectParameters(main.Effects["Coffee"], main.Textures["DropUV"],
                 main.Textures["CoffeeFlow"], coffeeColor);
@@ -356,15 +415,17 @@ namespace GDGame.Managers
                 0.5f, Smoother.SmoothingMethod.Smooth));
             enemy.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnHostileCollision));
 
+            //Create the Moving Platform Tiles
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Biscuit"], Color.White, 1);
             MovingPlatformTile movingPlatform = new MovingPlatformTile("MovingPlatform", ActorType.Platform,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
-                main.Models["Biscuit"], true, ETileType.MovingPlatform); 
+                main.Models["Biscuit"], true, ETileType.MovingPlatform);
             movingPlatform.ControllerList.Add(new PathMovementComponent("platformpmc", ControllerType.Movement,
                 ActivationType.Activated, 0.5f, Smoother.SmoothingMethod.Decelerate));
 
             #endregion MovableTiles
 
+            //Now we add them all to our dictionary to later clone.
             drawnActors = new Dictionary<string, OurDrawnActor3D>
             {
                 {"StaticTile", chocolateTile},
@@ -381,7 +442,7 @@ namespace GDGame.Managers
                 {"Knife", knifeModelObject},
                 {"Fork", forkModelObject},
                 {"SinglePlate", singlePlateModelObject},
-                {"Coffee" , coffee}
+                {"Coffee", coffee}
             };
         }
 
@@ -389,6 +450,9 @@ namespace GDGame.Managers
 
         #region Public Method
 
+        /// <summary>
+        /// This just removes the cinematic camera after it's done playing.
+        /// </summary>
         public void RemoveCamera()
         {
             main.CameraManager.RemoveFirstIf(camera3D => camera3D.ID == curveCamera.ID);
@@ -396,13 +460,15 @@ namespace GDGame.Managers
 
         public void UnRegisterGame()
         {
-            EventManager.UnregisterListener<PlayerEventInfo>(OnPlayerEventMessageReceived);
         }
+
 
         public void Update()
         {
+            //Update Lights to look in view direction
             if (light != null) light.Look = main.CameraManager.ActiveCamera.Transform3D.Look;
 
+            //Remove Cinematic camera if appropriate
             if (curveCamera.ControllerList.Count > 0)
                 if (curveCamera.ControllerList[0] is Curve3DController sceneCameraController &&
                     sceneCameraController.ElapsedTimeInMs > levelData.cameraMaxTime)
@@ -411,6 +477,11 @@ namespace GDGame.Managers
         }
 
         #endregion
+
+        /*
+         * Here we define all the callbacks that our objects with colliders will use.
+         * We didn't want to make custom classes so we just pass the callback in the constructor of the component.
+         */
 
         #region Events
 
@@ -437,8 +508,9 @@ namespace GDGame.Managers
                 {
                     case ETileType.Player:
                         Tile collectible = skin0.Owner.ExternalData as Tile;
-                        EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.PickupMug, tile = collectible});
-                        
+                        Actor2D mug = main.UiManager.UIObjectList.Find(actor2D => actor2D.ID.Equals(collectible.ID));
+                        if (mug != null) mug.StatusType = StatusType.Drawn;
+
                         //Trigger Collectible animation
                         collectible.MoveTo(new AnimationEventData()
                         {
@@ -463,7 +535,11 @@ namespace GDGame.Managers
                             //callback = () => {EventManager.FireEvent();}
                         });
 
-                        EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.CollectibleCollected, transform = collectible.Transform3D});
+                        EventManager.FireEvent(new SoundEventInfo
+                        {
+                            soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.CollectibleCollected,
+                            transform = collectible.Transform3D
+                        });
                         break;
                 }
 
@@ -476,7 +552,8 @@ namespace GDGame.Managers
                 switch (collide.TileType)
                 {
                     case ETileType.Attachable:
-                        EventManager.FireEvent(new TileEventInfo {Type = TileEventType.Reset, IsEasy = main.IsEasy, Id = collide.ID});
+                        EventManager.FireEvent(new TileEventInfo
+                            {Type = TileEventType.Reset, IsEasy = main.IsEasy, Id = collide.ID});
                         break;
                     case ETileType.Player:
                         if (((PlayerTile) collide).IsAlive)
@@ -486,15 +563,6 @@ namespace GDGame.Managers
                 }
 
             return true;
-        }
-
-        private void OnPlayerEventMessageReceived(PlayerEventInfo obj)
-        {
-            if (obj.type == PlayerEventType.PickupMug)
-            {
-                Actor2D mug = main.UiManager.UIObjectList.Find(actor2D => actor2D.ID.Equals(obj.tile.ID));
-                if (mug != null) mug.StatusType = StatusType.Drawn;
-            }
         }
 
         #endregion

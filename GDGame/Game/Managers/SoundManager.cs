@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace GDGame.Managers
 {
+    /// <summary>
+    /// Manager class that plays sounds by responding to events.
+    /// </summary>
     public class SoundManager
     {
         #region Private variables

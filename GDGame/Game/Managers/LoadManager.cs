@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace GDGame.Managers
 {
+    /// <summary>
+    /// Class that Loads all the content we need for our game to work.
+    /// </summary>
     public class LoadManager
     {
         private Main main;
@@ -89,12 +92,7 @@ namespace GDGame.Managers
         private void LoadTextures()
         {
             main.Textures.Load("Assets/Textures/Props/GameTextures/TextureCube", "Finish");
-
             main.Textures.Load("Assets/Textures/Base/WhiteSquare");
-            main.Textures.Load("Assets/Textures/UI/TopBar");
-            main.Textures.Load("Assets/Textures/UI/Mug-Collected");
-
-
             main.Textures.Load("Assets/Textures/Menu/menubaseres", "options");
             main.Textures.Load("Assets/Textures/Menu/button", "optionsButton");
 
@@ -104,7 +102,6 @@ namespace GDGame.Managers
             main.Textures.Load("Assets/Textures/Skybox/kWall3");
             main.Textures.Load("Assets/Textures/Skybox/kWall4");
             main.Textures.Load("Assets/Textures/Skybox/tiles", "floor2");
-
             main.Textures.Load("Assets/Textures/Props/GameTextures/sugarbox");
 
             //Normals
@@ -116,7 +113,7 @@ namespace GDGame.Managers
 
             main.Textures.Load("Assets/Textures/Props/GameTextures/DisplacementMap", "big-displacement");
 
-            //Chocolate
+            //Chocolate, some of these would have better been tiled in the shader.
             main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco", "Chocolate");
             main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco_choco", "Chocolate_choco");
             main.Textures.Load("Assets/Textures/Props/GameTextures/big-choco_b_logic", "Chocolate_b_logic");
@@ -140,18 +137,21 @@ namespace GDGame.Managers
 
             main.Textures.Load("Assets/Textures/Props/GameTextures/ceramicColoring", "Ceramic");
 
+            //Sugar
             main.Textures.Load("Assets/Textures/Props/GameTextures/sugar01", "SugarW");
             main.Textures.Load("Assets/Textures/Props/GameTextures/sugar02", "SugarB");
 
+            //Misc. Items
             main.Textures.Load("Assets/Textures/Props/GameTextures/MugTexture", "Mug");
             main.Textures.Load("Assets/Textures/Props/GameTextures/KnifeTexture", "Knife");
             main.Textures.Load("Assets/Textures/Props/GameTextures/ButtonTexture", "Button");
-
+            
             main.Textures.Load("Assets/Textures/Props/GameTextures/wood", "Wood");
             main.Textures.Load("Assets/Textures/Props/GameTextures/blackTile");
             main.Textures.Load("Assets/Textures/Props/GameTextures/checkers", "Checkers");
             main.Textures.Load("Assets/Textures/Props/GameTextures/coffeeStrip", "coffeeSpill");
 
+            //UI
             main.Textures.Load("Assets/Textures/Menu/menubaseres", "Menu");
             main.Textures.Load("Assets/Textures/Menu/Options");
             main.Textures.Load("Assets/Textures/Menu/EndScreen");
@@ -160,7 +160,8 @@ namespace GDGame.Managers
             main.Textures.Load("Assets/Textures/UI/GreenSticker");
             main.Textures.Load("Assets/Textures/UI/YellowSticker");
             main.Textures.Load("Assets/Textures/Props/GameTextures/Biscuit");
-            
+            main.Textures.Load("Assets/Textures/UI/TopBar");
+            main.Textures.Load("Assets/Textures/UI/Mug-Collected");;
         }
 
         #endregion

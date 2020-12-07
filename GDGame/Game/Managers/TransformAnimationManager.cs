@@ -6,13 +6,14 @@ using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.GameComponents;
-using GDLibrary.Parameters;
 using JigLibX.Physics;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Managers
 {
-
+    /// <summary>
+    /// Struct that stores everything the Animations need, the constructors got too overloaded so we resorted to making a big struct.
+    /// </summary>
     public struct AnimationEventData
     {
         public AnimationEventType type;
@@ -33,7 +34,11 @@ namespace GDGame.Managers
         RemoveAllOfActor,
         RemoveAllOfActorAndInvokeCallbacks
     }
-    
+
+    /// <summary>
+    /// Class that executes Animations on the Transforms of Actor3Ds. Transformer.cs in utilities is the one sending the Events.
+    /// Used with our Type based EventManager.
+    /// </summary>
     public abstract class AnimationEvent : EventInfo
     {
         private AnimationEventType type;
@@ -44,7 +49,7 @@ namespace GDGame.Managers
         private Vector3 destination;
         private LoopMethod loopMethod;
         private Smoother.SmoothingMethod smoothing;
-        
+
         protected Actor3D actor;
         protected Vector3 start;
         protected Process process;
@@ -66,6 +71,11 @@ namespace GDGame.Managers
             this.resetAfterDone = animationEventData.resetAferDone;
         }
 
+        /// <summary>
+        /// Makes all necessary calculations to figure out where the current point at this step of the animation is.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <returns></returns>
         public bool Tick(GameTime gameTime)
         {
             if (actor != null && (actor.StatusType & StatusType.Update) == StatusType.Update)
@@ -80,14 +90,14 @@ namespace GDGame.Managers
                 FinalOperation finalOperation = PerformOperation(currentPoint, lastPoint);
 
                 process(finalOperation);
-                
+
                 lastPoint = currentPoint;
 
                 currentTime += gameTime.ElapsedGameTime.Milliseconds * step;
 
                 if (done)
                 {
-                    if (resetAfterDone) 
+                    if (resetAfterDone)
                         process(target => start);
                     callback?.Invoke();
                 }
@@ -106,10 +116,7 @@ namespace GDGame.Managers
             {
                 if (type == AnimationEventType.RemoveAllOfActor)
                 {
-                    return list =>
-                    {
-                        list.RemoveAll(list => Equals(list.actor, this.actor));
-                    };
+                    return list => { list.RemoveAll(list => Equals(list.actor, this.actor)); };
                 }
 
                 if (type == AnimationEventType.RemoveAllOfActorAndInvokeCallbacks)
@@ -125,35 +132,37 @@ namespace GDGame.Managers
                     };
                 }
             }
-            
+
             return null;
         }
 
+        //Each Subclass will define how it processes (on what part of Transform3D it processes) the current Animation point.
         public delegate void Process(FinalOperation finalOperation);
-        
+
+        //The FinalOperation will be given to the Subclass so it can apply it to its current Scale/Transform/Anything and gets back the modified version.
         public delegate Vector3 FinalOperation(Vector3 target);
 
+        //This method figures out based on whether the animation is relative and the loopmethod how the next animation point is supposed to be used and the result is given to the subclass.
         private FinalOperation PerformOperation(Vector3 currentPoint, Vector3 lastPoint)
         {
             if (isRelative && loopMethod == LoopMethod.PingPongOnce)
             {
                 return target => target + currentPoint;
             }
-            
+
             if (isRelative)
             {
                 return target => target + currentPoint - lastPoint;
             }
-            
-            return vector3 => currentPoint;
-        }
 
-        private Vector3 StandardLerp(Vector3 start, Vector3 dest, float percent)
-        {
-            return Vector3.Lerp(start, dest, percent);
+            return vector3 => currentPoint;
         }
     }
 
+    /// <summary>
+    /// Class that is supposed to have multiple actors subscribe to an animation so the calculations are only done once.
+    /// It is not as performance increasing as anticipated and has a lot of flaws for the setup.
+    /// </summary>
     public class GroupAnimationEvent : AnimationEvent
     {
         public string id;
@@ -161,8 +170,8 @@ namespace GDGame.Managers
         private List<Action> callbacks;
 
         private List<AnimationEvent> animationEvents;
-        
-        public GroupAnimationEvent(AnimationEventData data, List<AnimationEvent> animEvents,string id) : base(data)
+
+        public GroupAnimationEvent(AnimationEventData data, List<AnimationEvent> animEvents, string id) : base(data)
         {
             animationEvents = animEvents;
             this.id = id;
@@ -183,8 +192,9 @@ namespace GDGame.Managers
             Vector3 offsetTranslation = actor3Ds[0].Transform3D.Translation;
             Vector3 offsetScale = actor3Ds[0].Transform3D.Scale;
             Vector3 offsetRotation = actor3Ds[0].Transform3D.RotationInDegrees;
-            for(int i = 0; i < animationEvents.Count; i++){
-                if(animationEvents[i].Tick(gameTime)) animationEvents.RemoveAt(i--);
+            for (int i = 0; i < animationEvents.Count; i++)
+            {
+                if (animationEvents[i].Tick(gameTime)) animationEvents.RemoveAt(i--);
             }
 
             offsetTranslation = actor3Ds[0].Transform3D.Translation - offsetTranslation;
@@ -197,7 +207,7 @@ namespace GDGame.Managers
                 actor3Ds[i].Transform3D.Scale += offsetScale;
                 actor3Ds[i].Transform3D.RotationInDegrees += offsetRotation;
             }
-            
+
             if (animationEvents.Count == 0)
             {
                 foreach (Action action in callbacks)
@@ -210,18 +220,22 @@ namespace GDGame.Managers
 
             return false;
         }
-        
     }
 
+    /// <summary>
+    /// Unused class that doesn't work but would be desirable someday later.
+    /// </summary>
     public class AnimateCustomEvent : AnimationEvent
     {
         public AnimateCustomEvent(AnimationEventData animationEventData) : base(animationEventData)
         {
             this.process = process;
         }
-        
     }
 
+    /// <summary>
+    /// Class that Handles Translation Animations
+    /// </summary>
     public class MovementEvent : AnimationEvent
     {
         public MovementEvent(AnimationEventData animationEventData) : base(animationEventData)
@@ -241,7 +255,10 @@ namespace GDGame.Managers
             else actor.Transform3D.Translation = pos;
         }
     }
-
+    
+    /// <summary>
+    /// Class that Handles Scale Animations
+    /// </summary>
     public class ScaleEvent : AnimationEvent
     {
         public ScaleEvent(AnimationEventData animationEventData) : base(animationEventData)
@@ -255,10 +272,12 @@ namespace GDGame.Managers
             actor.Transform3D.Scale = finalOperation.Invoke(actor.Transform3D.Scale);
         }
     }
-
+    
+    /// <summary>
+    /// Class that Handles Rotation Animations
+    /// </summary>
     public class RotationEvent : AnimationEvent
     {
-        
         public RotationEvent(AnimationEventData animationEventData) : base(animationEventData)
         {
             start = actor.Transform3D.RotationInDegrees;
@@ -271,10 +290,15 @@ namespace GDGame.Managers
         }
     }
 
+    /// <summary>
+    /// Manager that keeps track of all Animations playing and removes them from his list when they're done playing.
+    /// </summary>
     public class TransformAnimationManager : PausableGameComponent
     {
         private List<AnimationEvent> movementInformationList = new List<AnimationEvent>();
-        private Dictionary<string,GroupAnimationEvent> groupAnimationEvents = new Dictionary<string, GroupAnimationEvent>();
+
+        private Dictionary<string, GroupAnimationEvent> groupAnimationEvents =
+            new Dictionary<string, GroupAnimationEvent>();
 
         public TransformAnimationManager(Microsoft.Xna.Framework.Game game, StatusType statusType) : base(game,
             statusType)
@@ -292,11 +316,10 @@ namespace GDGame.Managers
 
         private void HandleGroupAnimationInformationEvent(GroupAnimationEvent groupAnimationEvent)
         {
-            if(!groupAnimationEvents.ContainsKey(groupAnimationEvent.id)) 
-                groupAnimationEvents.Add(groupAnimationEvent.id,groupAnimationEvent);
+            if (!groupAnimationEvents.ContainsKey(groupAnimationEvent.id))
+                groupAnimationEvents.Add(groupAnimationEvent.id, groupAnimationEvent);
             else
                 groupAnimationEvents[groupAnimationEvent.id].SubscribeActorToAnimation(groupAnimationEvent);
-            
         }
 
         protected override void ApplyUpdate(GameTime gameTime)
@@ -305,8 +328,9 @@ namespace GDGame.Managers
                 if (movementInformationList[i].Tick(gameTime))
                     movementInformationList.RemoveAt(i--);
 
-            foreach (KeyValuePair<string,GroupAnimationEvent> groupAnimationEvent in groupAnimationEvents)
-                if (groupAnimationEvent.Value.Tick(gameTime)) groupAnimationEvents.Remove(groupAnimationEvent.Key);
+            foreach (KeyValuePair<string, GroupAnimationEvent> groupAnimationEvent in groupAnimationEvents)
+                if (groupAnimationEvent.Value.Tick(gameTime))
+                    groupAnimationEvents.Remove(groupAnimationEvent.Key);
         }
     }
 }

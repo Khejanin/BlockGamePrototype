@@ -11,10 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    ///     Allows us to draw a model and add a collision skin and physics response. Use this class to create collidable
-    ///     objects
-    ///     and add one or more of the 3 collision primitive types (i.e. Box, Sphere, Capsule). Unlike the TriangleMeshObject
-    ///     this class will allow an object to MOVE within the game (e.g. fall, by lifted and dropped, be pushed etc).
+    ///  We have our own version due to OurEffectParameters again.
     /// </summary>
     public class OurCollidableObject : OurModelObject
     {

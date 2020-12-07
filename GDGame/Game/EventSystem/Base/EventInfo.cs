@@ -10,6 +10,10 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace GDGame.EventSystem
 {
+    /// <summary>
+    /// Base EventInfo Class that all EventInformation needs to inherit from.
+    /// Inheriting from EventInfo makes it possible for other classes to listen from events of exactly that type.
+    /// </summary>
     public abstract class EventInfo
     {
     }

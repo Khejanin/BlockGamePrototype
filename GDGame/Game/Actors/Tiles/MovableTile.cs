@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    /// The Movable Tile is a Tile which moves
+    /// The Movable Tile is a Tile which can move.
     /// </summary>
     public class MovableTile : Tile
     {
@@ -52,7 +52,8 @@ namespace GDGame.Actors
         #endregion
 
         #region Methods
-
+        
+        //Override of what this tile will do when it dies.
         protected override void Die(Action callbackAfterDeath)
         {
             this.ScaleTo(new AnimationEventData()

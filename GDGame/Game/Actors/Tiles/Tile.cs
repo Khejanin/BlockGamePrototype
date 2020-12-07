@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Game.Parameters.Effect;
@@ -16,7 +15,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    ///     Tile is the BasicTile from which other Tiles inherit
+    /// Tile is the BasicTile from which other Tiles inherit.
     /// </summary>
     public class Tile : OurCollidableObject
     {
@@ -58,8 +57,9 @@ namespace GDGame.Actors
         #region Properties, Indexers
 
         public bool IsDirty { get; set; }
-
+        //Tiles can be part of a shape -> a collection of Tiles
         public Shape Shape { get; set; }
+        //All Tiles have a TileType
         public ETileType TileType { get; }
 
         #endregion
@@ -74,6 +74,7 @@ namespace GDGame.Actors
             Enable(true, 1);
         }
 
+        //Called after Clone() so that we don't break the Game by setting this up in the constructor.
         public virtual void InitializeTile()
         {
             spawnPos = Transform3D.Translation;
@@ -125,6 +126,7 @@ namespace GDGame.Actors
             SetTranslation(spawnPos);
         }
 
+        //Method which sets a Translation and does everything so it also works for the Body
         public virtual void SetTranslation(Vector3 translation)
         {
             Transform3D.Translation = translation;
@@ -135,6 +137,7 @@ namespace GDGame.Actors
             IsDirty = true;
         }
 
+        //Animation that is played when the Tile dies. It has a Callback that executes everything that the user needs after the dying animation (Respawn/Remove from ObjectManager).
         protected virtual void Die(Action callbackAfterDeath)
         {/*
             ScaleEvent scaleEvent = new ScaleEvent(new AnimationEventData()

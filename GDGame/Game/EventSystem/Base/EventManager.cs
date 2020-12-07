@@ -4,6 +4,9 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.EventSystem
 {
+    /// <summary>
+    /// Our EventSystem version that's not too different, it trades safety for convenience.
+    /// </summary>
     public class EventManager : GameComponent
     {
         #region Delegates
@@ -14,6 +17,8 @@ namespace GDGame.EventSystem
 
         #region Static Fields and Constants
 
+        //The first dictionary is to get the Events based on their Type, the second one based on the hash of the original function.
+        //The hash is needed because we wrap the function before we add it, so we would not be able to unsubscribe without this.
         private static Dictionary<Type, Dictionary<int, EventListener>> _eventListeners;
         private static Queue<EventInfo> _eventsToTrigger;
 

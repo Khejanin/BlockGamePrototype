@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    ///     Base class for all drawn 3D draw models objects used in the engine. This class adds a Model field.
+    /// Custom Version for custom OurEffectParameters.
     /// </summary>
     /// <see cref="GDLibrary.Actors.PrimitiveObject" />
     public class OurModelObject : OurDrawnActor3D
@@ -66,6 +66,7 @@ namespace GDGame.Actors
 
         public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
         {
+            //We just call DrawMesh on our EffectParameters and the rest is handled for us.
             EffectParameters.DrawMesh(Transform3D.World, camera, Model, BoneTransforms, gameTime);
         }
 

@@ -9,6 +9,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Managers
 {
+    /// <summary>
+    /// Our version of the RenderManager working with OurObjectManager.
+    /// </summary>
     public class OurRenderManager : PausableDrawableGameComponent
     {
         #region Private variables

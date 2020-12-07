@@ -10,6 +10,9 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Managers
 {
+    /// <summary>
+    /// Our Object Manager that is basically the same as the original ones but it uses OurDrawnActors.
+    /// </summary>
     public class OurObjectManager : PausableGameComponent
     {
         #region Private variables

@@ -6,6 +6,10 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Managers
 {
+    /// <summary>
+    /// Proxy that handles the Raycaster Calls for you so that you dont have to worry about the ObjectManager.
+    /// This class is only a shadow of its former glory as we only use Raycasts in one place in the Game now, the rest is handled through Collisions.
+    /// </summary>
     public class RaycastManager
     {
         #region Static Fields and Constants

@@ -7,8 +7,15 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Managers
 {
+    /// <summary>
+    /// When an object wants to Call a Function in x seconds it can use this class, it pauses with the game.
+    /// Initially only the TransformAnimationManager provided timed callbacks, as I don't want anyone to use the TransformAnimationManager for just the Callback functionality, this class exists.
+    /// </summary>
     public class TimeManager : PausableGameComponent
     {
+        /// <summary>
+        /// Timer struct for data and ticking.
+        /// </summary>
         private struct Timer
         {
             private Action toCall;
@@ -38,6 +45,7 @@ namespace GDGame.Managers
 
         private static List<Timer> _timers = new List<Timer>();
 
+        //Static function everyone can call to add a callback in x seconds.
         public static void CallFunctionInSeconds(Action action, float seconds)
         {
             _timers.Add(new Timer(action,seconds));
@@ -46,7 +54,7 @@ namespace GDGame.Managers
         public TimeManager(Microsoft.Xna.Framework.Game game, StatusType statusType) : base(game, statusType)
         {
         }
-
+        
         protected override void ApplyUpdate(GameTime gameTime)
         {
             for (int i = 0; i < _timers.Count; i++)
