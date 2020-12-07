@@ -62,6 +62,7 @@ namespace GDGame.Managers
             main.Models.Load("Assets/Models/Decor/coffeeSpill", "Spill");
             main.Models.Load("Assets/Models/plane", "CoffeePlane");
             main.Models.Load("Assets/Models/Puddle");
+            main.Models.Load("Assets/Models/Biscuit");
         }
 
         private void LoadSounds()
@@ -152,6 +153,7 @@ namespace GDGame.Managers
             main.Textures.Load("Assets/Textures/UI/RedSticker");
             main.Textures.Load("Assets/Textures/UI/GreenSticker");
             main.Textures.Load("Assets/Textures/UI/YellowSticker");
+            main.Textures.Load("Assets/Textures/Props/GameTextures/Biscuit");
             
         }
 

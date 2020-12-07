@@ -323,11 +323,11 @@ namespace GDGame.Managers
                 0.5f, Smoother.SmoothingMethod.Smooth));
             enemy.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnHostileCollision));
 
-            effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Finish"], Color.White, 1);
-            MovingPlatformTile platform = new MovingPlatformTile("MovingPlatform", ActorType.Platform,
+            effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Biscuit"], Color.White, 1);
+            MovingPlatformTile movingPlatform = new MovingPlatformTile("MovingPlatform", ActorType.Platform,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
-                main.Models["SinglePlate"], true, ETileType.MovingPlatform); //-1 = X, 1 = Y, 0 = Z
-            platform.ControllerList.Add(new PathMovementComponent("platformpmc", ControllerType.Movement,
+                main.Models["Biscuit"], true, ETileType.MovingPlatform); 
+            movingPlatform.ControllerList.Add(new PathMovementComponent("platformpmc", ControllerType.Movement,
                 ActivationType.Activated, 0.5f, Smoother.SmoothingMethod.Decelerate));
 
             #endregion MovableTiles
@@ -341,7 +341,7 @@ namespace GDGame.Managers
                 {"GoalTile", goal},
                 {"EnemyTile", enemy},
                 {"ButtonTile", activatable},
-                {"MovingPlatformTile", platform},
+                {"MovingPlatformTile", movingPlatform},
                 {"SpikeTile", spike},
                 {"StarPickupTile", starPickup},
                 {"CheckpointTile", checkpoint},
