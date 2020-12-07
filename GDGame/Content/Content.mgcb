@@ -566,6 +566,36 @@
 /processorParam:Quality=Best
 /build:Assets/Sound/Creak03.wav
 
+#begin Assets/Sound/Effects/attach.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/Effects/attach.wav
+
+#begin Assets/Sound/Effects/attachBlock.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/Effects/attachBlock.wav
+
+#begin Assets/Sound/Effects/buttonClick.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/Effects/buttonClick.wav
+
+#begin Assets/Sound/Effects/step1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/Effects/step1.wav
+
+#begin Assets/Sound/Effects/trapDeath.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/Effects/trapDeath.wav
+
 #begin Assets/Sound/EnemySounds/angery.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
