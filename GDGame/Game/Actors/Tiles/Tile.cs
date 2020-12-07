@@ -33,13 +33,11 @@ namespace GDGame.Actors
 
         public int activatorId = -1;
 
-        public bool canDie;
-
         #endregion
 
-        #region Private variables
+        #region Protected variables
 
-        private Vector3 spawnPos;
+        protected Vector3 spawnPos;
 
         #endregion
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GDGame.Actors;
 using GDGame.EventSystem;
 using GDGame.Utilities;
 using GDLibrary.Actors;
@@ -13,6 +14,7 @@ namespace GDGame.Managers
 
     public struct AnimationEventData
     {
+        public AnimationEventType type;
         public Actor3D actor;
         public int maxTime;
         public Vector3 destination;
@@ -23,18 +25,27 @@ namespace GDGame.Managers
         public Action callback;
         public bool resetAferDone;
     }
+
+    public enum AnimationEventType
+    {
+        Add,
+        RemoveAllOfActor,
+        RemoveAllOfActorAndInvokeCallbacks
+    }
     
     public abstract class AnimationEvent : EventInfo
     {
-        protected Actor3D actor;
+        private AnimationEventType type;
         private int currentTime;
         private int maxTime;
         private int step = 1;
-        protected Vector3 start;
         private Vector3 lastPoint = Vector3.Zero;
         private Vector3 destination;
         private LoopMethod loopMethod;
         private Smoother.SmoothingMethod smoothing;
+        
+        protected Actor3D actor;
+        protected Vector3 start;
         protected Process process;
         protected bool isRelative;
         protected Body body;
@@ -46,7 +57,7 @@ namespace GDGame.Managers
             this.actor = animationEventData.actor;
             this.destination = animationEventData.destination;
             this.maxTime = animationEventData.maxTime;
-            smoothing = animationEventData.smoothing;
+            this.smoothing = animationEventData.smoothing;
             this.loopMethod = animationEventData.loopMethod;
             this.isRelative = animationEventData.isRelative;
             this.body = animationEventData.body;
@@ -76,7 +87,7 @@ namespace GDGame.Managers
                 if (done)
                 {
                     if (resetAfterDone) 
-                        process(target => { return start; });
+                        process(target => start);
                     callback?.Invoke();
                 }
 
@@ -84,6 +95,37 @@ namespace GDGame.Managers
             }
 
             return false;
+        }
+
+        //We can manipulate/access values inside of the list without making them publicly accessible
+        public Action<List<AnimationEvent>> PerformListOperation()
+        {
+            if (type == AnimationEventType.Add) return list => list.Add(this);
+            if (actor != null)
+            {
+                if (type == AnimationEventType.RemoveAllOfActor)
+                {
+                    return list =>
+                    {
+                        list.RemoveAll(list => Equals(list.actor, this.actor));
+                    };
+                }
+
+                if (type == AnimationEventType.RemoveAllOfActorAndInvokeCallbacks)
+                {
+                    return list =>
+                    {
+                        List<AnimationEvent> animationEvents = list.FindAll(list => Equals(list.actor, this.actor));
+                        foreach (AnimationEvent animationEvent in animationEvents)
+                        {
+                            animationEvent.callback.Invoke();
+                            list.Remove(animationEvent);
+                        }
+                    };
+                }
+            }
+            
+            return null;
         }
 
         public delegate void Process(FinalOperation finalOperation);
@@ -131,8 +173,13 @@ namespace GDGame.Managers
 
         private void ApplyAnimation(FinalOperation finalOperation)
         {
-            actor.Transform3D.Translation = finalOperation.Invoke(actor.Transform3D.Translation);
-            body?.MoveTo(actor.Transform3D.Translation, Matrix.Identity);
+            Vector3 pos = finalOperation.Invoke(actor.Transform3D.Translation);
+            if (body != null)
+            {
+                Tile tile = body.ExternalData as Tile;
+                tile?.SetTranslation(pos);
+            }
+            else actor.Transform3D.Translation = pos;
         }
     }
 
@@ -179,7 +226,7 @@ namespace GDGame.Managers
 
         private void HandleAnimationInformationEvent(AnimationEvent @event)
         {
-            movementInformationList.Add(@event);
+            @event.PerformListOperation().Invoke(movementInformationList);
         }
 
         protected override void ApplyUpdate(GameTime gameTime)

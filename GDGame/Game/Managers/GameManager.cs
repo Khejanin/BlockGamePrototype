@@ -226,10 +226,9 @@ namespace GDGame.Managers
             CoffeeEffectParameters coffeeEffect = new CoffeeEffectParameters(main.Effects["Coffee"],
                 main.Textures["CoffeeUV"], main.Textures["CoffeeFlow"], coffeeColor);
             Transform3D transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up);
-            OurModelObject coffee = new OurModelObject("coffee - plane", ActorType.Primitive,
+            PathMoveTile coffee = new PathMoveTile("coffee - plane", ActorType.Primitive,
                 StatusType.Update | StatusType.Drawn, transform3D, coffeeEffect,
-                main.Models["CoffeePlane"]);
-            main.ObjectManager.Add(coffee);
+                main.Models["CoffeePlane"],false,ETileType.None);
 
             NormalEffectParameters normalEffectParameters = new NormalEffectParameters(main.Effects["Normal"],
                 main.Textures["Chocolate"], main.Textures["big-normalmap"],
@@ -392,7 +391,8 @@ namespace GDGame.Managers
                 {"CheckpointTile", checkpoint},
                 {"Knife", knifeModelObject},
                 {"Fork", forkModelObject},
-                {"SinglePlate", singlePlateModelObject}
+                {"SinglePlate", singlePlateModelObject},
+                {"Coffee" , coffee}
             };
         }
 
