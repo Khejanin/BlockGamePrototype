@@ -1,17 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GDGame.Actors;
 using GDGame.Component;
 using GDGame.Controllers;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Factory;
+using GDGame.Game.Actors;
 using GDGame.Game.Parameters.Effect;
 using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
+using GDLibrary.Managers;
 using GDLibrary.Parameters;
 using JigLibX.Collision;
+using JigLibX.Physics;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Managers
@@ -27,6 +31,7 @@ namespace GDGame.Managers
         private Transform3D light;
 
         private Main main;
+        private Coffee coffee;
 
         #endregion
 
@@ -51,6 +56,38 @@ namespace GDGame.Managers
             InitLevelDecor();
             InitGrid();
             InitSkyBox();
+            InitCoffee();
+        }
+
+        private void InitCoffee()
+        { 
+            Color coffeeColor = new Color(111 / 255.0f, 78 / 255.0f, 55 / 255.0f, 0.95f);
+            CoffeeEffectParameters coffeeEffect = new CoffeeEffectParameters(main.Effects["Coffee"],
+                main.Textures["CoffeeUV"], main.Textures["CoffeeFlow"], coffeeColor);
+            Transform3D transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up);
+            coffee = new Coffee("Coffee", ActorType.Primitive,
+                StatusType.Update | StatusType.Drawn, transform3D, coffeeEffect,
+                main.Models["CoffeePlane"],levelData.coffeeInfo);
+            //Most of these constructor arguments are not used, need to refactor the entire structure.
+            coffee.ControllerList.Add(new CoffeeMovementComponent("cmc", ControllerType.Movement,
+                ActivationType.AlwaysOn, 0, Smoother.SmoothingMethod.Smooth,coffee));
+            coffee.ControllerList.Add(new ColliderComponent("cc Coffee",ControllerType.Collider,
+                (skin0, skin1) =>
+                {
+                    Tile tile = skin1.Owner.ExternalData as Tile;
+
+                    if (tile != null)
+                    {
+                        if(tile.TileType == ETileType.Player) EventManager.FireEvent(new GameStateMessageEventInfo(){GameState = GameState.Lost});
+                        EventManager.FireEvent(new RemoveActorEvent(){body = tile.Body});
+                        EventManager.FireEvent(new TileEventInfo() { Id = tile.ID ,Type = TileEventType.Consumed});
+                        return true;
+                    }
+                    
+                    return false;
+                }));
+            
+            main.ObjectManager.Add(coffee);
         }
 
         private void InitCamera()
@@ -227,10 +264,6 @@ namespace GDGame.Managers
             CoffeeEffectParameters coffeeEffect = new CoffeeEffectParameters(main.Effects["Coffee"],
                 main.Textures["CoffeeUV"], main.Textures["CoffeeFlow"], coffeeColor);
             Transform3D transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up);
-            OurModelObject coffee = new OurModelObject("coffee - plane", ActorType.Primitive,
-                StatusType.Update | StatusType.Drawn, transform3D, coffeeEffect,
-                main.Models["CoffeePlane"]);
-            main.ObjectManager.Add(coffee);
 
             NormalEffectParameters normalEffectParameters = new NormalEffectParameters(main.Effects["Normal"],
                 main.Textures["Chocolate"], main.Textures["big-normalmap"],
@@ -347,7 +380,8 @@ namespace GDGame.Managers
                 {"CheckpointTile", checkpoint},
                 {"Knife", knifeModelObject},
                 {"Fork", forkModelObject},
-                {"SinglePlate", singlePlateModelObject}
+                {"SinglePlate", singlePlateModelObject},
+                {"Coffee" , coffee}
             };
         }
 

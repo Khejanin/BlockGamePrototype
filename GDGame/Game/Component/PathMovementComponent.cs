@@ -14,12 +14,12 @@ namespace GDGame.Component
 {
     public class PathMovementComponent : ActivatableController, IActivatable, ICloneable
     {
-        private int currentPositionIndex;
+        protected int currentPositionIndex;
         protected int movementTime;
         protected float timePercent;
         protected Smoother.SmoothingMethod smoothingMethod;
         private int pathDir = 1;
-        private PathMoveTile pathMoveTileParent;
+        protected PathMoveTile pathMoveTileParent;
 
         private List<Vector3> Path
         {
@@ -59,7 +59,7 @@ namespace GDGame.Component
 
         #region Pathing
 
-        private Vector3 NextPathPoint()
+        protected Vector3 NextPathPoint()
         {
             if (currentPositionIndex + pathDir == Path.Count || currentPositionIndex + pathDir == -1)
                 pathDir *= -1;

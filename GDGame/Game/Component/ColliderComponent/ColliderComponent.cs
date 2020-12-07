@@ -12,17 +12,17 @@ namespace GDGame.Component
     {
         protected OurCollidableObject parent;
         private bool handleIsSet;
-        private CollisionCallbackFn doIt;
+        private CollisionCallbackFn handleCollision;
 
-        public ColliderComponent(string id, ControllerType controllerType, CollisionCallbackFn doIt) : base(id, controllerType)
+        public ColliderComponent(string id, ControllerType controllerType, CollisionCallbackFn handleCollision) : base(id, controllerType)
         {
             handleIsSet = false;
-            this.doIt = doIt;
+            this.handleCollision = handleCollision;
         }
 
         private void InitEventListeners()
         {
-            parent.Body.CollisionSkin.callbackFn += doIt;
+            parent.Body.CollisionSkin.callbackFn += handleCollision;
         }
 
         public override void Update(GameTime gameTime, IActor actor)
@@ -37,7 +37,7 @@ namespace GDGame.Component
 
         public new object Clone()
         {
-            return new ColliderComponent(ID, ControllerType, doIt);
+            return new ColliderComponent(ID, ControllerType, handleCollision);
         }
     }
 }

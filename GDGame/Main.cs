@@ -61,7 +61,7 @@ namespace GDGame
         public ContentDictionary<Model> Models { get; private set; }
         public MouseManager MouseManager { get; private set; }
         public OurObjectManager ObjectManager { get; private set; }
-        private PhysicsManager PhysicsManager { get; set; }
+        public OurPhysicsManager PhysicsManager { get; set; }
         private OurRenderManager RenderManager { get; set; }
         public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
         public SoundManager SoundManager { get; private set; }
@@ -211,7 +211,7 @@ namespace GDGame
             Components.Add(new EventDispatcher(this));
 
             //Physics
-            PhysicsManager = new PhysicsManager(this, StatusType.Off);
+            PhysicsManager = new OurPhysicsManager(this, StatusType.Off);
             Components.Add(PhysicsManager);
 
             //Camera
@@ -395,7 +395,7 @@ namespace GDGame
             game?.RemoveCamera();
             ObjectManager.RemoveAll(actor3D => actor3D != null);
             Components.Remove(PhysicsManager);
-            PhysicsManager = new PhysicsManager(this, StatusType.Update);
+            PhysicsManager = new OurPhysicsManager(this, StatusType.Update);
             Components.Add(PhysicsManager);
             player = null;
             CameraManager.ActiveCameraIndex = 0;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GDGame.Actors;
+using GDGame.EventSystem;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Events;
@@ -15,6 +16,8 @@ namespace GDGame.Managers
 
         private List<Actor3D> allActors;
 
+        private List<OurDrawnActor3D> removeList;
+
         private bool isDirty;
 
         #endregion
@@ -27,6 +30,13 @@ namespace GDGame.Managers
             OpaqueList = new List<OurDrawnActor3D>(drawnActorListSize);
             TransparentList = new List<OurDrawnActor3D>(transparentActorListSize);
             isDirty = true;
+            removeList = new List<OurDrawnActor3D>();
+            EventManager.RegisterListener<RemoveActorEvent>(OnActorRemove);
+        }
+
+        private void OnActorRemove(RemoveActorEvent obj)
+        {
+            if(obj.actor3D != null) removeList.Add((OurDrawnActor3D) obj.actor3D);
         }
 
         #endregion
@@ -64,6 +74,8 @@ namespace GDGame.Managers
         /// <param name="gameTime">GameTime object</param>
         protected override void ApplyUpdate(GameTime gameTime)
         {
+            ApplyBatchRemove();
+            
             foreach (OurDrawnActor3D actor in OpaqueList)
                 if ((actor.StatusType & StatusType.Update) == StatusType.Update)
                     actor.Update(gameTime);
@@ -71,6 +83,23 @@ namespace GDGame.Managers
             foreach (OurDrawnActor3D actor in TransparentList)
                 if ((actor.StatusType & StatusType.Update) == StatusType.Update)
                     actor.Update(gameTime);
+        }
+        
+        private void ApplyBatchRemove()
+        {
+            foreach (OurDrawnActor3D actor in removeList)
+            {
+                if (actor.EffectParameters.GetAlpha() < 1)
+                {
+                    TransparentList.Remove(actor);
+                }
+                else
+                {
+                    OpaqueList.Remove(actor);
+                }
+            }
+
+            removeList.Clear();
         }
 
         protected override void HandleEvent(EventData eventData)

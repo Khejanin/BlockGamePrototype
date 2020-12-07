@@ -86,6 +86,14 @@ namespace GDGame.Managers
 
         private void HandleClickedButton(Actor uIButtonObject)
         {
+
+            //play button sound 
+            EventManager.FireEvent(new SoundEventInfo
+            {
+                soundEventType = SoundEventType.PlaySfx,
+                sfxType = SfxType.MenuButtonClick
+            });
+
             switch (uIButtonObject.ID)
             {
                 case "Play":
@@ -97,18 +105,27 @@ namespace GDGame.Managers
                     SetScene("Options");
                     break;
 
+                case "InGameMeny":
+                    SetScene("InGameMenu");
+                    break;
+
                 case "Resume":
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
                     EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Start});
                     break;
 
                 case "Back":
+                    SetScene("MainMenu");
+                    break;
+
                 case "Continue":
                     SetScene("MainMenu");
                     break;
+
                 case "Difficulty":
                     EventManager.FireEvent(new OptionsEventInfo {Type = OptionsType.Toggle, Id = "Difficulty"});
                     break;
+
                 case "Quit":
                     Game.Exit();
                     break;
