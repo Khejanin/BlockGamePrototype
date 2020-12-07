@@ -1,8 +1,11 @@
 ﻿using System;
 using GDGame.Enums;
 using GDGame.Game.Parameters.Effect;
+using GDGame.Managers;
+using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Actors
@@ -49,6 +52,20 @@ namespace GDGame.Actors
         #endregion
 
         #region Methods
+
+        protected override void Die(Action callbackAfterDeath)
+        {
+            this.ScaleTo(new AnimationEventData()
+            {
+                isRelative = false, destination = Vector3.Zero,
+                maxTime = 1000,
+                smoothing = Smoother.SmoothingMethod.Accelerate, loopMethod = LoopMethod.PlayOnce,
+                callback = callbackAfterDeath, resetAferDone = true
+            });
+
+            this.RotateTo(new AnimationEventData()
+                {isRelative = true, destination = Vector3.Up * 360, maxTime = 1000, resetAferDone = true});
+        }
 
         public new object Clone()
         {

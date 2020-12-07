@@ -75,12 +75,12 @@ namespace GDGame.Managers
                 (skin0, skin1) =>
                 {
                     Tile tile = skin1.Owner.ExternalData as Tile;
-                    
+
                     if (tile != null)
                     {
                         if(tile.TileType == ETileType.Player) EventManager.FireEvent(new GameStateMessageEventInfo(){GameState = GameState.Lost});
                         EventManager.FireEvent(new RemoveActorEvent(){body = tile.Body});
-                        EventManager.FireEvent(new TileEventInfo() {Type = TileEventType.Consumed});
+                        EventManager.FireEvent(new TileEventInfo() { Id = tile.ID ,Type = TileEventType.Consumed});
                         return true;
                     }
                     
@@ -450,12 +450,12 @@ namespace GDGame.Managers
                 switch (collide.TileType)
                 {
                     case ETileType.Attachable:
-                        EventManager.FireEvent(new TileEventInfo {Type = TileEventType.Reset, IsEasy = main.IsEasy});
+                        EventManager.FireEvent(new TileEventInfo {Type = TileEventType.Reset, IsEasy = main.IsEasy, Id = collide.ID});
                         break;
                     case ETileType.Player:
                         if (((PlayerTile) collide).IsAlive)
                             EventManager.FireEvent(new TileEventInfo
-                                {Type = TileEventType.PlayerKill, IsEasy = main.IsEasy});
+                                {Type = TileEventType.PlayerKill, IsEasy = main.IsEasy, Id = collide.ID});
                         break;
                 }
 

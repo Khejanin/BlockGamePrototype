@@ -29,7 +29,7 @@ namespace GDGame.Managers
         
         private void HandleRemoveActor(RemoveActorEvent obj)
         {
-            PhysicsSystem.RemoveBody(obj.body);
+            if(obj.body != null) PhysicsSystem.RemoveBody(obj.body);
         }
         
     }

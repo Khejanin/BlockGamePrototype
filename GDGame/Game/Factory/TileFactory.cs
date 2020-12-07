@@ -21,6 +21,7 @@ namespace GDGame.Factory
         private readonly Dictionary<string, OurDrawnActor3D> drawnActors;
         private readonly OurObjectManager objectManager;
         private readonly ContentDictionary<Texture2D> textures;
+        private int id;
         private bool mode;
 
         #endregion
@@ -38,7 +39,7 @@ namespace GDGame.Factory
 
         #endregion
 
-        #region Public Methods
+        #region Public Method
 
         public Shape CreateShape()
         {
@@ -68,13 +69,14 @@ namespace GDGame.Factory
 
         #endregion
 
-        #region Private Methods
+        #region Private Method
 
         private Tile CreateAttachable(Vector3 position)
         {
             AttachableTile attachableTile = (AttachableTile) drawnActors["AttachableBlock"];
             attachableTile = attachableTile.Clone() as AttachableTile;
             attachableTile?.InitializeCollision(position);
+            if (attachableTile != null) attachableTile.ID += id++;
             objectManager.Add(attachableTile);
             return attachableTile;
         }
@@ -84,6 +86,7 @@ namespace GDGame.Factory
             ActivatableTile activatable = (ActivatableTile) drawnActors["ButtonTile"];
             activatable = activatable.Clone() as ActivatableTile;
             activatable?.InitializeCollision(position);
+            if (activatable != null) activatable.ID += id++;
             objectManager.Add(activatable);
             return activatable;
         }
@@ -93,6 +96,7 @@ namespace GDGame.Factory
             PathMoveTile enemy = (PathMoveTile) drawnActors["EnemyTile"];
             enemy = enemy.Clone() as PathMoveTile;
             enemy?.InitializeCollision(position, 0.7f);
+            if (enemy != null) enemy.ID += id++;
             objectManager.Add(enemy);
             return enemy;
         }
@@ -102,6 +106,7 @@ namespace GDGame.Factory
             MovingPlatformTile platform = (MovingPlatformTile) drawnActors["MovingPlatformTile"];
             platform = platform.Clone() as MovingPlatformTile;
             platform?.InitializeCollision(position, 0.9f);
+            if (platform != null) platform.ID += id++;
             objectManager.Add(platform);
             return platform;
         }
@@ -111,6 +116,7 @@ namespace GDGame.Factory
             Tile pickupTile = (Tile) drawnActors["StarPickupTile"];
             pickupTile = pickupTile.Clone() as Tile;
             pickupTile?.InitializeCollision(position, 0.9f);
+            if (pickupTile != null) pickupTile.ID += id++;
             if (pickupTile != null)
             {
                 pickupTile.ScaleTo(new AnimationEventData
@@ -158,6 +164,7 @@ namespace GDGame.Factory
             PlayerTile playerTile = (PlayerTile) drawnActors["PlayerBlock"];
             playerTile = playerTile.Clone() as PlayerTile;
             playerTile?.InitializeCollision(position);
+            if (playerTile != null) playerTile.ID += id++;
             objectManager.Add(playerTile);
             return playerTile;
         }
@@ -200,7 +207,8 @@ namespace GDGame.Factory
                 }
             }
 
-            staticTile?.InitializeCollision(position, 0.99f);
+            staticTile?.InitializeCollision(position, 0.98f);
+            if (staticTile != null) staticTile.ID += id++;
             objectManager.Add(staticTile);
             return staticTile;
         }
@@ -210,6 +218,7 @@ namespace GDGame.Factory
             Tile tile = (Tile) drawnActors[actor];
             tile = tile.Clone() as Tile;
             tile?.InitializeCollision(position, 0.8f);
+            if (tile != null) tile.ID += id++;
             objectManager.Add(tile);
             return tile;
         }

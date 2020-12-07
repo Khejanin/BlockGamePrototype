@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using GDGame.Actors;
+using GDGame.Enums;
 
 namespace GDGame.Managers
 {
@@ -72,7 +73,7 @@ namespace GDGame.Managers
             for (int i = 0; i < objectManager.OpaqueList.Count; i++)
             {
                 actor = objectManager.OpaqueList[i];
-                if (actor is OurCollidableObject && actor.ID != "clone - ChocolateTile")
+                if (actor is Tile tile && tile.TileType != ETileType.Static)
                     AddCollisionSkinVertexData(actor as OurCollidableObject);
             }
 

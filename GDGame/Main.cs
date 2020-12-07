@@ -335,7 +335,7 @@ namespace GDGame
             if (player == null)
             {
                 OurDrawnActor3D drawnActor3D =
-                    ObjectManager.OpaqueList.Find(actor3D => actor3D.ID == "clone - Player");
+                    ObjectManager.OpaqueList.Find(actor3D => actor3D is Tile tile && tile.ActorType == ActorType.Player);
                 if (CameraManager.ActiveCamera.ControllerList[0] is RotationAroundActor cam &&
                     drawnActor3D != null)
                 {

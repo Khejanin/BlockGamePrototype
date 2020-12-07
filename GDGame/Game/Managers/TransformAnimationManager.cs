@@ -6,6 +6,7 @@ using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.GameComponents;
+using GDLibrary.Parameters;
 using JigLibX.Physics;
 using Microsoft.Xna.Framework;
 
@@ -155,9 +156,61 @@ namespace GDGame.Managers
 
     public class GroupAnimationEvent : AnimationEvent
     {
-        public GroupAnimationEvent(AnimationEventData animationEventData) : base(animationEventData)
+        public string id;
+        private List<Actor3D> actor3Ds;
+        private List<Action> callbacks;
+
+        private List<AnimationEvent> animationEvents;
+        
+        public GroupAnimationEvent(AnimationEventData data, List<AnimationEvent> animEvents,string id) : base(data)
         {
+            animationEvents = animEvents;
+            this.id = id;
+            actor3Ds = new List<Actor3D>();
+            callbacks = new List<Action>();
+            actor3Ds.Add(data.actor);
+            callbacks.Add(data.callback);
         }
+
+        public void SubscribeActorToAnimation(GroupAnimationEvent info)
+        {
+            actor3Ds.Add(info.actor);
+            callbacks.Add(info.callback);
+        }
+
+        public bool Tick(GameTime gameTime)
+        {
+            Vector3 offsetTranslation = actor3Ds[0].Transform3D.Translation;
+            Vector3 offsetScale = actor3Ds[0].Transform3D.Scale;
+            Vector3 offsetRotation = actor3Ds[0].Transform3D.RotationInDegrees;
+            for(int i = 0; i < animationEvents.Count; i++){
+                if(animationEvents[i].Tick(gameTime)) animationEvents.RemoveAt(i--);
+            }
+
+            offsetTranslation = actor3Ds[0].Transform3D.Translation - offsetTranslation;
+            offsetScale = actor3Ds[0].Transform3D.Scale - offsetScale;
+            offsetRotation = actor3Ds[0].Transform3D.RotationInDegrees - offsetRotation;
+
+            for (int i = 1; i < actor3Ds.Count; i++)
+            {
+                actor3Ds[i].Transform3D.Translation += offsetTranslation;
+                actor3Ds[i].Transform3D.Scale += offsetScale;
+                actor3Ds[i].Transform3D.RotationInDegrees += offsetRotation;
+            }
+            
+            if (animationEvents.Count == 0)
+            {
+                foreach (Action action in callbacks)
+                {
+                    action.Invoke();
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+        
     }
 
     public class AnimateCustomEvent : AnimationEvent
@@ -171,7 +224,6 @@ namespace GDGame.Managers
 
     public class MovementEvent : AnimationEvent
     {
-
         public MovementEvent(AnimationEventData animationEventData) : base(animationEventData)
         {
             start = this.actor.Transform3D.Translation;
@@ -222,6 +274,7 @@ namespace GDGame.Managers
     public class TransformAnimationManager : PausableGameComponent
     {
         private List<AnimationEvent> movementInformationList = new List<AnimationEvent>();
+        private Dictionary<string,GroupAnimationEvent> groupAnimationEvents = new Dictionary<string, GroupAnimationEvent>();
 
         public TransformAnimationManager(Microsoft.Xna.Framework.Game game, StatusType statusType) : base(game,
             statusType)
@@ -229,6 +282,7 @@ namespace GDGame.Managers
             EventManager.RegisterListener<MovementEvent>(HandleAnimationInformationEvent);
             EventManager.RegisterListener<ScaleEvent>(HandleAnimationInformationEvent);
             EventManager.RegisterListener<RotationEvent>(HandleAnimationInformationEvent);
+            EventManager.RegisterListener<GroupAnimationEvent>(HandleGroupAnimationInformationEvent);
         }
 
         private void HandleAnimationInformationEvent(AnimationEvent @event)
@@ -236,11 +290,23 @@ namespace GDGame.Managers
             @event.PerformListOperation().Invoke(movementInformationList);
         }
 
+        private void HandleGroupAnimationInformationEvent(GroupAnimationEvent groupAnimationEvent)
+        {
+            if(!groupAnimationEvents.ContainsKey(groupAnimationEvent.id)) 
+                groupAnimationEvents.Add(groupAnimationEvent.id,groupAnimationEvent);
+            else
+                groupAnimationEvents[groupAnimationEvent.id].SubscribeActorToAnimation(groupAnimationEvent);
+            
+        }
+
         protected override void ApplyUpdate(GameTime gameTime)
         {
             for (int i = 0; i < movementInformationList.Count; i++)
                 if (movementInformationList[i].Tick(gameTime))
                     movementInformationList.RemoveAt(i--);
+
+            foreach (KeyValuePair<string,GroupAnimationEvent> groupAnimationEvent in groupAnimationEvents)
+                if (groupAnimationEvent.Value.Tick(gameTime)) groupAnimationEvents.Remove(groupAnimationEvent.Key);
         }
     }
 }
