@@ -254,9 +254,9 @@ namespace GDGame
                 KeyboardManager);
             Components.Add(MenuManager);
 
-            OurPhysicsDebugDrawer physicsDebugDrawer = new OurPhysicsDebugDrawer(this,
-                StatusType.Off, CameraManager, ObjectManager);
-            Components.Add(physicsDebugDrawer);
+            // OurPhysicsDebugDrawer physicsDebugDrawer = new OurPhysicsDebugDrawer(this,
+            //     StatusType.Off, CameraManager, ObjectManager);
+            // Components.Add(physicsDebugDrawer);
 
             //Raycast
             RaycastManager.Instance.ObjectManager = ObjectManager;

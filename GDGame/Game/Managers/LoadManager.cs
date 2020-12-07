@@ -63,6 +63,7 @@ namespace GDGame.Managers
             main.Models.Load("Assets/Models/plane", "CoffeePlane");
             main.Models.Load("Assets/Models/Puddle");
             main.Models.Load("Assets/Models/Biscuit");
+            main.Models.Load("Assets/Models/Smarties");
         }
 
         private void LoadSounds()

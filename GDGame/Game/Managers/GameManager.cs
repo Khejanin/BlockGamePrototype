@@ -300,9 +300,9 @@ namespace GDGame.Managers
             Tile goal = new Tile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, main.Models["SugarBox"], false, ETileType.Win);
 
-            effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Knife"], Color.White, 1);
+            effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["WhiteSquare"], Color.White, 1);
             Tile checkpoint = new Tile("Checkpoint", ActorType.Primitive, StatusType.Drawn | StatusType.Update,
-                transform3D, effectParameters, main.Models["Knife"], false, ETileType.Checkpoint);
+                transform3D, effectParameters, main.Models["Smarties"], false, ETileType.Checkpoint);
             checkpoint.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnCheckPointCollision));
 
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Finish"], Color.White, 1);
