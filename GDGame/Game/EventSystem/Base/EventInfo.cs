@@ -1,6 +1,8 @@
 ﻿using GDGame.Actors;
 using GDGame.Enums;
+using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 
 namespace GDGame.EventSystem
 {
@@ -84,6 +86,7 @@ namespace GDGame.EventSystem
         public SfxType sfxType;
         public SoundEventType soundEventType;
         public SoundVolumeType soundVolumeType;
+        public Transform3D transform;
 
         #endregion
     }

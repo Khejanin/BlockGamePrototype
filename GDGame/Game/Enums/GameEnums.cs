@@ -100,7 +100,8 @@
         PlayNextMusic,
         IncreaseVolume,
         DecreaseVolume,
-        MuteVolume
+        MuteVolume,
+        SetListener
     }
 
     public enum SoundVolumeType : sbyte

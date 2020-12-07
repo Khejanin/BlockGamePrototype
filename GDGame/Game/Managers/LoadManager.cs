@@ -66,21 +66,15 @@ namespace GDGame.Managers
 
         private void LoadSounds()
         {
-            SoundEffect track01 = main.Content.Load<SoundEffect>("Assets/GameTracks/track01");
-            SoundEffect track02 = main.Content.Load<SoundEffect>("Assets/GameTracks/track02");
-            SoundEffect track03 = main.Content.Load<SoundEffect>("Assets/GameTracks/track03");
-            SoundEffect track04 = main.Content.Load<SoundEffect>("Assets/Sound/Knock04");
-            SoundEffect track05 = main.Content.Load<SoundEffect>("Assets/Sound/Click02");
-            SoundEffect track06 = main.Content.Load<SoundEffect>("Assets/GameTracks/track04");
-            SoundEffect track07 = main.Content.Load<SoundEffect>("Assets/GameTracks/track05");
+            main.SoundManager.AddMusic("endTheme", main.Content.Load<SoundEffect>("Assets/GameTracks/track01"));
+            main.SoundManager.AddMusic("gameTrack01", main.Content.Load<SoundEffect>("Assets/GameTracks/track02"));
+            main.SoundManager.AddMusic("gameTrack02", main.Content.Load<SoundEffect>("Assets/GameTracks/track03"));
+            main.SoundManager.AddMusic("gameTrack03", main.Content.Load<SoundEffect>("Assets/GameTracks/track04"));
+            main.SoundManager.AddMusic("titleTheme", main.Content.Load<SoundEffect>("Assets/GameTracks/track05"));
 
-            main.SoundManager.AddMusic("endTheme", track01);
-            main.SoundManager.AddMusic("gameTrack01", track02);
-            main.SoundManager.AddMusic("gameTrack02", track03);
-            main.SoundManager.AddMusic("gameTrack03", track06);
-            main.SoundManager.AddMusic("titleTheme", track07);
-            main.SoundManager.AddSoundEffect(SfxType.PlayerMove, track04);
-            main.SoundManager.AddSoundEffect(SfxType.PlayerAttach, track05);
+            main.SoundManager.AddSoundEffect(SfxType.PlayerMove, main.Content.Load<SoundEffect>("Assets/Sound/Knock04"));
+            main.SoundManager.AddSoundEffect(SfxType.PlayerAttach, main.Content.Load<SoundEffect>("Assets/Sound/Click02"));
+            main.SoundManager.AddSoundEffect(SfxType.EnemyMove, main.Content.Load<SoundEffect>("Assets/Sound/EnemySounds/move1"));
 
             main.SoundManager.StartMusicQueue();
         }

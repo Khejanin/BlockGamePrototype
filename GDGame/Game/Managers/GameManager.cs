@@ -308,8 +308,6 @@ namespace GDGame.Managers
                 effectParameters, main.Models["Cube"], ETileType.Player);
             playerTile.ControllerList.Add(new PlayerController("PlayerPC", ControllerType.Player, main.KeyboardManager,
                 main.CameraManager));
-            playerTile.ControllerList.Add(new SoundController("PlayerSC", ControllerType.Sound, main.KeyboardManager,
-                main.SoundManager, "playerMove", "playerAttach"));
             TileMovementComponent tileMovementComponent = new TileMovementComponent("PTMC", ControllerType.Movement,
                 300, new Curve1D(CurveLoopType.Cycle));
             playerTile.ControllerList.Add(tileMovementComponent);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using GDGame.Enums;
 using GDGame.EventSystem;
+using GDLibrary.Parameters;
 using Microsoft.Xna.Framework.Audio;
 
 namespace GDGame.Managers
@@ -10,6 +11,10 @@ namespace GDGame.Managers
     public class SoundManager
     {
         #region Private variables
+
+        private AudioEmitter emitter;
+        private AudioListener listener;
+        private Transform3D listenerTransform;
 
         private int currentMusicIndex;
         private List<SoundEffect> currentMusicQueue;
@@ -28,6 +33,8 @@ namespace GDGame.Managers
 
         public SoundManager()
         {
+            emitter = new AudioEmitter();
+            listener = new AudioListener();
             currentMusicQueue = new List<SoundEffect>();
             soundEffects = new Dictionary<SfxType, SoundEffect>();
             musicTracks = new Dictionary<string, SoundEffect>();
@@ -37,6 +44,12 @@ namespace GDGame.Managers
         #endregion
 
         #region Methods
+
+        public void SetListenerTransform(Transform3D listenerTransform)
+        {
+            if(listenerTransform != null)
+                this.listenerTransform = listenerTransform;
+        }
 
         public void AddMusic(string id, SoundEffect track)
         {
@@ -77,7 +90,10 @@ namespace GDGame.Managers
         private void PlayMusic(string id)
         {
             if (!musicTracks.ContainsKey(id))
+            {
                 Debug.WriteLine("No Music for the specified key found!");
+                return;
+            }
 
             SoundEffect track = musicTracks[id];
             if (track != null)
@@ -112,10 +128,13 @@ namespace GDGame.Managers
             PlayMusic(nextSong);
         }
 
-        private void PlaySoundEffect(SfxType sfxType)
+        private void PlaySoundEffect(SfxType sfxType, bool apply3D)
         {
             if (!soundEffects.ContainsKey(sfxType))
+            {
                 Debug.WriteLine("No Sound for the specified key found!");
+                return;
+            }
 
             SoundEffect sfx = soundEffects[sfxType];
 
@@ -123,6 +142,13 @@ namespace GDGame.Managers
             {
                 SoundEffectInstance sei = sfx.CreateInstance();
                 sei.Volume = sfxVolume;
+                if (apply3D)
+                {
+                    listener.Position = listenerTransform.Translation;
+                    listener.Forward = listenerTransform.Look;
+                    listener.Up = listenerTransform.Up;
+                    sei.Apply3D(listener, emitter);
+                }
                 sei.Play();
             }
         }
@@ -176,7 +202,13 @@ namespace GDGame.Managers
             switch (info.soundEventType)
             {
                 case SoundEventType.PlaySfx:
-                    PlaySoundEffect(info.sfxType);
+                    if (info.transform != null)
+                    {
+                        emitter.Position = info.transform.Translation;
+                        PlaySoundEffect(info.sfxType, true);
+                    }
+                    else
+                        PlaySoundEffect(info.sfxType, false);
                     break;
                 case SoundEventType.PlayNextMusic:
                     PlayNextMusic();
@@ -195,6 +227,9 @@ namespace GDGame.Managers
                     break;
                 case SoundEventType.ToggleMusicPlayback:
                     ToggleMusicPlaybackState();
+                    break;
+                case SoundEventType.SetListener:
+                    SetListenerTransform(info.transform);
                     break;
             }
         }

@@ -55,6 +55,7 @@ namespace GDGame.Actors
         public override void InitializeTile()
         {
             EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
+            EventManager.FireEvent(new SoundEventInfo { soundEventType = SoundEventType.SetListener, transform = Transform3D });
             lastCheckpoint = Transform3D.Translation;
         }
 
@@ -80,7 +81,6 @@ namespace GDGame.Actors
         public override void OnMoveEnd()
         {
             CheckAndProcessSurroundings(GetSurroundings(Transform3D.Translation));
-            if (IsAttached) Attach();
         }
 
         #endregion
@@ -100,6 +100,7 @@ namespace GDGame.Actors
             }
 
             IsAttached = true;
+            EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach, transform = Transform3D });
         }
 
         private void CheckAndProcessSurroundings(IEnumerable<PlayerSurroundCheck> surroundings)
