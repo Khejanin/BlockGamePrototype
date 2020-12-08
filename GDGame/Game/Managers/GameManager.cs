@@ -81,14 +81,12 @@ namespace GDGame.Managers
             coffee.ControllerList.Add(new ColliderComponent("cc Coffee", ControllerType.Collider,
                 (skin0, skin1) =>
                 {
-                    Tile tile = skin1.Owner.ExternalData as Tile;
-
-                    if (tile != null)
+                    if (skin1.Owner.ExternalData is Tile tile)
                     {
                         if (tile.TileType == ETileType.Player)
                             EventManager.FireEvent(new GameStateMessageEventInfo() {GameState = GameState.Lost});
                         EventManager.FireEvent(new RemoveActorEvent() {body = tile.Body});
-                        EventManager.FireEvent(new TileEventInfo() {Id = tile.ID, Type = TileEventType.Consumed});
+                        EventManager.FireEvent(new TileEventInfo {Id = tile.ID, Type = TileEventType.Consumed});
                         return true;
                     }
 
@@ -508,38 +506,44 @@ namespace GDGame.Managers
                 {
                     case ETileType.Player:
                         Tile collectible = skin0.Owner.ExternalData as Tile;
-                        Actor2D mug = main.UiManager.UIObjectList.Find(actor2D => actor2D.ID.Equals(collectible.ID));
+                        Actor2D mug = main.UiManager.UIObjectList.Find(actor2D =>
+                            collectible != null && actor2D.ID.Equals(collectible.ID));
                         if (mug != null) mug.StatusType = StatusType.Drawn;
 
+
                         //Trigger Collectible animation
-                        collectible.MoveTo(new AnimationEventData()
+                        if (collectible != null)
                         {
-                            isRelative = false, destination = collectible.Transform3D.Translation + Vector3.Up,
-                            maxTime = 500,
-                            smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PlayOnce,
-                            body = collectible.Body
-                        });
+                            EventManager.FireEvent(new RemoveActorEvent {body = collectible.Body});
+                            collectible.MoveTo(new AnimationEventData
+                            {
+                                isRelative = false, destination = collectible.Transform3D.Translation + Vector3.Up,
+                                maxTime = 500,
+                                smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PlayOnce
+                            });
 
-                        collectible.ScaleTo(new AnimationEventData()
-                        {
-                            isRelative = false, destination = Vector3.One * 1.5f,
-                            maxTime = 1000,
-                            smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PingPongOnce
-                        });
+                            collectible.ScaleTo(new AnimationEventData
+                            {
+                                isRelative = false, destination = Vector3.One * 1.5f,
+                                maxTime = 1000,
+                                smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PingPongOnce,
+                                callback = () => EventManager.FireEvent(new RemoveActorEvent {actor3D = collectible})
+                            });
 
-                        collectible.RotateTo(new AnimationEventData()
-                        {
-                            isRelative = true, destination = Vector3.Up * 720,
-                            maxTime = 1000,
-                            smoothing = Smoother.SmoothingMethod.Smooth
-                            //callback = () => {EventManager.FireEvent();}
-                        });
+                            collectible.RotateTo(new AnimationEventData
+                            {
+                                isRelative = true, destination = Vector3.Up * 720,
+                                maxTime = 1000,
+                                smoothing = Smoother.SmoothingMethod.Smooth
+                            });
 
-                        EventManager.FireEvent(new SoundEventInfo
-                        {
-                            soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.CollectibleCollected,
-                            transform = collectible.Transform3D
-                        });
+                            EventManager.FireEvent(new SoundEventInfo
+                            {
+                                soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.CollectibleCollected,
+                                transform = collectible.Transform3D
+                            });
+                        }
+
                         break;
                 }
 
