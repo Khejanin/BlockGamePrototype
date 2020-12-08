@@ -111,7 +111,9 @@ namespace GDGame.Managers
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
                     EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Resume});
                     break;
-
+                case "Controls":
+                    SetScene("Info");
+                    break;
                 case "Back":
                     SetScene("MainMenu");
                     break;

@@ -8,7 +8,6 @@ using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace GDGame.Managers
 {
@@ -18,8 +17,6 @@ namespace GDGame.Managers
     public class UiSceneManager
     {
         #region Private variables
-
-        private bool optionsShown = true;
 
         private PlayerTile playerTile;
 
@@ -49,15 +46,16 @@ namespace GDGame.Managers
             InitOptionsUi();
             InitEndUi();
             InitGameUi();
+            InitInfoUi();
             Main.MenuManager.SetScene("MainMenu");
         }
-        
+
         private void InitEventListeners()
         {
             EventManager.RegisterListener<DataManagerEvent>(HandleDataManagerEvent);
             EventManager.RegisterListener<OptionsEventInfo>(HandleOptionsEvent);
         }
-        
+
         private void InitEndUi()
         {
             if (((UITextureObject) Main.UiArchetypes["texture"]).Clone() is UITextureObject uiTextureObject)
@@ -92,7 +90,7 @@ namespace GDGame.Managers
                 uiTextureObject.Transform2D.Translation = Main.ScreenCentre - Vector2.UnitX * 250;
                 Main.MenuManager.Add("LoseScreen", uiTextureObject);
             }
-            
+
             if (((UIButtonObject) Main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)
             {
                 string text = "Continue";
@@ -236,19 +234,18 @@ namespace GDGame.Managers
                 uiTextureObject.Transform2D.Origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
                 uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
                 uiTextureObject.Transform2D.Translation = Main.ScreenCentre;
-                Main.UiManager.Add(uiTextureObject);
+                Main.MenuManager.Add("Info", uiTextureObject);
             }
-
-
-            if (((UITextObject) Main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
+            
+            if (((UIButtonObject) Main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)
             {
-                string text = "Press SPACEBAR to continue!";
-                uiTextObject.ID = "ContinueText";
-                uiTextObject.Text = text;
-                uiTextObject.Transform2D.Origin = new Vector2(Main.Fonts["Arial"].MeasureString(text).X / 2,
+                string text = "Back";
+                uiButtonObject.ID = text;
+                uiButtonObject.Text = text;
+                uiButtonObject.Transform2D.Origin = new Vector2(Main.Fonts["Arial"].MeasureString(text).X / 2,
                     Main.Fonts["Arial"].MeasureString(text).Y / 2);
-                uiTextObject.Transform2D.Translation = Main.ScreenCentre + Vector2.UnitY * 300;
-                Main.UiManager.Add(uiTextObject);
+                uiButtonObject.Transform2D.Translation = Main.ScreenCentre + Vector2.UnitY * 300;
+                Main.MenuManager.Add("Info", uiButtonObject);
             }
         }
 
@@ -264,7 +261,7 @@ namespace GDGame.Managers
                 uiTextureObject.Transform2D.Translation = Main.ScreenCentre;
                 Main.MenuManager.Add("MainMenu", uiTextureObject);
             }
-            
+
             Vector2 xPosition = Vector2.UnitX * 500;
 
             //Play Button
@@ -354,6 +351,23 @@ namespace GDGame.Managers
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
                 Main.MenuManager.Add("Options", uiButtonObject);
             }
+            
+            text = "Controls";
+            uiButtonObject = ((UIButtonObject) Main.UiArchetypes["button"]).Clone() as UIButtonObject;
+            if (uiButtonObject != null)
+            {
+                uiButtonObject.Text = text;
+                uiButtonObject.ID = text;
+
+                Texture2D texture2D = Main.Textures["YellowSticker"];
+                uiButtonObject.Texture = texture2D;
+                uiButtonObject.Transform2D = new Transform2D(
+                    Main.ScreenCentre - Vector2.UnitY * 300 + Vector2.UnitX * 400, 0, Vector2.One,
+                    new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
+                    new Integer2(texture2D.Width, texture2D.Height));
+                uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                Main.MenuManager.Add("Options", uiButtonObject);
+            }
 
             //Back Button
             text = "Difficulty";
@@ -397,33 +411,9 @@ namespace GDGame.Managers
 
         #region Methods
 
-        private void ToggleOptionsMenu()
-        {
-            optionsShown = !optionsShown;
-            UITextureObject uiTextureObject =
-                Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "PauseBackground") as UITextureObject;
-            if (uiTextureObject != null && optionsShown)
-                uiTextureObject.StatusType = StatusType.Drawn;
-            else if (uiTextureObject != null) uiTextureObject.StatusType = StatusType.Off;
-
-            uiTextureObject =
-                Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "ResumeButton") as UITextureObject;
-            if (uiTextureObject != null && optionsShown)
-            {
-                uiTextureObject.StatusType = StatusType.Drawn | StatusType.Update;
-                Main.MouseManager.MouseVisible = optionsShown;
-            }
-            else if (uiTextureObject != null)
-            {
-                uiTextureObject.StatusType = StatusType.Off;
-                Main.MouseManager.MouseVisible = optionsShown;
-            }
-        }
-
         private void UpdateGameUi(GameTime gameTime)
         {
-            if (Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "TimeText") is UITextObject uiTextObject
-            )
+            if (Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "TimeText") is UITextObject uiTextObject)
             {
                 uiTextObject.Text = "Time: " + gameTime.TotalGameTime.Hours % 24 + ":" +
                                     gameTime.TotalGameTime.Minutes % 60 + ":" + gameTime.TotalGameTime.Seconds % 60;
@@ -439,9 +429,6 @@ namespace GDGame.Managers
             if (uiTextObject != null && playerTile != null && playerTile.AttachCandidates.Count > 0)
                 uiTextObject.StatusType = StatusType.Drawn;
             else if (uiTextObject != null) uiTextObject.StatusType = StatusType.Off;
-
-            if (Main.KeyboardManager.IsFirstKeyPress(Keys.O))
-                ToggleOptionsMenu();
         }
 
         #endregion
@@ -468,6 +455,7 @@ namespace GDGame.Managers
                             ? Main.Textures["GreenSticker"]
                             : Main.Textures["RedSticker"];
                     }
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
