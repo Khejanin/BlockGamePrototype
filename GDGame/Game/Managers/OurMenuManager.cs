@@ -64,9 +64,13 @@ namespace GDGame.Managers
         protected override void HandleKeyboard(GameTime gameTime)
         {
             if (keyboardManager.IsFirstKeyPress(Keys.M))
+            {
+                SetScene("GameOptions");
                 EventDispatcher.Publish(StatusType == StatusType.Off
                     ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
                     : new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
+            }
+                
         }
 
         protected override void HandleMouse(GameTime gameTime)
@@ -103,17 +107,31 @@ namespace GDGame.Managers
                     SetScene("Options");
                     break;
 
-                case "InGameMeny":
-                    SetScene("InGameMenu");
+                case "GameOptions":
+                    SetScene("GameOptions");
                     break;
 
                 case "Resume":
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
                     EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Resume});
                     break;
+
                 case "Controls":
                     SetScene("Info");
                     break;
+
+                case "GameControls":
+                    SetScene("GameInfo");
+                    break;
+
+                case "BackToOptions":
+                    SetScene("Options");
+                    break;
+
+                case "BackToGameOptions":
+                    SetScene("GameOptions");
+                    break;
+
                 case "Back":
                     SetScene("MainMenu");
                     break;

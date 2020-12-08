@@ -133,7 +133,6 @@ namespace GDGame
             CameraManager.ActiveCameraIndex = 0;
         }
 
-
         /// <summary>
         /// This is different to LoadManager's LoadEffect() as this one uses the existing BasicEffect provided by MonoGame
         /// </summary>
@@ -372,7 +371,7 @@ namespace GDGame
                     2 => StatusType.Drawn,
                     _ => player.StatusType
                 };
-            
+
             if (KeyboardManager.IsFirstKeyPress(Keys.M))
                 EventDispatcher.Publish(MenuManager.StatusType == StatusType.Off
                     ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
