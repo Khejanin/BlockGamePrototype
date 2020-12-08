@@ -251,9 +251,7 @@ namespace GDGame.Managers
                 string text = "Back";
                 uiButtonObject.ID = text;
                 uiButtonObject.Text = text;
-                uiButtonObject.Transform2D.Origin = new Vector2(Main.Fonts["Arial"].MeasureString(text).X / 2,
-                    Main.Fonts["Arial"].MeasureString(text).Y / 2);
-                uiButtonObject.Transform2D.Translation = Main.ScreenCentre + Vector2.UnitY * 300;
+                uiButtonObject.Transform2D.Translation = Main.ScreenCentre + Vector2.UnitY * 400;
                 Main.MenuManager.Add("Info", uiButtonObject);
             }
         }
@@ -467,7 +465,7 @@ namespace GDGame.Managers
                     if (Main.MenuManager.DrawnActor2D.Find(actor2D => actor2D.ID == optionsEventInfo.Id) is
                         UIButtonObject options)
                     {
-                        options.Text = options.Text.Equals("Easy") ? "Difficult" : "Easy";
+                        options.Text = options.Text.Equals("Easy") ? "Hard" : "Easy";
                         options.Texture = options.Text.Equals("Easy")
                             ? Main.Textures["GreenSticker"]
                             : Main.Textures["RedSticker"];
