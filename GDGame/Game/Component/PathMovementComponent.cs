@@ -101,19 +101,10 @@ namespace GDGame.Component
 
         #region Activation
 
-        public new void Activate()
-        {
-            active = true;
-        }
-
         protected override void OnActivated()
         {
         }
 
-        public new void Deactivate()
-        {
-            active = false;
-        }
 
         protected override void OnDeactivated()
         {

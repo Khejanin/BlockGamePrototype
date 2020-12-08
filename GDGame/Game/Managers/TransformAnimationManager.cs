@@ -95,7 +95,7 @@ namespace GDGame.Managers
 
                 currentTime += gameTime.ElapsedGameTime.Milliseconds * step;
 
-                if (done)
+                if(done)
                 {
                     if (resetAfterDone)
                         process(target => start);

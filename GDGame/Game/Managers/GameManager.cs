@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GDGame.Actors;
 using GDGame.Component;
 using GDGame.Controllers;
@@ -12,10 +11,8 @@ using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
-using GDLibrary.Managers;
 using GDLibrary.Parameters;
 using JigLibX.Collision;
-using JigLibX.Physics;
 using Microsoft.Xna.Framework;
 
 namespace GDGame.Managers
@@ -74,10 +71,10 @@ namespace GDGame.Managers
             Transform3D transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up);
             coffee = new Coffee("Coffee", ActorType.Primitive,
                 StatusType.Update | StatusType.Drawn, transform3D, coffeeEffect,
-                main.Models["CoffeePlane"], levelData.coffeeInfo);
+                main.Models["CoffeePlane"], levelData.coffeeInfo,main.ObjectManager.ActorList.Find((actor3D => actor3D.ActorType == ActorType.Player)) as PlayerTile);
             //Most of these constructor arguments are not used, need to refactor the entire structure.
             coffee.ControllerList.Add(new CoffeeMovementComponent("cmc", ControllerType.Movement,
-                ActivationType.AlwaysOn, 0, Smoother.SmoothingMethod.Smooth, coffee));
+                ActivationType.Activated, 0, Smoother.SmoothingMethod.Smooth, coffee));
             coffee.ControllerList.Add(new ColliderComponent("cc Coffee", ControllerType.Collider,
                 (skin0, skin1) =>
                 {
@@ -96,6 +93,7 @@ namespace GDGame.Managers
                 }));
 
             main.ObjectManager.Add(coffee);
+            main.uiSceneManager.SetCoffee(coffee);
         }
 
         /// <summary>
@@ -492,6 +490,7 @@ namespace GDGame.Managers
                 switch (collide.TileType)
                 {
                     case ETileType.Player:
+                        EventManager.FireEvent(new RemoveActorEvent{body = (skin0.Owner.ExternalData as Tile).Body});
                         EventManager.FireEvent(new PlayerEventInfo
                             {type = PlayerEventType.SetCheckpoint, position = skin0.Owner.Position});
                         break;

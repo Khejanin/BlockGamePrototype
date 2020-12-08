@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GDGame.Actors;
 using GDGame.Constants;
 using GDGame.Enums;
@@ -60,7 +61,7 @@ namespace GDGame.Factory
                 ETileType.MovingPlatform => CreateMovingPlatform(position),
                 ETileType.Spike => CreateTile("SpikeTile", position),
                 ETileType.Star => CreatePickup(position),
-                ETileType.Checkpoint => mode ? CreateTile("CheckpointTile", position) : null,
+                ETileType.Checkpoint => mode ? CreateTile("CheckpointTile", position,2) : null,
                 _ => null
             };
 
@@ -213,11 +214,11 @@ namespace GDGame.Factory
             return staticTile;
         }
 
-        private Tile CreateTile(string actor, Vector3 position)
+        private Tile CreateTile(string actor, Vector3 position, float factor = 0.8f)
         {
             Tile tile = (Tile) drawnActors[actor];
             tile = tile.Clone() as Tile;
-            tile?.InitializeCollision(position, 0.8f);
+            tile?.InitializeCollision(position, factor);
             if (tile != null) tile.ID += id++;
             objectManager.Add(tile);
             return tile;

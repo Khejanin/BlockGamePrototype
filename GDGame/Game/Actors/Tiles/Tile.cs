@@ -180,14 +180,9 @@ namespace GDGame.Actors
                 {
                     case TileEventType.Reset:
                         if (info.IsEasy)
-                        {
                             Die(Respawn);
-                        }
                         else
-                        {
                             EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Lost});
-                        }
-
                         break;
 
                     case TileEventType.Consumed:

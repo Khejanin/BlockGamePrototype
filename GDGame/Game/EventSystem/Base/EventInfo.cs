@@ -22,7 +22,6 @@ namespace GDGame.EventSystem
     {
         #region Properties, Indexers
         
-        
         public TileEventType Type { get; set; }
         public bool IsEasy { get; set; }
 
@@ -118,4 +117,10 @@ namespace GDGame.EventSystem
 
         #endregion
     }
+
+    public class CoffeeLoweringEvent : EventInfo
+    {
+        public float timeGained;
+    }
+    
 }

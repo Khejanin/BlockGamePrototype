@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using GDGame.Actors;
+using GDGame.Component;
+using GDGame.Controllers;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Game.Parameters.Effect;
@@ -19,10 +21,16 @@ namespace GDGame.Game.Actors
     /// </summary>
     public class Coffee : PathMoveTile
     {
-        private int setBackIndex = 0;
+        private readonly PlayerTile player;
+        private int checkpointIndex = 0;
         
         private List<CoffeeInfo> coffeeInfo;
-        
+        private float timeLeft = -1;
+
+        public float TimeLeft => timeLeft;
+        public int CheckPointIndex => checkpointIndex;
+        private CoffeeMovementComponent coffeeMovementComponent;
+
         public List<CoffeeInfo> CoffeeInfo
         {
             get
@@ -43,12 +51,14 @@ namespace GDGame.Game.Actors
         }
         
         public Coffee(string id, ActorType actorType, StatusType statusType, Transform3D transform,
-            OurEffectParameters effectParameters, Model model, List<CoffeeInfo> coffeeInfo) : base(id, actorType,
+            OurEffectParameters effectParameters, Model model, List<CoffeeInfo> coffeeInfo,PlayerTile player) : base(id, actorType,
             statusType, transform, effectParameters, model, false, ETileType.None)
         {
+            this.player = player;
             CoffeeInfo = coffeeInfo;
             InitializeCollision(-Vector3.Up * coffeeInfo[0].Y);
             InitializeTile();
+            IsMoving = false;
         }
 
         public override void SetTranslation(Vector3 translation)
@@ -66,6 +76,17 @@ namespace GDGame.Game.Actors
         }
 
 
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            coffeeMovementComponent ??= ControllerList.Find((controller) => controller.GetControllerType() == ControllerType.Movement) as CoffeeMovementComponent;
+            if (IsMoving)
+            {
+                timeLeft = coffeeMovementComponent.GetTotalTimeLeft(player.Transform3D) / 1000f;
+            }
+        }
+
+
         public override void InitializeTile()
         {
             EventManager.RegisterListener<PlayerEventInfo>(CheckPointReached);
@@ -75,14 +96,23 @@ namespace GDGame.Game.Actors
         {
             if (info.type == PlayerEventType.SetCheckpoint)
             {
-                this.MoveTo(new AnimationEventData()
+                if (checkpointIndex == 0)
                 {
-                    isRelative = true,
-                    body = Body,
-                    destination = -Vector3.Up * coffeeInfo[setBackIndex++].SetBackY,
-                    smoothing = Smoother.SmoothingMethod.Decelerate,
-                    maxTime = 500
-                });
+                    coffeeMovementComponent.Activate();
+                    IsMoving = true;
+                    timeLeft = coffeeMovementComponent.GetTotalTimeLeft(player.Transform3D) / 1000f;
+                }
+                else
+                {
+                    this.MoveTo(new AnimationEventData()
+                    {
+                        isRelative = true,
+                        body = Body,
+                        destination = -Vector3.Up * coffeeInfo[checkpointIndex++].SetBackY,
+                        smoothing = Smoother.SmoothingMethod.Decelerate,
+                        maxTime = 500
+                    });
+                }
             }
         }
         

@@ -3,31 +3,40 @@ using GDGame.Actors;
 using GDGame.Constants;
 using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Game.Actors;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
+using GDLibrary.GameComponents;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SharpDX.MediaFoundation;
 
 namespace GDGame.Managers
 {
     /// <summary>
     /// Class that sets up everything the UI needs for our Scene.
     /// </summary>
-    public class UiSceneManager
+    public class UiSceneManager : PausableDrawableGameComponent
     {
         #region Private variables
 
         private PlayerTile playerTile;
+        private Coffee coffee;
 
         #endregion
 
         #region Constructors
 
-        public UiSceneManager(Main main)
+        public UiSceneManager(Main main, StatusType statusType) : base(main, statusType)
         {
             InitEventListeners();
             Main = main;
+        }
+
+        public void SetCoffee(Coffee coffee)
+        {
+            this.coffee = coffee;
         }
 
         private Main Main { get; }
@@ -236,7 +245,7 @@ namespace GDGame.Managers
                 uiTextureObject.Transform2D.Translation = Main.ScreenCentre;
                 Main.MenuManager.Add("Info", uiTextureObject);
             }
-            
+
             if (((UIButtonObject) Main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)
             {
                 string text = "Back";
@@ -351,7 +360,7 @@ namespace GDGame.Managers
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
                 Main.MenuManager.Add("Options", uiButtonObject);
             }
-            
+
             text = "Controls";
             uiButtonObject = ((UIButtonObject) Main.UiArchetypes["button"]).Clone() as UIButtonObject;
             if (uiButtonObject != null)
@@ -411,15 +420,23 @@ namespace GDGame.Managers
 
         #region Methods
 
-        private void UpdateGameUi(GameTime gameTime)
+        protected override void ApplyUpdate(GameTime gameTime)
         {
-            if (Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "TimeText") is UITextObject uiTextObject)
+            UITextObject uiTextObject;
+            if (coffee != null)
             {
-                uiTextObject.Text = "Time: " + gameTime.TotalGameTime.Hours % 24 + ":" +
-                                    gameTime.TotalGameTime.Minutes % 60 + ":" + gameTime.TotalGameTime.Seconds % 60;
-                uiTextObject.Transform2D.Origin = new Vector2(
-                    Main.Fonts["Arial"].MeasureString(uiTextObject.Text).X / 2,
-                    Main.Fonts["Arial"].MeasureString(uiTextObject.Text).Y / 2);
+                if ((uiTextObject =
+                    Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "TimeText") as UITextObject) != null)
+                {
+                    if (coffee.TimeLeft == -1) uiTextObject.Text = "Coffee not rising yet!";
+                    else
+                    {
+                        uiTextObject.Text = "Time Left: " + coffee.TimeLeft.ToString("0.00");
+                    }
+                    uiTextObject.Transform2D.Origin = new Vector2(
+                        Main.Fonts["Arial"].MeasureString(uiTextObject.Text).X / 2,
+                        Main.Fonts["Arial"].MeasureString(uiTextObject.Text).Y / 2);
+                }
             }
 
             uiTextObject =

@@ -10,7 +10,7 @@ namespace GDGame.Utilities
     public struct CoffeeInfo
     {
         public float Y;
-        public float TimeInMs;
+        public int TimeInMs;
         public float SetBackY;
     }
 
@@ -87,7 +87,7 @@ namespace GDGame.Utilities
                 float y = (float) obj.GetNumber("Y");
                 float time = (float) obj.GetNumber("MS");
                 float setBackY = (float) obj.GetNumber("SetBackY");
-                data.coffeeInfo.Add(new CoffeeInfo {Y = y, TimeInMs = time, SetBackY = setBackY});
+                data.coffeeInfo.Add(new CoffeeInfo {Y = y, TimeInMs = (int) time, SetBackY = setBackY});
             }
 
             //populate Grid values

@@ -30,10 +30,9 @@ namespace GDGame
 
         private float currentMovementCoolDown;
         private GameManager game;
-        private OurDrawnActor3D player;
+        public PlayerTile player;
 
         private SpriteBatch spriteBatch;
-        private UiSceneManager uiSceneManager;
         private bool isPlaying;
 
         #endregion
@@ -74,6 +73,8 @@ namespace GDGame
         public ContentDictionary<Texture2D> Textures { get; private set; }
         public Dictionary<string, DrawnActor2D> UiArchetypes { get; private set; }
         public UIManager UiManager { get; private set; }
+        public UiSceneManager uiSceneManager { get; private set; }
+
 
         #endregion
 
@@ -280,8 +281,9 @@ namespace GDGame
 
         private void InitUi()
         {
-            uiSceneManager = new UiSceneManager(this);
+            uiSceneManager = new UiSceneManager(this,StatusType.Update | StatusType.Drawn);
             uiSceneManager.InitUi();
+            Components.Add(uiSceneManager);
         }
 
         private void InitUiArchetypes()
@@ -356,7 +358,7 @@ namespace GDGame
                     drawnActor3D != null)
                 {
                     cam.Target = drawnActor3D;
-                    player = drawnActor3D;
+                    player = drawnActor3D as PlayerTile;
                     drawnActor3D.StatusType = StatusType.Drawn | StatusType.Update;
                 }
             }
