@@ -374,9 +374,6 @@ namespace GDGame
 
             if(KeyboardManager.IsFirstKeyPress(Keys.M))
             {
-                //turns menu off in main menu when game hasnt started
-                //check if game is started, run an event maybe
-                if (true)
                     EventDispatcher.Publish(MenuManager.StatusType == StatusType.Off
                         ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
                         : new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));

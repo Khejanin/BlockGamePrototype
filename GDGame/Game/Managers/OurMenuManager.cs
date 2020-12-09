@@ -44,13 +44,16 @@ namespace GDGame.Managers
 
         protected override void HandleEvent(EventData eventData)
         {
-            if (eventData.EventCategoryType == EventCategoryType.Menu)
-                StatusType = eventData.EventActionType switch
-                {
-                    EventActionType.OnPause => StatusType.Drawn | StatusType.Update,
-                    EventActionType.OnPlay => StatusType.Off,
-                    _ => StatusType
-                };
+            if(gameRunning)
+            {
+                if (eventData.EventCategoryType == EventCategoryType.Menu)
+                    StatusType = eventData.EventActionType switch
+                    {
+                        EventActionType.OnPause => StatusType.Drawn | StatusType.Update,
+                        EventActionType.OnPlay => StatusType.Off,
+                        _ => StatusType
+                    };
+            }
         }
 
         protected override void HandleInput(GameTime gameTime)
