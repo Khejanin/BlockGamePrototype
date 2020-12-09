@@ -367,7 +367,7 @@ namespace GDGame.Managers
                 Main.MenuManager.Add("Options", uiTextureObject);
             }
 
-            string text = "Controls";
+            string text = "  Show\nControls";
             if (((UIButtonObject)Main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)
             {
                 uiButtonObject.Text = text;
@@ -388,7 +388,7 @@ namespace GDGame.Managers
             uiButtonObject = ((UIButtonObject) Main.UiArchetypes["button"]).Clone() as UIButtonObject;
             if (uiButtonObject != null)
             {
-                uiButtonObject.Text = "Easy";
+                uiButtonObject.Text = "Difficulty:\n   Easy";
                 uiButtonObject.ID = text;
 
                 Texture2D texture2D = Main.Textures["GreenSticker"];
@@ -604,8 +604,8 @@ namespace GDGame.Managers
                     if (Main.MenuManager.DrawnActor2D.Find(actor2D => actor2D.ID == optionsEventInfo.Id) is
                         UIButtonObject options)
                     {
-                        options.Text = options.Text.Equals("Easy") ? "Hard" : "Easy";
-                        options.Texture = options.Text.Equals("Easy")
+                        options.Text = options.Text.Equals("Difficulty:\n   Easy") ? "Difficulty:\n   Hard" : "Difficulty:\n   Easy";
+                        options.Texture = options.Text.Equals("Difficulty:\n   Easy")
                             ? Main.Textures["GreenSticker"]
                             : Main.Textures["RedSticker"];
                     }

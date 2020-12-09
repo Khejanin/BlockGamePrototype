@@ -29,7 +29,7 @@ namespace GDGame.Managers
 
         private void LoadBasicTextures()
         {
-            main.Textures.Load("Assets/Textures/Menu/button", "bStart");
+            main.Textures.Load("Assets/Textures/Menu/buttonWhite", "bStart");
         }
 
         private void LoadEffects()
