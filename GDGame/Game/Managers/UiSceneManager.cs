@@ -420,39 +420,8 @@ namespace GDGame.Managers
                 Main.MenuManager.Add("Options", uiButtonObject);
             }
 
-            text = "<";
-            uiButtonObject = ((UIButtonObject)Main.UiArchetypes["button"]).Clone() as UIButtonObject;
-            if (uiButtonObject != null)
-            {
-                uiButtonObject.Text = text;
-                uiButtonObject.ID = "VolumeDown";
+            VolumeButtons("Options");
 
-                Texture2D texture2D = Main.Textures["YellowSticker"];
-                uiButtonObject.Texture = texture2D;
-                uiButtonObject.Transform2D = new Transform2D(
-                    Main.ScreenCentre - Vector2.UnitY * -400 + Vector2.UnitX * 400, 0, Vector2.One,
-                    new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
-                    new Integer2(texture2D.Width, texture2D.Height));
-                uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
-                Main.MenuManager.Add("Options", uiButtonObject);
-            }
-
-            text = ">";
-            uiButtonObject = ((UIButtonObject)Main.UiArchetypes["button"]).Clone() as UIButtonObject;
-            if (uiButtonObject != null)
-            {
-                uiButtonObject.Text = text;
-                uiButtonObject.ID = "VolumeUp";
-
-                Texture2D texture2D = Main.Textures["YellowSticker"];
-                uiButtonObject.Texture = texture2D;
-                uiButtonObject.Transform2D = new Transform2D(
-                    Main.ScreenCentre - Vector2.UnitY * -400 + Vector2.UnitX * 600, 0, Vector2.One,
-                    new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
-                    new Integer2(texture2D.Width, texture2D.Height));
-                uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
-                Main.MenuManager.Add("Options", uiButtonObject);
-            }
         }
 
         private void InitGameOptionsUi()
@@ -518,6 +487,40 @@ namespace GDGame.Managers
                 Main.MenuManager.Add("GameOptions", uiButtonObject);
             }
 
+            VolumeButtons("GameOptions");
+        }
+
+        private void VolumeButtons(String menu)
+        {
+            string text;
+            if (((UITextObject)Main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
+            {
+                text = "Volume";
+                uiTextObject.ID = "LoseText";
+                uiTextObject.Text = text;
+                uiTextObject.Color = Color.Yellow;
+                uiTextObject.Transform2D.Origin = new Vector2(Main.Fonts["Arial"].MeasureString(text).X / 2,
+                    Main.Fonts["Arial"].MeasureString(text).Y / 2);
+                uiTextObject.Transform2D.Translation = Main.ScreenCentre - Vector2.UnitY * 250;
+                Main.MenuManager.Add("LoseScreen", uiTextObject);
+            }
+
+            text = "<";
+            if (((UIButtonObject)Main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)
+            {
+                uiButtonObject.Text = text;
+                uiButtonObject.ID = "VolumeDown";
+
+                Texture2D texture2D = Main.Textures["RedSticker"];
+                uiButtonObject.Texture = texture2D;
+                uiButtonObject.Transform2D = new Transform2D(
+                    Main.ScreenCentre - Vector2.UnitY * -400 + Vector2.UnitX * 400, 0, Vector2.One,
+                    new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
+                    new Integer2(texture2D.Width, texture2D.Height));
+                uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                Main.MenuManager.Add(menu, uiButtonObject);
+            }
+
             text = ">";
             uiButtonObject = ((UIButtonObject)Main.UiArchetypes["button"]).Clone() as UIButtonObject;
             if (uiButtonObject != null)
@@ -525,31 +528,14 @@ namespace GDGame.Managers
                 uiButtonObject.Text = text;
                 uiButtonObject.ID = "VolumeUp";
 
-                Texture2D texture2D = Main.Textures["YellowSticker"];
-                uiButtonObject.Texture = texture2D;
-                uiButtonObject.Transform2D = new Transform2D(
-                    Main.ScreenCentre - Vector2.UnitY * -400 + Vector2.UnitX * 400, 0, Vector2.One,
-                    new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
-                    new Integer2(texture2D.Width, texture2D.Height));
-                uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
-                Main.MenuManager.Add("GameOptions", uiButtonObject);
-            }
-
-            text = "<";
-            uiButtonObject = ((UIButtonObject)Main.UiArchetypes["button"]).Clone() as UIButtonObject;
-            if (uiButtonObject != null)
-            {
-                uiButtonObject.Text = text;
-                uiButtonObject.ID = "VolumeDown";
-
-                Texture2D texture2D = Main.Textures["YellowSticker"];
+                Texture2D texture2D = Main.Textures["GreenSticker"];
                 uiButtonObject.Texture = texture2D;
                 uiButtonObject.Transform2D = new Transform2D(
                     Main.ScreenCentre - Vector2.UnitY * -400 + Vector2.UnitX * 600, 0, Vector2.One,
                     new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
                     new Integer2(texture2D.Width, texture2D.Height));
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
-                Main.MenuManager.Add("GameOptions", uiButtonObject);
+                Main.MenuManager.Add(menu, uiButtonObject);
             }
         }
 
