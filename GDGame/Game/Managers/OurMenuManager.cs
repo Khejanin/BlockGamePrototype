@@ -176,6 +176,20 @@ namespace GDGame.Managers
                 case "Quit":
                     Game.Exit();
                     break;
+
+                case "VolumeUp":
+                    EventManager.FireEvent(new SoundEventInfo
+                    {
+                        soundEventType = SoundEventType.IncreaseVolume
+                    });
+                    break;
+
+                case "VolumeDown":
+                    EventManager.FireEvent(new SoundEventInfo
+                    {
+                        soundEventType = SoundEventType.DecreaseVolume
+                    });
+                    break;
             }
         }
 
