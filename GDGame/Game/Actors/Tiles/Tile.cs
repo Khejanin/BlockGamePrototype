@@ -9,6 +9,7 @@ using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using JigLibX.Collision;
 using JigLibX.Geometry;
+using JigLibX.Physics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -131,30 +132,13 @@ namespace GDGame.Actors
         {
             Transform3D.Translation = translation;
             Body.MoveTo(translation, Matrix.Identity);
-            Body.ApplyGravity = false;
             Body.Immovable = true;
-            Body.SetInactive();
             IsDirty = true;
         }
 
         //Animation that is played when the Tile dies. It has a Callback that executes everything that the user needs after the dying animation (Respawn/Remove from ObjectManager).
         protected virtual void Die(Action callbackAfterDeath)
-        {/*
-            ScaleEvent scaleEvent = new ScaleEvent(new AnimationEventData()
-            {
-                actor = this,
-                isRelative = false, destination = Vector3.Zero,
-                maxTime = 1000,
-                smoothing = Smoother.SmoothingMethod.Accelerate, loopMethod = LoopMethod.PlayOnce
-            });
-            
-            RotationEvent rotationEvent = new RotationEvent(new AnimationEventData()
-                {actor = this,isRelative = true, destination = Vector3.Up * 360, maxTime = 1000});
-            
-            GroupAnimationEvent groupAnimationEvent = new GroupAnimationEvent(new AnimationEventData() { actor = this,callback = callbackAfterDeath}, new List<AnimationEvent>() { scaleEvent,rotationEvent },"tiles - die");
-            
-            EventManager.FireEvent(groupAnimationEvent);*/
-            
+        {
             this.ScaleTo(new AnimationEventData()
             {
                 isRelative = false, destination = Vector3.Zero,
@@ -162,10 +146,6 @@ namespace GDGame.Actors
                 smoothing = Smoother.SmoothingMethod.Accelerate, loopMethod = LoopMethod.PlayOnce,
                 callback = callbackAfterDeath, resetAferDone = true
             });
-
-            /*
-            this.RotateTo(new AnimationEventData()
-                {isRelative = true, destination = Vector3.Up * 360, maxTime = 1000, resetAferDone = true});*/
         }
 
         #endregion
