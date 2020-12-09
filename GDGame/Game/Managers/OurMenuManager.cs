@@ -154,6 +154,13 @@ namespace GDGame.Managers
                     SetScene("GameOptions");
                     break;
 
+                case "QuitInstance":
+                    //needs to kill game
+                    gameRunning = false;
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
+                    EventManager.FireEvent(new GameStateMessageEventInfo { GameState = GameState.Lost });
+                    break;
+
                 case "Back":
                     SetScene("MainMenu");
                     break;
