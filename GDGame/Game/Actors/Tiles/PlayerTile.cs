@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using GDGame.Enums;
 using GDGame.EventSystem;
@@ -86,8 +87,9 @@ namespace GDGame.Actors
 
             AttachedTiles.Clear();
             foreach (AttachableTile tile in AttachCandidates.SelectMany(shape => shape.AttachableTiles))
-            {
+            { 
                 AttachedTiles.Add(tile);
+                Debug.WriteLine(AttachedTiles.Count);
                 ((BasicEffectParameters) tile.EffectParameters).Color = Color.DarkGray;
                 tile.IsAttached = true;
             }
@@ -159,9 +161,6 @@ namespace GDGame.Actors
             result.Add(surroundCheck);
 
             surroundCheck.hit = RaycastManager.Instance.Raycast(this, translation, Vector3.Down, true, 1f);
-            result.Add(surroundCheck);
-
-            surroundCheck.hit = RaycastManager.Instance.Raycast(this, translation, Vector3.Down, true, 0.5f);
             result.Add(surroundCheck);
 
             return result;
