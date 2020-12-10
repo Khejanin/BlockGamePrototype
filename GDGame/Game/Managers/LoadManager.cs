@@ -137,6 +137,8 @@ namespace GDGame.Managers
             main.Textures.Load("Assets/Textures/flowmap2", "CoffeeFlow");
 
             main.Textures.Load("Assets/Textures/Props/GameTextures/ceramicColoring", "Ceramic");
+            main.Textures.Load("Assets/Textures/UI/CoffeeRisingWarning");
+            main.Textures.Load("Assets/Textures/UI/CoffeeDangerWarning");
 
             //Sugar
             main.Textures.Load("Assets/Textures/Props/GameTextures/sugar01", "SugarW");

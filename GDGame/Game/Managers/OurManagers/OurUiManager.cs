@@ -119,17 +119,17 @@ namespace GDGame.Managers
             if (uiTextureObject != null)
             {
                 uiTextureObject.StatusType = StatusType.Update;
-                Texture2D texture = Main.Textures["optionsButton"];
+                Texture2D texture = Main.Textures["CoffeeRisingWarning"];
                 uiTextureObject.ID = "Alarm";
                 uiTextureObject.Texture = texture;
-                Vector2 offset = new Vector2(Constants.GameConstants.ScreenWidth*0.8f, GameConstants.ScreenHeight * 0.9f);
+                Vector2 offset = new Vector2(Constants.GameConstants.ScreenWidth*0.85f, GameConstants.ScreenHeight * 0.75f);
                 uiTextureObject.Transform2D.Origin = new Vector2(0, 0);
                 uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
                 uiTextureObject.Transform2D.Translation = offset;
+                uiTextureObject.Transform2D.Scale = Vector2.One * .5f;
                 Main.UiManager.Add(uiTextureObject);
-                
                 uiTextureObject.ControllerList.Add(new UiBlinkingController("uiBlinkingC",ControllerType.Ui,500));
-                //uiTextureObject.ControllerList.Add();
+                uiTextureObject.ControllerList.Add(new UiCoffeeWarningTextureSwitcher("cwts",ControllerType.Ui, Main.Textures["CoffeeDangerWarning"]));
             }
 
             if (((UITextObject) Main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
