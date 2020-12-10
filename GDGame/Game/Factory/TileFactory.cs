@@ -219,7 +219,7 @@ namespace GDGame.Factory
                 }
             }
 
-            staticTile?.InitializeCollision(position, 0.98f);
+            staticTile?.InitializeCollision(position, 0.9f);
             if (staticTile != null) staticTile.ID += id++;
             objectManager.Add(staticTile);
             return staticTile;

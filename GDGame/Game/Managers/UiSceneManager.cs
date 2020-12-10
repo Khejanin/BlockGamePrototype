@@ -10,7 +10,6 @@ using GDLibrary.GameComponents;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SharpDX.MediaFoundation;
 
 namespace GDGame.Managers
 {
@@ -367,7 +366,7 @@ namespace GDGame.Managers
                 Main.MenuManager.Add("Options", uiTextureObject);
             }
 
-            string text = "Controls";
+            string text = "  Show\nControls";
             if (((UIButtonObject)Main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)
             {
                 uiButtonObject.Text = text;
@@ -388,7 +387,7 @@ namespace GDGame.Managers
             uiButtonObject = ((UIButtonObject) Main.UiArchetypes["button"]).Clone() as UIButtonObject;
             if (uiButtonObject != null)
             {
-                uiButtonObject.Text = "Easy";
+                uiButtonObject.Text = "Difficulty:\n   Easy";
                 uiButtonObject.ID = text;
 
                 Texture2D texture2D = Main.Textures["GreenSticker"];
@@ -414,6 +413,40 @@ namespace GDGame.Managers
                 uiButtonObject.Texture = texture2D;
                 uiButtonObject.Transform2D = new Transform2D(
                     Main.ScreenCentre + Vector2.UnitY * 125 + Vector2.UnitX * 100, 0, Vector2.One,
+                    new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
+                    new Integer2(texture2D.Width, texture2D.Height));
+                uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                Main.MenuManager.Add("Options", uiButtonObject);
+            }
+
+            text = "<";
+            uiButtonObject = ((UIButtonObject)Main.UiArchetypes["button"]).Clone() as UIButtonObject;
+            if (uiButtonObject != null)
+            {
+                uiButtonObject.Text = text;
+                uiButtonObject.ID = "VolumeDown";
+
+                Texture2D texture2D = Main.Textures["YellowSticker"];
+                uiButtonObject.Texture = texture2D;
+                uiButtonObject.Transform2D = new Transform2D(
+                    Main.ScreenCentre - Vector2.UnitY * -400 + Vector2.UnitX * 400, 0, Vector2.One,
+                    new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
+                    new Integer2(texture2D.Width, texture2D.Height));
+                uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                Main.MenuManager.Add("Options", uiButtonObject);
+            }
+
+            text = ">";
+            uiButtonObject = ((UIButtonObject)Main.UiArchetypes["button"]).Clone() as UIButtonObject;
+            if (uiButtonObject != null)
+            {
+                uiButtonObject.Text = text;
+                uiButtonObject.ID = "VolumeUp";
+
+                Texture2D texture2D = Main.Textures["YellowSticker"];
+                uiButtonObject.Texture = texture2D;
+                uiButtonObject.Transform2D = new Transform2D(
+                    Main.ScreenCentre - Vector2.UnitY * -400 + Vector2.UnitX * 600, 0, Vector2.One,
                     new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
                     new Integer2(texture2D.Width, texture2D.Height));
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
@@ -461,6 +494,57 @@ namespace GDGame.Managers
                 uiButtonObject.Texture = texture2D;
                 uiButtonObject.Transform2D = new Transform2D(
                     Main.ScreenCentre - Vector2.UnitY * 300 + Vector2.UnitX * 400, 0, Vector2.One,
+                    new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
+                    new Integer2(texture2D.Width, texture2D.Height));
+                uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                Main.MenuManager.Add("GameOptions", uiButtonObject);
+            }
+
+            text = "Quit";
+            uiButtonObject = ((UIButtonObject)Main.UiArchetypes["button"]).Clone() as UIButtonObject;
+            if (uiButtonObject != null)
+            {
+                uiButtonObject.Text = text;
+                uiButtonObject.ID = "QuitInstance";
+
+                Texture2D texture2D = Main.Textures["YellowSticker"];
+                uiButtonObject.Texture = texture2D;
+                uiButtonObject.Transform2D = new Transform2D(
+                    Main.ScreenCentre - Vector2.UnitY * -200 + Vector2.UnitX * 400, 0, Vector2.One,
+                    new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
+                    new Integer2(texture2D.Width, texture2D.Height));
+                uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                Main.MenuManager.Add("GameOptions", uiButtonObject);
+            }
+
+            text = ">";
+            uiButtonObject = ((UIButtonObject)Main.UiArchetypes["button"]).Clone() as UIButtonObject;
+            if (uiButtonObject != null)
+            {
+                uiButtonObject.Text = text;
+                uiButtonObject.ID = "VolumeUp";
+
+                Texture2D texture2D = Main.Textures["YellowSticker"];
+                uiButtonObject.Texture = texture2D;
+                uiButtonObject.Transform2D = new Transform2D(
+                    Main.ScreenCentre - Vector2.UnitY * -400 + Vector2.UnitX * 400, 0, Vector2.One,
+                    new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
+                    new Integer2(texture2D.Width, texture2D.Height));
+                uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                Main.MenuManager.Add("GameOptions", uiButtonObject);
+            }
+
+            text = "<";
+            uiButtonObject = ((UIButtonObject)Main.UiArchetypes["button"]).Clone() as UIButtonObject;
+            if (uiButtonObject != null)
+            {
+                uiButtonObject.Text = text;
+                uiButtonObject.ID = "VolumeDown";
+
+                Texture2D texture2D = Main.Textures["YellowSticker"];
+                uiButtonObject.Texture = texture2D;
+                uiButtonObject.Transform2D = new Transform2D(
+                    Main.ScreenCentre - Vector2.UnitY * -400 + Vector2.UnitX * 600, 0, Vector2.One,
                     new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
                     new Integer2(texture2D.Width, texture2D.Height));
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
@@ -519,8 +603,8 @@ namespace GDGame.Managers
                     if (Main.MenuManager.DrawnActor2D.Find(actor2D => actor2D.ID == optionsEventInfo.Id) is
                         UIButtonObject options)
                     {
-                        options.Text = options.Text.Equals("Easy") ? "Hard" : "Easy";
-                        options.Texture = options.Text.Equals("Easy")
+                        options.Text = options.Text.Equals("Difficulty:\n   Easy") ? "Difficulty:\n   Hard" : "Difficulty:\n   Easy";
+                        options.Texture = options.Text.Equals("Difficulty:\n   Easy")
                             ? Main.Textures["GreenSticker"]
                             : Main.Textures["RedSticker"];
                     }

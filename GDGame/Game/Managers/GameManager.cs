@@ -91,7 +91,7 @@ namespace GDGame.Managers
                 }));
 
             main.ObjectManager.Add(coffee);
-            main.uiSceneManager.SetCoffee(coffee);
+            main.OurUiManager.SetCoffee(coffee);
         }
 
         /// <summary>

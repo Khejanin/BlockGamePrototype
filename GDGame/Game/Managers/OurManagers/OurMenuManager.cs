@@ -19,6 +19,7 @@ namespace GDGame.Managers
         private MouseManager mouseManager;
 
         #endregion
+        private bool gameRunning = false;
 
         #region Constructors
 
@@ -43,13 +44,16 @@ namespace GDGame.Managers
 
         protected override void HandleEvent(EventData eventData)
         {
-            if (eventData.EventCategoryType == EventCategoryType.Menu)
-                StatusType = eventData.EventActionType switch
-                {
-                    EventActionType.OnPause => StatusType.Drawn | StatusType.Update,
-                    EventActionType.OnPlay => StatusType.Off,
-                    _ => StatusType
-                };
+            if(gameRunning)
+            {
+                if (eventData.EventCategoryType == EventCategoryType.Menu)
+                    StatusType = eventData.EventActionType switch
+                    {
+                        EventActionType.OnPause => StatusType.Drawn | StatusType.Update,
+                        EventActionType.OnPlay => StatusType.Off,
+                        _ => StatusType
+                    };
+            }
         }
 
         protected override void HandleInput(GameTime gameTime)
@@ -63,14 +67,26 @@ namespace GDGame.Managers
 
         protected override void HandleKeyboard(GameTime gameTime)
         {
-            if (keyboardManager.IsFirstKeyPress(Keys.M))
+            //bool if game started? 
+            if(gameRunning)
             {
-                SetScene("GameOptions");
-                EventDispatcher.Publish(StatusType == StatusType.Off
-                    ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
-                    : new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
-            }
-                
+                // otherwise goes main menu on first trigger, then ingame menu on second press
+                if (keyboardManager.IsKeyDown(Keys.M))
+                    SetScene("GameOptions");
+
+                if (keyboardManager.IsFirstKeyPress(Keys.M))
+                {
+                    EventManager.FireEvent(new SoundEventInfo
+                    {
+                        soundEventType = SoundEventType.PlaySfx,
+                        sfxType = SfxType.MenuButtonClick
+                    });
+
+                    EventDispatcher.Publish(StatusType == StatusType.Off
+                        ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
+                        : new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
+                }
+            }          
         }
 
         protected override void HandleMouse(GameTime gameTime)
@@ -86,6 +102,11 @@ namespace GDGame.Managers
 
         #region Events
 
+        private bool HandleRequestIfGameRun()
+        {
+            return gameRunning;
+        }
+
         private void HandleClickedButton(Actor uIButtonObject)
         {
 
@@ -99,6 +120,7 @@ namespace GDGame.Managers
             switch (uIButtonObject.ID)
             {
                 case "Play":
+                    gameRunning = true;
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
                     EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Start});
                     break;
@@ -132,6 +154,13 @@ namespace GDGame.Managers
                     SetScene("GameOptions");
                     break;
 
+                case "QuitInstance":
+                    //needs to kill game
+                    gameRunning = false;
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
+                    EventManager.FireEvent(new GameStateMessageEventInfo { GameState = GameState.Lost });
+                    break;
+
                 case "Back":
                     SetScene("MainMenu");
                     break;
@@ -146,6 +175,20 @@ namespace GDGame.Managers
 
                 case "Quit":
                     Game.Exit();
+                    break;
+
+                case "VolumeUp":
+                    EventManager.FireEvent(new SoundEventInfo
+                    {
+                        soundEventType = SoundEventType.IncreaseVolume
+                    });
+                    break;
+
+                case "VolumeDown":
+                    EventManager.FireEvent(new SoundEventInfo
+                    {
+                        soundEventType = SoundEventType.DecreaseVolume
+                    });
                     break;
             }
         }

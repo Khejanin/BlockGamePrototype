@@ -21,19 +21,25 @@ using Microsoft.Xna.Framework.Input;
 namespace GDGame
 {
     /// <summary>
-    /// This is the class that instantiates the Managers, Archetypes and loads the "Scenes", scenes have been replaced by the GameManager.
-    /// This doesn't load content, as the GameManager is supposed to set everything up.
+    ///     This is the class that instantiates the Managers, Archetypes and loads the "Scenes", scenes have been replaced by
+    ///     the GameManager.
+    ///     This doesn't load content, as the GameManager is supposed to set everything up.
     /// </summary>
     public class Main : Microsoft.Xna.Framework.Game
     {
+        #region Public variables
+
+        public PlayerTile player;
+
+        #endregion
+
         #region Private variables
 
         private float currentMovementCoolDown;
         private GameManager game;
-        public PlayerTile player;
+        private bool isPlaying;
 
         private SpriteBatch spriteBatch;
-        private bool isPlaying;
 
         #endregion
 
@@ -49,7 +55,6 @@ namespace GDGame
 
         #endregion
 
-        //Declare all Managers and stuff that should be accessible from the GameManager
         #region Properties, Indexers
 
         public OurPrimitiveObject ArchetypalTexturedQuad { get; private set; }
@@ -66,6 +71,7 @@ namespace GDGame
         public ContentDictionary<Model> Models { get; private set; }
         public MouseManager MouseManager { get; private set; }
         public OurObjectManager ObjectManager { get; private set; }
+        public OurUiManager OurUiManager { get; private set; }
         public OurPhysicsManager PhysicsManager { get; set; }
         private OurRenderManager RenderManager { get; set; }
         public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
@@ -73,8 +79,6 @@ namespace GDGame
         public ContentDictionary<Texture2D> Textures { get; private set; }
         public Dictionary<string, DrawnActor2D> UiArchetypes { get; private set; }
         public UIManager UiManager { get; private set; }
-        public UiSceneManager uiSceneManager { get; private set; }
-
 
         #endregion
 
@@ -134,7 +138,7 @@ namespace GDGame
         }
 
         /// <summary>
-        /// This is different to LoadManager's LoadEffect() as this one uses the existing BasicEffect provided by MonoGame
+        ///     This is different to LoadManager's LoadEffect() as this one uses the existing BasicEffect provided by MonoGame
         /// </summary>
         private void InitEffect()
         {
@@ -146,16 +150,16 @@ namespace GDGame
             EventManager.RegisterListener<OptionsEventInfo>(HandleOptionsEvent);
             EventManager.RegisterListener<GameStateMessageEventInfo>(HandleGameStateEvent);
         }
-        
+
         /// <summary>
-        /// Instantiate the GameManager (NOTHING TO DO WITH XNA GAME CLASS)
+        ///     Instantiate the GameManager (NOTHING TO DO WITH XNA GAME CLASS)
         /// </summary>
         private void InitGame()
         {
             game = new GameManager(this);
             game.Init();
         }
-        
+
         private void InitGraphics(int width, int height)
         {
             //set resolution
@@ -179,8 +183,8 @@ namespace GDGame
             };
             Graphics.GraphicsDevice.SamplerStates[0] = samplerState;
         }
-        
-        
+
+
         protected override void Initialize()
         {
             Window.Title = "B_Logic";
@@ -199,14 +203,14 @@ namespace GDGame
             InitArchetypalQuad();
             InitUiArchetypes();
 
-            InitUi();
+            InitUiAndMenu();
             InitCameras3D();
 
             base.Initialize();
         }
 
         /// <summary>
-        /// Initialize the Dictionaries that we will Load Content From
+        ///     Initialize the Dictionaries that we will Load Content From
         /// </summary>
         private void InitializeDictionaries()
         {
@@ -216,7 +220,7 @@ namespace GDGame
             Models = new ContentDictionary<Model>("models", Content);
             Effects = new ContentDictionary<Effect>("effects", Content);
         }
-        
+
         private void InitManagers()
         {
             //Events
@@ -278,11 +282,14 @@ namespace GDGame
         }
 
 
-        private void InitUi()
+        private void InitUiAndMenu()
         {
-            uiSceneManager = new UiSceneManager(this,StatusType.Update | StatusType.Drawn);
-            uiSceneManager.InitUi();
-            Components.Add(uiSceneManager);
+            OurUiManager = new OurUiManager(this, StatusType.Update | StatusType.Drawn);
+            OurUiManager.InitGameUi();
+            Components.Add(OurUiManager);
+
+            Menu menu = new Menu(this);
+            menu.InitUi();
         }
 
         private void InitUiArchetypes()
@@ -333,7 +340,7 @@ namespace GDGame
             LoadManager loadManager = new LoadManager(this);
             loadManager.InitLoad();
         }
-        
+
         protected override void Update(GameTime gameTime)
         {
             game?.Update();
@@ -352,7 +359,8 @@ namespace GDGame
             if (player == null)
             {
                 OurDrawnActor3D drawnActor3D =
-                    ObjectManager.OpaqueList.Find(actor3D => actor3D is Tile tile && tile.ActorType == ActorType.Player);
+                    ObjectManager.OpaqueList.Find(actor3D =>
+                        actor3D is Tile tile && tile.ActorType == ActorType.Player);
                 if (CameraManager.ActiveCamera.ControllerList[0] is RotationAroundActor cam &&
                     drawnActor3D != null)
                 {
@@ -372,11 +380,13 @@ namespace GDGame
                     _ => player.StatusType
                 };
 
-            if (KeyboardManager.IsFirstKeyPress(Keys.M))
-                EventDispatcher.Publish(MenuManager.StatusType == StatusType.Off
-                    ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
-                    : new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
-            
+            if(KeyboardManager.IsFirstKeyPress(Keys.M))
+            {
+                    EventDispatcher.Publish(MenuManager.StatusType == StatusType.Off
+                        ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
+                        : new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
+            }
+
             if (KeyboardManager.IsFirstKeyPress(Keys.C)) CameraManager.CycleActiveCamera();
 
             //Cycle Through Audio
@@ -434,7 +444,7 @@ namespace GDGame
         #region Events
 
         /// <summary>
-        /// Handle whatever the new GameState is that was just published
+        ///     Handle whatever the new GameState is that was just published
         /// </summary>
         /// <param name="eventInfo">The event class holding necessary information for this event</param>
         private void HandleGameStateEvent(GameStateMessageEventInfo eventInfo)
@@ -453,6 +463,7 @@ namespace GDGame
                         InitGame();
                         isPlaying = true;
                     }
+
                     break;
                 case GameState.Lost:
                     DestroyGame();
@@ -481,5 +492,7 @@ namespace GDGame
         }
 
         #endregion
+
+        //Declare all Managers and stuff that should be accessible from the GameManager
     }
 }

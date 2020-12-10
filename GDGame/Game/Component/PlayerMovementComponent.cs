@@ -91,6 +91,8 @@ namespace GDGame.Component
                         movementComponent?.MoveTile();
                     }
 
+                    EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.Move});
+                    
                     //Play player move sound
                     EventManager.FireEvent(new SoundEventInfo
                     {

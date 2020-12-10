@@ -74,8 +74,6 @@ namespace GDGame.Managers
                     CurrentMovesCount++;
                     EventManager.FireEvent(new DataManagerEvent());
                     break;
-                case PlayerEventType.Die:
-                    break;
             }
         }
 
