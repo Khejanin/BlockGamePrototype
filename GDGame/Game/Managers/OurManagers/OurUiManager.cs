@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using GDGame.Actors;
 using GDGame.Constants;
 using GDGame.Controllers;
@@ -8,10 +9,9 @@ using GDGame.Game.Actors;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.GameComponents;
-using GDLibrary.Parameters;
+using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SharpDX.MediaFoundation;
 
 namespace GDGame.Managers
 {
@@ -24,6 +24,7 @@ namespace GDGame.Managers
 
         private PlayerTile playerTile;
         private Coffee coffee;
+        private UITextureObject pressSpace;
 
         #endregion
 
@@ -175,14 +176,26 @@ namespace GDGame.Managers
             uiTextureObject = ((UITextureObject) Main.UiArchetypes["texture"]).Clone() as UITextureObject;
             if (uiTextureObject != null)
             {
-                Texture2D texture = Main.Textures["options"];
-                uiTextureObject.ID = "PauseBackground";
+                Texture2D texture = Main.Textures["PressSpace"];
+                uiTextureObject.ID = "PressSpace";
                 uiTextureObject.Texture = texture;
+                Vector2 offset = Main.ScreenCentre - Vector2.UnitY * 100;
                 uiTextureObject.Transform2D.Origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
                 uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
-                uiTextureObject.Transform2D.Translation = Main.ScreenCentre;
+                uiTextureObject.Transform2D.Translation = offset;
+                uiTextureObject.Transform2D.Scale *= 0.7f;
                 uiTextureObject.StatusType = StatusType.Off;
                 Main.UiManager.Add(uiTextureObject);
+                List<Texture2D> texture2Ds = new List<Texture2D>
+                {
+                    texture,
+                    Main.Textures["PressSpace02"],
+                    Main.Textures["PressSpace03"],
+                    Main.Textures["PressSpace03"],
+                    Main.Textures["PressSpace03"]
+                };
+                uiTextureObject.ControllerList.Add(new UiTextureChanger("UTC", ControllerType.Ui, texture2Ds, 200));
+                pressSpace = uiTextureObject;
             }
             
             
@@ -196,6 +209,7 @@ namespace GDGame.Managers
                 Main.UiManager.Add(uiButtonObject);
             }
         }
+
         
         #endregion
 
@@ -214,6 +228,7 @@ namespace GDGame.Managers
                     {
                         uiTextObject.Text = "Time Left: " + coffee.TimeLeft.ToString("0.00");
                     }
+
                     uiTextObject.Transform2D.Origin = new Vector2(
                         Main.Fonts["Arial"].MeasureString(uiTextObject.Text).X / 2,
                         Main.Fonts["Arial"].MeasureString(uiTextObject.Text).Y / 2);
@@ -223,10 +238,19 @@ namespace GDGame.Managers
             uiTextObject =
                 Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "AttachToolTipText") as UITextObject;
             playerTile ??=
-                Main.ObjectManager.OpaqueList.Find(actor3D => actor3D.ID == "clone - Player") as PlayerTile;
+                Main.ObjectManager.OpaqueList.Find(actor3D => actor3D.ActorType == ActorType.Player) as PlayerTile;
             if (uiTextObject != null && playerTile != null && playerTile.AttachCandidates.Count > 0)
                 uiTextObject.StatusType = StatusType.Drawn;
             else if (uiTextObject != null) uiTextObject.StatusType = StatusType.Off;
+
+            if (playerTile != null && playerTile.AttachCandidates.Count > 0 && !playerTile.IsAttached)
+            {
+                pressSpace.StatusType = StatusType.Drawn | StatusType.Update;
+            }
+            else
+            {
+                pressSpace.StatusType = StatusType.Off;
+            }
         }
 
         #endregion
@@ -235,9 +259,9 @@ namespace GDGame.Managers
 
         private void HandleDataManagerEvent(DataManagerEvent obj)
         {
-            if (Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "NumberOfMovesText") is UITextObject
+            if (Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "MoveText") is UITextObject
                 uiTextObject)
-                uiTextObject.Text = Main.LevelDataManager.CurrentMovesCount.ToString();
+                uiTextObject.Text = "Moves: " + Main.LevelDataManager.CurrentMovesCount;
         }
 
         private void HandleOptionsEvent(OptionsEventInfo optionsEventInfo)

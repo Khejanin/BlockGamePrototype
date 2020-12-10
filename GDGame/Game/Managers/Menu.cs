@@ -337,7 +337,7 @@ namespace GDGame.Managers
                 uiTextObject.Transform2D.Origin = new Vector2(main.Fonts["Arial"].MeasureString(text).X / 2,
                     main.Fonts["Arial"].MeasureString(text).Y / 2);
                 uiTextObject.Transform2D.Translation = main.ScreenCentre - Vector2.UnitY * 250;
-                main.MenuManager.Add("LoseScreen", uiTextObject);
+                main.MenuManager.Add(menu, uiTextObject);
             }
 
             text = "<";
@@ -361,7 +361,6 @@ namespace GDGame.Managers
             if (uiButtonObject != null)
             {
                 uiButtonObject.Text = text;
-                uiButtonObject.ID = "VolumeDown";
                 uiButtonObject.ID = "VolumeUp";
 
                 Texture2D texture2D = main.Textures["GreenSticker"];

@@ -166,6 +166,9 @@ namespace GDGame.Managers
             main.Textures.Load("Assets/Textures/UI/TopBar");
             main.Textures.Load("Assets/Textures/UI/Mug-Collected");
             main.Textures.Load("Assets/Textures/Menu/tutorial", "Tutorial");
+            main.Textures.Load("Assets/Textures/UI/PressSpace");
+            main.Textures.Load("Assets/Textures/UI/PressSpace02");
+            main.Textures.Load("Assets/Textures/UI/PressSpace03");
         }
 
         #endregion
