@@ -16,13 +16,13 @@ namespace GDGame.Managers
         /// <summary>
         /// Timer struct for data and ticking.
         /// </summary>
-        private struct Timer
+        private class Timer
         {
             private Action toCall;
             private float delayInSeconds;
             private float currentSeconds;
 
-            public Timer(Action toCall, float delayInSeconds) : this()
+            public Timer(Action toCall, float delayInSeconds)
             {
                 this.toCall = toCall;
                 this.delayInSeconds = delayInSeconds;
