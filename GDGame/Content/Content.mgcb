@@ -634,53 +634,113 @@
 /processorParam:Quality=Best
 /build:Assets/Sound/Effects/trapDeath.wav
 
-#begin Assets/Sound/EnemySounds/angery.wav
+#begin Assets/Sound/EnemySounds/coffee!.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Assets/Sound/EnemySounds/angery.wav
+/build:Assets/Sound/EnemySounds/coffee!.wav
 
-#begin Assets/Sound/EnemySounds/angery2.wav
+#begin Assets/Sound/EnemySounds/die!.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Assets/Sound/EnemySounds/angery2.wav
+/build:Assets/Sound/EnemySounds/die!.wav
 
-#begin Assets/Sound/EnemySounds/i_dont_like_you.wav
+#begin Assets/Sound/EnemySounds/enemy_cry_out.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Assets/Sound/EnemySounds/i_dont_like_you.wav
+/build:Assets/Sound/EnemySounds/enemy_cry_out.wav
 
-#begin Assets/Sound/EnemySounds/move1.wav
+#begin Assets/Sound/EnemySounds/enemy_cry_out_short.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Assets/Sound/EnemySounds/move1.wav
+/build:Assets/Sound/EnemySounds/enemy_cry_out_short.wav
 
-#begin Assets/Sound/EnemySounds/understandable_have_a_nice_day.wav
+#begin Assets/Sound/EnemySounds/enemy_high_pitch_cry_1.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Assets/Sound/EnemySounds/understandable_have_a_nice_day.wav
+/build:Assets/Sound/EnemySounds/enemy_high_pitch_cry_1.wav
 
-#begin Assets/Sound/EnemySounds/why_are_you_running.wav
+#begin Assets/Sound/EnemySounds/enemy_high_pitch_cry_2.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Assets/Sound/EnemySounds/why_are_you_running.wav
+/build:Assets/Sound/EnemySounds/enemy_high_pitch_cry_2.wav
 
-#begin Assets/Sound/EnemySounds/you_are_meanie.wav
+#begin Assets/Sound/EnemySounds/enemy_move_1.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Assets/Sound/EnemySounds/you_are_meanie.wav
+/build:Assets/Sound/EnemySounds/enemy_move_1.wav
 
-#begin Assets/Sound/EnemySounds/you_die_now.wav
+#begin Assets/Sound/EnemySounds/enemy_move_2.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Assets/Sound/EnemySounds/you_die_now.wav
+/build:Assets/Sound/EnemySounds/enemy_move_2.wav
+
+#begin Assets/Sound/EnemySounds/old/angery.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/EnemySounds/old/angery.wav
+
+#begin Assets/Sound/EnemySounds/old/angery2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/EnemySounds/old/angery2.wav
+
+#begin Assets/Sound/EnemySounds/old/i_dont_like_you.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/EnemySounds/old/i_dont_like_you.wav
+
+#begin Assets/Sound/EnemySounds/old/move1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/EnemySounds/old/move1.wav
+
+#begin Assets/Sound/EnemySounds/old/understandable_have_a_nice_day.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/EnemySounds/old/understandable_have_a_nice_day.wav
+
+#begin Assets/Sound/EnemySounds/old/why_are_you_running.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/EnemySounds/old/why_are_you_running.wav
+
+#begin Assets/Sound/EnemySounds/old/you_are_meanie.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/EnemySounds/old/you_are_meanie.wav
+
+#begin Assets/Sound/EnemySounds/old/you_die_now.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/EnemySounds/old/you_die_now.wav
+
+#begin Assets/Sound/EnemySounds/wee!.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/EnemySounds/wee!.wav
+
+#begin Assets/Sound/EnemySounds/you_will_lose!.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/EnemySounds/you_will_lose!.wav
 
 #begin Assets/Sound/Gong01.wav
 /importer:WavImporter

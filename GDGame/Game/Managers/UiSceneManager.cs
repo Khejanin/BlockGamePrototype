@@ -10,7 +10,6 @@ using GDLibrary.GameComponents;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SharpDX.MediaFoundation;
 
 namespace GDGame.Managers
 {
