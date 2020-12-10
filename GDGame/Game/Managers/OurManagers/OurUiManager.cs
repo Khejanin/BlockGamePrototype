@@ -113,7 +113,20 @@ namespace GDGame.Managers
                 uiTextureObject.Transform2D.Translation = offset;
                 Main.UiManager.Add(uiTextureObject);
             }
-
+            
+            uiTextureObject = ((UITextureObject) Main.UiArchetypes["texture"]).Clone() as UITextureObject;
+            if (uiTextureObject != null)
+            {
+                uiTextureObject.StatusType = StatusType.Drawn | StatusType.Update;
+                Texture2D texture = Main.Textures["optionsButton"];
+                uiTextureObject.ID = "Alarm";
+                uiTextureObject.Texture = texture;
+                Vector2 offset = new Vector2(Constants.GameConstants.ScreenWidth*0.8f, GameConstants.ScreenHeight * 0.9f);
+                uiTextureObject.Transform2D.Origin = new Vector2(0, 0);
+                uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
+                uiTextureObject.Transform2D.Translation = offset;
+                Main.UiManager.Add(uiTextureObject);
+            }
 
             if (((UITextObject) Main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
             {
@@ -167,6 +180,8 @@ namespace GDGame.Managers
                 uiTextureObject.StatusType = StatusType.Off;
                 Main.UiManager.Add(uiTextureObject);
             }
+            
+            
 
             if (((UIButtonObject) Main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)
             {
@@ -177,17 +192,7 @@ namespace GDGame.Managers
                 Main.UiManager.Add(uiButtonObject);
             }
         }
-
         
-
-        
-
-        
-
-        
-
-        
-
         #endregion
 
         #region Methods

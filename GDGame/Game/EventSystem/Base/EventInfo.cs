@@ -118,9 +118,16 @@ namespace GDGame.EventSystem
         #endregion
     }
 
-    public class CoffeeLoweringEvent : EventInfo
+    public enum CoffeeEventType
     {
-        public float timeGained;
+        CoffeeStartMoving,
+        CoffeeDanger,
+        CoffeeDangerStop
     }
     
+    public class CoffeeEventInfo : EventInfo
+    {
+        public CoffeeEventType coffeeEventType;
+    }
+
 }

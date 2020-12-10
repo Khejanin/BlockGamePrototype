@@ -18,7 +18,11 @@ namespace GDGame.Component
         private Coffee coffeeParent;
         private Vector3 destination;
         private float speed;
-
+        
+        private bool isLowering;
+        private float loweringTarget;
+        private float loweringSpeed;
+        
         public CoffeeMovementComponent(string id, ControllerType controllerType, ActivationType activationType, float timePercent, Smoother.SmoothingMethod smoothingMethod,Coffee coffee) : base(id, controllerType, activationType, timePercent, smoothingMethod)
         {
             parent = coffee;
@@ -28,6 +32,13 @@ namespace GDGame.Component
         protected override void OnActivated()
         {
             MoveToNextPoint();
+        }
+
+        public void StartLowering(float target, float speed)
+        {
+            isLowering = true;
+            loweringTarget = target;
+            loweringSpeed = speed;
         }
 
         /// <summary>
@@ -49,13 +60,33 @@ namespace GDGame.Component
         {
             if (parent.Transform3D.Translation.Y != destination.Y)
             {
-                if (parent.Transform3D.Translation.Y + speed > destination.Y)
-                    parent.SetTranslation(destination);
+                float spd = speed;
+                
+                if (isLowering)
+                {
+                    spd -= loweringSpeed;
+                    if (parent.Transform3D.Translation.Y + speed < loweringTarget)
+                    {
+                        parent.SetTranslation(Vector3.Up * loweringTarget);
+                        isLowering = false;
+                    }
+                    else
+                    {
+                        parent.SetTranslation(parent.Transform3D.Translation +
+                                              Vector3.Up * spd * gameTime.ElapsedGameTime.Milliseconds);
+                    }
+                }
                 else
                 {
-                    parent.SetTranslation(parent.Transform3D.Translation +
-                                          Vector3.Up * speed * gameTime.ElapsedGameTime.Milliseconds);
+                    if (parent.Transform3D.Translation.Y + speed > destination.Y)
+                        parent.SetTranslation(destination);
+                    else
+                    {
+                        parent.SetTranslation(parent.Transform3D.Translation +
+                                              Vector3.Up * spd * gameTime.ElapsedGameTime.Milliseconds);
+                    }
                 }
+                
             }
             else
             {

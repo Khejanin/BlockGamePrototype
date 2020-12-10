@@ -28,6 +28,8 @@ namespace GDGame.Game.Actors
 
         private CoffeeMovementComponent coffeeMovementComponent;
 
+        private bool coffeeDanger;
+
         #endregion
 
         #region Constructors
@@ -102,7 +104,23 @@ namespace GDGame.Game.Actors
                     CoffeeMovementComponent;
             if (IsMoving)
                 if (coffeeMovementComponent != null)
+                {
                     TimeLeft = coffeeMovementComponent.GetTotalTimeLeft(player.Transform3D) / 1000f;
+                    
+                    if (TimeLeft < 10f && !coffeeDanger)
+                    {
+                        EventManager.FireEvent(new CoffeeEventInfo()
+                            {coffeeEventType = CoffeeEventType.CoffeeDanger});
+                        coffeeDanger = true;
+                    }
+
+                    if (TimeLeft > 10f && coffeeDanger)
+                    {
+                        EventManager.FireEvent(new CoffeeEventInfo()
+                            {coffeeEventType = CoffeeEventType.CoffeeDangerStop});
+                        coffeeDanger = false;
+                    }
+                }
         }
 
         #endregion
@@ -115,20 +133,15 @@ namespace GDGame.Game.Actors
             {
                 if (CheckPointIndex == 0)
                 {
+                    EventManager.FireEvent(new CoffeeEventInfo(){coffeeEventType = CoffeeEventType.CoffeeStartMoving});
                     coffeeMovementComponent.Activate();
                     IsMoving = true;
                     TimeLeft = coffeeMovementComponent.GetTotalTimeLeft(player.Transform3D) / 1000f;
                 }
                 else
                 {
-                    this.MoveTo(new AnimationEventData
-                    {
-                        isRelative = true,
-                        body = Body,
-                        destination = -Vector3.Up * coffeeInfo[CheckPointIndex++].SetBackY,
-                        smoothing = Smoother.SmoothingMethod.Decelerate,
-                        maxTime = 500
-                    });
+                    float target = Transform3D.Translation.Y - coffeeInfo[CheckPointIndex++].SetBackY;
+                    coffeeMovementComponent.StartLowering(target,target/500);
                 }
             }
         }
