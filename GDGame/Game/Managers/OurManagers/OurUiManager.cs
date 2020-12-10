@@ -1,6 +1,7 @@
 ﻿using System;
 using GDGame.Actors;
 using GDGame.Constants;
+using GDGame.Controllers;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Game.Actors;
@@ -117,7 +118,7 @@ namespace GDGame.Managers
             uiTextureObject = ((UITextureObject) Main.UiArchetypes["texture"]).Clone() as UITextureObject;
             if (uiTextureObject != null)
             {
-                uiTextureObject.StatusType = StatusType.Drawn | StatusType.Update;
+                uiTextureObject.StatusType = StatusType.Update;
                 Texture2D texture = Main.Textures["optionsButton"];
                 uiTextureObject.ID = "Alarm";
                 uiTextureObject.Texture = texture;
@@ -126,6 +127,9 @@ namespace GDGame.Managers
                 uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
                 uiTextureObject.Transform2D.Translation = offset;
                 Main.UiManager.Add(uiTextureObject);
+                
+                uiTextureObject.ControllerList.Add(new UiBlinkingController("uiBlinkingC",ControllerType.Ui,500));
+                //uiTextureObject.ControllerList.Add();
             }
 
             if (((UITextObject) Main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
