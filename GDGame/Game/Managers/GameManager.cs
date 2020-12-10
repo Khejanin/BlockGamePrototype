@@ -344,6 +344,7 @@ namespace GDGame.Managers
             ActivatableTile activatable = new ActivatableTile("Button", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
                 main.Models["Button"], false, ETileType.Button);
+            activatable.ControllerList.Add(new ColliderComponent("ButtonCC", ControllerType.Collider, OnActivatableCollisionEnter));
 
             //Create the Puddle (We call them spikes because they kill the player on collision)
             coffeeEffect = (CoffeeEffectParameters) coffeeEffect.Clone();
@@ -419,6 +420,14 @@ namespace GDGame.Managers
             movingPlatform.ControllerList.Add(new PathMovementComponent("platformpmc", ControllerType.Movement,
                 ActivationType.Activated, 0.5f, Smoother.SmoothingMethod.Decelerate));
 
+            //Create the Doors Tiles
+            effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["Biscuit"], Color.White, 1);
+            PathMoveTile doorTile = new PathMoveTile("Door Tile", ActorType.Platform,
+                StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
+                main.Models["Cube"], true, ETileType.Door);
+            doorTile.ControllerList.Add(new DoorMovementComponent("doorPMC", ControllerType.Movement,
+                ActivationType.Activated, 0.5f, Smoother.SmoothingMethod.Accelerate));
+
             #endregion MovableTiles
 
             //Now we add them all to our dictionary to later clone.
@@ -432,6 +441,7 @@ namespace GDGame.Managers
                 {"EnemyTile", enemy},
                 {"ButtonTile", activatable},
                 {"MovingPlatformTile", movingPlatform},
+                {"DoorTile", doorTile},
                 {"SpikeTile", spike},
                 {"StarPickupTile", pickup},
                 {"CheckpointTile", checkpoint},
@@ -564,6 +574,29 @@ namespace GDGame.Managers
                                 {Type = TileEventType.PlayerKill, IsEasy = main.IsEasy, Id = collide.ID});
                         break;
                 }
+
+            return true;
+        }
+
+        private bool OnActivatableCollisionEnter(CollisionSkin skin0, CollisionSkin skin1)
+        {
+            System.Diagnostics.Debug.WriteLine("Collision Enter!");
+            if (skin1.Owner.ExternalData is Tile collide)
+                switch (collide.TileType)
+                {
+                    case ETileType.Player:
+                    case ETileType.Attachable:
+                        EventManager.FireEvent(new ActivatorEventInfo {type = ActivatorEventType.Activate, id = (skin0.Owner.ExternalData as Tile).activatorId});
+                        break;
+                }
+
+            return true;
+        }
+
+        private bool OnActivatableCollisionExit(CollisionSkin skin0, CollisionSkin skin1)
+        {
+            System.Diagnostics.Debug.WriteLine("Collision Exit!");
+            //EventManager.FireEvent(new ActivatorEventInfo {type = ActivatorEventType.Activate, id = (skin0.Owner.ExternalData as Tile).activatorId});
 
             return true;
         }

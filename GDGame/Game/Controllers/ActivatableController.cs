@@ -21,7 +21,7 @@ namespace GDGame.Controllers
     /// <summary>
     /// An ActivatableController is a Controller who's functionality can be Activated in different ways.
     /// </summary>
-    public abstract class ActivatableController : Controller, IActivatable,ICloneable
+    public abstract class ActivatableController : Controller, IActivatable, ICloneable
     {
         protected Tile parent;
         private bool getParent = false;

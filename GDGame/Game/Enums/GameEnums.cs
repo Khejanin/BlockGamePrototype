@@ -20,7 +20,8 @@ namespace GDGame.Enums
         MovingPlatform,
         Spike,
         Checkpoint,
-        FallingPlatform
+        FallingPlatform,
+        Door
     }
 
     public enum ColliderShape : sbyte
