@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using GDGame.Actors;
 using GDGame.Enums;
+using GDGame.EventSystem;
 using GDGame.Factory;
 using GDGame.Tiles;
 using Microsoft.Xna.Framework;
@@ -56,6 +57,7 @@ namespace GDGame.Utilities
         public LevelData GenerateGrid(string levelFilePath)
         {
             string jsonString = "";
+            List<Vector3> checkpoints = new List<Vector3>();
 
             if (File.Exists(levelFilePath))
             {
@@ -101,6 +103,10 @@ namespace GDGame.Utilities
                             Tile tile = tileFactory.CreateTile(pos + new Vector3(0, 0, data.gridSize.Z - 1), data.gridValues[x, y, z], staticTileType);
                             tile?.InitializeTile();
 
+                            //Giving the player a list of checkpoints, so that we can switch between them (for debug/demo purposes)
+                            if(tile.TileType == ETileType.Checkpoint)
+                                checkpoints.Add(tile.Transform3D.Translation);
+
                             _grid[x, y, (int) data.gridSize.Z - 1 - z] = tile;
                         }
                         else
@@ -123,6 +129,8 @@ namespace GDGame.Utilities
             SetPaths(data, _grid);
             SetActivatorIds(data, _grid);
             SetCollectibleIds(data, _grid);
+
+            EventManager.FireEvent(new PlayerEventInfo { type = PlayerEventType.SetCheckpointList, checkpoints = checkpoints });
 
             return data;
         }

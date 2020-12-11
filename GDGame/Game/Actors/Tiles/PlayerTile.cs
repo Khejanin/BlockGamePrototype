@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Game.Parameters.Effect;
 using GDGame.Managers;
 using GDGame.Tiles;
-using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
@@ -23,6 +22,10 @@ namespace GDGame.Actors
         #region Private variables
 
         private Vector3 lastCheckpoint;
+        
+        //For debug/demo purposes (allows us to cycle through the checkpoints)
+        private int currentCheckpointIndex;
+        private List<Vector3> checkpoints;
 
         #endregion
 
@@ -114,6 +117,19 @@ namespace GDGame.Actors
                 }
 
             UpdateAttachCandidates(detectedAttachableTiles);
+        }
+
+        /// <summary>
+        /// Spawns the player at the next checkpoint. (Used for debug/demo purposes)
+        /// </summary>
+        public void SpawnAtNextCheckpoint()
+        {
+            if (checkpoints.Count == 0) return;
+
+            Transform3D.Translation = checkpoints[currentCheckpointIndex++];
+
+            if (currentCheckpointIndex == checkpoints.Count)
+                currentCheckpointIndex = 0;
         }
 
         public new object Clone()
@@ -244,6 +260,10 @@ namespace GDGame.Actors
             {
                 case PlayerEventType.SetCheckpoint:
                     SetCheckpoint(info.position);
+                    break;
+                case PlayerEventType.SetCheckpointList:
+                    checkpoints = info.checkpoints;
+                    checkpoints = checkpoints.OrderBy(v => v.Y).ToList();
                     break;
                 case PlayerEventType.MovableTileDie:
                     AttachedTiles.Remove(info.movableTile);

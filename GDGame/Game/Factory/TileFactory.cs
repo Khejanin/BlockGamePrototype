@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GDGame.Actors;
 using GDGame.Constants;
 using GDGame.Enums;

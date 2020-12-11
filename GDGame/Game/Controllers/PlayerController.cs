@@ -67,8 +67,8 @@ namespace GDGame.Controllers
         private void HandlePlayerMovement(PlayerTile playerTile)
         {
             if (keyboardManager.IsFirstKeyPress(Keys.Space) && !playerTile.IsAttached) playerTile.Attach();
-            else if (!keyboardManager.IsKeyDown(Keys.Space) && keyboardManager.IsStateChanged() && playerTile.IsAttached
-            ) playerTile.Detach();
+            else if (!keyboardManager.IsKeyDown(Keys.Space) && keyboardManager.IsStateChanged() && playerTile.IsAttached) playerTile.Detach();
+            else if(keyboardManager.IsFirstKeyPress(Keys.R)) playerTile.SpawnAtNextCheckpoint();
 
             if (!playerTile.IsMoving)
             {
