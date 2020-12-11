@@ -71,10 +71,10 @@ namespace GDGame.Managers
             if(gameRunning)
             {
                 // otherwise goes main menu on first trigger, then ingame menu on second press
-                if (keyboardManager.IsKeyDown(Keys.M))
+                if (keyboardManager.IsKeyDown(Keys.Escape))
                     SetScene("GameOptions");
 
-                if (keyboardManager.IsFirstKeyPress(Keys.M))
+                if (keyboardManager.IsFirstKeyPress(Keys.Escape))
                 {
                     EventManager.FireEvent(new SoundEventInfo
                     {

@@ -391,11 +391,11 @@ namespace GDGame
             if (KeyboardManager.IsFirstKeyPress(Keys.C)) CameraManager.CycleActiveCamera();
 
             //Cycle Through Audio
-            if (KeyboardManager.IsFirstKeyPress(Keys.M))
+            if (KeyboardManager.IsFirstKeyPress(Keys.N))
                 EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PlayNextMusic});
-            //Stop Music
-            if (KeyboardManager.IsKeyDown(Keys.N))
-                EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PauseMusic});
+            //Mute All Sounds
+            if (KeyboardManager.IsFirstKeyPress(Keys.M))
+                EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.ToggleMute});
             //Volume Changes
             if (KeyboardManager.IsFirstKeyPress(Keys.L))
                 EventManager.FireEvent(new SoundEventInfo

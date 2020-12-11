@@ -21,6 +21,7 @@ namespace GDGame.Managers
             private Action toCall;
             private float delayInSeconds;
             private float currentSeconds;
+            public bool pause;
 
             public Timer(Action toCall, float delayInSeconds)
             {
@@ -31,6 +32,8 @@ namespace GDGame.Managers
 
             public bool Tick(GameTime gameTime)
             {
+                if (pause) return false;
+
                 currentSeconds += gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
                 if (currentSeconds >= delayInSeconds)
                 {
@@ -59,6 +62,20 @@ namespace GDGame.Managers
         {
             if(_currentTimers.ContainsKey(referenceId))
                 _timersToRemove.Add(referenceId);
+        }
+
+        //Pause a timer by its reference id
+        public static void PauseTimer(string referenceId)
+        {
+            if (_currentTimers.ContainsKey(referenceId))
+                _currentTimers[referenceId].pause = true;
+        }
+
+        //Resume a timer by it reference id
+        public static void ResumeTimer(string referenceId)
+        {
+            if(_currentTimers.ContainsKey(referenceId))
+                _currentTimers[referenceId].pause = false;
         }
         
         public TimeManager(Microsoft.Xna.Framework.Game game, StatusType statusType) : base(game, statusType)

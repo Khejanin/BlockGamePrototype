@@ -1,6 +1,9 @@
 ﻿/*
  * Collection of Enums
  */
+
+using System;
+
 namespace GDGame.Enums
 {
     /// <summary>
@@ -122,7 +125,7 @@ namespace GDGame.Enums
         PlayNextMusic,
         IncreaseVolume,
         DecreaseVolume,
-        Mute,
+        ToggleMute,
         SetListener,
         PauseAll,
         ResumeAll
