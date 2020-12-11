@@ -23,7 +23,7 @@ namespace GDGame.Component
         protected float timePercent;
         protected Smoother.SmoothingMethod smoothingMethod;
         private int pathDir = 1;
-        protected PathMoveTile pathMoveTileParent;
+        private PathMoveTile pathMoveTileParent;
 
         private List<Vector3> Path
         {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using GDGame.Actors;
 using GDGame.Constants;
 using GDGame.Controllers;
@@ -28,18 +27,16 @@ namespace GDGame
     /// </summary>
     public class Main : Microsoft.Xna.Framework.Game
     {
-        #region Public variables
-
-        public PlayerTile player;
-
-        #endregion
-
         #region Private variables
 
         private float currentMovementCoolDown;
         private GameManager game;
+        private GraphicsDeviceManager graphics;
         private bool isPlaying;
-
+        private MouseManager mouseManager;
+        private OurPhysicsManager physicsManager;
+        private PlayerTile player;
+        private OurRenderManager renderManager;
         private SpriteBatch spriteBatch;
 
         #endregion
@@ -48,7 +45,7 @@ namespace GDGame
 
         public Main()
         {
-            Graphics = new GraphicsDeviceManager(this);
+            graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             IsEasy = true;
@@ -59,22 +56,15 @@ namespace GDGame
         #region Properties, Indexers
 
         public OurPrimitiveObject ArchetypalTexturedQuad { get; private set; }
-
         public CameraManager<Camera3D> CameraManager { get; private set; }
         public ContentDictionary<Effect> Effects { get; private set; }
         public ContentDictionary<SpriteFont> Fonts { get; private set; }
-        private GraphicsDeviceManager Graphics { get; }
         public bool IsEasy { get; private set; }
         public KeyboardManager KeyboardManager { get; private set; }
-        public LevelDataManager LevelDataManager { get; private set; }
         public OurMenuManager MenuManager { get; private set; }
         public BasicEffect ModelEffect { get; private set; }
         public ContentDictionary<Model> Models { get; private set; }
-        public MouseManager MouseManager { get; private set; }
         public OurObjectManager ObjectManager { get; private set; }
-        public OurUiManager OurUiManager { get; private set; }
-        public OurPhysicsManager PhysicsManager { get; set; }
-        private OurRenderManager RenderManager { get; set; }
         public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
         public SoundManager SoundManager { get; private set; }
         public ContentDictionary<Texture2D> Textures { get; private set; }
@@ -99,7 +89,7 @@ namespace GDGame
             vertices[3] = new VertexPositionColorTexture(new Vector3(halfLength, -halfLength, 0), Color.White,
                 new Vector2(1, 1));
 
-            BasicEffect unlitTexturedEffect = new BasicEffect(Graphics.GraphicsDevice)
+            BasicEffect unlitTexturedEffect = new BasicEffect(graphics.GraphicsDevice)
             {
                 VertexColorEnabled = true,
                 TextureEnabled = true
@@ -131,7 +121,7 @@ namespace GDGame
                 camera3D.ID = "FlightCamera";
                 camera3D.ControllerList.Clear();
                 camera3D.ControllerList.Add(new FlightController("FPC", ControllerType.FlightCamera,
-                    KeyboardManager, MouseManager, 0.01f, 0.01f, 0.01f));
+                    KeyboardManager, mouseManager, 0.01f, 0.01f, 0.01f));
                 //CameraManager.Add(camera3D);
             }
 
@@ -143,7 +133,7 @@ namespace GDGame
         /// </summary>
         private void InitEffect()
         {
-            ModelEffect = new BasicEffect(Graphics.GraphicsDevice) {TextureEnabled = true};
+            ModelEffect = new BasicEffect(graphics.GraphicsDevice) {TextureEnabled = true};
         }
 
         private void InitEvents()
@@ -164,25 +154,25 @@ namespace GDGame
         private void InitGraphics(int width, int height)
         {
             //set resolution
-            Graphics.PreferredBackBufferWidth = width;
-            Graphics.PreferredBackBufferHeight = height;
+            graphics.PreferredBackBufferWidth = width;
+            graphics.PreferredBackBufferHeight = height;
 
             //dont forget to apply resolution changes otherwise we wont see the new WxH
-            Graphics.ApplyChanges();
+            graphics.ApplyChanges();
 
             //set screen centre based on resolution
             ScreenCentre = new Vector2(width / 2f, height / 2f);
 
             //set cull mode to show front and back faces - inefficient but we will change later
             RasterizerState rs = new RasterizerState {CullMode = CullMode.None};
-            Graphics.GraphicsDevice.RasterizerState = rs;
+            graphics.GraphicsDevice.RasterizerState = rs;
 
             //we use a sampler state to set the texture address mode to solve the aliasing problem between skybox planes
             SamplerState samplerState = new SamplerState
             {
                 AddressU = TextureAddressMode.Clamp, AddressV = TextureAddressMode.Clamp
             };
-            Graphics.GraphicsDevice.SamplerStates[0] = samplerState;
+            graphics.GraphicsDevice.SamplerStates[0] = samplerState;
         }
 
 
@@ -229,8 +219,8 @@ namespace GDGame
             Components.Add(new EventDispatcher(this));
 
             //Physics
-            PhysicsManager = new OurPhysicsManager(this, StatusType.Off);
-            Components.Add(PhysicsManager);
+            physicsManager = new OurPhysicsManager(this, StatusType.Off);
+            Components.Add(physicsManager);
 
             //Camera
             CameraManager = new CameraManager<Camera3D>(this, StatusType.Off);
@@ -241,8 +231,8 @@ namespace GDGame
             Components.Add(KeyboardManager);
 
             //Mouse
-            MouseManager = new MouseManager(this, true, PhysicsManager, ScreenCentre);
-            Components.Add(MouseManager);
+            mouseManager = new MouseManager(this, true, physicsManager, ScreenCentre);
+            Components.Add(mouseManager);
 
             //Sound
             SoundManager = new SoundManager();
@@ -253,9 +243,9 @@ namespace GDGame
             Components.Add(ObjectManager);
 
             //Render
-            RenderManager = new OurRenderManager(this, StatusType.Drawn, ScreenLayoutType.Single, ObjectManager,
+            renderManager = new OurRenderManager(this, StatusType.Drawn, ScreenLayoutType.Single, ObjectManager,
                 CameraManager);
-            Components.Add(RenderManager);
+            Components.Add(renderManager);
 
             //Animation
             Components.Add(new TransformAnimationManager(this, StatusType.Update));
@@ -267,7 +257,7 @@ namespace GDGame
             UiManager = new UIManager(this, StatusType.Off, spriteBatch, 10);
             Components.Add(UiManager);
 
-            MenuManager = new OurMenuManager(this, StatusType.Drawn | StatusType.Update, spriteBatch, MouseManager,
+            MenuManager = new OurMenuManager(this, StatusType.Drawn | StatusType.Update, spriteBatch, mouseManager,
                 KeyboardManager);
             Components.Add(MenuManager);
 
@@ -277,17 +267,13 @@ namespace GDGame
 
             //Raycast
             RaycastManager.Instance.ObjectManager = ObjectManager;
-
-            //LevelData
-            LevelDataManager = new LevelDataManager();
         }
 
 
         private void InitUiAndMenu()
         {
-            OurUiManager = new OurUiManager(this, StatusType.Update | StatusType.Drawn);
-            OurUiManager.InitGameUi();
-            Components.Add(OurUiManager);
+            GameUi gameUi = new GameUi(this);
+            gameUi.InitGameUi();
 
             Menu menu = new Menu(this);
             menu.InitUi();
@@ -318,7 +304,7 @@ namespace GDGame
                 StatusType.Update | StatusType.Drawn, transform2D, Color.White, 0.5f,
                 SpriteEffects.None, texture, new Rectangle(0, 0, texture.Width, texture.Height), text, Fonts["Arial"],
                 Vector2.One, Color.White, Vector2.Zero);
-            uiButtonObject.ControllerList.Add(new UiScaleLerpController("USC", ControllerType.Ui, MouseManager,
+            uiButtonObject.ControllerList.Add(new UiScaleLerpController("USC", ControllerType.Ui, mouseManager,
                 new TrigonometricParameters(0.05f, 0.1f, 180)));
 
             UiArchetypes.Add("button", uiButtonObject);
@@ -334,12 +320,6 @@ namespace GDGame
         {
             GraphicsDevice.Clear(Color.Aqua);
             base.Draw(gameTime);
-        }
-
-        private new void LoadContent()
-        {
-            LoadManager loadManager = new LoadManager(this);
-            loadManager.InitLoad();
         }
 
         protected override void Update(GameTime gameTime)
@@ -381,12 +361,10 @@ namespace GDGame
                     _ => player.StatusType
                 };
 
-            if(KeyboardManager.IsFirstKeyPress(Keys.Escape))
-            {
-                    EventDispatcher.Publish(MenuManager.StatusType == StatusType.Off
-                        ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
-                        : new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
-            }
+            if (KeyboardManager.IsFirstKeyPress(Keys.Escape))
+                EventDispatcher.Publish(MenuManager.StatusType == StatusType.Off
+                    ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
+                    : new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
 
             if (KeyboardManager.IsFirstKeyPress(Keys.C)) CameraManager.CycleActiveCamera();
 
@@ -416,6 +394,16 @@ namespace GDGame
 
         #endregion
 
+        #region Load Methods
+
+        private new void LoadContent()
+        {
+            LoadManager loadManager = new LoadManager(this);
+            loadManager.InitLoad();
+        }
+
+        #endregion
+
         #region Private Method
 
         //Do everything to destroy current game instance -> load another on restart.
@@ -426,9 +414,9 @@ namespace GDGame
                 game?.UnRegisterGame();
                 game?.RemoveCamera();
                 ObjectManager.RemoveAll(actor3D => actor3D != null);
-                Components.Remove(PhysicsManager);
-                PhysicsManager = new OurPhysicsManager(this, StatusType.Update);
-                Components.Add(PhysicsManager);
+                Components.Remove(physicsManager);
+                physicsManager = new OurPhysicsManager(this, StatusType.Update);
+                Components.Add(physicsManager);
                 player = null;
                 CameraManager.ActiveCameraIndex = 0;
             }
@@ -493,7 +481,5 @@ namespace GDGame
         }
 
         #endregion
-
-        //Declare all Managers and stuff that should be accessible from the GameManager
     }
 }

@@ -46,7 +46,6 @@ namespace GDGame.EventSystem
     {
         public Body body;
         public Actor3D actor3D;
-        public Actor2D actor2D;
     }
 
     public class ActivatorEventInfo : EventInfo
@@ -72,18 +71,9 @@ namespace GDGame.EventSystem
         #endregion
     }
 
-    public class SceneEventInfo : EventInfo
-    {
-        #region Properties, Indexers
-
-        public string LevelName { get; set; }
-        public SceneActionType SceneActionType { get; set; }
-
-        #endregion
-    }
-
     public class DataManagerEvent : EventInfo
     {
+        public int CurrentMovesCount { get; set; }
     }
 
     public class MovementEvent : EventInfo
