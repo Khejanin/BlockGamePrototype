@@ -11,6 +11,7 @@ using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
+using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using JigLibX.Collision;
 using Microsoft.Xna.Framework;
@@ -36,6 +37,7 @@ namespace GDGame.Managers
         private Transform3D light;
         private Main main;
         private Coffee coffee;
+        private LevelDataManager levelDataManager;
 
         #endregion
 
@@ -61,6 +63,7 @@ namespace GDGame.Managers
             InitGrid();
             InitSkyBox();
             InitCoffee();
+            levelDataManager = new LevelDataManager();
         }
 
         private void InitCoffee()
@@ -71,7 +74,8 @@ namespace GDGame.Managers
             Transform3D transform3D = new Transform3D(Vector3.Zero, -Vector3.Forward, Vector3.Up);
             coffee = new Coffee("Coffee", ActorType.Primitive,
                 StatusType.Update | StatusType.Drawn, transform3D, coffeeEffect,
-                main.Models["CoffeePlane"], levelData.coffeeInfo,main.ObjectManager.ActorList.Find((actor3D => actor3D.ActorType == ActorType.Player)) as PlayerTile);
+                main.Models["CoffeePlane"], levelData.coffeeInfo,
+                main.ObjectManager.ActorList.Find((actor3D => actor3D.ActorType == ActorType.Player)) as PlayerTile);
             //Most of these constructor arguments are not used, need to refactor the entire structure.
             coffee.ControllerList.Add(new CoffeeMovementComponent("cmc", ControllerType.Movement,
                 ActivationType.Activated, 0, Smoother.SmoothingMethod.Smooth, coffee));
@@ -81,8 +85,8 @@ namespace GDGame.Managers
                     if (skin1.Owner.ExternalData is Tile tile)
                     {
                         if (tile.TileType == ETileType.Player)
-                            EventManager.FireEvent(new GameStateMessageEventInfo() {GameState = GameState.Lost});
-                        EventManager.FireEvent(new RemoveActorEvent() {body = tile.Body});
+                            EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Lost});
+                        EventManager.FireEvent(new RemoveActorEvent {body = tile.Body});
                         EventManager.FireEvent(new TileEventInfo {Id = tile.ID, Type = TileEventType.Consumed});
                         return true;
                     }
@@ -91,7 +95,10 @@ namespace GDGame.Managers
                 }));
 
             main.ObjectManager.Add(coffee);
-            main.OurUiManager.SetCoffee(coffee);
+            UiTimeController controller =
+                main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "TimeText")?.ControllerList[0] as
+                    UiTimeController;
+            controller?.SetCoffee(coffee);
         }
 
         /// <summary>
@@ -344,7 +351,8 @@ namespace GDGame.Managers
             ActivatableTile activatable = new ActivatableTile("Button", ActorType.Primitive,
                 StatusType.Drawn | StatusType.Update, transform3D, effectParameters,
                 main.Models["Button"], false, ETileType.Button);
-            activatable.ControllerList.Add(new ColliderComponent("ButtonCC", ControllerType.Collider, OnActivatableCollisionEnter));
+            activatable.ControllerList.Add(new ColliderComponent("ButtonCC", ControllerType.Collider,
+                OnActivatableCollisionEnter));
 
             //Create the Puddle (We call them spikes because they kill the player on collision)
             coffeeEffect = (CoffeeEffectParameters) coffeeEffect.Clone();
@@ -498,7 +506,7 @@ namespace GDGame.Managers
                 switch (collide.TileType)
                 {
                     case ETileType.Player:
-                        EventManager.FireEvent(new RemoveActorEvent{body = (skin0.Owner.ExternalData as Tile).Body});
+                        EventManager.FireEvent(new RemoveActorEvent {body = (skin0.Owner.ExternalData as Tile)?.Body});
                         EventManager.FireEvent(new PlayerEventInfo
                             {type = PlayerEventType.SetCheckpoint, position = skin0.Owner.Position});
                         break;
@@ -586,7 +594,8 @@ namespace GDGame.Managers
                 {
                     case ETileType.Player:
                     case ETileType.Attachable:
-                        EventManager.FireEvent(new ActivatorEventInfo {type = ActivatorEventType.Activate, id = (skin0.Owner.ExternalData as Tile).activatorId});
+                        EventManager.FireEvent(new ActivatorEventInfo
+                            {type = ActivatorEventType.Activate, id = (skin0.Owner.ExternalData as Tile).activatorId});
                         break;
                 }
 

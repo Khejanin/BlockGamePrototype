@@ -28,7 +28,7 @@ namespace GDGame.Controllers
         protected ActivationType activationType;
         protected bool active;
 
-        public ActivatableController(string id, ControllerType controllerType,ActivationType activationType) : base(id,controllerType)
+        protected ActivatableController(string id, ControllerType controllerType,ActivationType activationType) : base(id,controllerType)
         {
             this.activationType = activationType;
         }

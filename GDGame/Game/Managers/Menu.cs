@@ -1,4 +1,6 @@
-﻿using GDLibrary.Actors;
+﻿using GDGame.Game.Handlers;
+using GDLibrary.Actors;
+using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -161,32 +163,6 @@ namespace GDGame.Managers
                 uiButtonObject.Transform2D.Translation = main.ScreenCentre + xPosition + Vector2.UnitY * 120;
                 main.MenuManager.Add("MainMenu", uiButtonObject);
             }
-
-            // //Game Name
-            // if (((UITextObject) main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
-            // {
-            //     text = "B_Logic";
-            //     uiTextObject.ID = "B_Logic";
-            //     uiTextObject.Text = text;
-            //     uiTextObject.Color = Color.SaddleBrown;
-            //     uiTextObject.Transform2D.Origin = new Vector2(main.Fonts["Arial"].MeasureString(text).X / 2,
-            //         main.Fonts["Arial"].MeasureString(text).Y / 2);
-            //     uiTextObject.Transform2D.Translation = main.ScreenCentre - Vector2.UnitX * 525 - Vector2.UnitY * 50;
-            //     main.MenuManager.Add("MainMenu", uiTextObject);
-            // }
-            //
-            // uiTextObject = ((UITextObject) main.UiArchetypes["text"]).Clone() as UITextObject;
-            // if (uiTextObject != null)
-            // {
-            //     text = "Caffeine Edition!";
-            //     uiTextObject.ID = "Caffeine Edition!";
-            //     uiTextObject.Text = text;
-            //     uiTextObject.Color = Color.SaddleBrown;
-            //     uiTextObject.Transform2D.Origin = new Vector2(main.Fonts["Arial"].MeasureString(text).X / 2,
-            //         main.Fonts["Arial"].MeasureString(text).Y / 2);
-            //     uiTextObject.Transform2D.Translation = main.ScreenCentre - Vector2.UnitX * 525;
-            //     main.MenuManager.Add("MainMenu", uiTextObject);
-            // }
         }
 
         private void InitOptionsUi()
@@ -234,6 +210,8 @@ namespace GDGame.Managers
                     new Integer2(texture2D.Width, texture2D.Height));
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
                 main.MenuManager.Add("Options", uiButtonObject);
+                uiButtonObject.EventHandlerList.Add(new UiOptionsEvent(EventCategoryType.Menu, uiButtonObject,
+                    texture2D, main.Textures["RedSticker"]));
             }
 
             //Back Button
