@@ -13,7 +13,7 @@ namespace GDGame.Controllers
         private bool active;
         private bool isVisible;
         private float cooldown;
-        private float currentCD;
+        private float currentCd;
         
         public UiBlinkingController(string id, ControllerType controllerType, float cooldown) : base(id, controllerType)
         {
@@ -34,7 +34,7 @@ namespace GDGame.Controllers
             parent ??= actor as UITextureObject;
             if (active)
             {
-                if (currentCD < cooldown) currentCD += gameTime.ElapsedGameTime.Milliseconds;
+                if (currentCd < cooldown) currentCd += gameTime.ElapsedGameTime.Milliseconds;
                 else
                 {
                     if (isVisible)
@@ -46,7 +46,7 @@ namespace GDGame.Controllers
                         SetVisible();
                     }
 
-                    currentCD = 0;
+                    currentCd = 0;
                 }
             }
         }

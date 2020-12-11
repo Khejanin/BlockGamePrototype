@@ -129,7 +129,7 @@ namespace GDGame.Managers
                 uiTextureObject.Transform2D.Translation = offset;
                 uiTextureObject.Transform2D.Scale = Vector2.One * .5f;
                 Main.UiManager.Add(uiTextureObject);
-                uiTextureObject.ControllerList.Add(new UiBlinkingController("uiBlinkingC",ControllerType.Ui,500));
+                uiTextureObject.ControllerList.Add(new UiBlinkingController("uiBlinkingC",ControllerType.Ui, 700));
                 uiTextureObject.ControllerList.Add(new UiCoffeeWarningTextureSwitcher("cwts",ControllerType.Ui, Main.Textures["CoffeeDangerWarning"]));
             }
 
@@ -160,16 +160,6 @@ namespace GDGame.Managers
                 Vector2 xPosition = Vector2.UnitX * screenWidth / 5 - Vector2.UnitX * 15;
                 uiTextObject.Transform2D.Translation = Main.ScreenCentre + yPosition + xPosition;
                 uiTextObject.Color = GameConstants.colorGold;
-                Main.UiManager.Add(uiTextObject);
-            }
-
-            uiTextObject = ((UITextObject) Main.UiArchetypes["text"]).Clone() as UITextObject;
-            if (uiTextObject != null)
-            {
-                string text = "Hold Space To Attach";
-                uiTextObject.ID = "AttachToolTipText";
-                uiTextObject.Text = text;
-                uiTextObject.StatusType = StatusType.Off;
                 Main.UiManager.Add(uiTextObject);
             }
 
@@ -234,15 +224,8 @@ namespace GDGame.Managers
                         Main.Fonts["Arial"].MeasureString(uiTextObject.Text).Y / 2);
                 }
             }
-
-            uiTextObject =
-                Main.UiManager.UIObjectList.Find(actor2D => actor2D.ID == "AttachToolTipText") as UITextObject;
             playerTile ??=
                 Main.ObjectManager.OpaqueList.Find(actor3D => actor3D.ActorType == ActorType.Player) as PlayerTile;
-            if (uiTextObject != null && playerTile != null && playerTile.AttachCandidates.Count > 0)
-                uiTextObject.StatusType = StatusType.Drawn;
-            else if (uiTextObject != null) uiTextObject.StatusType = StatusType.Off;
-
             if (playerTile != null && playerTile.AttachCandidates.Count > 0 && !playerTile.IsAttached)
             {
                 pressSpace.StatusType = StatusType.Drawn | StatusType.Update;

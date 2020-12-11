@@ -89,8 +89,6 @@ namespace GDGame.Actors
             foreach (AttachableTile tile in AttachCandidates.SelectMany(shape => shape.AttachableTiles))
             { 
                 AttachedTiles.Add(tile);
-                Debug.WriteLine(AttachedTiles.Count);
-                ((BasicEffectParameters) tile.EffectParameters).Color = Color.DarkGray;
                 tile.IsAttached = true;
             }
 

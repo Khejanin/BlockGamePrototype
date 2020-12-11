@@ -162,31 +162,31 @@ namespace GDGame.Managers
                 main.MenuManager.Add("MainMenu", uiButtonObject);
             }
 
-            //Game Name
-            if (((UITextObject) main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
-            {
-                text = "B_Logic";
-                uiTextObject.ID = "B_Logic";
-                uiTextObject.Text = text;
-                uiTextObject.Color = Color.SaddleBrown;
-                uiTextObject.Transform2D.Origin = new Vector2(main.Fonts["Arial"].MeasureString(text).X / 2,
-                    main.Fonts["Arial"].MeasureString(text).Y / 2);
-                uiTextObject.Transform2D.Translation = main.ScreenCentre - Vector2.UnitX * 525 - Vector2.UnitY * 50;
-                main.MenuManager.Add("MainMenu", uiTextObject);
-            }
-
-            uiTextObject = ((UITextObject) main.UiArchetypes["text"]).Clone() as UITextObject;
-            if (uiTextObject != null)
-            {
-                text = "Caffeine Edition!";
-                uiTextObject.ID = "Caffeine Edition!";
-                uiTextObject.Text = text;
-                uiTextObject.Color = Color.SaddleBrown;
-                uiTextObject.Transform2D.Origin = new Vector2(main.Fonts["Arial"].MeasureString(text).X / 2,
-                    main.Fonts["Arial"].MeasureString(text).Y / 2);
-                uiTextObject.Transform2D.Translation = main.ScreenCentre - Vector2.UnitX * 525;
-                main.MenuManager.Add("MainMenu", uiTextObject);
-            }
+            // //Game Name
+            // if (((UITextObject) main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
+            // {
+            //     text = "B_Logic";
+            //     uiTextObject.ID = "B_Logic";
+            //     uiTextObject.Text = text;
+            //     uiTextObject.Color = Color.SaddleBrown;
+            //     uiTextObject.Transform2D.Origin = new Vector2(main.Fonts["Arial"].MeasureString(text).X / 2,
+            //         main.Fonts["Arial"].MeasureString(text).Y / 2);
+            //     uiTextObject.Transform2D.Translation = main.ScreenCentre - Vector2.UnitX * 525 - Vector2.UnitY * 50;
+            //     main.MenuManager.Add("MainMenu", uiTextObject);
+            // }
+            //
+            // uiTextObject = ((UITextObject) main.UiArchetypes["text"]).Clone() as UITextObject;
+            // if (uiTextObject != null)
+            // {
+            //     text = "Caffeine Edition!";
+            //     uiTextObject.ID = "Caffeine Edition!";
+            //     uiTextObject.Text = text;
+            //     uiTextObject.Color = Color.SaddleBrown;
+            //     uiTextObject.Transform2D.Origin = new Vector2(main.Fonts["Arial"].MeasureString(text).X / 2,
+            //         main.Fonts["Arial"].MeasureString(text).Y / 2);
+            //     uiTextObject.Transform2D.Translation = main.ScreenCentre - Vector2.UnitX * 525;
+            //     main.MenuManager.Add("MainMenu", uiTextObject);
+            // }
         }
 
         private void InitOptionsUi()
