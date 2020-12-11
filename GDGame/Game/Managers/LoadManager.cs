@@ -80,12 +80,11 @@ namespace GDGame.Managers
             main.SoundManager.AddSoundEffect(SfxType.PlayerMove, main.Content.Load<SoundEffect>("Assets/Sound/Effects/step1"));
             main.SoundManager.AddSoundEffect(SfxType.PlayerAttach, main.Content.Load<SoundEffect>("Assets/Sound/Effects/attachBlock"));
             //try this one maybe
-            //main.SoundManager.AddSoundEffect(SfxType.PlayerAttach, main.Content.Load<SoundEffect>("Assets/Sound/Effects/attach"));$
+            //main.SoundManager.AddSoundEffect(SfxType.PlayerAttach, main.Content.Load<SoundEffect>("Assets/Sound/Effects/attach"));
             
             main.SoundManager.AddSoundEffect(SfxType.EnemyMove, main.Content.Load<SoundEffect>("Assets/Sound/EnemySounds/old/move1"));
             main.SoundManager.AddSoundEffect(SfxType.TrapDeathWater, main.Content.Load<SoundEffect>("Assets/Sound/Effects/trapDeath"));
             main.SoundManager.AddSoundEffect(SfxType.MenuButtonClick, main.Content.Load<SoundEffect>("Assets/Sound/Effects/buttonClick"));
-
 
             main.SoundManager.StartMusicQueue();
         }

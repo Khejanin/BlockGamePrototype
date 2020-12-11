@@ -49,7 +49,7 @@ namespace GDGame.Component
                 smoothing = Smoother.SmoothingMethod.Smooth
             });
 
-            EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.EnemyMove, transform = parent.Transform3D});
+            EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.EnemyMove, listenerTransform = parent.Transform3D});
         }
 
         public new object Clone()

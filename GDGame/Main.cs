@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using GDGame.Actors;
 using GDGame.Constants;
 using GDGame.Controllers;
@@ -380,7 +381,7 @@ namespace GDGame
                     _ => player.StatusType
                 };
 
-            if(KeyboardManager.IsFirstKeyPress(Keys.M))
+            if(KeyboardManager.IsFirstKeyPress(Keys.Escape))
             {
                     EventDispatcher.Publish(MenuManager.StatusType == StatusType.Off
                         ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
@@ -407,8 +408,8 @@ namespace GDGame
                 EventManager.FireEvent(new SoundEventInfo
                     {soundEventType = SoundEventType.ToggleMusicPlayback, soundVolumeType = SoundVolumeType.Master});
 
-            if (KeyboardManager.IsFirstKeyPress(Keys.Escape))
-                Exit();
+            //if (KeyboardManager.IsFirstKeyPress(Keys.Escape))
+            //    Exit();
 
             base.Update(gameTime);
         }

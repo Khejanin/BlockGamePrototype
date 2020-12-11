@@ -54,7 +54,7 @@ namespace GDGame.Actors
         {
             EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
             EventManager.FireEvent(new SoundEventInfo
-                {soundEventType = SoundEventType.SetListener, transform = Transform3D});
+                {soundEventType = SoundEventType.SetListener, listenerTransform = Transform3D});
             lastCheckpoint = Transform3D.Translation;
             base.InitializeTile();
         }
@@ -96,7 +96,7 @@ namespace GDGame.Actors
 
             IsAttached = true;
             EventManager.FireEvent(new SoundEventInfo
-                {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach, transform = Transform3D});
+                {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach, listenerTransform = Transform3D});
         }
 
         /// <summary>

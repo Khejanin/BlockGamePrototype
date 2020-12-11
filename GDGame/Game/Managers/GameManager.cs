@@ -549,7 +549,7 @@ namespace GDGame.Managers
                             EventManager.FireEvent(new SoundEventInfo
                             {
                                 soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.CollectibleCollected,
-                                transform = collectible.Transform3D
+                                listenerTransform = collectible.Transform3D
                             });
                         }
 

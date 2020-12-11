@@ -79,7 +79,8 @@ namespace GDGame.Managers
                     EventManager.FireEvent(new SoundEventInfo
                     {
                         soundEventType = SoundEventType.PlaySfx,
-                        sfxType = SfxType.MenuButtonClick
+                        sfxType = SfxType.MenuButtonClick,
+                        category = SoundCategory.UI
                     });
 
                     EventDispatcher.Publish(StatusType == StatusType.Off
@@ -114,7 +115,8 @@ namespace GDGame.Managers
             EventManager.FireEvent(new SoundEventInfo
             {
                 soundEventType = SoundEventType.PlaySfx,
-                sfxType = SfxType.MenuButtonClick
+                sfxType = SfxType.MenuButtonClick,
+                category = SoundCategory.UI
             });
 
             switch (uIButtonObject.ID)

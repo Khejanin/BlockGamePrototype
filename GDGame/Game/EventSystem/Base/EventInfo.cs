@@ -103,7 +103,9 @@ namespace GDGame.EventSystem
         public SfxType sfxType;
         public SoundEventType soundEventType;
         public SoundVolumeType soundVolumeType;
-        public Transform3D transform;
+        public SoundCategory category;
+        public Vector3? soundLocation;
+        public Transform3D listenerTransform;
 
         #endregion
     }
@@ -124,10 +126,9 @@ namespace GDGame.EventSystem
         CoffeeDanger,
         CoffeeDangerStop
     }
-    
+
     public class CoffeeEventInfo : EventInfo
     {
         public CoffeeEventType coffeeEventType;
     }
-
 }

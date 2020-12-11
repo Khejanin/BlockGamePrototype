@@ -43,12 +43,22 @@ namespace GDGame.Managers
 
         }
 
-        private static List<Timer> _timers = new List<Timer>();
+        private static Dictionary<string, Timer> _currentTimers = new Dictionary<string, Timer>();
+        private static Dictionary<string, Timer> _timersToAdd = new Dictionary<string, Timer>();
+        private static List<string> _timersToRemove = new List<string>();
 
         //Static function everyone can call to add a callback in x seconds.
-        public static void CallFunctionInSeconds(Action action, float seconds)
+        public static void CallFunctionInSeconds(string referenceId, Action action, float seconds)
         {
-            _timers.Add(new Timer(action,seconds));
+            if(!_currentTimers.ContainsKey(referenceId))
+                _timersToAdd.Add(referenceId, new Timer(action, seconds));
+        }
+
+        //Remove a timer by its reference id
+        public static void RemoveTimer(string referenceId)
+        {
+            if(_currentTimers.ContainsKey(referenceId))
+                _timersToRemove.Add(referenceId);
         }
         
         public TimeManager(Microsoft.Xna.Framework.Game game, StatusType statusType) : base(game, statusType)
@@ -57,10 +67,26 @@ namespace GDGame.Managers
         
         protected override void ApplyUpdate(GameTime gameTime)
         {
-            for (int i = 0; i < _timers.Count; i++)
+            if (_timersToRemove.Count > 0)
             {
-                if (_timers[i].Tick(gameTime)) _timers.RemoveAt(i--);
+                foreach (string id in _timersToRemove)
+                    _currentTimers.Remove(id);
+
+                _timersToRemove.Clear();
             }
+
+            if (_timersToAdd.Count > 0)
+            {
+                foreach (var timer in _timersToAdd)
+                    _currentTimers.Add(timer.Key, timer.Value);
+                
+                _timersToAdd.Clear();
+            }
+
+            foreach (var pair in _currentTimers)
+                if (pair.Value.Tick(gameTime)) 
+                    _timersToRemove.Add(pair.Key);
+
             base.ApplyUpdate(gameTime);
         }
     }

@@ -105,6 +105,12 @@ namespace GDGame.Enums
         TrapDeathWater
     }
 
+    public enum SoundCategory : sbyte
+    {
+        Gameplay,
+        UI
+    }
+
     public enum SoundEventType : sbyte
     {
         PlaySfx,
@@ -115,8 +121,10 @@ namespace GDGame.Enums
         PlayNextMusic,
         IncreaseVolume,
         DecreaseVolume,
-        MuteVolume,
-        SetListener
+        Mute,
+        SetListener,
+        PauseAll,
+        ResumeAll
     }
 
     public enum SoundVolumeType : sbyte
