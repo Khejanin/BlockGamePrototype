@@ -86,7 +86,9 @@ namespace GDGame.Managers
             main.SoundManager.AddSoundEffect(SfxType.TrapDeathWater, main.Content.Load<SoundEffect>("Assets/Sound/Effects/trapDeath"));
             main.SoundManager.AddSoundEffect(SfxType.MenuButtonClick, main.Content.Load<SoundEffect>("Assets/Sound/Effects/buttonClick"));
 
-
+            //Taken from Sonniss.com, the GDC 2018 Free to use Sound archive, this one is part of UberDuo - The Home Barista
+            main.SoundManager.AddSoundEffect(SfxType.CoffeeStart,main.Content.Load<SoundEffect>("Assets/Sound/Effects/CoffeePour"));
+            
             main.SoundManager.StartMusicQueue();
         }
 

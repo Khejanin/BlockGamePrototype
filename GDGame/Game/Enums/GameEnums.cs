@@ -102,7 +102,8 @@ namespace GDGame.Enums
         CollectibleCollected,
         TrapDeath,
         MenuButtonClick,
-        TrapDeathWater
+        TrapDeathWater,
+        CoffeeStart
     }
 
     public enum SoundEventType : sbyte

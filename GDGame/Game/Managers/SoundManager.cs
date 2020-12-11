@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDLibrary.Parameters;
@@ -150,6 +151,8 @@ namespace GDGame.Managers
                     listener.Position = listenerTransform.Translation;
                     listener.Forward = listenerTransform.Look;
                     listener.Up = listenerTransform.Up;
+                    sei.Volume = 0.1f;
+                    emitter.DopplerScale = 0.01f;
                     sei.Apply3D(listener, emitter);
                 }
                 sei.Play();

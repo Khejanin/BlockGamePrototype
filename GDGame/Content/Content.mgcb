@@ -622,6 +622,12 @@
 /processorParam:Quality=Best
 /build:Assets/Sound/Effects/buttonClick.wav
 
+#begin Assets/Sound/Effects/CoffeePour.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/Effects/CoffeePour.wav
+
 #begin Assets/Sound/Effects/step1.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

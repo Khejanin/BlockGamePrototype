@@ -134,6 +134,7 @@ namespace GDGame.Game.Actors
                 if (CheckPointIndex == 0)
                 {
                     EventManager.FireEvent(new CoffeeEventInfo(){coffeeEventType = CoffeeEventType.CoffeeStartMoving});
+                    EventManager.FireEvent(new SoundEventInfo(){soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.CoffeeStart,soundVolumeType = SoundVolumeType.Sfx});
                     coffeeMovementComponent.Activate();
                     IsMoving = true;
                     TimeLeft = coffeeMovementComponent.GetTotalTimeLeft(player.Transform3D) / 1000f;
