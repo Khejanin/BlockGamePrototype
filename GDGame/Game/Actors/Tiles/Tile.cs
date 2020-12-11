@@ -9,7 +9,6 @@ using GDLibrary.Enums;
 using GDLibrary.Parameters;
 using JigLibX.Collision;
 using JigLibX.Geometry;
-using JigLibX.Physics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -57,7 +56,6 @@ namespace GDGame.Actors
 
         #region Properties, Indexers
 
-        public bool IsDirty { get; set; }
         //Tiles can be part of a shape -> a collection of Tiles
         public Shape Shape { get; set; }
         //All Tiles have a TileType
@@ -133,7 +131,6 @@ namespace GDGame.Actors
             Transform3D.Translation = translation;
             Body.MoveTo(translation, Matrix.Identity);
             Body.Immovable = true;
-            IsDirty = true;
         }
 
         //Animation that is played when the Tile dies. It has a Callback that executes everything that the user needs after the dying animation (Respawn/Remove from ObjectManager).

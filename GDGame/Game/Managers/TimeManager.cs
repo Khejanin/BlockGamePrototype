@@ -79,12 +79,12 @@ namespace GDGame.Managers
             {
                 foreach (var timer in _timersToAdd)
                     _currentTimers.Add(timer.Key, timer.Value);
-                
+
                 _timersToAdd.Clear();
             }
 
             foreach (var pair in _currentTimers)
-                if (pair.Value.Tick(gameTime)) 
+                if (pair.Value.Tick(gameTime))
                     _timersToRemove.Add(pair.Key);
 
             base.ApplyUpdate(gameTime);

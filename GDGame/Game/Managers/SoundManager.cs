@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDLibrary.Enums;
@@ -133,7 +134,7 @@ namespace GDGame.Managers
         {
             if (musicTrack == null) return;
 
-            if(currentInGameMusicInstance != null)
+            if (currentInGameMusicInstance != null)
                 TimeManager.RemoveTimer(currentInGameMusicInstance.GetHashCode().ToString());
 
             currentInGameMusicInstance?.Stop();

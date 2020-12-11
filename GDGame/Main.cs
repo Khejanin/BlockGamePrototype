@@ -336,7 +336,7 @@ namespace GDGame
             base.Draw(gameTime);
         }
 
-        protected override void LoadContent()
+        private new void LoadContent()
         {
             LoadManager loadManager = new LoadManager(this);
             loadManager.InitLoad();

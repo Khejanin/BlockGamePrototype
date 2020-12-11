@@ -80,12 +80,15 @@ namespace GDGame.Managers
             main.SoundManager.AddSoundEffect(SfxType.PlayerMove, main.Content.Load<SoundEffect>("Assets/Sound/Effects/step1"));
             main.SoundManager.AddSoundEffect(SfxType.PlayerAttach, main.Content.Load<SoundEffect>("Assets/Sound/Effects/attachBlock"));
             //try this one maybe
-            //main.SoundManager.AddSoundEffect(SfxType.PlayerAttach, main.Content.Load<SoundEffect>("Assets/Sound/Effects/attach"));
+            //main.SoundManager.AddSoundEffect(SfxType.PlayerAttach, main.Content.Load<SoundEffect>("Assets/Sound/Effects/attach"));$
             
             main.SoundManager.AddSoundEffect(SfxType.EnemyMove, main.Content.Load<SoundEffect>("Assets/Sound/EnemySounds/old/move1"));
             main.SoundManager.AddSoundEffect(SfxType.TrapDeathWater, main.Content.Load<SoundEffect>("Assets/Sound/Effects/trapDeath"));
             main.SoundManager.AddSoundEffect(SfxType.MenuButtonClick, main.Content.Load<SoundEffect>("Assets/Sound/Effects/buttonClick"));
 
+            //Taken from Sonniss.com, the GDC 2018 Free to use Sound archive, this one is part of UberDuo - The Home Barista
+            main.SoundManager.AddSoundEffect(SfxType.CoffeeStart,main.Content.Load<SoundEffect>("Assets/Sound/Effects/CoffeePour"));
+            
             main.SoundManager.StartMusicQueue();
         }
 
@@ -136,6 +139,8 @@ namespace GDGame.Managers
             main.Textures.Load("Assets/Textures/flowmap2", "CoffeeFlow");
 
             main.Textures.Load("Assets/Textures/Props/GameTextures/ceramicColoring", "Ceramic");
+            main.Textures.Load("Assets/Textures/UI/CoffeeRisingWarning");
+            main.Textures.Load("Assets/Textures/UI/CoffeeDangerWarning");
 
             //Sugar
             main.Textures.Load("Assets/Textures/Props/GameTextures/sugar01", "SugarW");
@@ -163,6 +168,9 @@ namespace GDGame.Managers
             main.Textures.Load("Assets/Textures/UI/TopBar");
             main.Textures.Load("Assets/Textures/UI/Mug-Collected");
             main.Textures.Load("Assets/Textures/Menu/tutorial", "Tutorial");
+            main.Textures.Load("Assets/Textures/UI/PressSpace");
+            main.Textures.Load("Assets/Textures/UI/PressSpace02");
+            main.Textures.Load("Assets/Textures/UI/PressSpace03");
         }
 
         #endregion
