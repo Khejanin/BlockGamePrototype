@@ -41,8 +41,6 @@ namespace GDGame.Actors
 
         #region Methods
         
-        
-
         public Vector3 CalculateTargetPosition(Vector3 rotatePoint, Quaternion rotationToApply)
         {
             //offset between the player and the point to rotate around

@@ -37,12 +37,6 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Protected variables
-
-        protected Vector3 spawnPos;
-
-        #endregion
-
         #region Constructors
 
         public Tile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
@@ -58,6 +52,7 @@ namespace GDGame.Actors
 
         //Tiles can be part of a shape -> a collection of Tiles
         public Shape Shape { get; set; }
+        public Vector3 SpawnPos { get; protected set; }
         //All Tiles have a TileType
         public ETileType TileType { get; }
 
@@ -76,7 +71,7 @@ namespace GDGame.Actors
         //Called after Clone() so that we don't break the Game by setting this up in the constructor.
         public virtual void InitializeTile()
         {
-            spawnPos = Transform3D.Translation;
+            SpawnPos = Transform3D.Translation;
             EventManager.RegisterListener<TileEventInfo>(HandleTileEvent);
         }
 
@@ -99,7 +94,7 @@ namespace GDGame.Actors
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(base.GetHashCode(), activatorId, spawnPos, Shape, (int) TileType);
+            return HashCode.Combine(base.GetHashCode(), activatorId, SpawnPos, Shape, (int) TileType);
         }
 
         #endregion
@@ -116,13 +111,15 @@ namespace GDGame.Actors
 
         protected bool Equals(Tile other)
         {
-            return base.Equals(other) && activatorId == other.activatorId && spawnPos.Equals(other.spawnPos) &&
+            return base.Equals(other) && activatorId == other.activatorId && SpawnPos.Equals(other.SpawnPos) &&
                    Equals(Shape, other.Shape) && TileType == other.TileType;
         }
 
         public virtual void Respawn()
         {
-            SetTranslation(spawnPos);
+            if(!Body.IsActive)
+                Body.SetActive();
+            SetTranslation(SpawnPos);
         }
 
         //Method which sets a Translation and does everything so it also works for the Body

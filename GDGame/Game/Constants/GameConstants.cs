@@ -27,7 +27,7 @@ namespace GDGame.Constants
         private static readonly float MediumAngularSpeed = LowAngularSpeed * AngularSpeedMultiplier;
         public static readonly float hiAngularSpeed = MediumAngularSpeed * AngularSpeedMultiplier;
 
-        public const float MovementCooldown = 2f;
+        public const float MovementCooldown = 1.3f;
 
         public static readonly Color colorGold = new Color(138, 99, 39, 255);
 

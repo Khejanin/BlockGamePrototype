@@ -64,7 +64,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Override Methode
+        #region Override Methods
 
         public override void Respawn()
         {
@@ -96,8 +96,7 @@ namespace GDGame.Actors
             }
 
             IsAttached = true;
-            EventManager.FireEvent(new SoundEventInfo
-                {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach, listenerTransform = Transform3D});
+            EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach});
         }
 
         /// <summary>
@@ -152,6 +151,7 @@ namespace GDGame.Actors
 
             IsAttached = false;
             AttachedTiles.Clear();
+            //CheckAndProcessSurroundings(GetSurroundings(Transform3D.Translation));
         }
 
         private IEnumerable<PlayerSurroundCheck> GetSurroundings(Vector3 translation)

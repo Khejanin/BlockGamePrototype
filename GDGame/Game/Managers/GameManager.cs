@@ -86,8 +86,18 @@ namespace GDGame.Managers
                     {
                         if (tile.TileType == ETileType.Player)
                             EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Lost});
-                        EventManager.FireEvent(new RemoveActorEvent {body = tile.Body});
-                        EventManager.FireEvent(new TileEventInfo {Id = tile.ID, Type = TileEventType.Consumed});
+
+                        if (tile.SpawnPos.Y < (skin0.Owner.ExternalData as Coffee).Transform3D.Translation.Y)
+                        {
+                            EventManager.FireEvent(new RemoveActorEvent {body = tile.Body});
+                            EventManager.FireEvent(new TileEventInfo {Id = tile.ID, Type = TileEventType.Consumed});
+                        }
+                        else
+                        {
+                            tile.Body.SetInactive();
+                            EventManager.FireEvent(new TileEventInfo {Id = tile.ID, Type = TileEventType.Reset, IsEasy = main.IsEasy});
+                        }
+
                         return true;
                     }
 
@@ -601,15 +611,6 @@ namespace GDGame.Managers
 
             return true;
         }
-
-        private bool OnActivatableCollisionExit(CollisionSkin skin0, CollisionSkin skin1)
-        {
-            System.Diagnostics.Debug.WriteLine("Collision Exit!");
-            //EventManager.FireEvent(new ActivatorEventInfo {type = ActivatorEventType.Activate, id = (skin0.Owner.ExternalData as Tile).activatorId});
-
-            return true;
-        }
-
         #endregion
     }
 }
