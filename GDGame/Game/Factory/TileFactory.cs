@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using GDGame.Actors;
+using GDGame.Component;
 using GDGame.Constants;
 using GDGame.Enums;
 using GDGame.Game.Parameters.Effect;
@@ -60,7 +61,7 @@ namespace GDGame.Factory
                 ETileType.MovingPlatform => CreateMovingPlatform(position),
                 ETileType.Spike => CreateTile("SpikeTile", position),
                 ETileType.Star => CreatePickup(position),
-                ETileType.Checkpoint => mode ? CreateTile("CheckpointTile", position,2) : null,
+                ETileType.Checkpoint => mode ? CreateTile("CheckpointTile", position, 2) : null,
                 ETileType.Door => CreateDoorTile(position),
                 _ => null
             };

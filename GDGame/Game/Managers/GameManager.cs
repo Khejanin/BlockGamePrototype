@@ -87,7 +87,7 @@ namespace GDGame.Managers
                         if (tile.TileType == ETileType.Player)
                             EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Lost});
 
-                        if (tile.SpawnPos.Y < (skin0.Owner.ExternalData as Coffee).Transform3D.Translation.Y)
+                        if (tile.SpawnPos.Y < ((Coffee) skin0.Owner.ExternalData).Transform3D.Translation.Y)
                         {
                             EventManager.FireEvent(new RemoveActorEvent {body = tile.Body});
                             EventManager.FireEvent(new TileEventInfo {Id = tile.ID, Type = TileEventType.Consumed});

@@ -41,7 +41,6 @@ namespace GDGame.Component
             base(id, controllerType)
         {
             this.movementTime = movementTime;
-
             startRotation = rotationQuaternion = Quaternion.Identity;
         }
 
@@ -53,6 +52,7 @@ namespace GDGame.Component
         {
             tile ??= actor as AttachableTile;
             if (tile == null) return;
+
             Raycaster.HitResult hit;
             if (tile.IsMoving)
             {
@@ -103,8 +103,13 @@ namespace GDGame.Component
             {
                 if (falling && !tile.IsAttached)
                 {
-                    tile.Body.ApplyGravity = true;
-                    tile.Body.Immovable = false;
+                    if (isDirty)
+                    {
+                        tile.Body.ApplyGravity = true;
+                        tile.Body.Immovable = false;
+                        isDirty = false;
+                    }
+
                     tile.Body.Velocity = Vector3.UnitY * tile.Body.Velocity.Y;
                     tile.Body.Torque = Vector3.UnitY * tile.Body.Torque.Y;
                     tile.Body.AngularVelocity = Vector3.UnitY * tile.Body.AngularVelocity.Y;
@@ -112,13 +117,15 @@ namespace GDGame.Component
                 }
                 else
                 {
-                    Vector3 trans = tile.Transform3D.Translation;
-                    tile.SetTranslation(trans);
+                    tile.SetTranslation(tile.Transform3D.Translation);
+                }
+
+                if (isDirty || falling)
+                {
+                    hit = RaycastManager.Instance.Raycast(tile, tile.Transform3D.Translation, Vector3.Down, true, 0.6f);
+                    falling = hit == null;
                 }
             }
-
-            hit = RaycastManager.Instance.Raycast(tile, tile.Transform3D.Translation, Vector3.Down, true, 0.6f);
-            falling = hit == null;
         }
 
         #endregion
@@ -150,8 +157,7 @@ namespace GDGame.Component
 
         public new object Clone()
         {
-            TileMovementComponent tileMovementComponent =
-                new TileMovementComponent(ID, ControllerType, movementTime);
+            TileMovementComponent tileMovementComponent = new TileMovementComponent(ID, ControllerType, movementTime);
             return tileMovementComponent;
         }
 
