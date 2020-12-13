@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    /// The moving platform is the Tile representing the platform movement
+    ///     The moving platform is the Tile representing the platform movement
     /// </summary>
     public class MovingPlatformTile : PathMoveTile, IActivatable
     {
@@ -23,7 +23,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public void Activate()
         {

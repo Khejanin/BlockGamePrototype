@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using GDGame.Actors;
 using GDGame.Component;
 using GDGame.Controllers;
@@ -11,7 +12,6 @@ using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
-using GDLibrary.Interfaces;
 using GDLibrary.Parameters;
 using JigLibX.Collision;
 using Microsoft.Xna.Framework;
@@ -19,25 +19,28 @@ using Microsoft.Xna.Framework;
 namespace GDGame.Managers
 {
     /// <summary>
-    /// Class that sets everything up for the game to start. It loads the level and uses the loaded content to create the objects in the game.
+    ///     Class that sets everything up for the game to start. It loads the level and uses the loaded content to create the
+    ///     objects in the game.
     /// </summary>
     public class GameManager
     {
         #region Private variables
 
+        private Coffee coffee;
+
         private Camera3D curveCamera;
 
         /// <summary>
-        /// Dictionary with all actors that we use in the game. These are not in the ObjectManager and are only slaves that we should Clone.
+        ///     Dictionary with all actors that we use in the game. These are not in the ObjectManager and are only slaves that we
+        ///     should Clone.
         /// </summary>
         private Dictionary<string, OurDrawnActor3D> drawnActors;
 
         private LevelData levelData;
+        private LevelDataManager levelDataManager;
         private string levelName;
         private Transform3D light;
         private Main main;
-        private Coffee coffee;
-        private LevelDataManager levelDataManager;
 
         #endregion
 
@@ -66,6 +69,23 @@ namespace GDGame.Managers
             levelDataManager = new LevelDataManager();
         }
 
+        /// <summary>
+        ///     Creates the Cinematic intro camera.
+        /// </summary>
+        private void InitCamera()
+        {
+            Camera3D camera3D = main.CameraManager.ActiveCamera.Clone() as Camera3D;
+            if (camera3D != null)
+            {
+                camera3D.ID = "CurveCamera";
+                camera3D.ControllerList.Clear();
+                main.CameraManager.Add(camera3D);
+            }
+
+            main.CameraManager.ActiveCameraIndex = 1;
+            curveCamera = camera3D;
+        }
+
         private void InitCoffee()
         {
             Color coffeeColor = new Color(111 / 255.0f, 78 / 255.0f, 55 / 255.0f, 0.95f);
@@ -75,7 +95,7 @@ namespace GDGame.Managers
             coffee = new Coffee("Coffee", ActorType.Primitive,
                 StatusType.Update | StatusType.Drawn, transform3D, coffeeEffect,
                 main.Models["CoffeePlane"], levelData.coffeeInfo,
-                main.ObjectManager.ActorList.Find((actor3D => actor3D.ActorType == ActorType.Player)) as PlayerTile);
+                main.ObjectManager.ActorList.Find(actor3D => actor3D.ActorType == ActorType.Player) as PlayerTile);
             //Most of these constructor arguments are not used, need to refactor the entire structure.
             coffee.ControllerList.Add(new CoffeeMovementComponent("cmc", ControllerType.Movement,
                 ActivationType.Activated, 0, Smoother.SmoothingMethod.Smooth, coffee));
@@ -95,7 +115,8 @@ namespace GDGame.Managers
                         else
                         {
                             tile.Body.SetInactive();
-                            EventManager.FireEvent(new TileEventInfo {Id = tile.ID, Type = TileEventType.Reset, IsEasy = main.IsEasy});
+                            EventManager.FireEvent(new TileEventInfo
+                                {Id = tile.ID, Type = TileEventType.Reset, IsEasy = main.IsEasy});
                         }
 
                         return true;
@@ -112,24 +133,7 @@ namespace GDGame.Managers
         }
 
         /// <summary>
-        /// Creates the Cinematic intro camera.
-        /// </summary>
-        private void InitCamera()
-        {
-            Camera3D camera3D = main.CameraManager.ActiveCamera.Clone() as Camera3D;
-            if (camera3D != null)
-            {
-                camera3D.ID = "CurveCamera";
-                camera3D.ControllerList.Clear();
-                main.CameraManager.Add(camera3D);
-            }
-
-            main.CameraManager.ActiveCameraIndex = 1;
-            curveCamera = camera3D;
-        }
-
-        /// <summary>
-        /// If we need to initialize listening to any events we do it here.
+        ///     If we need to initialize listening to any events we do it here.
         /// </summary>
         private void InitGameEvents()
         {
@@ -137,7 +141,7 @@ namespace GDGame.Managers
 
 
         /// <summary>
-        /// Loads the JSON Level File. Clones the archetypes to create the level, establishes all links between objects etc.
+        ///     Loads the JSON Level File. Clones the archetypes to create the level, establishes all links between objects etc.
         /// </summary>
         private void InitGrid()
         {
@@ -149,7 +153,7 @@ namespace GDGame.Managers
         }
 
         /// <summary>
-        /// Sets and puts level Decor at it's place.
+        ///     Sets and puts level Decor at it's place.
         /// </summary>
         private void InitLevelDecor()
         {
@@ -223,7 +227,7 @@ namespace GDGame.Managers
         }
 
         /// <summary>
-        /// Our beautiful background is created by this method
+        ///     Our beautiful background is created by this method
         /// </summary>
         private void InitSkyBox()
         {
@@ -291,7 +295,7 @@ namespace GDGame.Managers
         }
 
         /// <summary>
-        /// Our Slave objects that we will later clone are all made here. Like "templates" of objects. (Like Prefabs in Unity)
+        ///     Our Slave objects that we will later clone are all made here. Like "templates" of objects. (Like Prefabs in Unity)
         /// </summary>
         private void InitStaticModels()
         {
@@ -475,7 +479,7 @@ namespace GDGame.Managers
         #region Public Method
 
         /// <summary>
-        /// This just removes the cinematic camera after it's done playing.
+        ///     This just removes the cinematic camera after it's done playing.
         /// </summary>
         public void RemoveCamera()
         {
@@ -502,17 +506,27 @@ namespace GDGame.Managers
 
         #endregion
 
-        /*
-         * Here we define all the callbacks that our objects with colliders will use.
-         * We didn't want to make custom classes so we just pass the callback in the constructor of the component.
-         */
-
         #region Events
+
+        private bool OnActivatableCollisionEnter(CollisionSkin skin0, CollisionSkin skin1)
+        {
+            Debug.WriteLine("Collision Enter!");
+            if (skin1.Owner.ExternalData is Tile collide)
+                switch (collide.TileType)
+                {
+                    case ETileType.Player:
+                    case ETileType.Attachable:
+                        EventManager.FireEvent(new ActivatorEventInfo
+                            {type = ActivatorEventType.Activate, id = ((Tile) skin0.Owner.ExternalData).activatorId});
+                        break;
+                }
+
+            return true;
+        }
 
         private bool OnCheckPointCollision(CollisionSkin skin0, CollisionSkin skin1)
         {
             if (skin1.Owner.ExternalData is Tile collide)
-            {
                 switch (collide.TileType)
                 {
                     case ETileType.Player:
@@ -521,7 +535,6 @@ namespace GDGame.Managers
                             {type = PlayerEventType.SetCheckpoint, position = skin0.Owner.Position});
                         break;
                 }
-            }
 
             return true;
         }
@@ -596,21 +609,11 @@ namespace GDGame.Managers
             return true;
         }
 
-        private bool OnActivatableCollisionEnter(CollisionSkin skin0, CollisionSkin skin1)
-        {
-            System.Diagnostics.Debug.WriteLine("Collision Enter!");
-            if (skin1.Owner.ExternalData is Tile collide)
-                switch (collide.TileType)
-                {
-                    case ETileType.Player:
-                    case ETileType.Attachable:
-                        EventManager.FireEvent(new ActivatorEventInfo
-                            {type = ActivatorEventType.Activate, id = ((Tile) skin0.Owner.ExternalData).activatorId});
-                        break;
-                }
-
-            return true;
-        }
         #endregion
+
+        /*
+         * Here we define all the callbacks that our objects with colliders will use.
+         * We didn't want to make custom classes so we just pass the callback in the constructor of the component.
+         */
     }
 }

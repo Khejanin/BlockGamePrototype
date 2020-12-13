@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GDGame.Actors;
+using GDGame.Constants;
 using GDGame.Controllers;
 using GDGame.EventSystem;
 using GDGame.Interfaces;
@@ -13,17 +14,36 @@ using Microsoft.Xna.Framework;
 namespace GDGame.Component
 {
     /// <summary>
-    /// Component that needs to be added to a PathMoveTile. It inherits from ActivatableController so can be activated in a multitude of ways.
-    /// It uses the TransformAnimationManager to move the tile's transform.
+    ///     Component that needs to be added to a PathMoveTile. It inherits from ActivatableController so can be activated in a
+    ///     multitude of ways.
+    ///     It uses the TransformAnimationManager to move the tile's transform.
     /// </summary>
     public class PathMovementComponent : ActivatableController, IActivatable, ICloneable
     {
+        #region Private variables
+
         protected int currentPositionIndex;
         protected int movementTime;
-        protected float timePercent;
-        protected Smoother.SmoothingMethod smoothingMethod;
         private int pathDir = 1;
         private PathMoveTile pathMoveTileParent;
+        protected Smoother.SmoothingMethod smoothingMethod;
+        protected float timePercent;
+
+        #endregion
+
+        #region Constructors
+
+        public PathMovementComponent(string id, ControllerType controllerType, ActivationType activationType,
+            float timePercent, Smoother.SmoothingMethod smoothingMethod) : base(id, controllerType, activationType)
+        {
+            this.timePercent = timePercent;
+            movementTime = (int) (GameConstants.MovementCooldown * timePercent * 1000);
+            this.smoothingMethod = smoothingMethod;
+        }
+
+        #endregion
+
+        #region Properties, Indexers
 
         private List<Vector3> Path
         {
@@ -34,49 +54,56 @@ namespace GDGame.Component
             }
         }
 
+        #endregion
 
-        public PathMovementComponent(string id, ControllerType controllerType, ActivationType activationType,
-            float timePercent, Smoother.SmoothingMethod smoothingMethod) : base(id, controllerType, activationType)
+        #region Override Method
+
+        protected override void OnActivated()
         {
-            this.timePercent = timePercent;
-            movementTime = (int) (Constants.GameConstants.MovementCooldown * timePercent * 1000);
-            this.smoothingMethod = smoothingMethod;
         }
-
-        #region Events
 
         protected override void OnClone()
         {
             base.OnClone();
             EventManager.RegisterListener<MovingTilesEventInfo>(OnMovingTileEvent);
         }
-        
-        private void OnMovingTileEvent(MovingTilesEventInfo obj)
+
+
+        protected override void OnDeactivated()
         {
-            if (active)
-            {
-                MoveToNextPoint();
-            }
+        }
+
+        public override void Update(GameTime gameTime, IActor actor)
+        {
+            parent ??= (Tile) actor;
         }
 
         #endregion
 
-        #region Pathing
-        
-        //Fetch the next point and go back if you've reached the end.
-        protected Vector3 NextPathPoint()
-        {
-            if (currentPositionIndex + pathDir == Path.Count || currentPositionIndex + pathDir == -1)
-                pathDir *= -1;
+        #region Public Method
 
-            return Path[currentPositionIndex += pathDir];
+        public new object Clone()
+        {
+            PathMovementComponent pathMovementComponent = new PathMovementComponent(ID + " - clone", ControllerType,
+                activationType, timePercent, smoothingMethod);
+            pathMovementComponent.OnClone();
+            return pathMovementComponent;
         }
+
+        public new void ToggleActivation()
+        {
+            active = !active;
+        }
+
+        #endregion
+
+        #region Private Method
 
         //There is a lot of magic in here
         protected virtual void MoveToNextPoint()
         {
             Vector3 next = NextPathPoint();
-            parent.MoveTo(new AnimationEventData()
+            parent.MoveTo(new AnimationEventData
             {
                 isRelative = false, destination = next,
                 maxTime = movementTime,
@@ -97,36 +124,24 @@ namespace GDGame.Component
             */
         }
 
-        #endregion
-
-        #region Activation
-
-        protected override void OnActivated()
+        //Fetch the next point and go back if you've reached the end.
+        protected Vector3 NextPathPoint()
         {
-        }
+            if (currentPositionIndex + pathDir == Path.Count || currentPositionIndex + pathDir == -1)
+                pathDir *= -1;
 
-
-        protected override void OnDeactivated()
-        {
-        }
-
-        public new void ToggleActivation()
-        {
-            active = !active;
+            return Path[currentPositionIndex += pathDir];
         }
 
         #endregion
-        
-        public override void Update(GameTime gameTime, IActor actor)
+
+        #region Events
+
+        private void OnMovingTileEvent(MovingTilesEventInfo obj)
         {
-            parent ??= (Tile) actor;
+            if (active) MoveToNextPoint();
         }
 
-        public new object Clone()
-        {
-            PathMovementComponent pathMovementComponent = new PathMovementComponent(ID + " - clone", ControllerType, activationType,timePercent,smoothingMethod);
-            pathMovementComponent.OnClone();
-            return pathMovementComponent;
-        }
+        #endregion
     }
 }

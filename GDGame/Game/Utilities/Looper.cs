@@ -7,9 +7,10 @@ namespace GDGame.Utilities
         PingPongLoop,
         PingPongOnce
     }
-    
+
     public static class Looper
     {
+        #region Public Method
 
         public static bool Loop(LoopMethod loopMethod, ref int x, ref int step, int max)
         {
@@ -21,6 +22,7 @@ namespace GDGame.Utilities
                         x = max;
                         return true;
                     }
+
                     break;
                 case LoopMethod.Loop:
                     if (x > max) x = 0;
@@ -31,11 +33,13 @@ namespace GDGame.Utilities
                         step = -1;
                         x = max;
                     }
+
                     if (x < 0)
                     {
                         x = 0;
                         return true;
                     }
+
                     break;
                 case LoopMethod.PingPongLoop:
                     if (x > max)
@@ -43,12 +47,14 @@ namespace GDGame.Utilities
                         step = -1;
                         x = max;
                     }
+
                     if (x <= 0) step = 1;
                     break;
             }
 
             return false;
         }
-        
+
+        #endregion
     }
 }

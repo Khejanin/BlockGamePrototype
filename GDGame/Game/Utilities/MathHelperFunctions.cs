@@ -17,7 +17,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public static float GetAngle(Vector3 forward, Vector3 look)
         {

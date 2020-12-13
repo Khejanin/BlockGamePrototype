@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GDGame.Actors;
 using GDGame.Enums;
 using GDLibrary.Actors;
 using GDLibrary.Parameters;
 using JigLibX.Physics;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 
 namespace GDGame.EventSystem
 {
     /// <summary>
-    /// Base EventInfo Class that all EventInformation needs to inherit from.
-    /// Inheriting from EventInfo makes it possible for other classes to listen from events of exactly that type.
+    ///     Base EventInfo Class that all EventInformation needs to inherit from.
+    ///     Inheriting from EventInfo makes it possible for other classes to listen from events of exactly that type.
     /// </summary>
     public abstract class EventInfo
     {
@@ -21,11 +19,11 @@ namespace GDGame.EventSystem
     public class TileEventInfo : EventInfo
     {
         #region Properties, Indexers
-        
-        public TileEventType Type { get; set; }
-        public bool IsEasy { get; set; }
 
         public string Id { get; set; }
+        public bool IsEasy { get; set; }
+
+        public TileEventType Type { get; set; }
 
         #endregion
     }
@@ -34,18 +32,23 @@ namespace GDGame.EventSystem
     {
         #region Public variables
 
+        public List<Vector3> checkpoints;
+
         public AttachableTile movableTile;
         public Vector3? position;
         public PlayerEventType type;
-        public List<Vector3> checkpoints;
 
         #endregion
     }
 
     public class RemoveActorEvent : EventInfo
     {
-        public Body body;
+        #region Public variables
+
         public Actor3D actor3D;
+        public Body body;
+
+        #endregion
     }
 
     public class ActivatorEventInfo : EventInfo
@@ -64,7 +67,7 @@ namespace GDGame.EventSystem
 
     public class GameStateMessageEventInfo : EventInfo
     {
-        #region Public variables
+        #region Properties, Indexers
 
         public GameState GameState { get; set; }
 
@@ -73,7 +76,11 @@ namespace GDGame.EventSystem
 
     public class DataManagerEvent : EventInfo
     {
+        #region Properties, Indexers
+
         public int CurrentMovesCount { get; set; }
+
+        #endregion
     }
 
     public class MovementEvent : EventInfo
@@ -90,12 +97,13 @@ namespace GDGame.EventSystem
     {
         #region Public variables
 
+        public SoundCategory category;
+        public Transform3D listenerTransform;
+
         public SfxType sfxType;
         public SoundEventType soundEventType;
-        public SoundVolumeType soundVolumeType;
-        public SoundCategory category;
         public Vector3? soundLocation;
-        public Transform3D listenerTransform;
+        public SoundVolumeType soundVolumeType;
 
         #endregion
     }
@@ -119,6 +127,10 @@ namespace GDGame.EventSystem
 
     public class CoffeeEventInfo : EventInfo
     {
+        #region Public variables
+
         public CoffeeEventType coffeeEventType;
+
+        #endregion
     }
 }

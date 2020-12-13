@@ -10,20 +10,43 @@ using Microsoft.Xna.Framework;
 namespace GDGame.Component
 {
     /// <summary>
-    /// Component that 
+    ///     Component that
     /// </summary>
     public class PlayerDeathComponent : Controller, ICloneable
     {
+        #region Private variables
+
         private Tile parent;
+
+        #endregion
+
+        #region Constructors
 
         public PlayerDeathComponent(string id, ControllerType controllerType) : base(id, controllerType)
         {
         }
 
+        #endregion
+
+        #region Initialization
+
+        private void InitEventListeners()
+        {
+            EventManager.RegisterListener<TileEventInfo>(HandleEvent);
+        }
+
+        #endregion
+
+        #region Override Method
+
         public override void Update(GameTime gameTime, IActor actor)
         {
             parent ??= actor as Tile;
         }
+
+        #endregion
+
+        #region Public Method
 
         public new object Clone()
         {
@@ -32,10 +55,9 @@ namespace GDGame.Component
             return playerDeathComponent;
         }
 
-        private void InitEventListeners()
-        {
-            EventManager.RegisterListener<TileEventInfo>(HandleEvent);
-        }
+        #endregion
+
+        #region Events
 
         private void HandleEvent(TileEventInfo tileEventInfo)
         {
@@ -45,20 +67,19 @@ namespace GDGame.Component
                     if (tileEventInfo.IsEasy)
                     {
                         parent?.Respawn();
-                        if (parent is MovableTile movableTile)
-                        {
-                            movableTile.IsMoving = false;
-                        }
+                        if (parent is MovableTile movableTile) movableTile.IsMoving = false;
                     }
                     else
                     {
                         if (parent is PlayerTile)
-                        {
-                            EventManager.FireEvent(new TileEventInfo{Type = TileEventType.Reset, IsEasy = tileEventInfo.IsEasy});
-                        }
+                            EventManager.FireEvent(new TileEventInfo
+                                {Type = TileEventType.Reset, IsEasy = tileEventInfo.IsEasy});
                     }
+
                     break;
             }
         }
+
+        #endregion
     }
 }

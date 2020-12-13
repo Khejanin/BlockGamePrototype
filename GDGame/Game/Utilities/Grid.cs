@@ -36,23 +36,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region Methods
-
-        private void CreateShapes(LevelData data, Tile[,,] grid)
-        {
-            foreach (double shapesKey in data.shapes.Keys)
-            {
-                Shape newShape = tileFactory.CreateShape();
-                foreach (AttachableTile tile in data.shapes[shapesKey]
-                    .Select(shape => grid[(int) shape.X, (int) shape.Y, (int) data.gridSize.Z - 1 - (int) shape.Z] as AttachableTile))
-                {
-                    newShape.AddTile(tile);
-                    if (tile != null) tile.Shape = newShape;
-                }
-
-                _shapes.Add((int) shapesKey, newShape);
-            }
-        }
+        #region Public Method
 
         public LevelData GenerateGrid(string levelFilePath)
         {
@@ -100,11 +84,12 @@ namespace GDGame.Utilities
                             if (count > 4) staticTileType = Tile.StaticTileType.WhiteChocolate;
                             else if (count > 3) staticTileType = Tile.StaticTileType.Chocolate;
 
-                            Tile tile = tileFactory.CreateTile(pos + new Vector3(0, 0, data.gridSize.Z - 1), data.gridValues[x, y, z], staticTileType);
+                            Tile tile = tileFactory.CreateTile(pos + new Vector3(0, 0, data.gridSize.Z - 1),
+                                data.gridValues[x, y, z], staticTileType);
                             tile?.InitializeTile();
 
                             //Giving the player a list of checkpoints, so that we can switch between them (for debug/demo purposes)
-                            if(tile.TileType == ETileType.Checkpoint)
+                            if (tile.TileType == ETileType.Checkpoint)
                                 checkpoints.Add(tile.Transform3D.Translation);
 
                             _grid[x, y, (int) data.gridSize.Z - 1 - z] = tile;
@@ -130,7 +115,8 @@ namespace GDGame.Utilities
             SetActivatorIds(data, _grid);
             SetCollectibleIds(data, _grid);
 
-            EventManager.FireEvent(new PlayerEventInfo { type = PlayerEventType.SetCheckpointList, checkpoints = checkpoints });
+            EventManager.FireEvent(new PlayerEventInfo
+                {type = PlayerEventType.SetCheckpointList, checkpoints = checkpoints});
 
             return data;
         }
@@ -138,6 +124,28 @@ namespace GDGame.Utilities
         public Vector3 GetGridBounds()
         {
             return data.gridSize;
+        }
+
+        #endregion
+
+        #region Private Method
+
+        private void CreateShapes(LevelData data, Tile[,,] grid)
+        {
+            foreach (double shapesKey in data.shapes.Keys)
+            {
+                Shape newShape = tileFactory.CreateShape();
+                foreach (AttachableTile tile in data.shapes[shapesKey]
+                    .Select(shape =>
+                        grid[(int) shape.X, (int) shape.Y, (int) data.gridSize.Z - 1 - (int) shape.Z] as AttachableTile)
+                )
+                {
+                    newShape.AddTile(tile);
+                    if (tile != null) tile.Shape = newShape;
+                }
+
+                _shapes.Add((int) shapesKey, newShape);
+            }
         }
 
         private void SetActivatorIds(LevelData data, Tile[,,] grid)
@@ -152,7 +160,8 @@ namespace GDGame.Utilities
 
                 //button.Targets = targets;
 
-                grid[(int) targetKey.X, (int) targetKey.Y, (int) data.gridSize.Z - 1 - (int) targetKey.Z].activatorId = data.activatorTargets[targetKey];
+                grid[(int) targetKey.X, (int) targetKey.Y, (int) data.gridSize.Z - 1 - (int) targetKey.Z].activatorId =
+                    data.activatorTargets[targetKey];
         }
 
         private void SetCollectibleIds(LevelData data, Tile[,,] grid)
@@ -169,10 +178,9 @@ namespace GDGame.Utilities
                     grid[(int) pathTileKey.X, (int) pathTileKey.Y,
                         (int) data.gridSize.Z - 1 - (int) pathTileKey.Z] as PathMoveTile;
 
-                foreach (Vector3 pathPoint in data.movingTilePaths[pathTileKey].Select(tilePath => new Vector3(tilePath.X, tilePath.Y, data.gridSize.Z - 1 - tilePath.Z)))
-                {
+                foreach (Vector3 pathPoint in data.movingTilePaths[pathTileKey].Select(tilePath =>
+                    new Vector3(tilePath.X, tilePath.Y, data.gridSize.Z - 1 - tilePath.Z)))
                     moveTile?.Path.Add(pathPoint);
-                }
 
                 if (moveTile?.Path.Count > 0)
                 {

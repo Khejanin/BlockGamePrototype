@@ -7,7 +7,7 @@ namespace GDGame.Interfaces
 {
     public interface IDrawnController : IController
     {
-        #region Methods
+        #region Public Method
 
         public void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice);
 

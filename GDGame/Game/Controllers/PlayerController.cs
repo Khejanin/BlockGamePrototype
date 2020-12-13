@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Input;
 namespace GDGame.Controllers
 {
     /// <summary>
-    /// Controller that takes input and transforms it into player moves!
+    ///     Controller that takes input and transforms it into player moves!
     /// </summary>
     public class PlayerController : Controller, ICloneable
     {
@@ -35,7 +35,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override void Update(GameTime gameTime, IActor actor)
         {
@@ -45,7 +45,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public new object Clone()
         {
@@ -58,17 +58,15 @@ namespace GDGame.Controllers
 
         private void HandleKeyboardInput(PlayerTile actor)
         {
-            if (actor.IsAlive)
-            {
-                HandlePlayerMovement(actor);
-            }
+            if (actor.IsAlive) HandlePlayerMovement(actor);
         }
 
         private void HandlePlayerMovement(PlayerTile playerTile)
         {
             if (keyboardManager.IsFirstKeyPress(Keys.Space) && !playerTile.IsAttached) playerTile.Attach();
-            else if (!keyboardManager.IsKeyDown(Keys.Space) && keyboardManager.IsStateChanged() && playerTile.IsAttached) playerTile.Detach();
-            else if(keyboardManager.IsFirstKeyPress(Keys.R)) playerTile.SpawnAtNextCheckpoint();
+            else if (!keyboardManager.IsKeyDown(Keys.Space) && keyboardManager.IsStateChanged() && playerTile.IsAttached
+            ) playerTile.Detach();
+            else if (keyboardManager.IsFirstKeyPress(Keys.R)) playerTile.SpawnAtNextCheckpoint();
 
             if (!playerTile.IsMoving)
             {

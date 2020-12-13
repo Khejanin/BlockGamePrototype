@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    /// The Movable Tile is a Tile which can move.
+    ///     The Movable Tile is a Tile which can move.
     /// </summary>
     public class MovableTile : Tile
     {
@@ -32,7 +32,22 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
+
+        //Override of what this tile will do when it dies.
+        protected override void Die(Action callbackAfterDeath)
+        {
+            this.ScaleTo(new AnimationEventData
+            {
+                isRelative = false, destination = Vector3.Zero,
+                maxTime = 1000,
+                smoothing = Smoother.SmoothingMethod.Accelerate, loopMethod = LoopMethod.PlayOnce,
+                callback = callbackAfterDeath, resetAferDone = true
+            });
+
+            this.RotateTo(new AnimationEventData
+                {isRelative = true, destination = Vector3.Up * 360, maxTime = 1000, resetAferDone = true});
+        }
 
         public override bool Equals(object obj)
         {
@@ -51,22 +66,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Methods
-        
-        //Override of what this tile will do when it dies.
-        protected override void Die(Action callbackAfterDeath)
-        {
-            this.ScaleTo(new AnimationEventData()
-            {
-                isRelative = false, destination = Vector3.Zero,
-                maxTime = 1000,
-                smoothing = Smoother.SmoothingMethod.Accelerate, loopMethod = LoopMethod.PlayOnce,
-                callback = callbackAfterDeath, resetAferDone = true
-            });
-
-            this.RotateTo(new AnimationEventData()
-                {isRelative = true, destination = Vector3.Up * 360, maxTime = 1000, resetAferDone = true});
-        }
+        #region Public Method
 
         public new object Clone()
         {
@@ -76,6 +76,10 @@ namespace GDGame.Actors
             movableTile.ControllerList.AddRange(GetControllerListClone());
             return movableTile;
         }
+
+        #endregion
+
+        #region Private Method
 
         protected bool Equals(MovableTile other)
         {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDLibrary.Enums;
@@ -13,28 +12,29 @@ using Microsoft.Xna.Framework.Audio;
 namespace GDGame.Managers
 {
     /// <summary>
-    /// Manager class that plays sounds by responding to events.
+    ///     Manager class that plays sounds by responding to events.
     /// </summary>
     public class SoundManager
     {
         #region Private variables
 
-        private bool isPaused, sfxMuted, musicMuted, masterMuted;
-
-        private AudioEmitter emitter;
-        private AudioListener listener;
-        private Transform3D listenerTransform;
+        private SoundEffectInstance currentInGameMusicInstance;
 
         private int currentMusicIndex;
         private List<SoundEffect> currentMusicQueue;
-        private SoundEffectInstance currentInGameMusicInstance;
-        private List<SoundEffectInstance> sfxInstances;
-
-        private Dictionary<string, SoundEffect> inGameMusicTracks;
-        private Dictionary<SfxType, SoundEffect> soundEffects;
 
         private float currentMusicVolume = 1f, currentSfxVolume = 1f;
+
+        private AudioEmitter emitter;
+
+        private Dictionary<string, SoundEffect> inGameMusicTracks;
+
+        private bool isPaused, sfxMuted, musicMuted, masterMuted;
+        private AudioListener listener;
+        private Transform3D listenerTransform;
         private float prevMusicVolume = 1f, prevSfxVolume = 1f, prevMasterVolume = 1f;
+        private List<SoundEffectInstance> sfxInstances;
+        private Dictionary<SfxType, SoundEffect> soundEffects;
         private float volumeStep = 0.1f;
 
         #endregion
@@ -57,23 +57,7 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region Methods
-
-        private void Pause()
-        {
-            isPaused = true;
-        }
-
-        private void Resume()
-        {
-            isPaused = false;
-        }
-
-        public void SetListenerPosition(Transform3D listenerTransform)
-        {
-            if(listenerTransform != null)
-                this.listenerTransform = listenerTransform;
-        }
+        #region Public Method
 
         public void AddMusic(string id, SoundEffect track)
         {
@@ -86,6 +70,38 @@ namespace GDGame.Managers
             if (!soundEffects.ContainsKey(sfxType) && sfx != null)
                 soundEffects.Add(sfxType, sfx);
         }
+
+        public void Dispose()
+        {
+            inGameMusicTracks.Clear();
+            soundEffects.Clear();
+        }
+
+        public void SetListenerPosition(Transform3D listenerTransform)
+        {
+            if (listenerTransform != null)
+                this.listenerTransform = listenerTransform;
+        }
+
+        public void StartMusicQueue(bool startOnRandomTrack = true)
+        {
+            if (currentInGameMusicInstance != null)
+                return;
+
+            currentMusicQueue.Clear();
+
+            foreach (KeyValuePair<string, SoundEffect> keyValuePair in inGameMusicTracks)
+                currentMusicQueue.Add(keyValuePair.Value);
+
+            currentMusicIndex = startOnRandomTrack ? new Random().Next(0, currentMusicQueue.Count - 1) : 0;
+
+            if (currentMusicQueue.Count > 0)
+                PlayMusic(currentMusicQueue[currentMusicIndex]);
+        }
+
+        #endregion
+
+        #region Private Method
 
         private void AddToVolume(SoundVolumeType volumeType, float value)
         {
@@ -107,51 +123,9 @@ namespace GDGame.Managers
                 instance.Volume = currentSfxVolume;
         }
 
-        private void ToggleMuteVolume(SoundVolumeType volumeType)
+        private void Pause()
         {
-            switch (volumeType)
-            {
-                case SoundVolumeType.Master:
-                    sfxMuted = musicMuted = masterMuted = !masterMuted;
-                    if (!masterMuted)
-                    {
-                        prevMasterVolume = SoundEffect.MasterVolume;
-                        SoundEffect.MasterVolume = 0;
-                    }
-                    else
-                        SoundEffect.MasterVolume = prevMasterVolume;
-                    break;
-                case SoundVolumeType.Music:
-                    musicMuted = !musicMuted;
-                    if (!musicMuted)
-                    {
-                        prevSfxVolume = currentSfxVolume;
-                        currentSfxVolume = 0;
-                    }
-                    else
-                        currentMusicVolume = prevMusicVolume;
-                    break;
-                case SoundVolumeType.Sfx:
-                    sfxMuted = !sfxMuted;
-                    if (!sfxMuted)
-                    {
-                        prevSfxVolume = currentSfxVolume;
-                        currentSfxVolume = 0;
-                    }
-                    else
-                        currentSfxVolume = prevSfxVolume;
-                    break;
-            }
-
-            currentInGameMusicInstance.Volume = currentMusicVolume;
-            foreach (SoundEffectInstance instance in sfxInstances)
-                instance.Volume = currentSfxVolume;
-        }
-
-        public void Dispose()
-        {
-            inGameMusicTracks.Clear();
-            soundEffects.Clear();
+            isPaused = true;
         }
 
         private void PlayMusic(string id)
@@ -184,7 +158,8 @@ namespace GDGame.Managers
             currentInGameMusicInstance.Volume = currentMusicVolume;
             currentInGameMusicInstance.Play();
 
-            TimeManager.CallFunctionInSeconds(currentInGameMusicInstance.GetHashCode().ToString(), PlayNextMusic, (float)musicTrack.Duration.TotalSeconds);
+            TimeManager.CallFunctionInSeconds(currentInGameMusicInstance.GetHashCode().ToString(), PlayNextMusic,
+                (float) musicTrack.Duration.TotalSeconds);
         }
 
         private void PlayNextMusic()
@@ -215,13 +190,19 @@ namespace GDGame.Managers
                 sei.Volume = currentSfxVolume;
                 if (emitterPosition != null)
                 {
-                    emitter.Position = (Vector3)emitterPosition;
+                    emitter.Position = (Vector3) emitterPosition;
                     listener.Position = listenerTransform.Translation;
                     sei.Apply3D(listener, emitter);
                 }
+
                 sei.Play();
                 sfxInstances.Add(sei);
             }
+        }
+
+        private void Resume()
+        {
+            isPaused = false;
         }
 
         private void SetMusicPlaybackState(SoundState state)
@@ -249,7 +230,6 @@ namespace GDGame.Managers
         private void SetSfxPlaybackState(SoundState state)
         {
             foreach (SoundEffectInstance instance in sfxInstances)
-            {
                 switch (state)
                 {
                     case SoundState.Paused:
@@ -262,23 +242,6 @@ namespace GDGame.Managers
                         instance.Stop();
                         break;
                 }
-            }
-        }
-
-        public void StartMusicQueue(bool startOnRandomTrack = true)
-        {
-            if (currentInGameMusicInstance != null)
-                return;
-
-            currentMusicQueue.Clear();
-
-            foreach (KeyValuePair<string, SoundEffect> keyValuePair in inGameMusicTracks)
-                currentMusicQueue.Add(keyValuePair.Value);
-
-            currentMusicIndex = startOnRandomTrack ? new Random().Next(0, currentMusicQueue.Count - 1) : 0;
-
-            if (currentMusicQueue.Count > 0)
-                PlayMusic(currentMusicQueue[currentMusicIndex]);
         }
 
         private void ToggleMusicPlaybackState()
@@ -287,6 +250,56 @@ namespace GDGame.Managers
                 SetMusicPlaybackState(SoundState.Paused);
             else if (currentInGameMusicInstance.State == SoundState.Paused)
                 SetMusicPlaybackState(SoundState.Playing);
+        }
+
+        private void ToggleMuteVolume(SoundVolumeType volumeType)
+        {
+            switch (volumeType)
+            {
+                case SoundVolumeType.Master:
+                    sfxMuted = musicMuted = masterMuted = !masterMuted;
+                    if (!masterMuted)
+                    {
+                        prevMasterVolume = SoundEffect.MasterVolume;
+                        SoundEffect.MasterVolume = 0;
+                    }
+                    else
+                    {
+                        SoundEffect.MasterVolume = prevMasterVolume;
+                    }
+
+                    break;
+                case SoundVolumeType.Music:
+                    musicMuted = !musicMuted;
+                    if (!musicMuted)
+                    {
+                        prevSfxVolume = currentSfxVolume;
+                        currentSfxVolume = 0;
+                    }
+                    else
+                    {
+                        currentMusicVolume = prevMusicVolume;
+                    }
+
+                    break;
+                case SoundVolumeType.Sfx:
+                    sfxMuted = !sfxMuted;
+                    if (!sfxMuted)
+                    {
+                        prevSfxVolume = currentSfxVolume;
+                        currentSfxVolume = 0;
+                    }
+                    else
+                    {
+                        currentSfxVolume = prevSfxVolume;
+                    }
+
+                    break;
+            }
+
+            currentInGameMusicInstance.Volume = currentMusicVolume;
+            foreach (SoundEffectInstance instance in sfxInstances)
+                instance.Volume = currentSfxVolume;
         }
 
         #endregion

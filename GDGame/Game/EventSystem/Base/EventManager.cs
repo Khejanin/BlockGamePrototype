@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 namespace GDGame.EventSystem
 {
     /// <summary>
-    /// Our EventSystem version that's not too different, it trades safety for convenience.
+    ///     Our EventSystem version that's not too different, it trades safety for convenience.
     /// </summary>
     public class EventManager : GameComponent
     {
@@ -34,7 +34,7 @@ namespace GDGame.EventSystem
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override void Update(GameTime gameTime)
         {
@@ -45,21 +45,11 @@ namespace GDGame.EventSystem
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public static void FireEvent(EventInfo eventInfo)
         {
             if (!_eventsToTrigger.Contains(eventInfo)) _eventsToTrigger.Enqueue(eventInfo);
-        }
-
-        private void ProcessEvent(EventInfo eventInfo)
-        {
-            Type trueEventInfoClass = eventInfo.GetType();
-            if (_eventListeners == null || !_eventListeners.ContainsKey(trueEventInfoClass))
-                // No one is listening, we are done.
-                return;
-
-            foreach (EventListener el in _eventListeners[trueEventInfoClass].Values) el(eventInfo);
         }
 
         public static void RegisterListener<T>(Action<T> listener) where T : EventInfo
@@ -79,6 +69,20 @@ namespace GDGame.EventSystem
             if (_eventListeners != null)
                 if (_eventListeners.ContainsKey(eventType) && _eventListeners[eventType] != null)
                     _eventListeners[eventType].Remove(listener.GetHashCode());
+        }
+
+        #endregion
+
+        #region Private Method
+
+        private void ProcessEvent(EventInfo eventInfo)
+        {
+            Type trueEventInfoClass = eventInfo.GetType();
+            if (_eventListeners == null || !_eventListeners.ContainsKey(trueEventInfoClass))
+                // No one is listening, we are done.
+                return;
+
+            foreach (EventListener el in _eventListeners[trueEventInfoClass].Values) el(eventInfo);
         }
 
         #endregion

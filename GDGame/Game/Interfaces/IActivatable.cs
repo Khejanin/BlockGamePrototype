@@ -1,11 +1,11 @@
 ﻿namespace GDGame.Interfaces
 {
     /// <summary>
-    /// IActivatable is for anything that is Activatable.
+    ///     IActivatable is for anything that is Activatable.
     /// </summary>
     public interface IActivatable
     {
-        #region Methods
+        #region Public Method
 
         void Activate();
         void Deactivate();

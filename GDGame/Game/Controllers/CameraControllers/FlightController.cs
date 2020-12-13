@@ -16,8 +16,8 @@ namespace GDGame.Controllers
 
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
-        private float moveSpeed, strafeSpeed, rotationSpeed;
         private Vector3 move;
+        private float moveSpeed, strafeSpeed, rotationSpeed;
 
         #endregion
 
@@ -36,7 +36,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override void Update(GameTime gameTime, IActor actor)
         {
@@ -49,7 +49,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public new object Clone()
         {
@@ -87,9 +87,7 @@ namespace GDGame.Controllers
                   mouseManager.Position.X > GameConstants.ScreenWidth / 2f - GameConstants.ScreenWidth * 0.1f &&
                   mouseManager.Position.Y < GameConstants.ScreenHeight / 2f + GameConstants.ScreenHeight * 0.1f &&
                   mouseManager.Position.Y > GameConstants.ScreenHeight / 2f - GameConstants.ScreenHeight * 0.1f))
-            {
                 move += new Vector3(-1 * mouseDelta.X, mouseDelta.Y, 0);
-            }
 
             if (move.Length() != 0)
                 parent.Transform3D.RotateBy(move);

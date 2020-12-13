@@ -16,17 +16,13 @@ namespace GDGame.Actors
     /// <see cref="GDLibrary.Actors.ModelObject" />
     public class OurPrimitiveObject : OurDrawnActor3D
     {
-        #region Private variables
-
-        #endregion
-
         #region Constructors
 
         public OurPrimitiveObject(string id, ActorType actorType, StatusType statusType, Transform3D transform3D,
             OurEffectParameters effectParameters, IVertexData vertexData)
             : base(id, actorType, statusType, transform3D, effectParameters)
         {
-            this.IVertexData = vertexData;
+            IVertexData = vertexData;
         }
 
         #endregion
@@ -37,7 +33,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
         {
@@ -60,7 +56,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public new object Clone()
         {
@@ -73,7 +69,8 @@ namespace GDGame.Actors
         {
             List<Vector3> transformedPositions = new List<Vector3>();
 
-            foreach (Vector3 primitivePosition in IVertexData.GetPrimitivePositions()) transformedPositions.Add(Vector3.Transform(primitivePosition, Transform3D.World));
+            foreach (Vector3 primitivePosition in IVertexData.GetPrimitivePositions())
+                transformedPositions.Add(Vector3.Transform(primitivePosition, Transform3D.World));
 
             return BoundingBox.CreateFromPoints(transformedPositions);
         }

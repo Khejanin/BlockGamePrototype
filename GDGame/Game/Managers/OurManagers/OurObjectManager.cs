@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 namespace GDGame.Managers
 {
     /// <summary>
-    /// Our Object Manager that is basically the same as the original ones but it uses OurDrawnActors.
+    ///     Our Object Manager that is basically the same as the original ones but it uses OurDrawnActors.
     /// </summary>
     public class OurObjectManager : PausableGameComponent
     {
@@ -19,9 +19,9 @@ namespace GDGame.Managers
 
         private List<Actor3D> allActors;
 
-        private List<OurDrawnActor3D> removeList;
-
         private bool isDirty;
+
+        private List<OurDrawnActor3D> removeList;
 
         #endregion
 
@@ -35,11 +35,6 @@ namespace GDGame.Managers
             isDirty = true;
             removeList = new List<OurDrawnActor3D>();
             EventManager.RegisterListener<RemoveActorEvent>(OnActorRemove);
-        }
-
-        private void OnActorRemove(RemoveActorEvent obj)
-        {
-            if(obj.actor3D != null) removeList.Add((OurDrawnActor3D) obj.actor3D);
         }
 
         #endregion
@@ -68,7 +63,7 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         /// <summary>
         ///     Called to update the lists of actors
@@ -78,7 +73,7 @@ namespace GDGame.Managers
         protected override void ApplyUpdate(GameTime gameTime)
         {
             ApplyBatchRemove();
-            
+
             foreach (OurDrawnActor3D actor in OpaqueList)
                 if ((actor.StatusType & StatusType.Update) == StatusType.Update)
                     actor.Update(gameTime);
@@ -86,23 +81,6 @@ namespace GDGame.Managers
             foreach (OurDrawnActor3D actor in TransparentList)
                 if ((actor.StatusType & StatusType.Update) == StatusType.Update)
                     actor.Update(gameTime);
-        }
-        
-        private void ApplyBatchRemove()
-        {
-            foreach (OurDrawnActor3D actor in removeList)
-            {
-                if (actor.EffectParameters.GetAlpha() < 1)
-                {
-                    TransparentList.Remove(actor);
-                }
-                else
-                {
-                    OpaqueList.Remove(actor);
-                }
-            }
-
-            removeList.Clear();
         }
 
         protected override void HandleEvent(EventData eventData)
@@ -130,7 +108,7 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         /// <summary>
         ///     Add the actor to the appropriate list based on actor transparency
@@ -192,6 +170,21 @@ namespace GDGame.Managers
 
         #endregion
 
+        #region Private Method
+
+        private void ApplyBatchRemove()
+        {
+            foreach (OurDrawnActor3D actor in removeList)
+                if (actor.EffectParameters.GetAlpha() < 1)
+                    TransparentList.Remove(actor);
+                else
+                    OpaqueList.Remove(actor);
+
+            removeList.Clear();
+        }
+
+        #endregion
+
         #region Events
 
         private void HandleObjectCategoryEvent(EventData eventData)
@@ -214,6 +207,11 @@ namespace GDGame.Managers
             {
                 //gets params and add win animation
             }
+        }
+
+        private void OnActorRemove(RemoveActorEvent obj)
+        {
+            if (obj.actor3D != null) removeList.Add((OurDrawnActor3D) obj.actor3D);
         }
 
         #endregion

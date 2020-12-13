@@ -20,7 +20,8 @@ namespace GDGame.Controllers
 
         #region Constructors
 
-        public UiScaleLerpController(string id, ControllerType controllerType, MouseManager mouseManager, TrigonometricParameters trigonometricParameters) : base(id,
+        public UiScaleLerpController(string id, ControllerType controllerType, MouseManager mouseManager,
+            TrigonometricParameters trigonometricParameters) : base(id,
             controllerType)
         {
             this.mouseManager = mouseManager;
@@ -29,7 +30,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override void Update(GameTime gameTime, IActor actor)
         {
@@ -38,10 +39,14 @@ namespace GDGame.Controllers
                 if (drawnActor.Transform2D.Bounds.Contains(mouseManager.Bounds))
                 {
                     float lerpFactor = (float) (trigonometricParameters.MaxAmplitude *
-                                                Math.Sin(MathHelper.ToRadians((float) (trigonometricParameters.AngularSpeed * gameTime.TotalGameTime.TotalMilliseconds +
-                                                                                       trigonometricParameters.PhaseAngleInDegrees))));
-                    drawnActor.Transform2D.Scale = drawnActor.Transform2D.OriginalScale + lerpFactor * drawnActor.Transform2D.OriginalScale;
-                    drawnActor.TextScale = drawnActor.Transform2D.OriginalScale + lerpFactor * drawnActor.Transform2D.OriginalScale;
+                                                Math.Sin(MathHelper.ToRadians(
+                                                    (float) (trigonometricParameters.AngularSpeed *
+                                                             gameTime.TotalGameTime.TotalMilliseconds +
+                                                             trigonometricParameters.PhaseAngleInDegrees))));
+                    drawnActor.Transform2D.Scale = drawnActor.Transform2D.OriginalScale +
+                                                   lerpFactor * drawnActor.Transform2D.OriginalScale;
+                    drawnActor.TextScale = drawnActor.Transform2D.OriginalScale +
+                                           lerpFactor * drawnActor.Transform2D.OriginalScale;
                 }
                 else
                 {
@@ -53,11 +58,12 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public new object Clone()
         {
-            return new UiScaleLerpController(ID, ControllerType, mouseManager, trigonometricParameters.Clone() as TrigonometricParameters);
+            return new UiScaleLerpController(ID, ControllerType, mouseManager,
+                trigonometricParameters.Clone() as TrigonometricParameters);
         }
 
         #endregion

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using GDGame.Actors;
-using GDGame.Component;
 using GDGame.Constants;
 using GDGame.Enums;
 using GDGame.Game.Parameters.Effect;
@@ -93,6 +92,16 @@ namespace GDGame.Factory
             return activatable;
         }
 
+        private Tile CreateDoorTile(Vector3 position)
+        {
+            PathMoveTile doorTile = (PathMoveTile) drawnActors["DoorTile"];
+            doorTile = doorTile.Clone() as PathMoveTile;
+            doorTile?.InitializeCollision(position, 0.9f);
+            if (doorTile != null) doorTile.ID += id++;
+            objectManager.Add(doorTile);
+            return doorTile;
+        }
+
         private Tile CreateEnemy(Vector3 position)
         {
             PathMoveTile enemy = (PathMoveTile) drawnActors["EnemyTile"];
@@ -111,16 +120,6 @@ namespace GDGame.Factory
             if (platform != null) platform.ID += id++;
             objectManager.Add(platform);
             return platform;
-        }
-
-        private Tile CreateDoorTile(Vector3 position)
-        {
-            PathMoveTile doorTile = (PathMoveTile) drawnActors["DoorTile"];
-            doorTile = doorTile.Clone() as PathMoveTile;
-            doorTile?.InitializeCollision(position, 0.9f);
-            if (doorTile != null) doorTile.ID += id++;
-            objectManager.Add(doorTile);
-            return doorTile;
         }
 
         private Tile CreatePickup(Vector3 position)

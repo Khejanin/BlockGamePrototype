@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using GDGame.Actors;
+﻿using GDGame.Actors;
 using GDGame.Managers;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
@@ -11,15 +10,25 @@ namespace GDGame.Controllers
 {
     public class UiToggleVisibilityController : Controller
     {
+        #region Private variables
+
+        private OurObjectManager objectManager;
         private PlayerTile playerTile;
         private UITextureObject pressSpace;
-        private OurObjectManager objectManager;
+
+        #endregion
+
+        #region Constructors
 
         public UiToggleVisibilityController(string id, ControllerType controllerType, OurObjectManager objectManager) :
             base(id, controllerType)
         {
             this.objectManager = objectManager;
         }
+
+        #endregion
+
+        #region Override Method
 
         public override void Update(GameTime gameTime, IActor actor)
         {
@@ -34,5 +43,7 @@ namespace GDGame.Controllers
                     pressSpace.StatusType = StatusType.Update;
             }
         }
+
+        #endregion
     }
 }

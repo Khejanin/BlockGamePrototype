@@ -30,7 +30,7 @@ namespace GDGame.Utilities
 {
     public static class Extensions
     {
-        #region Methods
+        #region Public Method
 
         public static T Pop<T>(this List<T> list)
         {
@@ -166,7 +166,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         /// <returns>String representation of this JSONValue</returns>
         public override string ToString()
@@ -197,7 +197,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public static implicit operator JSONValue(string str)
         {
@@ -268,7 +268,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         /// <returns>String representation of this JSONArray</returns>
         public override string ToString()
@@ -288,7 +288,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         /// <summary>
         ///     Add a JSONValue to this array
@@ -308,11 +308,6 @@ namespace GDGame.Utilities
         }
 
         public IEnumerator<JSONValue> GetEnumerator()
-        {
-            return values.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
         {
             return values.GetEnumerator();
         }
@@ -354,6 +349,15 @@ namespace GDGame.Utilities
                 values.RemoveAt(index);
             else
                 JSONLogger.Error("index out of range: " + index + " (Expected 0 <= index < " + values.Count + ")");
+        }
+
+        #endregion
+
+        #region Private Method
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return values.GetEnumerator();
         }
 
         #endregion
@@ -418,7 +422,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         /// <returns>String representation of this JSONObject</returns>
         public override string ToString()
@@ -441,7 +445,7 @@ namespace GDGame.Utilities
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public void Add(string key, JSONValue value)
         {
@@ -466,17 +470,6 @@ namespace GDGame.Utilities
         public bool ContainsKey(string key)
         {
             return values.ContainsKey(key);
-        }
-
-        private static JSONObject Fail(char expected, int position)
-        {
-            return Fail(new string(expected, 1), position);
-        }
-
-        private static JSONObject Fail(string expected, int position)
-        {
-            JSONLogger.Error("Invalid json string, expecting " + expected + " at " + position);
-            return null;
         }
 
         public JSONArray GetArray(string key)
@@ -504,11 +497,6 @@ namespace GDGame.Utilities
         }
 
         public IEnumerator<KeyValuePair<string, JSONValue>> GetEnumerator()
-        {
-            return values.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
         {
             return values.GetEnumerator();
         }
@@ -541,10 +529,8 @@ namespace GDGame.Utilities
         {
             JSONValue value = GetValue(key);
             if (value == null)
-            {
                 //JSONLogger.Error(key + "(string) == null");
                 return string.Empty;
-            }
 
             return value.Str;
         }
@@ -634,7 +620,9 @@ namespace GDGame.Utilities
                         switch (jsonString[startPosition])
                         {
                             case ',':
-                                state = currentValue.Type == JSONValueType.Object ? JSONParsingState.Key : JSONParsingState.Value;
+                                state = currentValue.Type == JSONValueType.Object
+                                    ? JSONParsingState.Key
+                                    : JSONParsingState.Value;
                                 break;
 
                             case '}':
@@ -867,14 +855,45 @@ namespace GDGame.Utilities
             return null;
         }
 
+        /// <summary>
+        ///     Remove the JSONValue attached to the given key.
+        /// </summary>
+        /// <param name="key"></param>
+        public void Remove(string key)
+        {
+            if (values.ContainsKey(key)) values.Remove(key);
+        }
+
+        #endregion
+
+        #region Private Method
+
+        private static JSONObject Fail(char expected, int position)
+        {
+            return Fail(new string(expected, 1), position);
+        }
+
+        private static JSONObject Fail(string expected, int position)
+        {
+            JSONLogger.Error("Invalid json string, expecting " + expected + " at " + position);
+            return null;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return values.GetEnumerator();
+        }
+
         private static double ParseNumber(string str, ref int startPosition)
         {
-            if (startPosition >= str.Length || !char.IsDigit(str[startPosition]) && str[startPosition] != '-') return double.NaN;
+            if (startPosition >= str.Length || !char.IsDigit(str[startPosition]) && str[startPosition] != '-')
+                return double.NaN;
 
             int endPosition = startPosition + 1;
 
             for (;
-                endPosition < str.Length && str[endPosition] != ',' && str[endPosition] != ']' && str[endPosition] != '}';
+                endPosition < str.Length && str[endPosition] != ',' && str[endPosition] != ']' &&
+                str[endPosition] != '}';
                 ++endPosition) ;
 
             double result;
@@ -913,7 +932,8 @@ namespace GDGame.Utilities
 
             string result = string.Empty;
 
-            if (endPosition > startPosition + 1) result = str.Substring(startPosition + 1, endPosition - startPosition - 1);
+            if (endPosition > startPosition + 1)
+                result = str.Substring(startPosition + 1, endPosition - startPosition - 1);
 
             startPosition = endPosition;
 
@@ -934,15 +954,6 @@ namespace GDGame.Utilities
 #endif
 
             return result;
-        }
-
-        /// <summary>
-        ///     Remove the JSONValue attached to the given key.
-        /// </summary>
-        /// <param name="key"></param>
-        public void Remove(string key)
-        {
-            if (values.ContainsKey(key)) values.Remove(key);
         }
 
         private static int SkipWhitespace(string str, int pos)

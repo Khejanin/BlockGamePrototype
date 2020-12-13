@@ -1,38 +1,38 @@
-using GDLibrary.Actors;
-using GDLibrary.Controllers;
-using GDLibrary.Enums;
-using GDLibrary.Events;
-using GDLibrary.GameComponents;
-using JigLibX.Collision;
-using JigLibX.Physics;
-using Microsoft.Xna.Framework;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using GDGame.EventSystem;
+using GDLibrary.Enums;
 using GDLibrary.Managers;
+using Microsoft.Xna.Framework;
 
 //Physics - Step 2
 namespace GDGame.Managers
 {
     /// <summary>
-    /// Subclass of PhysicsManager that removes bodies on events. 
+    ///     Subclass of PhysicsManager that removes bodies on events.
     /// </summary>
     public class OurPhysicsManager : PhysicsManager
     {
+        #region Constructors
+
         public OurPhysicsManager(Microsoft.Xna.Framework.Game game, StatusType statusType) : base(game, statusType)
         {
             EventManager.RegisterListener<RemoveActorEvent>(HandleRemoveActor);
         }
 
-        public OurPhysicsManager(Microsoft.Xna.Framework.Game game, StatusType statusType, Vector3 gravity) : base(game, statusType, gravity)
+        public OurPhysicsManager(Microsoft.Xna.Framework.Game game, StatusType statusType, Vector3 gravity) : base(game,
+            statusType, gravity)
         {
             EventManager.RegisterListener<RemoveActorEvent>(HandleRemoveActor);
         }
-        
+
+        #endregion
+
+        #region Events
+
         private void HandleRemoveActor(RemoveActorEvent obj)
         {
-            if(obj.body != null) PhysicsSystem.RemoveBody(obj.body);
+            if (obj.body != null) PhysicsSystem.RemoveBody(obj.body);
         }
-        
+
+        #endregion
     }
 }

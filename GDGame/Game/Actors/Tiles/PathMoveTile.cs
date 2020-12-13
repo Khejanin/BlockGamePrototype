@@ -9,8 +9,9 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    /// The PathMoveTile is an extension from the MovableTile. A PathMoveTile has a predefined path on which it moves.
-    /// The PathMoveTile actually doesn't move itself, it merely defines the Path. The PathMovementComponent makes sure that it moves.
+    ///     The PathMoveTile is an extension from the MovableTile. A PathMoveTile has a predefined path on which it moves.
+    ///     The PathMoveTile actually doesn't move itself, it merely defines the Path. The PathMovementComponent makes sure
+    ///     that it moves.
     /// </summary>
     public class PathMoveTile : MovableTile
     {
@@ -31,13 +32,17 @@ namespace GDGame.Actors
 
         #endregion
 
+        #region Public Method
+
         public new object Clone()
         {
             PathMoveTile pathMoveTile = new PathMoveTile(ID, ActorType, StatusType, Transform3D.Clone() as Transform3D,
                 EffectParameters.Clone() as OurEffectParameters, Model, IsBlocking, TileType);
-            
+
             pathMoveTile.ControllerList.AddRange(GetControllerListClone());
             return pathMoveTile;
         }
+
+        #endregion
     }
 }

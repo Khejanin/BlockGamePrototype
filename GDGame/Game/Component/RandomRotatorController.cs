@@ -10,7 +10,7 @@ using Vector3 = Microsoft.Xna.Framework.Vector3;
 namespace GDGame.Component
 {
     /// <summary>
-    /// Controller that randomly rotates the object that you attach it to.
+    ///     Controller that randomly rotates the object that you attach it to.
     /// </summary>
     public class RandomRotatorController : Controller
     {
@@ -30,7 +30,7 @@ namespace GDGame.Component
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override void Update(GameTime gameTime, IActor actor)
         {

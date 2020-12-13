@@ -15,7 +15,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    /// Tile is the BasicTile from which other Tiles inherit.
+    ///     Tile is the BasicTile from which other Tiles inherit.
     /// </summary>
     public class Tile : OurCollidableObject
     {
@@ -52,7 +52,9 @@ namespace GDGame.Actors
 
         //Tiles can be part of a shape -> a collection of Tiles
         public Shape Shape { get; set; }
+
         public Vector3 SpawnPos { get; protected set; }
+
         //All Tiles have a TileType
         public ETileType TileType { get; }
 
@@ -77,7 +79,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override void Enable(bool bImmovable, float mass)
         {
@@ -99,7 +101,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public new object Clone()
         {
@@ -109,15 +111,9 @@ namespace GDGame.Actors
             return tile;
         }
 
-        protected bool Equals(Tile other)
-        {
-            return base.Equals(other) && activatorId == other.activatorId && SpawnPos.Equals(other.SpawnPos) &&
-                   Equals(Shape, other.Shape) && TileType == other.TileType;
-        }
-
         public virtual void Respawn()
         {
-            if(!Body.IsActive)
+            if (!Body.IsActive)
                 Body.SetActive();
             SetTranslation(SpawnPos);
         }
@@ -130,16 +126,26 @@ namespace GDGame.Actors
             Body.Immovable = true;
         }
 
+        #endregion
+
+        #region Private Method
+
         //Animation that is played when the Tile dies. It has a Callback that executes everything that the user needs after the dying animation (Respawn/Remove from ObjectManager).
         protected virtual void Die(Action callbackAfterDeath)
         {
-            this.ScaleTo(new AnimationEventData()
+            this.ScaleTo(new AnimationEventData
             {
                 isRelative = false, destination = Vector3.Zero,
                 maxTime = 1000,
                 smoothing = Smoother.SmoothingMethod.Accelerate, loopMethod = LoopMethod.PlayOnce,
                 callback = callbackAfterDeath, resetAferDone = true
             });
+        }
+
+        protected bool Equals(Tile other)
+        {
+            return base.Equals(other) && activatorId == other.activatorId && SpawnPos.Equals(other.SpawnPos) &&
+                   Equals(Shape, other.Shape) && TileType == other.TileType;
         }
 
         #endregion
@@ -149,7 +155,6 @@ namespace GDGame.Actors
         private void HandleTileEvent(TileEventInfo info)
         {
             if (info.Id == ID)
-            {
                 switch (info.Type)
                 {
                     case TileEventType.Reset:
@@ -160,10 +165,9 @@ namespace GDGame.Actors
                         break;
 
                     case TileEventType.Consumed:
-                        Die(() => { EventManager.FireEvent(new RemoveActorEvent() {actor3D = this}); });
+                        Die(() => { EventManager.FireEvent(new RemoveActorEvent {actor3D = this}); });
                         break;
                 }
-            }
         }
 
         #endregion

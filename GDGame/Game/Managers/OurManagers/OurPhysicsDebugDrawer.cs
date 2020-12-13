@@ -1,39 +1,41 @@
-﻿using GDLibrary.Actors;
+﻿using System.Collections.Generic;
+using GDGame.Actors;
+using GDGame.Enums;
+using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.GameComponents;
 using GDLibrary.Managers;
 using JigLibX.Physics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using GDGame.Actors;
-using GDGame.Enums;
+using Plane = JigLibX.Geometry.Plane;
 
 namespace GDGame.Managers
 {
     /// <summary>
-    /// Renders the collision skins of any collidable objects within the scene. We can disable this component for the release.
-    /// Our Version for Our Actors.
+    ///     Renders the collision skins of any collidable objects within the scene. We can disable this component for the
+    ///     release.
+    ///     Our Version for Our Actors.
     /// </summary>
     public class OurPhysicsDebugDrawer : PausableDrawableGameComponent
     {
-        #region Fields
+        #region Private variables
+
+        private OurDrawnActor3D actor;
+        private BasicEffect basicEffect;
 
         private CameraManager<Camera3D> cameraManager;
 
-        #endregion Fields
-
-        #region Temp Vars Used In Methods
-
         private OurObjectManager objectManager;
-        private BasicEffect basicEffect;
         private List<VertexPositionColor> vertexData;
         private VertexPositionColor[] wf;
-        private OurDrawnActor3D actor;
 
-        #endregion Temp Vars Used In Methods
+        #endregion
 
-        public OurPhysicsDebugDrawer(Microsoft.Xna.Framework.Game game, StatusType statusType, CameraManager<Camera3D> cameraManager,
+        #region Constructors
+
+        public OurPhysicsDebugDrawer(Microsoft.Xna.Framework.Game game, StatusType statusType,
+            CameraManager<Camera3D> cameraManager,
             OurObjectManager objectManager)
             : base(game, statusType)
         {
@@ -42,6 +44,10 @@ namespace GDGame.Managers
             vertexData = new List<VertexPositionColor>();
             basicEffect = new BasicEffect(game.GraphicsDevice);
         }
+
+        #endregion
+
+        #region Override Method
 
         protected override void ApplyDraw(GameTime gameTime)
         {
@@ -58,6 +64,83 @@ namespace GDGame.Managers
 
             vertexData.Clear();
         }
+
+        #endregion
+
+        #region Public Method
+
+        public void AddCollisionSkinVertexData(OurCollidableObject collidableObject)
+        {
+            if (!collidableObject.Body.CollisionSkin.GetType().Equals(typeof(Plane)))
+            {
+                wf = collidableObject.Collision.GetLocalSkinWireframe();
+
+                // if the collision skin was also added to the body
+                // we have to transform the skin wireframe to the body space
+                if (collidableObject.Body.CollisionSkin != null) collidableObject.Body.TransformWireframe(wf);
+
+                AddVertexDataForShape(wf, Color.Red);
+            }
+        }
+
+        public void AddVertexDataForShape(List<Vector3> shape, Color color)
+        {
+            if (vertexData.Count > 0)
+            {
+                Vector3 v = vertexData[vertexData.Count - 1].Position;
+                vertexData.Add(new VertexPositionColor(v, color));
+                vertexData.Add(new VertexPositionColor(shape[0], color));
+            }
+
+            foreach (Vector3 p in shape) vertexData.Add(new VertexPositionColor(p, color));
+        }
+
+        public void AddVertexDataForShape(List<Vector3> shape, Color color, bool closed)
+        {
+            AddVertexDataForShape(shape, color);
+
+            Vector3 v = shape[0];
+            vertexData.Add(new VertexPositionColor(v, color));
+        }
+
+        public void AddVertexDataForShape(List<VertexPositionColor> shape, Color color)
+        {
+            if (vertexData.Count > 0)
+            {
+                Vector3 v = vertexData[vertexData.Count - 1].Position;
+                vertexData.Add(new VertexPositionColor(v, color));
+                vertexData.Add(new VertexPositionColor(shape[0].Position, color));
+            }
+
+            foreach (VertexPositionColor vps in shape) vertexData.Add(vps);
+        }
+
+        public void AddVertexDataForShape(VertexPositionColor[] shape, Color color)
+        {
+            if (vertexData.Count > 0)
+            {
+                Vector3 v = vertexData[vertexData.Count - 1].Position;
+                if (shape.Length > 0)
+                {
+                    vertexData.Add(new VertexPositionColor(v, color));
+                    vertexData.Add(new VertexPositionColor(shape[0].Position, color));
+                }
+            }
+
+            foreach (VertexPositionColor vps in shape) vertexData.Add(vps);
+        }
+
+        public void AddVertexDataForShape(List<VertexPositionColor> shape, Color color, bool closed)
+        {
+            AddVertexDataForShape(shape, color);
+
+            VertexPositionColor v = shape[0];
+            vertexData.Add(v);
+        }
+
+        #endregion
+
+        #region Private Method
 
         private void DrawCollisionSkin(Camera3D activeCamera)
         {
@@ -86,85 +169,6 @@ namespace GDGame.Managers
             }
         }
 
-        public void AddVertexDataForShape(List<Vector3> shape, Color color)
-        {
-            if (vertexData.Count > 0)
-            {
-                Vector3 v = vertexData[vertexData.Count - 1].Position;
-                vertexData.Add(new VertexPositionColor(v, color));
-                vertexData.Add(new VertexPositionColor(shape[0], color));
-            }
-
-            foreach (Vector3 p in shape)
-            {
-                vertexData.Add(new VertexPositionColor(p, color));
-            }
-        }
-
-        public void AddVertexDataForShape(List<Vector3> shape, Color color, bool closed)
-        {
-            AddVertexDataForShape(shape, color);
-
-            Vector3 v = shape[0];
-            vertexData.Add(new VertexPositionColor(v, color));
-        }
-
-        public void AddVertexDataForShape(List<VertexPositionColor> shape, Color color)
-        {
-            if (vertexData.Count > 0)
-            {
-                Vector3 v = vertexData[vertexData.Count - 1].Position;
-                vertexData.Add(new VertexPositionColor(v, color));
-                vertexData.Add(new VertexPositionColor(shape[0].Position, color));
-            }
-
-            foreach (VertexPositionColor vps in shape)
-            {
-                vertexData.Add(vps);
-            }
-        }
-
-        public void AddVertexDataForShape(VertexPositionColor[] shape, Color color)
-        {
-            if (vertexData.Count > 0)
-            {
-                Vector3 v = vertexData[vertexData.Count - 1].Position;
-                if (shape.Length > 0)
-                {
-                    vertexData.Add(new VertexPositionColor(v, color));
-                    vertexData.Add(new VertexPositionColor(shape[0].Position, color));
-                }
-            }
-
-            foreach (VertexPositionColor vps in shape)
-            {
-                vertexData.Add(vps);
-            }
-        }
-
-        public void AddVertexDataForShape(List<VertexPositionColor> shape, Color color, bool closed)
-        {
-            AddVertexDataForShape(shape, color);
-
-            VertexPositionColor v = shape[0];
-            vertexData.Add(v);
-        }
-
-        public void AddCollisionSkinVertexData(OurCollidableObject collidableObject)
-        {
-            if (!collidableObject.Body.CollisionSkin.GetType().Equals(typeof(JigLibX.Geometry.Plane)))
-            {
-                wf = collidableObject.Collision.GetLocalSkinWireframe();
-
-                // if the collision skin was also added to the body
-                // we have to transform the skin wireframe to the body space
-                if (collidableObject.Body.CollisionSkin != null)
-                {
-                    collidableObject.Body.TransformWireframe(wf);
-                }
-
-                AddVertexDataForShape(wf, Color.Red);
-            }
-        }
+        #endregion
     }
 }

@@ -54,7 +54,7 @@ namespace GDGame.Game.Parameters.Effect
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override bool Equals(object obj)
         {
@@ -69,11 +69,12 @@ namespace GDGame.Game.Parameters.Effect
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public abstract object Clone();
 
-        public virtual void DrawMesh(Matrix world, Camera3D camera3D, Model model, Matrix[] boneTransforms, GameTime gameTime)
+        public virtual void DrawMesh(Matrix world, Camera3D camera3D, Model model, Matrix[] boneTransforms,
+            GameTime gameTime)
         {
             SetupMaterial(world, camera3D, gameTime);
             foreach (ModelMesh mesh in model.Meshes)
@@ -100,6 +101,10 @@ namespace GDGame.Game.Parameters.Effect
         {
             return (T) this;
         }
+
+        #endregion
+
+        #region Private Method
 
         protected abstract void SetupMaterial(Matrix world, Camera3D camera3D, GameTime gameTime);
 
@@ -147,14 +152,15 @@ namespace GDGame.Game.Parameters.Effect
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override object Clone()
         {
             return new BasicEffectParameters(basicEffect, Texture, Color, Alpha, emissiveColor);
         }
 
-        public override void DrawMesh(Matrix world, Camera3D camera3D, Model model, Matrix[] boneTransforms, GameTime gameTime)
+        public override void DrawMesh(Matrix world, Camera3D camera3D, Model model, Matrix[] boneTransforms,
+            GameTime gameTime)
         {
             SetupMaterial(world, camera3D, gameTime);
             foreach (ModelMesh mesh in model.Meshes)
@@ -202,7 +208,8 @@ namespace GDGame.Game.Parameters.Effect
 
         #region Constructors
 
-        public NormalEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D colorTexture, Texture2D normalTexture, Texture2D displacement, Color diffuseColor,
+        public NormalEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D colorTexture,
+            Texture2D normalTexture, Texture2D displacement, Color diffuseColor,
             float diffuseIntensity, Transform3D lightTransform) : base(effect)
         {
             this.effect = effect;
@@ -232,11 +239,12 @@ namespace GDGame.Game.Parameters.Effect
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override object Clone()
         {
-            return new NormalEffectParameters(effect, colorTexture, normalTexture, displacement, diffuseColor, diffuseIntensity, lightTransform);
+            return new NormalEffectParameters(effect, colorTexture, normalTexture, displacement, diffuseColor,
+                diffuseIntensity, lightTransform);
         }
 
         public override float GetAlpha()
@@ -261,15 +269,37 @@ namespace GDGame.Game.Parameters.Effect
         #region Private variables
 
         protected Color coffeeColor;
-        protected Texture2D uvTilesTexture, flowTexture;
         protected float phase;
+        protected Texture2D uvTilesTexture, flowTexture;
 
         #endregion
+
+        #region Constructors
+
+        public CoffeeEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D uvTilesTexture,
+            Texture2D flowTexture, Color coffeeColor) : base(effect)
+        {
+            phase = 0f;
+            this.uvTilesTexture = uvTilesTexture;
+            this.flowTexture = flowTexture;
+            this.coffeeColor = coffeeColor;
+            this.effect = effect;
+        }
+
+        #endregion
+
+        #region Properties, Indexers
 
         public Color CoffeeColor
         {
             get => coffeeColor;
             set => coffeeColor = value;
+        }
+
+        public Texture2D FlowTexture
+        {
+            get => flowTexture;
+            set => flowTexture = value;
         }
 
         public float Phase
@@ -284,26 +314,9 @@ namespace GDGame.Game.Parameters.Effect
             set => uvTilesTexture = value;
         }
 
-        public Texture2D FlowTexture
-        {
-            get => flowTexture;
-            set => flowTexture = value;
-        }
-
-        #region Constructors
-
-        public CoffeeEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D uvTilesTexture, Texture2D flowTexture, Color coffeeColor) : base(effect)
-        {
-            phase = 0f;
-            this.uvTilesTexture = uvTilesTexture;
-            this.flowTexture = flowTexture;
-            this.coffeeColor = coffeeColor;
-            this.effect = effect;
-        }
-
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override object Clone()
         {
@@ -320,7 +333,7 @@ namespace GDGame.Game.Parameters.Effect
             effect.Parameters["Displacement"].SetValue(uvTilesTexture);
             effect.Parameters["FlowMap"].SetValue(flowTexture);
             effect.Parameters["coffeeColor"].SetValue(coffeeColor.ToVector4());
-            effect.Parameters["time"].SetValue(((float) gameTime.TotalGameTime.TotalSeconds) + phase);
+            effect.Parameters["time"].SetValue((float) gameTime.TotalGameTime.TotalSeconds + phase);
         }
 
         #endregion
@@ -341,7 +354,8 @@ namespace GDGame.Game.Parameters.Effect
 
         #region Constructors
 
-        public CelEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D t, Color c, float a) : base(effect)
+        public CelEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect, Texture2D t, Color c, float a) :
+            base(effect)
         {
             texture2D = t;
             color = c;
@@ -350,7 +364,7 @@ namespace GDGame.Game.Parameters.Effect
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override object Clone()
         {

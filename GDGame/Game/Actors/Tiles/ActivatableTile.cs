@@ -11,7 +11,8 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    /// The Activatable Tile is a BasicTile which implements IActivatable giving it the possibility to have Activation functionality like a Button. 
+    ///     The Activatable Tile is a BasicTile which implements IActivatable giving it the possibility to have Activation
+    ///     functionality like a Button.
     /// </summary>
     public class ActivatableTile : Tile, IActivatable
     {
@@ -35,7 +36,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override bool Equals(object obj)
         {
@@ -52,7 +53,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public void Activate()
         {
@@ -79,17 +80,21 @@ namespace GDGame.Actors
             isActivated = false;
         }
 
-        private bool Equals(ActivatableTile other)
-        {
-            return base.Equals(other) && isActivated == other.isActivated;
-        }
-
         public void ToggleActivation()
         {
             if (isActivated)
                 Deactivate();
             else
                 Activate();
+        }
+
+        #endregion
+
+        #region Private Method
+
+        private bool Equals(ActivatableTile other)
+        {
+            return base.Equals(other) && isActivated == other.isActivated;
         }
 
         #endregion

@@ -9,47 +9,52 @@ namespace GDGame.Controllers
 {
     public class UiBlinkingController : Controller
     {
-        private UITextureObject parent;
+        #region Private variables
+
         private bool active;
-        private bool isVisible;
         private float cooldown;
         private float currentCd;
-        
+        private bool isVisible;
+        private UITextureObject parent;
+
+        #endregion
+
+        #region Constructors
+
         public UiBlinkingController(string id, ControllerType controllerType, float cooldown) : base(id, controllerType)
         {
             this.cooldown = cooldown;
             EventManager.RegisterListener<CoffeeEventInfo>(HandleCoffeeEventInfo);
         }
 
-        private void HandleCoffeeEventInfo(CoffeeEventInfo obj)
-        {
-            if (obj.coffeeEventType == CoffeeEventType.CoffeeStartMoving)
-            {
-                active = true;
-            }
-        }
+        #endregion
+
+        #region Override Method
 
         public override void Update(GameTime gameTime, IActor actor)
         {
             parent ??= actor as UITextureObject;
             if (active)
             {
-                if (currentCd < cooldown) currentCd += gameTime.ElapsedGameTime.Milliseconds;
+                if (currentCd < cooldown)
+                {
+                    currentCd += gameTime.ElapsedGameTime.Milliseconds;
+                }
                 else
                 {
                     if (isVisible)
-                    {
                         SetInvisible();
-                    }
                     else
-                    {
                         SetVisible();
-                    }
 
                     currentCd = 0;
                 }
             }
         }
+
+        #endregion
+
+        #region Private Method
 
         private void SetInvisible()
         {
@@ -62,5 +67,16 @@ namespace GDGame.Controllers
             parent.StatusType = StatusType.Drawn | StatusType.Update;
             isVisible = true;
         }
+
+        #endregion
+
+        #region Events
+
+        private void HandleCoffeeEventInfo(CoffeeEventInfo obj)
+        {
+            if (obj.coffeeEventType == CoffeeEventType.CoffeeStartMoving) active = true;
+        }
+
+        #endregion
     }
 }

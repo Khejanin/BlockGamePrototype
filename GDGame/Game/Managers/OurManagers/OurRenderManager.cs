@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Managers
 {
     /// <summary>
-    /// Our version of the RenderManager working with OurObjectManager.
+    ///     Our version of the RenderManager working with OurObjectManager.
     /// </summary>
     public class OurRenderManager : PausableDrawableGameComponent
     {
@@ -18,9 +18,9 @@ namespace GDGame.Managers
 
         private CameraManager<Camera3D> cameraManager;
         private OurObjectManager objectManager;
-        private ScreenLayoutType screenLayoutType;
         private RasterizerState rasterizerStateOpaque;
         private RasterizerState rasterizerStateTransparent;
+        private ScreenLayoutType screenLayoutType;
 
         #endregion
 
@@ -34,13 +34,32 @@ namespace GDGame.Managers
             this.screenLayoutType = screenLayoutType;
             this.objectManager = objectManager;
             this.cameraManager = cameraManager;
-            
+
             InitializeGraphics();
         }
 
         #endregion
 
-        #region Override Methode
+        #region Initialization
+
+        private void InitializeGraphics()
+        {
+            SamplerState samplerState = new SamplerState
+            {
+                AddressU = TextureAddressMode.Mirror, AddressV = TextureAddressMode.Mirror
+            };
+            Game.GraphicsDevice.SamplerStates[0] = samplerState;
+
+            //opaque objects
+            rasterizerStateOpaque = new RasterizerState {CullMode = CullMode.CullCounterClockwiseFace};
+
+            //transparent objects
+            rasterizerStateTransparent = new RasterizerState {CullMode = CullMode.None};
+        }
+
+        #endregion
+
+        #region Override Method
 
         /// <summary>
         ///     Called to draw the lists of actors
@@ -59,7 +78,7 @@ namespace GDGame.Managers
 
         #endregion
 
-        #region Methods
+        #region Private Method
 
         private void DrawMulti(GameTime gameTime)
         {
@@ -81,23 +100,6 @@ namespace GDGame.Managers
                 actor.Draw(gameTime, activeCamera, GraphicsDevice);
         }
 
-        #endregion
-        
-        private void InitializeGraphics()
-        {
-            SamplerState samplerState = new SamplerState
-            {
-                AddressU = TextureAddressMode.Mirror, AddressV = TextureAddressMode.Mirror
-            };
-            Game.GraphicsDevice.SamplerStates[0] = samplerState;
-
-            //opaque objects
-            rasterizerStateOpaque = new RasterizerState {CullMode = CullMode.CullCounterClockwiseFace};
-
-            //transparent objects
-            rasterizerStateTransparent = new RasterizerState {CullMode = CullMode.None};
-        }
-        
         private void SetGraphicsStateObjects(bool isOpaque)
         {
             Game.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
@@ -114,5 +116,7 @@ namespace GDGame.Managers
                 Game.GraphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
             }
         }
+
+        #endregion
     }
 }

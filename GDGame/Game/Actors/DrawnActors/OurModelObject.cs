@@ -9,22 +9,18 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    /// Custom Version for custom OurEffectParameters.
+    ///     Custom Version for custom OurEffectParameters.
     /// </summary>
     /// <see cref="GDLibrary.Actors.PrimitiveObject" />
     public class OurModelObject : OurDrawnActor3D
     {
-        #region Private variables
-
-        #endregion
-
         #region Constructors
 
         public OurModelObject(string id, ActorType actorType, StatusType statusType,
             Transform3D transform, OurEffectParameters effectParameters, Model model)
             : base(id, actorType, statusType, transform, effectParameters)
         {
-            this.Model = model;
+            Model = model;
 
             InitializeBoneTransforms();
         }
@@ -62,7 +58,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override void Draw(GameTime gameTime, Camera3D camera, GraphicsDevice graphicsDevice)
         {
@@ -72,7 +68,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public new object Clone()
         {
@@ -80,7 +76,8 @@ namespace GDGame.Actors
                 ActorType, //deep
                 StatusType,
                 Transform3D.Clone() as Transform3D, //deep
-                EffectParameters.Clone() as OurEffectParameters, //hybrid - shallow (texture and effect) and deep (all other fields)
+                EffectParameters
+                    .Clone() as OurEffectParameters, //hybrid - shallow (texture and effect) and deep (all other fields)
                 Model); //shallow i.e. a reference
 
             //remember if we clone a model then we need to clone any attached controllers

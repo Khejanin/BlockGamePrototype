@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    /// The attachable tile is a tile which can be attached to the player
+    ///     The attachable tile is a tile which can be attached to the player
     /// </summary>
     public class AttachableTile : MovableTile
     {
@@ -23,8 +23,9 @@ namespace GDGame.Actors
 
         #region Constructors
 
-        public AttachableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform, OurEffectParameters effectParameters, Model model, ETileType tileType) :
-            base(id, actorType, statusType, transform, effectParameters, model,true, tileType)
+        public AttachableTile(string id, ActorType actorType, StatusType statusType, Transform3D transform,
+            OurEffectParameters effectParameters, Model model, ETileType tileType) :
+            base(id, actorType, statusType, transform, effectParameters, model, true, tileType)
         {
             IsAttached = false;
             RotatePoint = Vector3.Zero;
@@ -39,8 +40,8 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Methods
-        
+        #region Public Method
+
         public Vector3 CalculateTargetPosition(Vector3 rotatePoint, Quaternion rotationToApply)
         {
             //offset between the player and the point to rotate around
@@ -52,7 +53,8 @@ namespace GDGame.Actors
 
         public new object Clone()
         {
-            AttachableTile attachableTile = new AttachableTile(ID, ActorType, StatusType, Transform3D.Clone() as Transform3D, EffectParameters.Clone() as OurEffectParameters,
+            AttachableTile attachableTile = new AttachableTile(ID, ActorType, StatusType,
+                Transform3D.Clone() as Transform3D, EffectParameters.Clone() as OurEffectParameters,
                 Model, TileType);
             attachableTile.ControllerList.AddRange(GetControllerListClone());
             return attachableTile;

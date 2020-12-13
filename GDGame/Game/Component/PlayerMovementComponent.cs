@@ -15,7 +15,8 @@ using MovementEvent = GDGame.EventSystem.MovementEvent;
 namespace GDGame.Component
 {
     /// <summary>
-    /// Component that is responsible for making the Player Move checks and setting everything up so that the Move updates in TileMovementComponent.cs can work correctly.
+    ///     Component that is responsible for making the Player Move checks and setting everything up so that the Move updates
+    ///     in TileMovementComponent.cs can work correctly.
     /// </summary>
     public class PlayerMovementComponent : Controller, ICloneable
     {
@@ -35,7 +36,7 @@ namespace GDGame.Component
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override void Update(GameTime gameTime, IActor actor)
         {
@@ -46,7 +47,7 @@ namespace GDGame.Component
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public new object Clone()
         {
@@ -54,6 +55,10 @@ namespace GDGame.Component
             playerMovementComponent.EventListeners();
             return playerMovementComponent;
         }
+
+        #endregion
+
+        #region Private Method
 
         private void EventListeners()
         {
@@ -92,7 +97,7 @@ namespace GDGame.Component
                     }
 
                     EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.Move});
-                    
+
                     //Play player move sound
                     EventManager.FireEvent(new SoundEventInfo
                     {

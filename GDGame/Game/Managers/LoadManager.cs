@@ -4,16 +4,26 @@ using Microsoft.Xna.Framework.Audio;
 namespace GDGame.Managers
 {
     /// <summary>
-    /// Class that Loads all the content we need for our game to work.
+    ///     Class that Loads all the content we need for our game to work.
     /// </summary>
     public class LoadManager
     {
+        #region Private variables
+
         private Main main;
+
+        #endregion
+
+        #region Constructors
 
         public LoadManager(Main main)
         {
             this.main = main;
         }
+
+        #endregion
+
+        #region Initialization
 
         public void InitLoad()
         {
@@ -24,7 +34,9 @@ namespace GDGame.Managers
             LoadTextures();
             LoadBasicTextures();
         }
-        
+
+        #endregion
+
         #region Load Methods
 
         private void LoadBasicTextures()
@@ -77,19 +89,28 @@ namespace GDGame.Managers
             main.SoundManager.AddMusic("gameTrack03", main.Content.Load<SoundEffect>("Assets/GameTracks/track04"));
             main.SoundManager.AddMusic("titleTheme", main.Content.Load<SoundEffect>("Assets/GameTracks/track05"));
 
-            main.SoundManager.AddSoundEffect(SfxType.PlayerMove, main.Content.Load<SoundEffect>("Assets/Sound/Effects/step1"));
-            main.SoundManager.AddSoundEffect(SfxType.PlayerAttach, main.Content.Load<SoundEffect>("Assets/Sound/Effects/attachBlock"));
-            main.SoundManager.AddSoundEffect(SfxType.PlayerDetach, main.Content.Load<SoundEffect>("Assets/Sound/Effects/detachBlock"));
+            main.SoundManager.AddSoundEffect(SfxType.PlayerMove,
+                main.Content.Load<SoundEffect>("Assets/Sound/Effects/step1"));
+            main.SoundManager.AddSoundEffect(SfxType.PlayerAttach,
+                main.Content.Load<SoundEffect>("Assets/Sound/Effects/attachBlock"));
+            main.SoundManager.AddSoundEffect(SfxType.PlayerDetach,
+                main.Content.Load<SoundEffect>("Assets/Sound/Effects/detachBlock"));
+            main.SoundManager.AddSoundEffect(SfxType.CollectibleCollected,
+                main.Content.Load<SoundEffect>("Assets/Sound/Effects/Collectible"));
             //try this one maybe
             //main.SoundManager.AddSoundEffect(SfxType.PlayerAttach, main.Content.Load<SoundEffect>("Assets/Sound/Effects/attach"));$
-            
-            main.SoundManager.AddSoundEffect(SfxType.EnemyMove, main.Content.Load<SoundEffect>("Assets/Sound/EnemySounds/old/move1"));
-            main.SoundManager.AddSoundEffect(SfxType.TrapDeathWater, main.Content.Load<SoundEffect>("Assets/Sound/Effects/trapDeath"));
-            main.SoundManager.AddSoundEffect(SfxType.MenuButtonClick, main.Content.Load<SoundEffect>("Assets/Sound/Effects/buttonClick"));
+
+            main.SoundManager.AddSoundEffect(SfxType.EnemyMove,
+                main.Content.Load<SoundEffect>("Assets/Sound/EnemySounds/old/move1"));
+            main.SoundManager.AddSoundEffect(SfxType.TrapDeathWater,
+                main.Content.Load<SoundEffect>("Assets/Sound/Effects/trapDeath"));
+            main.SoundManager.AddSoundEffect(SfxType.MenuButtonClick,
+                main.Content.Load<SoundEffect>("Assets/Sound/Effects/buttonClick"));
 
             //Taken from Sonniss.com, the GDC 2018 Free to use Sound archive, this one is part of UberDuo - The Home Barista
-            main.SoundManager.AddSoundEffect(SfxType.CoffeeStart,main.Content.Load<SoundEffect>("Assets/Sound/Effects/CoffeePour"));
-            
+            main.SoundManager.AddSoundEffect(SfxType.CoffeeStart,
+                main.Content.Load<SoundEffect>("Assets/Sound/Effects/CoffeePour"));
+
             main.SoundManager.StartMusicQueue();
         }
 
@@ -151,7 +172,7 @@ namespace GDGame.Managers
             main.Textures.Load("Assets/Textures/Props/GameTextures/MugTexture", "Mug");
             main.Textures.Load("Assets/Textures/Props/GameTextures/KnifeTexture", "Knife");
             main.Textures.Load("Assets/Textures/Props/GameTextures/ButtonTexture", "Button");
-            
+
             main.Textures.Load("Assets/Textures/Props/GameTextures/wood", "Wood");
             main.Textures.Load("Assets/Textures/Props/GameTextures/blackTile");
             main.Textures.Load("Assets/Textures/Props/GameTextures/checkers", "Checkers");

@@ -628,6 +628,12 @@
 /processorParam:Quality=Best
 /build:Assets/Sound/Effects/CoffeePour.wav
 
+#begin Assets/Sound/Effects/Collectible.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Sound/Effects/Collectible.wav
+
 #begin Assets/Sound/Effects/detachBlock.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

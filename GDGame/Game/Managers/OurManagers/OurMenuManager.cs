@@ -15,11 +15,12 @@ namespace GDGame.Managers
     {
         #region Private variables
 
+        private bool gameRunning;
+
         private KeyboardManager keyboardManager;
         private MouseManager mouseManager;
 
         #endregion
-        private bool gameRunning = false;
 
         #region Constructors
 
@@ -44,8 +45,7 @@ namespace GDGame.Managers
 
         protected override void HandleEvent(EventData eventData)
         {
-            if(gameRunning)
-            {
+            if (gameRunning)
                 if (eventData.EventCategoryType == EventCategoryType.Menu)
                     StatusType = eventData.EventActionType switch
                     {
@@ -53,7 +53,6 @@ namespace GDGame.Managers
                         EventActionType.OnPlay => StatusType.Off,
                         _ => StatusType
                     };
-            }
         }
 
         protected override void HandleInput(GameTime gameTime)
@@ -68,7 +67,7 @@ namespace GDGame.Managers
         protected override void HandleKeyboard(GameTime gameTime)
         {
             //bool if game started? 
-            if(gameRunning)
+            if (gameRunning)
             {
                 // otherwise goes main menu on first trigger, then ingame menu on second press
                 if (keyboardManager.IsKeyDown(Keys.Escape))
@@ -87,7 +86,7 @@ namespace GDGame.Managers
                         ? new EventData(EventCategoryType.Menu, EventActionType.OnPause, null)
                         : new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
                 }
-            }          
+            }
         }
 
         protected override void HandleMouse(GameTime gameTime)
@@ -103,14 +102,8 @@ namespace GDGame.Managers
 
         #region Events
 
-        private bool HandleRequestIfGameRun()
-        {
-            return gameRunning;
-        }
-
         private void HandleClickedButton(Actor uIButtonObject)
         {
-
             //play button sound 
             EventManager.FireEvent(new SoundEventInfo
             {
@@ -160,7 +153,7 @@ namespace GDGame.Managers
                     //needs to kill game
                     gameRunning = false;
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
-                    EventManager.FireEvent(new GameStateMessageEventInfo { GameState = GameState.Lost });
+                    EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Lost});
                     break;
 
                 case "Back":
@@ -193,6 +186,11 @@ namespace GDGame.Managers
                     });
                     break;
             }
+        }
+
+        private bool HandleRequestIfGameRun()
+        {
+            return gameRunning;
         }
 
         #endregion

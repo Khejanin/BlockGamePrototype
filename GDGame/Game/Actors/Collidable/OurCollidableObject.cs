@@ -11,14 +11,13 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GDGame.Actors
 {
     /// <summary>
-    ///  We have our own version due to OurEffectParameters again.
+    ///     We have our own version due to OurEffectParameters again.
     /// </summary>
     public class OurCollidableObject : OurModelObject
     {
         #region Private variables
 
         private Vector3 com;
-        private bool isBlocking;
         private Matrix itCoM;
 
         private float junk;
@@ -31,7 +30,7 @@ namespace GDGame.Actors
             OurEffectParameters effectParameters, Model model, bool isBlocking)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
-            this.isBlocking = isBlocking;
+            this.IsBlocking = isBlocking;
             Body = new Body {ExternalData = this};
             Collision = new CollisionSkin(Body);
             Body.CollisionSkin = Collision;
@@ -45,11 +44,11 @@ namespace GDGame.Actors
 
         public CollisionSkin Collision { get; }
 
-        public bool IsBlocking => isBlocking;
+        public bool IsBlocking { get; }
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override Matrix GetWorldMatrix()
         {
@@ -59,7 +58,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Methods
+        #region Public Method
 
         public void AddPrimitive(Primitive primitive, MaterialProperties materialProperties)
         {
@@ -85,6 +84,10 @@ namespace GDGame.Actors
             //enable so that any applied forces (e.g. gravity) will affect the object
             Body.EnableBody();
         }
+
+        #endregion
+
+        #region Private Method
 
         private Vector3 SetMass(float mass)
         {

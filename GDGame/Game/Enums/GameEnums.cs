@@ -2,12 +2,10 @@
  * Collection of Enums
  */
 
-using System;
-
 namespace GDGame.Enums
 {
     /// <summary>
-    /// Enums defining a Tile, also used in Level JSON
+    ///     Enums defining a Tile, also used in Level JSON
     /// </summary>
     public enum ETileType : sbyte
     {
@@ -34,7 +32,7 @@ namespace GDGame.Enums
     }
 
     /// <summary>
-    /// Deprecated, now defined in OurCollidableObject.cs
+    ///     Deprecated, now defined in OurCollidableObject.cs
     /// </summary>
     public enum ColliderType : sbyte
     {
@@ -59,7 +57,7 @@ namespace GDGame.Enums
         SetCheckpointList,
         PickupMug,
         OnMove,
-        OnEnemyMove,
+        OnEnemyMove
     }
 
     public enum TileEventType : sbyte

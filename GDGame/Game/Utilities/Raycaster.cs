@@ -8,11 +8,11 @@ using Microsoft.Xna.Framework;
 namespace GDGame.Utilities
 {
     /// <summary>
-    /// Class that performs Raycasts using the JigLib Library. It has a lot of definitions depending on the users choice.
+    ///     Class that performs Raycasts using the JigLib Library. It has a lot of definitions depending on the users choice.
     /// </summary>
     public static class Raycaster
     {
-        #region Methods
+        #region Public Method
 
         public static void PlayerCastAll(this PlayerTile player, OurObjectManager objectManager, Vector3 offset,
             List<Vector3> initialPositions, List<Vector3> endPositions,
@@ -30,7 +30,7 @@ namespace GDGame.Utilities
                 Vector3 maxDist = endPositions[i] - initialPositions[i];
                 Vector3 dir = Vector3.Normalize(maxDist);
                 blockingObjectsResult.AddRange(RaycastAll(objectManager, initialPositions[i] + offset, dir,
-                    maxDist.Length() +0.1f, ignore));
+                    maxDist.Length() + 0.1f, ignore));
 
                 //If there's anything directly above this block and the block moves in Y, it's an illegal move
                 if (dir.Y > 0)
@@ -43,6 +43,21 @@ namespace GDGame.Utilities
                     floorResult.Add(new FloorHitResult {hitResult = hit, actor3D = ignore[i]});
             }
         }
+
+        public static HitResult Raycast(this Actor3D callingDrawnActor3D, OurObjectManager objectManager,
+            Vector3 position, Vector3 direction, bool ignoreSelf,
+            float maxDist = float.MaxValue, bool onlyCheckBlocking = true)
+        {
+            List<HitResult> all = RaycastAll(callingDrawnActor3D, objectManager, position, direction, ignoreSelf,
+                maxDist, onlyCheckBlocking);
+            all.Sort();
+
+            return all.Count == 0 ? null : all[0];
+        }
+
+        #endregion
+
+        #region Private Method
 
         private static void Raycast(OurObjectManager objectManager, Vector3 position, Vector3 direction,
             ref List<HitResult> hit, float maxDist = float.MaxValue,
@@ -57,7 +72,6 @@ namespace GDGame.Utilities
             Ray ray = new Ray(position, direction);
             foreach (Actor3D actor3D in allObjects)
                 if (actor3D is OurCollidableObject collidableObject)
-                {
                     if (collidableObject.IsBlocking || !onlyCheckBlocking)
                     {
                         float? dist;
@@ -69,7 +83,6 @@ namespace GDGame.Utilities
                             hit.Add(result);
                         }
                     }
-                }
         }
 
         private static HitResult Raycast(OurObjectManager objectManager, Vector3 position, Vector3 direction,
@@ -78,17 +91,6 @@ namespace GDGame.Utilities
         {
             List<HitResult> all = RaycastAll(objectManager, position, direction, maxDist, ignoreList,
                 onlyCheckBlocking);
-            all.Sort();
-
-            return all.Count == 0 ? null : all[0];
-        }
-
-        public static HitResult Raycast(this Actor3D callingDrawnActor3D, OurObjectManager objectManager,
-            Vector3 position, Vector3 direction, bool ignoreSelf,
-            float maxDist = float.MaxValue, bool onlyCheckBlocking = true)
-        {
-            List<HitResult> all = RaycastAll(callingDrawnActor3D, objectManager, position, direction, ignoreSelf,
-                maxDist, onlyCheckBlocking);
             all.Sort();
 
             return all.Count == 0 ? null : all[0];
@@ -133,7 +135,7 @@ namespace GDGame.Utilities
 
             #endregion
 
-            #region Methods
+            #region Public Method
 
             public int CompareTo(HitResult other)
             {

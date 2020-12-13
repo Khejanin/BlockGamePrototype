@@ -4,6 +4,8 @@ namespace GDGame.Utilities
 {
     public class Smoother
     {
+        #region Enums
+
         public enum SmoothingMethod
         {
             Smooth,
@@ -12,6 +14,10 @@ namespace GDGame.Utilities
             Back,
             Linear
         }
+
+        #endregion
+
+        #region Public Method
 
         //This is a bit of a replacement of the curves, small but powerful and quite simple
         public static float SmoothValue(SmoothingMethod method, float x)
@@ -36,6 +42,7 @@ namespace GDGame.Utilities
 
             return x;
         }
-        
+
+        #endregion
     }
 }

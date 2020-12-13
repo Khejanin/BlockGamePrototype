@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 namespace GDGame.Controllers
 {
     /// <summary>
-    /// Player Camera Controller that rotates around the Player Actor.
+    ///     Player Camera Controller that rotates around the Player Actor.
     /// </summary>
     public class RotationAroundActor : Controller
     {
@@ -26,7 +26,8 @@ namespace GDGame.Controllers
 
         #region Constructors
 
-        public RotationAroundActor(string id, ControllerType controllerType, KeyboardManager keyboardManager, float elevationAngle, float distance) : base(id, controllerType)
+        public RotationAroundActor(string id, ControllerType controllerType, KeyboardManager keyboardManager,
+            float elevationAngle, float distance) : base(id, controllerType)
         {
             this.keyboardManager = keyboardManager;
             this.elevationAngle = elevationAngle;
@@ -44,7 +45,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region Override Methode
+        #region Override Method
 
         public override void Update(GameTime gameTime, IActor actor)
         {
@@ -65,7 +66,7 @@ namespace GDGame.Controllers
 
         #endregion
 
-        #region Methods
+        #region Private Method
 
         private void HandelInput()
         {

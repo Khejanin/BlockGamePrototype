@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
@@ -11,24 +10,38 @@ namespace GDGame.Controllers
 {
     public class UiTextureChanger : Controller
     {
-        private List<Texture2D> texture2Ds;
-        private UITextureObject uiTextureObject;
+        #region Private variables
+
         private float cooldown;
         private float currentCd;
         private int i;
+        private List<Texture2D> texture2Ds;
+        private UITextureObject uiTextureObject;
 
-        public UiTextureChanger(string id, ControllerType controllerType, List<Texture2D> texture2Ds, float cooldown) : base(id,
+        #endregion
+
+        #region Constructors
+
+        public UiTextureChanger(string id, ControllerType controllerType, List<Texture2D> texture2Ds,
+            float cooldown) : base(id,
             controllerType)
         {
             this.texture2Ds = texture2Ds;
             this.cooldown = cooldown;
         }
 
+        #endregion
+
+        #region Override Method
+
         public override void Update(GameTime gameTime, IActor actor)
         {
             uiTextureObject ??= actor as UITextureObject;
 
-            if (currentCd < cooldown) currentCd += gameTime.ElapsedGameTime.Milliseconds;
+            if (currentCd < cooldown)
+            {
+                currentCd += gameTime.ElapsedGameTime.Milliseconds;
+            }
             else
             {
                 if (uiTextureObject != null) uiTextureObject.Texture = texture2Ds[++i % texture2Ds.Count];
@@ -36,5 +49,7 @@ namespace GDGame.Controllers
                 currentCd = 0;
             }
         }
+
+        #endregion
     }
 }
