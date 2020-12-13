@@ -4,7 +4,6 @@ using GDGame.Component;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Game.Parameters.Effect;
-using GDGame.Managers;
 using GDGame.Utilities;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
@@ -24,11 +23,11 @@ namespace GDGame.Game.Actors
 
         private readonly PlayerTile player;
 
+        private bool coffeeDanger;
+
         private List<CoffeeInfo> coffeeInfo;
 
         private CoffeeMovementComponent coffeeMovementComponent;
-
-        private bool coffeeDanger;
 
         #endregion
 
@@ -41,7 +40,7 @@ namespace GDGame.Game.Actors
         {
             this.player = player;
             CoffeeInfo = coffeeInfo;
-            InitializeCollision(-Vector3.Up * coffeeInfo[0].Y);
+            InitializeCollision(-Vector3.Up * coffeeInfo[0].y);
             InitializeTile();
             IsMoving = false;
         }
@@ -59,7 +58,7 @@ namespace GDGame.Game.Actors
             {
                 Path.Clear();
 
-                foreach (CoffeeInfo info in value) Path.Add(new Vector3(0, info.Y, 0));
+                foreach (CoffeeInfo info in value) Path.Add(new Vector3(0, info.y, 0));
 
                 coffeeInfo = value;
             }
@@ -106,17 +105,16 @@ namespace GDGame.Game.Actors
                 if (coffeeMovementComponent != null)
                 {
                     TimeLeft = coffeeMovementComponent.GetTotalTimeLeft(player.Transform3D) / 1000f;
-                    
+
                     if (TimeLeft < 10f && !coffeeDanger)
                     {
-                        EventManager.FireEvent(new CoffeeEventInfo()
-                            {coffeeEventType = CoffeeEventType.CoffeeDanger});
+                        EventManager.FireEvent(new CoffeeEventInfo {coffeeEventType = CoffeeEventType.CoffeeDanger});
                         coffeeDanger = true;
                     }
 
                     if (TimeLeft > 10f && coffeeDanger)
                     {
-                        EventManager.FireEvent(new CoffeeEventInfo()
+                        EventManager.FireEvent(new CoffeeEventInfo
                             {coffeeEventType = CoffeeEventType.CoffeeDangerStop});
                         coffeeDanger = false;
                     }
@@ -133,16 +131,21 @@ namespace GDGame.Game.Actors
             {
                 if (CheckPointIndex == 0)
                 {
-                    EventManager.FireEvent(new CoffeeEventInfo(){coffeeEventType = CoffeeEventType.CoffeeStartMoving});
-                    EventManager.FireEvent(new SoundEventInfo(){soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.CoffeeStart,soundVolumeType = SoundVolumeType.Sfx});
+                    EventManager.FireEvent(new CoffeeEventInfo {coffeeEventType = CoffeeEventType.CoffeeStartMoving});
+                    EventManager.FireEvent(new SoundEventInfo
+                    {
+                        soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.CoffeeStart,
+                        soundVolumeType = SoundVolumeType.Sfx
+                    });
                     coffeeMovementComponent.Activate();
                     IsMoving = true;
                     TimeLeft = coffeeMovementComponent.GetTotalTimeLeft(player.Transform3D) / 1000f;
+                    ++CheckPointIndex;
                 }
                 else
                 {
-                    float target = Transform3D.Translation.Y - coffeeInfo[CheckPointIndex++].SetBackY;
-                    coffeeMovementComponent.StartLowering(target,target/500);
+                    float target = Transform3D.Translation.Y - coffeeInfo[CheckPointIndex++].setBackY;
+                    coffeeMovementComponent.StartLowering(target, target / 500);
                 }
             }
         }

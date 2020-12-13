@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using GDGame.Enums;
 using GDGame.EventSystem;
 using GDGame.Game.Parameters.Effect;
@@ -15,17 +14,18 @@ using static GDGame.Utilities.Raycaster;
 namespace GDGame.Actors
 {
     /// <summary>
-    /// This Tile represents the player
+    ///     This Tile represents the player
     /// </summary>
     public class PlayerTile : AttachableTile
     {
         #region Private variables
 
-        private Vector3 lastCheckpoint;
-        
+        private List<Vector3> checkpoints;
+
         //For debug/demo purposes (allows us to cycle through the checkpoints)
         private int currentCheckpointIndex;
-        private List<Vector3> checkpoints;
+
+        private Vector3 lastCheckpoint;
 
         #endregion
 
@@ -64,7 +64,12 @@ namespace GDGame.Actors
 
         #endregion
 
-        #region Override Methods
+        #region Override Method
+
+        public override void OnMoveEnd()
+        {
+            CheckAndProcessSurroundings(GetSurroundings(Transform3D.Translation));
+        }
 
         public override void Respawn()
         {
@@ -72,17 +77,12 @@ namespace GDGame.Actors
             Die(RespawnAtLastCheckpoint);
         }
 
-        public override void OnMoveEnd()
-        {
-            CheckAndProcessSurroundings(GetSurroundings(Transform3D.Translation));
-        }
-
         #endregion
 
-        #region Methods
+        #region Public Method
 
         /// <summary>
-        /// Method to attach to the Attachables around the Player.
+        ///     Method to attach to the Attachables around the Player.
         /// </summary>
         public void Attach()
         {
@@ -90,45 +90,14 @@ namespace GDGame.Actors
 
             AttachedTiles.Clear();
             foreach (AttachableTile tile in AttachCandidates.SelectMany(shape => shape.AttachableTiles))
-            { 
+            {
                 AttachedTiles.Add(tile);
                 tile.IsAttached = true;
             }
 
             IsAttached = true;
-            EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach});
-        }
-
-        /// <summary>
-        /// Method that performs raycasts to check what's around the player.
-        /// </summary>
-        /// <param name="surroundings"></param>
-        private void CheckAndProcessSurroundings(IEnumerable<PlayerSurroundCheck> surroundings)
-        {
-            List<MovableTile> detectedAttachableTiles = new List<MovableTile>();
-
-            foreach (PlayerSurroundCheck check in surroundings.Where(check => check.hit != null))
-                switch (check.hit.actor)
-                {
-                    case MovableTile t:
-                        detectedAttachableTiles.Add(t);
-                        break;
-                }
-
-            UpdateAttachCandidates(detectedAttachableTiles);
-        }
-
-        /// <summary>
-        /// Spawns the player at the next checkpoint. (Used for debug/demo purposes)
-        /// </summary>
-        public void SpawnAtNextCheckpoint()
-        {
-            if (checkpoints.Count == 0) return;
-
-            Transform3D.Translation = checkpoints[currentCheckpointIndex++];
-
-            if (currentCheckpointIndex == checkpoints.Count)
-                currentCheckpointIndex = 0;
+            EventManager.FireEvent(new SoundEventInfo
+                {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach});
         }
 
         public new object Clone()
@@ -151,7 +120,63 @@ namespace GDGame.Actors
 
             IsAttached = false;
             AttachedTiles.Clear();
-            //CheckAndProcessSurroundings(GetSurroundings(Transform3D.Translation));
+            EventManager.FireEvent(new SoundEventInfo
+                {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerDetach});
+        }
+
+        public void SetRotatePoint(Vector3 direction)
+        {
+            UpdateRotatePoints();
+
+            Vector3 rotatePoint = Vector3.Zero;
+
+            if (direction == Vector3.UnitX)
+                rotatePoint = rightRotatePoint;
+            else if (direction == -Vector3.UnitX)
+                rotatePoint = leftRotatePoint;
+            else if (direction == -Vector3.UnitZ)
+                rotatePoint = forwardRotatePoint;
+            else if (direction == Vector3.UnitZ)
+                rotatePoint = backwardRotatePoint;
+
+            RotatePoint = rotatePoint;
+            foreach (AttachableTile tile in AttachedTiles) tile.RotatePoint = RotatePoint;
+        }
+
+        /// <summary>
+        ///     Spawns the player at the next checkpoint. (Used for debug/demo purposes)
+        /// </summary>
+        public void SpawnAtNextCheckpoint()
+        {
+            if (checkpoints.Count == 0) return;
+
+            Transform3D.Translation = checkpoints[currentCheckpointIndex++];
+
+            if (currentCheckpointIndex == checkpoints.Count)
+                currentCheckpointIndex = 0;
+        }
+
+        #endregion
+
+        #region Private Method
+
+        /// <summary>
+        ///     Method that performs raycasts to check what's around the player.
+        /// </summary>
+        /// <param name="surroundings"></param>
+        private void CheckAndProcessSurroundings(IEnumerable<PlayerSurroundCheck> surroundings)
+        {
+            List<MovableTile> detectedAttachableTiles = new List<MovableTile>();
+
+            foreach (PlayerSurroundCheck check in surroundings.Where(check => check.hit != null))
+                switch (check.hit.actor)
+                {
+                    case MovableTile t:
+                        detectedAttachableTiles.Add(t);
+                        break;
+                }
+
+            UpdateAttachCandidates(detectedAttachableTiles);
         }
 
         private IEnumerable<PlayerSurroundCheck> GetSurroundings(Vector3 translation)
@@ -191,25 +216,6 @@ namespace GDGame.Actors
         {
             if (position != null)
                 lastCheckpoint = (Vector3) position;
-        }
-
-        public void SetRotatePoint(Vector3 direction)
-        {
-            UpdateRotatePoints();
-
-            Vector3 rotatePoint = Vector3.Zero;
-
-            if (direction == Vector3.UnitX)
-                rotatePoint = rightRotatePoint;
-            else if (direction == -Vector3.UnitX)
-                rotatePoint = leftRotatePoint;
-            else if (direction == -Vector3.UnitZ)
-                rotatePoint = forwardRotatePoint;
-            else if (direction == Vector3.UnitZ)
-                rotatePoint = backwardRotatePoint;
-
-            RotatePoint = rotatePoint;
-            foreach (AttachableTile tile in AttachedTiles) tile.RotatePoint = RotatePoint;
         }
 
         private void UpdateAttachCandidates(IEnumerable<MovableTile> detectedAttachableTiles)

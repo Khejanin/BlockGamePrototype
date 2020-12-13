@@ -605,7 +605,7 @@ namespace GDGame.Managers
                     case ETileType.Player:
                     case ETileType.Attachable:
                         EventManager.FireEvent(new ActivatorEventInfo
-                            {type = ActivatorEventType.Activate, id = (skin0.Owner.ExternalData as Tile).activatorId});
+                            {type = ActivatorEventType.Activate, id = ((Tile) skin0.Owner.ExternalData).activatorId});
                         break;
                 }
 

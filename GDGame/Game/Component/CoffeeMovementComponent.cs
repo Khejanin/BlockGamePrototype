@@ -48,10 +48,10 @@ namespace GDGame.Component
         protected override void MoveToNextPoint()
         {
             destination = NextPathPoint();
-            speed = (destination.Y - parent.Transform3D.Translation.Y)/coffeeParent.CoffeeInfo[currentPositionIndex].TimeInMs;
+            speed = (destination.Y - parent.Transform3D.Translation.Y)/coffeeParent.CoffeeInfo[currentPositionIndex].timeInMs;
         }
 
-        protected void PointReached()
+        private void PointReached()
         {
             MoveToNextPoint();
         }
@@ -64,7 +64,7 @@ namespace GDGame.Component
                 
                 if (isLowering)
                 {
-                    spd -= loweringSpeed;
+                    spd = loweringSpeed;
                     if (parent.Transform3D.Translation.Y + speed < loweringTarget)
                     {
                         parent.SetTranslation(Vector3.Up * loweringTarget);

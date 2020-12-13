@@ -107,7 +107,8 @@ namespace GDGame.Enums
         TrapDeath,
         MenuButtonClick,
         TrapDeathWater,
-        CoffeeStart
+        CoffeeStart,
+        PlayerDetach
     }
 
     public enum SoundCategory : sbyte

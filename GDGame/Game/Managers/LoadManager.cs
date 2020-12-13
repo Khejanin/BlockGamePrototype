@@ -79,6 +79,7 @@ namespace GDGame.Managers
 
             main.SoundManager.AddSoundEffect(SfxType.PlayerMove, main.Content.Load<SoundEffect>("Assets/Sound/Effects/step1"));
             main.SoundManager.AddSoundEffect(SfxType.PlayerAttach, main.Content.Load<SoundEffect>("Assets/Sound/Effects/attachBlock"));
+            main.SoundManager.AddSoundEffect(SfxType.PlayerDetach, main.Content.Load<SoundEffect>("Assets/Sound/Effects/detachBlock"));
             //try this one maybe
             //main.SoundManager.AddSoundEffect(SfxType.PlayerAttach, main.Content.Load<SoundEffect>("Assets/Sound/Effects/attach"));$
             
