@@ -127,7 +127,7 @@ namespace GDGame.Managers
                 Texture2D texture2D = main.Textures["YellowSticker"];
                 uiButtonObject.Texture = texture2D;
                 uiButtonObject.Transform2D = new Transform2D(
-                    main.ScreenCentre - Vector2.UnitY * -200 + Vector2.UnitX * 400, 0, Vector2.One,
+                    main.ScreenCentre - Vector2.UnitY * -150 + Vector2.UnitX * 400, 0, Vector2.One,
                     new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
                     new Integer2(texture2D.Width, texture2D.Height));
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
@@ -326,14 +326,14 @@ namespace GDGame.Managers
                 text = "Volume";
                 uiTextObject.ID = "LoseText";
                 uiTextObject.Text = text;
-                uiTextObject.Color = Color.Yellow;
+                uiTextObject.Color = Color.Black;
                 uiTextObject.Transform2D.Origin = new Vector2(main.Fonts["Arial"].MeasureString(text).X / 2,
                     main.Fonts["Arial"].MeasureString(text).Y / 2);
-                uiTextObject.Transform2D.Translation = main.ScreenCentre - Vector2.UnitY * 250;
+                uiTextObject.Transform2D.Translation = main.ScreenCentre - Vector2.UnitY * -280 + Vector2.UnitX * 500;
                 main.MenuManager.Add(menu, uiTextObject);
             }
 
-            text = "<";
+            text = "-";
             if (((UIButtonObject) main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)
             {
                 uiButtonObject.Text = text;
@@ -349,7 +349,7 @@ namespace GDGame.Managers
                 main.MenuManager.Add(menu, uiButtonObject);
             }
 
-            text = ">";
+            text = "+";
             uiButtonObject = ((UIButtonObject) main.UiArchetypes["button"]).Clone() as UIButtonObject;
             if (uiButtonObject != null)
             {
