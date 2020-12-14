@@ -116,7 +116,7 @@ namespace GDGame.Game.Parameters.Effect
         #region Private variables
 
         private BasicEffect basicEffect;
-        private Color emissiveColor;
+        private Color color;
 
         #endregion
 
@@ -127,7 +127,7 @@ namespace GDGame.Game.Parameters.Effect
             Texture = t;
             Color = c;
             Alpha = a;
-            emissiveColor = Color.Transparent;
+            color = Color.Transparent;
             basicEffect = effect;
         }
 
@@ -136,7 +136,7 @@ namespace GDGame.Game.Parameters.Effect
             Texture = t;
             Color = c;
             Alpha = a;
-            emissiveColor = e;
+            color = e;
             basicEffect = effect;
         }
 
@@ -146,7 +146,11 @@ namespace GDGame.Game.Parameters.Effect
 
         public float Alpha { get; set; }
 
-        public Color Color { get; set; }
+        public Color Color
+        {
+            get => color;
+            set => color = value;
+        }
 
         public Texture2D Texture { get; set; }
 
@@ -156,7 +160,7 @@ namespace GDGame.Game.Parameters.Effect
 
         public override object Clone()
         {
-            return new BasicEffectParameters(basicEffect, Texture, Color, Alpha, emissiveColor);
+            return new BasicEffectParameters(basicEffect, Texture, Color, Alpha, color);
         }
 
         public override void DrawMesh(Matrix world, Camera3D camera3D, Model model, Matrix[] boneTransforms,
@@ -185,7 +189,7 @@ namespace GDGame.Game.Parameters.Effect
         {
             basicEffect.Alpha = Alpha;
             if (Texture != null) basicEffect.Texture = Texture;
-            basicEffect.EmissiveColor = emissiveColor.ToVector3();
+            basicEffect.EmissiveColor = color.ToVector3();
             basicEffect.View = camera3D.View;
             basicEffect.Projection = camera3D.Projection;
             basicEffect.World = world;
@@ -237,6 +241,13 @@ namespace GDGame.Game.Parameters.Effect
             set => normalTexture = value;
         }
 
+        public Color Color
+        {
+            get => diffuseColor;
+            set => diffuseColor = value;
+        }
+        
+        
         #endregion
 
         #region Override Method

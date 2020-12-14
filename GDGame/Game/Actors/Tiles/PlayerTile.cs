@@ -91,6 +91,8 @@ namespace GDGame.Actors
             AttachedTiles.Clear();
             foreach (AttachableTile tile in AttachCandidates.SelectMany(shape => shape.AttachableTiles))
             {
+                BasicEffectParameters basicEffectParameters = tile.EffectParameters as BasicEffectParameters;
+                basicEffectParameters.Color = Color.Crimson;
                 AttachedTiles.Add(tile);
                 tile.IsAttached = true;
             }
@@ -114,7 +116,7 @@ namespace GDGame.Actors
         {
             foreach (AttachableTile tile in AttachedTiles)
             {
-                ((BasicEffectParameters) tile.EffectParameters).Color = Color.White;
+                ((BasicEffectParameters) tile.EffectParameters).Color = Color.Black;
                 tile.IsAttached = false;
             }
 

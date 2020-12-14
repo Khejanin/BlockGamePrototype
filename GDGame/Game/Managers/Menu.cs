@@ -98,7 +98,7 @@ namespace GDGame.Managers
             uiTextureObject = ((UITextureObject) main.UiArchetypes["texture"]).Clone() as UITextureObject;
             if (uiTextureObject != null)
             {
-                Texture2D texture2D = main.Textures["Sad"];
+                Texture2D texture2D = main.Textures["Happy"];
                 uiTextureObject.Texture = texture2D;
                 uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
                 uiTextureObject.Transform2D.Origin = new Vector2(texture2D.Width / 2f, texture2D.Height / 2f);

@@ -70,7 +70,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
      
     float4 diffuse = saturate(dot(-Light,normal));
     
-    return  color * diffuse * DiffuseIntensity + color * float4(0.5,0.5,0.5,1);
+    return  DiffuseColor * color * diffuse * DiffuseIntensity + color * float4(0.5,0.5,0.5,1);
 }
 
 technique BasicColorDrawing

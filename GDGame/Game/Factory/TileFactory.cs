@@ -192,6 +192,8 @@ namespace GDGame.Factory
             if (randomN > 70 && randomN < 90) texStringTiling = "4x";
             else if (randomN > 90) texStringTiling = "8x";
 
+            bool dark = position.Y % 2 != 0;
+
             switch (tileType)
             {
                 case Tile.StaticTileType.Chocolate:
@@ -215,6 +217,7 @@ namespace GDGame.Factory
                 {
                     normalEffectParameters.ColorTexture = textures[texStringType + texStringTiling];
                     normalEffectParameters.NormalTexture = textures["big-normalmap" + texStringTiling];
+                    if (dark) normalEffectParameters.Color = new Color(150,150,150,255);
                 }
             }
 

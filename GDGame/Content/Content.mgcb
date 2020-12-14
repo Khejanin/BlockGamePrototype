@@ -2170,6 +2170,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/GreenSticker.png
 
+#begin Assets/Textures/UI/Happy.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/UI/Happy.png
+
 #begin Assets/Textures/UI/Mug-Collected.png
 /importer:TextureImporter
 /processor:TextureProcessor
