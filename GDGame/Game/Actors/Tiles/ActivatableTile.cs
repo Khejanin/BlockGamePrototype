@@ -31,7 +31,7 @@ namespace GDGame.Actors
             ETileType tileType) : base(
             id, actorType, statusType, transform, effectParameters, model, isBlocking, tileType)
         {
-            //Targets = new List<IActivatable>();
+            
         }
 
         #endregion

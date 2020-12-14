@@ -153,15 +153,6 @@ namespace GDGame.Utilities
         private void SetActivatorIds(LevelData data, Tile[,,] grid)
         {
             foreach (Vector3 targetKey in data.activatorTargets.Keys)
-                //List<IActivatable> targets = new List<IActivatable>();
-                //ButtonTile button = grid[(int)targetKey.X, (int)targetKey.Y,
-                //    (int)data.gridSize.Z - 1 - (int)targetKey.Z] as ButtonTile;
-
-                //foreach (var target in data.activatorTargets[buttonTargetKey])
-                //    targets.Add(grid[(int)target.X, (int)target.Y, (int)target.Z] as IActivatable);
-
-                //button.Targets = targets;
-
                 grid[(int) targetKey.X, (int) targetKey.Y, (int) data.gridSize.Z - 1 - (int) targetKey.Z].activatorId =
                     data.activatorTargets[targetKey];
         }

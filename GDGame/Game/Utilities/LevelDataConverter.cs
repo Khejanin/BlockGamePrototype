@@ -107,7 +107,7 @@ namespace GDGame.Utilities
                         else
                         {
                             JSONObject obj = jsonZ[z].Obj;
-                            data.gridValues[x, y, z] = (ETileType) obj.GetNumber("TileType");
+                            ETileType tileType = (ETileType) obj.GetNumber("TileType");
 
                             //check if collectible and store collectibleId to data
                             string collectibleId = obj.GetString("CollectibleID");
@@ -123,20 +123,22 @@ namespace GDGame.Utilities
                                     data.shapes.Add(shapeId, new List<Vector3> {new Vector3(x, y, z)});
 
                             //check if path moving tile and add paths to data
-                            if (data.gridValues[x, y, z] == ETileType.Enemy ||
-                                data.gridValues[x, y, z] == ETileType.MovingPlatform)
+                            if (tileType == ETileType.Enemy || tileType == ETileType.MovingPlatform)
                             {
                                 JSONArray path = obj.GetArray("Path");
                                 List<Vector3> pathPositions = path.Select(t => t.Obj).Select(pathObj =>
-                                    new Vector3((int) pathObj["X"].Number, (int) pathObj["Y"].Number,
-                                        (int) pathObj["Z"].Number)).ToList();
+                                    new Vector3((int) Math.Round(pathObj["X"].Number), (int) Math.Round(pathObj["Y"].Number),
+                                        (int) Math.Round(pathObj["Z"].Number))).ToList();
 
                                 data.movingTilePaths.Add(new Vector3(x, y, z), pathPositions);
                             }
 
                             //check if button and add targets to data
-                            if (data.gridValues[x, y, z] == ETileType.Button)
-                                data.activatorTargets.Add(new Vector3(x, y, z), (int) obj.GetNumber("ActivatorId"));
+                            if (tileType == ETileType.Button || tileType == ETileType.MovingPlatform)
+                                data.activatorTargets.Add(new Vector3(x, y, z), (int) obj.GetNumber("ActivatorID"));
+
+                            //set the tile type in the grid
+                            data.gridValues[x, y, z] = tileType;
                         }
                 }
             }

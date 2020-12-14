@@ -510,9 +510,13 @@ namespace GDGame.Managers
 
         #region Events
 
+        /*
+         * Here we define all the callbacks that our objects with colliders will use.
+         * We didn't want to make custom classes so we just pass the callback in the constructor of the component.
+         */
+
         private bool OnActivatableCollisionEnter(CollisionSkin skin0, CollisionSkin skin1)
         {
-            Debug.WriteLine("Collision Enter!");
             if (skin1.Owner.ExternalData is Tile collide)
                 switch (collide.TileType)
                 {
@@ -625,10 +629,5 @@ namespace GDGame.Managers
         }
 
         #endregion
-
-        /*
-         * Here we define all the callbacks that our objects with colliders will use.
-         * We didn't want to make custom classes so we just pass the callback in the constructor of the component.
-         */
     }
 }
