@@ -461,6 +461,8 @@ namespace GDGame
                     isPlaying = false;
                     break;
                 case GameState.Won:
+                    EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPause, null));
+                    MenuManager.SetScene("WinScreen");
                     isPlaying = false;
                     break;
                 default:

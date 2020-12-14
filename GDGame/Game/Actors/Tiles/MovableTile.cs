@@ -42,11 +42,14 @@ namespace GDGame.Actors
                 isRelative = false, destination = Vector3.Zero,
                 maxTime = 1000,
                 smoothing = Smoother.SmoothingMethod.Accelerate, loopMethod = LoopMethod.PlayOnce,
-                callback = callbackAfterDeath, resetAferDone = true
+                resetAferDone = true
             });
 
             this.RotateTo(new AnimationEventData
-                {isRelative = true, destination = Vector3.Up * 360, maxTime = 1000, resetAferDone = true});
+            {
+                isRelative = true, destination = Vector3.Up * 360, maxTime = 1000, resetAferDone = true,
+                callback = callbackAfterDeath
+            });
         }
 
         public override bool Equals(object obj)

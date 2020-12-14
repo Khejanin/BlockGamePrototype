@@ -116,6 +116,7 @@ namespace GDGame.Actors
             if (!Body.IsActive)
                 Body.SetActive();
             SetTranslation(SpawnPos);
+            Transform3D.RotationInDegrees = Vector3.Zero;
         }
 
         //Method which sets a Translation and does everything so it also works for the Body

@@ -12,6 +12,7 @@ using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
 using GDLibrary.Enums;
+using GDLibrary.Events;
 using GDLibrary.Parameters;
 using JigLibX.Collision;
 using Microsoft.Xna.Framework;
@@ -387,6 +388,7 @@ namespace GDGame.Managers
             effectParameters = new BasicEffectParameters(main.ModelEffect, main.Textures["sugarbox"], Color.White, 1);
             Tile goal = new Tile("Goal", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 effectParameters, main.Models["SugarBox"], false, ETileType.Win);
+            goal.ControllerList.Add(new ColliderComponent("CCG", ControllerType.Collider, OnGoalCollided));
 
             //Create the Checkpoint Tile
             effectParameters =
@@ -584,6 +586,19 @@ namespace GDGame.Managers
                             });
                         }
 
+                        break;
+                }
+
+            return true;
+        }
+
+        private bool OnGoalCollided(CollisionSkin skin0, CollisionSkin skin1)
+        {
+            if (skin1.Owner.ExternalData is Tile collide)
+                switch (collide.TileType)
+                {
+                    case ETileType.Player:
+                        EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Won});
                         break;
                 }
 

@@ -71,6 +71,51 @@ namespace GDGame.Managers
             }
         }
 
+        private void InitEndWinUi()
+        {
+            if (((UITextureObject) main.UiArchetypes["texture"]).Clone() is UITextureObject uiTextureObject)
+            {
+                Texture2D texture2D = main.Textures["EndScreen"];
+                uiTextureObject.Texture = texture2D;
+                uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                uiTextureObject.Transform2D.Origin = new Vector2(texture2D.Width / 2f, texture2D.Height / 2f);
+                uiTextureObject.Transform2D.Translation = main.ScreenCentre;
+                main.MenuManager.Add("WinScreen", uiTextureObject);
+            }
+
+            if (((UITextObject) main.UiArchetypes["text"]).Clone() is UITextObject uiTextObject)
+            {
+                string text = "A winner is you :)";
+                uiTextObject.ID = "WinText";
+                uiTextObject.Text = text;
+                uiTextObject.Color = Color.Yellow;
+                uiTextObject.Transform2D.Origin = new Vector2(main.Fonts["Arial"].MeasureString(text).X / 2,
+                    main.Fonts["Arial"].MeasureString(text).Y / 2);
+                uiTextObject.Transform2D.Translation = main.ScreenCentre - Vector2.UnitY * 250;
+                main.MenuManager.Add("WinScreen", uiTextObject);
+            }
+
+            uiTextureObject = ((UITextureObject) main.UiArchetypes["texture"]).Clone() as UITextureObject;
+            if (uiTextureObject != null)
+            {
+                Texture2D texture2D = main.Textures["Sad"];
+                uiTextureObject.Texture = texture2D;
+                uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                uiTextureObject.Transform2D.Origin = new Vector2(texture2D.Width / 2f, texture2D.Height / 2f);
+                uiTextureObject.Transform2D.Translation = main.ScreenCentre - Vector2.UnitX * 250;
+                main.MenuManager.Add("WinScreen", uiTextureObject);
+            }
+
+            if (((UIButtonObject) main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)
+            {
+                string text = "Continue";
+                uiButtonObject.Text = text;
+                uiButtonObject.ID = text;
+                uiButtonObject.Transform2D.Translation = main.ScreenCentre;
+                main.MenuManager.Add("WinScreen", uiButtonObject);
+            }
+        }
+        
         private void InitGameOptionsUi()
         {
             if (((UITextureObject) main.UiArchetypes["texture"]).Clone() is UITextureObject uiTextureObject)
@@ -308,6 +353,7 @@ namespace GDGame.Managers
             InitMenuUi();
             InitOptionsUi();
             InitEndUi();
+            InitEndWinUi();
             InitInfoUi();
             InitInfoUiInGame();
             InitGameOptionsUi();
