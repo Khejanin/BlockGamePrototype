@@ -372,7 +372,7 @@ namespace GDGame.Managers
             //Create the Puddle (We call them spikes because they kill the player on collision)
             coffeeEffect = (CoffeeEffectParameters) coffeeEffect.Clone();
             coffeeEffect.UvTilesTexture = main.Textures["DropUV"];
-            coffeeEffect.CoffeeColor = new Color(Color.Green, 255);
+            coffeeEffect.CoffeeColor = new Color(new Color(239,228,176), 255);
             Tile spike = new Tile("Spike", ActorType.Primitive, StatusType.Drawn | StatusType.Update, transform3D,
                 coffeeEffect, main.Models["Puddle"], false, ETileType.Spike);
             spike.ControllerList.Add(new ColliderComponent("CC", ControllerType.Collider, OnHostileCollision));

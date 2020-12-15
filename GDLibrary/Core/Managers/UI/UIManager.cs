@@ -1,4 +1,5 @@
-﻿using GDLibrary.Actors;
+﻿using System;
+using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.GameComponents;
 using Microsoft.Xna.Framework;
@@ -7,7 +8,7 @@ using System.Collections.Generic;
 
 namespace GDLibrary.Managers
 {
-    public class UIManager : PausableDrawableGameComponent
+    public class UIManager : PausableDrawableGameComponent, IDisposable
     {
         #region Fields
         private SpriteBatch spriteBatch;
@@ -57,6 +58,16 @@ namespace GDLibrary.Managers
             }
             spriteBatch.End();
             base.ApplyDraw(gameTime);
+        }
+
+        public new void Dispose()
+        {
+            for (int i = 0; i< uiObjectList.Count; i++)
+            {
+                uiObjectList[i].ControllerList.Dispose();
+                uiObjectList[i].EventHandlerList.Dispose();
+            }
+            uiObjectList.Clear();
         }
     }
 }

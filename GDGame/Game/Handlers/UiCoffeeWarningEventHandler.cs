@@ -1,3 +1,4 @@
+using System;
 using GDGame.EventSystem;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
@@ -6,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Controllers
 {
-    public class UiCoffeeWarningEventHandler : EventHandler
+    public class UiCoffeeWarningEventHandler : EventHandler, IDisposable
     {
         #region Private variables
 
@@ -42,5 +43,12 @@ namespace GDGame.Controllers
         }
 
         #endregion
+
+        public override void Dispose()
+        {
+            initialTexture?.Dispose();
+            textureToSwitch?.Dispose();
+            EventManager.UnregisterListener<CoffeeEventInfo>(HandleEvent);
+        }
     }
 }

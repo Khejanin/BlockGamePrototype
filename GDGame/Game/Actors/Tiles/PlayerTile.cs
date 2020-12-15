@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GDGame.Enums;
 using GDGame.EventSystem;
@@ -16,7 +17,7 @@ namespace GDGame.Actors
     /// <summary>
     ///     This Tile represents the player
     /// </summary>
-    public class PlayerTile : AttachableTile
+    public class PlayerTile : AttachableTile, IDisposable
     {
         #region Private variables
 
@@ -56,7 +57,8 @@ namespace GDGame.Actors
         public override void InitializeTile()
         {
             EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
-            EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.SetListener, listenerTransform = Transform3D});
+            EventManager.FireEvent(new SoundEventInfo
+                {soundEventType = SoundEventType.SetListener, listenerTransform = Transform3D});
             lastCheckpoint = Transform3D.Translation;
             base.InitializeTile();
         }
@@ -90,15 +92,17 @@ namespace GDGame.Actors
             AttachedTiles.Clear();
             foreach (AttachableTile tile in AttachCandidates.SelectMany(shape => shape.AttachableTiles))
             {
-                BasicEffectParameters basicEffectParameters = tile.EffectParameters as BasicEffectParameters;
-                basicEffectParameters.Color = Color.Crimson;
+                if (tile.EffectParameters is BasicEffectParameters basicEffectParameters) basicEffectParameters.Color = Color.Crimson;
                 AttachedTiles.Add(tile);
                 tile.IsAttached = true;
             }
 
             IsAttached = true;
-            EventManager.FireEvent(new SoundEventInfo 
-                {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach, soundLocation = Transform3D.Translation});
+            EventManager.FireEvent(new SoundEventInfo
+            {
+                soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach,
+                soundLocation = Transform3D.Translation
+            });
         }
 
         public new object Clone()
@@ -122,7 +126,10 @@ namespace GDGame.Actors
             IsAttached = false;
             AttachedTiles.Clear();
             EventManager.FireEvent(new SoundEventInfo
-                {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerDetach, soundLocation = Transform3D.Translation});
+            {
+                soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerDetach,
+                soundLocation = Transform3D.Translation
+            });
         }
 
         public void SetRotatePoint(Vector3 direction)
@@ -292,5 +299,10 @@ namespace GDGame.Actors
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            EventManager.UnregisterListener<PlayerEventInfo>(HandlePlayerEvent);
+        }
     }
 }

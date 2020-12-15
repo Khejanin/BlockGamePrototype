@@ -19,7 +19,7 @@ namespace GDGame.Controllers
     /// <summary>
     ///     An ActivatableController is a Controller who's functionality can be Activated in different ways.
     /// </summary>
-    public abstract class ActivatableController : Controller, IActivatable, ICloneable
+    public abstract class ActivatableController : Controller, IActivatable, IDisposable
     {
         #region Private variables
 
@@ -108,5 +108,10 @@ namespace GDGame.Controllers
         protected abstract void OnDeactivated();
 
         #endregion
+
+        public override void Dispose()
+        {
+            EventManager.UnregisterListener<ActivatorEventInfo>(OnActivatorEvent);
+        }
     }
 }

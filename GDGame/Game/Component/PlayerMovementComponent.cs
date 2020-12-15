@@ -18,7 +18,7 @@ namespace GDGame.Component
     ///     Component that is responsible for making the Player Move checks and setting everything up so that the Move updates
     ///     in TileMovementComponent.cs can work correctly.
     /// </summary>
-    public class PlayerMovementComponent : Controller, ICloneable
+    public class PlayerMovementComponent : Controller, ICloneable, IDisposable
     {
         #region Private variables
 
@@ -118,5 +118,10 @@ namespace GDGame.Component
         }
 
         #endregion
+
+        public override void Dispose()
+        {
+            EventManager.UnregisterListener<MovementEvent>(HandleMovement);
+        }
     }
 }

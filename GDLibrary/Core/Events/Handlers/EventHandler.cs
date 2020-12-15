@@ -1,4 +1,5 @@
-﻿using GDLibrary.Actors;
+﻿using System;
+using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.Interfaces;
@@ -6,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame
 {
-    public class EventHandler : IEventHandler
+    public class EventHandler : IEventHandler, IDisposable
     {
         private IActor parent;
         private EventCategoryType eventCategoryType;
@@ -28,6 +29,10 @@ namespace GDGame
         public virtual void HandleEvent(EventData eventData)
         {
            
+        }
+
+        public virtual void Dispose()
+        {
         }
     }
 }

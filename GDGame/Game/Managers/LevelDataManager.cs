@@ -1,4 +1,5 @@
-﻿using GDGame.Enums;
+﻿using System;
+using GDGame.Enums;
 using GDGame.EventSystem;
 
 namespace GDGame.Managers
@@ -6,7 +7,7 @@ namespace GDGame.Managers
     /// <summary>
     ///     Class that keeps track of the player's progress and moves and saves said progress for the levels.
     /// </summary>
-    public class LevelDataManager
+    public class LevelDataManager : IDisposable
     {
         #region Private variables
 
@@ -37,5 +38,10 @@ namespace GDGame.Managers
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            EventManager.UnregisterListener<PlayerEventInfo>(HandlePlayerEvent);
+        }
     }
 }

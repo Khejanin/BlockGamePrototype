@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using GDGame.Actors;
 using GDGame.Component;
@@ -17,7 +18,7 @@ namespace GDGame.Game.Actors
     /// <summary>
     ///     Custom implementation of the PathMoveTile to work for the Coffee.
     /// </summary>
-    public class Coffee : PathMoveTile
+    public class Coffee : PathMoveTile, IDisposable
     {
         #region Private variables
 
@@ -150,5 +151,11 @@ namespace GDGame.Game.Actors
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            coffeeMovementComponent?.Dispose();
+            EventManager.UnregisterListener<PlayerEventInfo>(CheckPointReached);
+        }
     }
 }

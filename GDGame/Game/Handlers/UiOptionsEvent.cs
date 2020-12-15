@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Game.Handlers
 {
-    public class UiOptionsEvent : EventHandler
+    public class UiOptionsEvent : EventHandler, IDisposable
     {
         #region Private variables
 
@@ -50,5 +50,12 @@ namespace GDGame.Game.Handlers
         }
 
         #endregion
+
+        public override void Dispose()
+        {
+            textureEasy?.Dispose();
+            textureHard?.Dispose();
+            EventManager.UnregisterListener<OptionsEventInfo>(HandleEvent);
+        }
     }
 }

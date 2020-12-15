@@ -12,7 +12,7 @@ namespace GDGame.Component
     /// <summary>
     ///     Component that
     /// </summary>
-    public class PlayerDeathComponent : Controller, ICloneable
+    public class PlayerDeathComponent : Controller, ICloneable, IDisposable
     {
         #region Private variables
 
@@ -81,5 +81,10 @@ namespace GDGame.Component
         }
 
         #endregion
+
+        public override void Dispose()
+        {
+            EventManager.UnregisterListener<TileEventInfo>(HandleEvent);
+        }
     }
 }

@@ -272,9 +272,7 @@ namespace GDGame
 
         private void InitUiAndMenu()
         {
-            GameUi gameUi = new GameUi(this);
-            gameUi.InitGameUi();
-
+            InitUi();
             Menu menu = new Menu(this);
             menu.InitUi();
         }
@@ -303,7 +301,7 @@ namespace GDGame
             UIButtonObject uiButtonObject = new UIButtonObject("button", ActorType.UIButtonObject,
                 StatusType.Update | StatusType.Drawn, transform2D, Color.White, 0.5f,
                 SpriteEffects.None, texture, new Rectangle(0, 0, texture.Width, texture.Height), text, Fonts["Arial"],
-                Vector2.One, Color.White, Vector2.Zero);
+                Vector2.One, GameConstants.colorGold, Vector2.Zero);
             uiButtonObject.ControllerList.Add(new UiScaleLerpController("USC", ControllerType.Ui, mouseManager,
                 new TrigonometricParameters(0.05f, 0.1f, 180)));
 
@@ -413,13 +411,26 @@ namespace GDGame
             {
                 game?.UnRegisterGame();
                 game?.RemoveCamera();
+                List<Actor3D> actor3Ds = ObjectManager.ActorList.FindAll(actor3D => actor3D != null);
+                foreach (Actor3D actor3D in actor3Ds)
+                {
+                    actor3D.ControllerList.Dispose();
+                    actor3D.EventHandlerList.Dispose();
+                }
                 ObjectManager.RemoveAll(actor3D => actor3D != null);
-                Components.Remove(physicsManager);
-                physicsManager = new OurPhysicsManager(this, StatusType.Update);
-                Components.Add(physicsManager);
+                UiManager.Dispose();
+                InitUi();
+                physicsManager.Dispose();
+                SoundManager.Dispose();
                 player = null;
                 CameraManager.ActiveCameraIndex = 0;
             }
+        }
+
+        private void InitUi()
+        {
+            GameUi gameUi = new GameUi(this);
+            gameUi.InitGameUi();
         }
 
 
