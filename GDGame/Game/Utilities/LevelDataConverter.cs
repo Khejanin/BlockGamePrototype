@@ -40,13 +40,13 @@ namespace GDGame.Utilities
             JSONObject tileSizeJson = json.GetObject("TileSize");
             JSONObject boundsOffsetJson = json.GetObject("BoundsOffset");
 
-            Vector3 gridSize = new Vector3((float) gridSizeJson.GetNumber("X"), (float) gridSizeJson.GetNumber("Y"),
-                (float) gridSizeJson.GetNumber("Z"));
-            Vector3 tileSize = new Vector3((float) tileSizeJson.GetNumber("X"), (float) tileSizeJson.GetNumber("Y"),
-                (float) tileSizeJson.GetNumber("Z"));
-            Vector3 gridBoundsOffset = new Vector3((float) boundsOffsetJson.GetNumber("X"),
-                (float) boundsOffsetJson.GetNumber("Y"),
-                (float) boundsOffsetJson.GetNumber("Z"));
+            Vector3 gridSize = new Vector3((float)Math.Round(gridSizeJson.GetNumber("X")), (float) Math.Round(gridSizeJson.GetNumber("Y")),
+                (float) Math.Round(gridSizeJson.GetNumber("Z")));
+            Vector3 tileSize = new Vector3((float) Math.Round(tileSizeJson.GetNumber("X")), (float) Math.Round(tileSizeJson.GetNumber("Y")),
+                (float) Math.Round(tileSizeJson.GetNumber("Z")));
+            Vector3 gridBoundsOffset = new Vector3((float) Math.Round(boundsOffsetJson.GetNumber("X")),
+                (float) Math.Round(boundsOffsetJson.GetNumber("Y")),
+                (float) Math.Round(boundsOffsetJson.GetNumber("Z")));
 
             LevelData data = new LevelData
             {
@@ -79,7 +79,7 @@ namespace GDGame.Utilities
                 data.cameraMaxTime = time;
             }
 
-            //Ser Coffee Rising information
+            //Set Coffee Rising information
             JSONArray coffeeInfoArray = json.GetArray("CoffeeInfo");
             foreach (JSONValue value in coffeeInfoArray)
             {
