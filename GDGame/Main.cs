@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using GDGame.Actors;
+using GDGame.Component;
 using GDGame.Constants;
 using GDGame.Controllers;
 using GDGame.Enums;
 using GDGame.EventSystem;
+using GDGame.Factory;
 using GDGame.Game.Parameters.Effect;
 using GDGame.Managers;
+using GDGame.Utilities;
 using GDLibrary.Actors;
 using GDLibrary.Containers;
+using GDLibrary.Controllers;
 using GDLibrary.Enums;
 using GDLibrary.Events;
 using GDLibrary.Interfaces;
@@ -20,6 +24,89 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GDGame
 {
+    struct Guide
+    {
+        /*
+         * GUIDE SO IT'S EASIER TO GET THROUGH THE CODE
+         */
+        
+        /// <summary>
+        /// 1. Win/Lose Logic: A win or lose is determined when a GameStateMessageEventInfo is raised.
+        /// </summary>
+        private GameStateMessageEventInfo gameStateMessageEventInfo;
+
+        /// <summary>
+        /// 2. Collision Detection: Tiles all have collideable bodies. Responses are invoked through a ColliderComponent. 
+        /// </summary>
+        private ColliderComponent colliderComponent;
+        private Tile tile;
+
+        /// <summary>
+        /// 3. Control System: The Player is controlled using a PlayerController who uses the PlayerMovementComponent
+        /// </summary>
+        private PlayerController playerController;
+        private PlayerMovementComponent playerMovementComponent;
+
+        /// <summary>
+        /// 4. 2D/3D Models:
+        /// GameUI and Menu are the classes who take care of the UI in their respective Scenarions.
+        /// Grid and TileFactory create most of the 3D stuff. In GameManager a few things are also created manually.
+        /// Content gets loaded in the LoadManager.
+        /// </summary>
+
+        //2D
+        private Menu menu;
+        private GameUi gameUi;
+        
+        //3D
+        private Grid grid;
+        private TileFactory tileFactory;
+        private GameManager gameManager;
+        
+        //Loading
+        private LoadManager loadManager;
+
+        /// <summary>
+        /// 5. Cameras:
+        /// At the beginning our Camera uses a Curve3DController for the cinematic.
+        /// After that we use a rotationAroundActor Controller to control.
+        /// </summary>
+        private Curve3DController curve3DController;
+        private RotationAroundActor rotationAroundActor;
+
+        /// <summary>
+        /// 6. Game Interface: Both former mentioned GameUI and Menu do this.
+        /// </summary>
+        private GameUi gameUi2;
+
+        /// <summary>
+        /// 7. Menu System: The Logic uses GDLibrary's EventSystem. 
+        /// </summary>
+        private Menu menu2;
+
+        /// <summary>
+        /// 8. Sound: Sounds are made by the SoundManager responding to a SoundEventInfo.
+        /// </summary>
+        private SoundEventInfo soundEventInfo;
+        private SoundManager soundManager;
+
+        /// <summary>
+        /// 9. Animation:
+        /// The PlayerMovementComponent animates the Player.
+        /// The TileMovementComponent animates the tiles.
+        /// The TransformAnimationManager does Animations for the Collectibles/Deaths etc.
+        /// </summary>
+        private PlayerMovementComponent playerMovementComponent2;
+        private TileMovementComponent tileMovementComponent;
+        private TransformAnimationManager transformAnimationManager;
+
+        /// <summary>
+        /// 10. Visual & Audio Assets:
+        /// The assets are loaded in the LoadManager. We are missing a few sounds like for when the player dies.
+        /// </summary>
+        private LoadManager loadManager2;
+    }
+
     /// <summary>
     ///     This is the class that instantiates the Managers, Archetypes and loads the "Scenes", scenes have been replaced by
     ///     the GameManager.
