@@ -217,7 +217,7 @@ namespace GDGame.Factory
                 {
                     normalEffectParameters.ColorTexture = textures[texStringType + texStringTiling];
                     normalEffectParameters.NormalTexture = textures["big-normalmap" + texStringTiling];
-                    if (dark) normalEffectParameters.Color = new Color(150,150,150,255);
+                    if (dark) normalEffectParameters.Color = new Color(150, 150, 150, 255);
                 }
             }
 

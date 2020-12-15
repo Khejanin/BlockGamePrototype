@@ -20,6 +20,15 @@ namespace GDGame.Managers
 
         #endregion
 
+        #region Public Method
+
+        public new void Dispose()
+        {
+            while (PhysicsSystem.Bodies.Count != 0) PhysicsSystem.RemoveBody(PhysicsSystem.Bodies[0]);
+        }
+
+        #endregion
+
         #region Events
 
         private void HandleRemoveActor(RemoveActorEvent obj)
@@ -28,13 +37,5 @@ namespace GDGame.Managers
         }
 
         #endregion
-
-        public new void Dispose()
-        {
-            while (PhysicsSystem.Bodies.Count != 0)
-            {
-                PhysicsSystem.RemoveBody(PhysicsSystem.Bodies[0]);
-            }
-        }
     }
 }

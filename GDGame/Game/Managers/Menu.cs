@@ -116,7 +116,7 @@ namespace GDGame.Managers
                 main.MenuManager.Add("WinScreen", uiButtonObject);
             }
         }
-        
+
         private void InitGameOptionsUi()
         {
             if (((UITextureObject) main.UiArchetypes["texture"]).Clone() is UITextureObject uiTextureObject)

@@ -28,9 +28,6 @@ namespace GDGame.Game.Parameters.Effect
         ///     Constructor for EffectParameters object used by any DrawnActor3D
         /// </summary>
         /// <param name="effect">Basic effect</param>
-        /// <param name="texture">2D Texture</param>
-        /// <param name="diffusecolor">RGBA diffuse color</param>
-        /// <param name="alpha">Floating-point tansparency value</param>
         public OurEffectParameters(Microsoft.Xna.Framework.Graphics.Effect effect)
         {
             Effect = effect;
@@ -229,6 +226,12 @@ namespace GDGame.Game.Parameters.Effect
 
         #region Properties, Indexers
 
+        public Color Color
+        {
+            get => diffuseColor;
+            set => diffuseColor = value;
+        }
+
         public Texture2D ColorTexture
         {
             get => colorTexture;
@@ -241,13 +244,6 @@ namespace GDGame.Game.Parameters.Effect
             set => normalTexture = value;
         }
 
-        public Color Color
-        {
-            get => diffuseColor;
-            set => diffuseColor = value;
-        }
-        
-        
         #endregion
 
         #region Override Method

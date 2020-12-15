@@ -31,7 +31,6 @@ namespace GDGame.Actors
             ETileType tileType) : base(
             id, actorType, statusType, transform, effectParameters, model, isBlocking, tileType)
         {
-            
         }
 
         #endregion

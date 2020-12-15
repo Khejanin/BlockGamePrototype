@@ -40,7 +40,7 @@ namespace GDGame.Utilities
 
         public LevelData GenerateGrid(string levelFilePath)
         {
-            string jsonString = "";
+            string jsonString;
             List<Vector3> checkpoints = new List<Vector3>();
 
             if (File.Exists(levelFilePath))
@@ -80,18 +80,18 @@ namespace GDGame.Utilities
                                     count += data.gridValues[x, y, z + i] == ETileType.Static ? 1 : 0;
                             }
 
-                            
+
                             if (count > 4) staticTileType = Tile.StaticTileType.WhiteChocolate;
                             else if (count > 3) staticTileType = Tile.StaticTileType.Chocolate;
 
                             if (y == 0) staticTileType = Tile.StaticTileType.Chocolate;
-                            
+
                             Tile tile = tileFactory.CreateTile(pos + new Vector3(0, 0, data.gridSize.Z - 1),
                                 data.gridValues[x, y, z], staticTileType);
                             tile?.InitializeTile();
 
                             //Giving the player a list of checkpoints, so that we can switch between them (for debug/demo purposes)
-                            if (tile.TileType == ETileType.Checkpoint)
+                            if (tile != null && tile.TileType == ETileType.Checkpoint)
                                 checkpoints.Add(tile.Transform3D.Translation);
 
                             _grid[x, y, (int) data.gridSize.Z - 1 - z] = tile;

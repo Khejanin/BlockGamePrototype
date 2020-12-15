@@ -25,6 +25,15 @@ namespace GDGame.Managers
 
         #endregion
 
+        #region Public Method
+
+        public void Dispose()
+        {
+            EventManager.UnregisterListener<PlayerEventInfo>(HandlePlayerEvent);
+        }
+
+        #endregion
+
         #region Events
 
         private void HandlePlayerEvent(PlayerEventInfo playerEventInfo)
@@ -38,10 +47,5 @@ namespace GDGame.Managers
         }
 
         #endregion
-
-        public void Dispose()
-        {
-            EventManager.UnregisterListener<PlayerEventInfo>(HandlePlayerEvent);
-        }
     }
 }

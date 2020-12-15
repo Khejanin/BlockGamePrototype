@@ -26,6 +26,7 @@ namespace GDGame.Component
         private Action endMoveCallback;
         private Vector3 endPos;
         private bool falling;
+        private bool floored;
         private bool isDirty;
         private int movementTime;
         private Action<Raycaster.HitResult> onCollideCallback;
@@ -34,7 +35,6 @@ namespace GDGame.Component
         private Quaternion startRotation;
 
         private AttachableTile tile;
-        private bool floored;
 
         #endregion
 
@@ -130,7 +130,7 @@ namespace GDGame.Component
                     falling = hit == null;
                     if (floored)
                     {
-                        EventManager.FireEvent(new PlayerEventInfo{type = PlayerEventType.CheckSouroundings});
+                        EventManager.FireEvent(new PlayerEventInfo {type = PlayerEventType.CheckSouroundings});
                         floored = false;
                     }
                 }

@@ -6,7 +6,7 @@ using GDLibrary.Interfaces;
 
 namespace GDGame.Game.Handlers
 {
-    public class UiMovesEventHandler : EventHandler, IDisposable
+    public class UiMovesEventHandler : EventHandler
     {
         #region Private variables
 
@@ -24,6 +24,15 @@ namespace GDGame.Game.Handlers
 
         #endregion
 
+        #region Override Method
+
+        public override void Dispose()
+        {
+            EventManager.UnregisterListener<DataManagerEvent>(HandleEvent);
+        }
+
+        #endregion
+
         #region Events
 
         private void HandleEvent(DataManagerEvent dataManagerEvent)
@@ -32,10 +41,5 @@ namespace GDGame.Game.Handlers
         }
 
         #endregion
-
-        public override void Dispose()
-        {
-            EventManager.UnregisterListener<DataManagerEvent>(HandleEvent);
-        }
     }
 }

@@ -98,19 +98,21 @@ namespace GDGame.Managers
             if (type == AnimationEventType.Add) return list => list.Add(this);
             if (actor != null)
             {
-                if (type == AnimationEventType.RemoveAllOfActor)
-                    return list => { list.RemoveAll(list => Equals(list.actor, actor)); };
-
-                if (type == AnimationEventType.RemoveAllOfActorAndInvokeCallbacks)
-                    return list =>
-                    {
-                        List<AnimationEvent> animationEvents = list.FindAll(list => Equals(list.actor, actor));
-                        foreach (AnimationEvent animationEvent in animationEvents)
+                switch (type)
+                {
+                    case AnimationEventType.RemoveAllOfActor:
+                        return list => { list.RemoveAll(animationEvent => Equals(animationEvent.actor, actor)); };
+                    case AnimationEventType.RemoveAllOfActorAndInvokeCallbacks:
+                        return list =>
                         {
-                            animationEvent.callback.Invoke();
-                            list.Remove(animationEvent);
-                        }
-                    };
+                            List<AnimationEvent> animationEvents = list.FindAll(animationEvent => Equals(animationEvent.actor, actor));
+                            foreach (AnimationEvent animationEvent in animationEvents)
+                            {
+                                animationEvent.callback.Invoke();
+                                list.Remove(animationEvent);
+                            }
+                        };
+                }
             }
 
             return null;
@@ -213,7 +215,7 @@ namespace GDGame.Managers
             callbacks.Add(info.callback);
         }
 
-        public bool Tick(GameTime gameTime)
+        public new bool Tick(GameTime gameTime)
         {
             Vector3 offsetTranslation = actor3Ds[0].Transform3D.Translation;
             Vector3 offsetScale = actor3Ds[0].Transform3D.Scale;
@@ -241,21 +243,6 @@ namespace GDGame.Managers
             }
 
             return false;
-        }
-
-        #endregion
-    }
-
-    /// <summary>
-    ///     Unused class that doesn't work but would be desirable someday later.
-    /// </summary>
-    public class AnimateCustomEvent : AnimationEvent
-    {
-        #region Constructors
-
-        public AnimateCustomEvent(AnimationEventData animationEventData) : base(animationEventData)
-        {
-            process = process;
         }
 
         #endregion
@@ -387,6 +374,18 @@ namespace GDGame.Managers
 
         #endregion
 
+        #region Public Method
+
+        public new void Dispose()
+        {
+            EventManager.UnregisterListener<MovementEvent>(HandleAnimationInformationEvent);
+            EventManager.UnregisterListener<ScaleEvent>(HandleAnimationInformationEvent);
+            EventManager.UnregisterListener<RotationEvent>(HandleAnimationInformationEvent);
+            EventManager.UnregisterListener<GroupAnimationEvent>(HandleGroupAnimationInformationEvent);
+        }
+
+        #endregion
+
         #region Events
 
         private void HandleAnimationInformationEvent(AnimationEvent @event)
@@ -403,13 +402,5 @@ namespace GDGame.Managers
         }
 
         #endregion
-
-        public new void Dispose()
-        {
-            EventManager.UnregisterListener<MovementEvent>(HandleAnimationInformationEvent);
-            EventManager.UnregisterListener<ScaleEvent>(HandleAnimationInformationEvent);
-            EventManager.UnregisterListener<RotationEvent>(HandleAnimationInformationEvent);
-            EventManager.UnregisterListener<GroupAnimationEvent>(HandleGroupAnimationInformationEvent);
-        }
     }
 }

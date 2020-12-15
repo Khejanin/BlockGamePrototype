@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using GDGame.Enums;
 using GDGame.EventSystem;
@@ -67,6 +66,11 @@ namespace GDGame.Actors
 
         #region Override Method
 
+        public override void Dispose()
+        {
+            EventManager.UnregisterListener<PlayerEventInfo>(HandlePlayerEvent);
+        }
+
         public override void OnMoveEnd()
         {
             CheckAndProcessSurroundings(GetSurroundings(Transform3D.Translation));
@@ -92,7 +96,8 @@ namespace GDGame.Actors
             AttachedTiles.Clear();
             foreach (AttachableTile tile in AttachCandidates.SelectMany(shape => shape.AttachableTiles))
             {
-                if (tile.EffectParameters is BasicEffectParameters basicEffectParameters) basicEffectParameters.Color = Color.Crimson;
+                if (tile.EffectParameters is BasicEffectParameters basicEffectParameters)
+                    basicEffectParameters.Color = Color.Crimson;
                 AttachedTiles.Add(tile);
                 tile.IsAttached = true;
             }
@@ -299,10 +304,5 @@ namespace GDGame.Actors
         }
 
         #endregion
-
-        public override void Dispose()
-        {
-            EventManager.UnregisterListener<PlayerEventInfo>(HandlePlayerEvent);
-        }
     }
 }

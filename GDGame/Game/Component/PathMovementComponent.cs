@@ -58,6 +58,12 @@ namespace GDGame.Component
 
         #region Override Method
 
+        public override void Dispose()
+        {
+            base.Dispose();
+            EventManager.UnregisterListener<MovingTilesEventInfo>(OnMovingTileEvent);
+        }
+
         protected override void OnActivated()
         {
         }
@@ -131,11 +137,5 @@ namespace GDGame.Component
         }
 
         #endregion
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            EventManager.UnregisterListener<MovingTilesEventInfo>(OnMovingTileEvent);
-        }
     }
 }

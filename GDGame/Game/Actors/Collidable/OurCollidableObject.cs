@@ -30,7 +30,7 @@ namespace GDGame.Actors
             OurEffectParameters effectParameters, Model model, bool isBlocking)
             : base(id, actorType, statusType, transform, effectParameters, model)
         {
-            this.IsBlocking = isBlocking;
+            IsBlocking = isBlocking;
             Body = new Body {ExternalData = this};
             Collision = new CollisionSkin(Body);
             Body.CollisionSkin = Collision;

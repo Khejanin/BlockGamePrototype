@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GDGame.Controllers
 {
-    public class UiCoffeeWarningEventHandler : EventHandler, IDisposable
+    public class UiCoffeeWarningEventHandler : EventHandler
     {
         #region Private variables
 
@@ -30,6 +30,17 @@ namespace GDGame.Controllers
 
         #endregion
 
+        #region Override Method
+
+        public override void Dispose()
+        {
+            initialTexture?.Dispose();
+            textureToSwitch?.Dispose();
+            EventManager.UnregisterListener<CoffeeEventInfo>(HandleEvent);
+        }
+
+        #endregion
+
         #region Events
 
         private void HandleEvent(CoffeeEventInfo coffeeEventInfo)
@@ -43,12 +54,5 @@ namespace GDGame.Controllers
         }
 
         #endregion
-
-        public override void Dispose()
-        {
-            initialTexture?.Dispose();
-            textureToSwitch?.Dispose();
-            EventManager.UnregisterListener<CoffeeEventInfo>(HandleEvent);
-        }
     }
 }

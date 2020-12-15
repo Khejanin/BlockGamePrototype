@@ -127,7 +127,8 @@ namespace GDGame.Utilities
                             {
                                 JSONArray path = obj.GetArray("Path");
                                 List<Vector3> pathPositions = path.Select(t => t.Obj).Select(pathObj =>
-                                    new Vector3((int) Math.Round(pathObj["X"].Number), (int) Math.Round(pathObj["Y"].Number),
+                                    new Vector3((int) Math.Round(pathObj["X"].Number),
+                                        (int) Math.Round(pathObj["Y"].Number),
                                         (int) Math.Round(pathObj["Z"].Number))).ToList();
 
                                 data.movingTilePaths.Add(new Vector3(x, y, z), pathPositions);

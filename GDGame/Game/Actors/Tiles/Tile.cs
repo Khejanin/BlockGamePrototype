@@ -111,6 +111,11 @@ namespace GDGame.Actors
             return tile;
         }
 
+        public virtual void Dispose()
+        {
+            EventManager.UnregisterListener<TileEventInfo>(HandleTileEvent);
+        }
+
         public virtual void Respawn()
         {
             if (!Body.IsActive)
@@ -172,10 +177,5 @@ namespace GDGame.Actors
         }
 
         #endregion
-
-        public virtual void Dispose()
-        {
-            EventManager.UnregisterListener<TileEventInfo>(HandleTileEvent);
-        }
     }
 }

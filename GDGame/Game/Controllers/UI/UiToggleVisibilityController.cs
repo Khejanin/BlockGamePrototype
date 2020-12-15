@@ -1,5 +1,4 @@
-﻿using System;
-using GDGame.Actors;
+﻿using GDGame.Actors;
 using GDGame.Managers;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
@@ -31,6 +30,13 @@ namespace GDGame.Controllers
 
         #region Override Method
 
+        public override void Dispose()
+        {
+            objectManager = null;
+            playerTile = null;
+            pressSpace = null;
+        }
+
         public override void Update(GameTime gameTime, IActor actor)
         {
             pressSpace ??= actor as UITextureObject;
@@ -43,13 +49,6 @@ namespace GDGame.Controllers
                 else
                     pressSpace.StatusType = StatusType.Update;
             }
-        }
-
-        public override void Dispose()
-        {
-            objectManager = null;
-            playerTile = null;
-            pressSpace = null;
         }
 
         #endregion

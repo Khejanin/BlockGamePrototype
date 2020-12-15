@@ -42,6 +42,11 @@ namespace GDGame.Controllers
 
         #region Override Method
 
+        public override void Dispose()
+        {
+            EventManager.UnregisterListener<ActivatorEventInfo>(OnActivatorEvent);
+        }
+
         public override void Update(GameTime gameTime, IActor actor)
         {
             if (getParent && parent == null)
@@ -108,10 +113,5 @@ namespace GDGame.Controllers
         protected abstract void OnDeactivated();
 
         #endregion
-
-        public override void Dispose()
-        {
-            EventManager.UnregisterListener<ActivatorEventInfo>(OnActivatorEvent);
-        }
     }
 }

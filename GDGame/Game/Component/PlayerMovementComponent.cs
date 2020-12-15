@@ -38,6 +38,11 @@ namespace GDGame.Component
 
         #region Override Method
 
+        public override void Dispose()
+        {
+            EventManager.UnregisterListener<MovementEvent>(HandleMovement);
+        }
+
         public override void Update(GameTime gameTime, IActor actor)
         {
             playerTile ??= actor as PlayerTile;
@@ -118,10 +123,5 @@ namespace GDGame.Component
         }
 
         #endregion
-
-        public override void Dispose()
-        {
-            EventManager.UnregisterListener<MovementEvent>(HandleMovement);
-        }
     }
 }

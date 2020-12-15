@@ -32,6 +32,12 @@ namespace GDGame.Controllers
 
         #region Override Method
 
+        public override void Dispose()
+        {
+            parent = null;
+            EventManager.UnregisterListener<CoffeeEventInfo>(HandleCoffeeEventInfo);
+        }
+
         public override void Update(GameTime gameTime, IActor actor)
         {
             parent ??= actor as UITextureObject;
@@ -79,11 +85,5 @@ namespace GDGame.Controllers
         }
 
         #endregion
-
-        public override void Dispose()
-        {
-            parent = null;
-            EventManager.UnregisterListener<CoffeeEventInfo>(HandleCoffeeEventInfo);
-        }
     }
 }
