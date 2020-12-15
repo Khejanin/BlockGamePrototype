@@ -45,7 +45,9 @@ namespace GDGame.Enums
         Won,
         Lost,
         Start,
-        Resume
+        Resume,
+        UIStart,
+        UIPause
     }
 
     public enum PlayerEventType : sbyte

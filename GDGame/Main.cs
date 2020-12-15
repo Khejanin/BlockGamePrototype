@@ -462,7 +462,6 @@ namespace GDGame
                         InitGame();
                         isPlaying = true;
                     }
-
                     break;
                 case GameState.Lost:
                     DestroyGame();
@@ -475,8 +474,6 @@ namespace GDGame
                     MenuManager.SetScene("WinScreen");
                     isPlaying = false;
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 

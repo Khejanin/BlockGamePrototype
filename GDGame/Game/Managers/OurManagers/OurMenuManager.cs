@@ -118,6 +118,7 @@ namespace GDGame.Managers
                     gameRunning = true;
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
                     EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Start});
+                    EventDispatcher.Publish(new EventData(EventCategoryType.UI, EventActionType.OnPause, null));
                     break;
 
                 case "Options":
@@ -153,10 +154,11 @@ namespace GDGame.Managers
                     //needs to kill game
                     gameRunning = false;
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPlay, null));
-                    EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Lost});
+                    SetScene("MainMenu");
                     break;
 
                 case "Back":
+                    gameRunning = false;
                     SetScene("MainMenu");
                     break;
 
