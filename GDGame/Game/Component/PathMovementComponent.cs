@@ -110,18 +110,6 @@ namespace GDGame.Component
                 smoothing = Smoother.SmoothingMethod.Smooth, loopMethod = LoopMethod.PlayOnce,
                 body = parent.Body
             });
-
-            //@TODO Fix the look rotation
-            /*
-            Vector3 newLook = parent.Transform3D.Translation - next;
-            double angle = Math.Acos((Vector3.Dot(newLook, parent.Transform3D.Look) / newLook.Length() * parent.Transform3D.Look.Length()));
-            float floatAngle = MathHelper.ToDegrees((float) angle);
-            floatAngle -= parent.Transform3D.RotationInDegrees.Y;
-            if (floatAngle != 0)
-            {
-                parent.RotateTo(true,Vector3.Up*(floatAngle),movementTime,Smoother.SmoothingMethod.Smooth);
-            }
-            */
         }
 
         //Fetch the next point and go back if you've reached the end.
@@ -143,5 +131,11 @@ namespace GDGame.Component
         }
 
         #endregion
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            EventManager.UnregisterListener<MovingTilesEventInfo>(OnMovingTileEvent);
+        }
     }
 }

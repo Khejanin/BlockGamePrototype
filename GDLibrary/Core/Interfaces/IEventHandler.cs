@@ -8,5 +8,6 @@ namespace GDLibrary.Interfaces
     public interface IEventHandler
     {
         void HandleEvent(EventData eventData);
+        void Dispose();
     }
 }

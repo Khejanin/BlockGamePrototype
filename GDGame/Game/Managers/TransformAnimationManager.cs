@@ -348,7 +348,7 @@ namespace GDGame.Managers
     /// <summary>
     ///     Manager that keeps track of all Animations playing and removes them from his list when they're done playing.
     /// </summary>
-    public class TransformAnimationManager : PausableGameComponent
+    public class TransformAnimationManager : PausableGameComponent, IDisposable
     {
         #region Private variables
 
@@ -403,5 +403,13 @@ namespace GDGame.Managers
         }
 
         #endregion
+
+        public new void Dispose()
+        {
+            EventManager.UnregisterListener<MovementEvent>(HandleAnimationInformationEvent);
+            EventManager.UnregisterListener<ScaleEvent>(HandleAnimationInformationEvent);
+            EventManager.UnregisterListener<RotationEvent>(HandleAnimationInformationEvent);
+            EventManager.UnregisterListener<GroupAnimationEvent>(HandleGroupAnimationInformationEvent);
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace GDLibrary.Interfaces
         void Update(GameTime gameTime, IActor actor); //update the actor controller by this controller
 
         ControllerType GetControllerType();
+        void Dispose();
     }
 }

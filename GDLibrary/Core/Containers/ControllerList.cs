@@ -9,7 +9,7 @@ namespace GDLibrary.Containers
     /// Used to store controllers to be applied to an actor
     /// </summary>
     /// <see cref="GDLibrary.Actors.Actor"/>
-    public class ControllerList : List<IController>
+    public class ControllerList : List<IController>, IDisposable
     {
         #region Constructors & Core
 
@@ -49,5 +49,14 @@ namespace GDLibrary.Containers
         }
 
         #endregion Constructors & Core
+
+        public void Dispose()
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                this[i].Dispose();
+            }
+            Clear();
+        }
     }
 }

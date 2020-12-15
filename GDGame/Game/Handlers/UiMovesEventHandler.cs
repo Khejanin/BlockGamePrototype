@@ -1,11 +1,12 @@
-﻿using GDGame.EventSystem;
+﻿using System;
+using GDGame.EventSystem;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 
 namespace GDGame.Game.Handlers
 {
-    public class UiMovesEventHandler : EventHandler
+    public class UiMovesEventHandler : EventHandler, IDisposable
     {
         #region Private variables
 
@@ -31,5 +32,10 @@ namespace GDGame.Game.Handlers
         }
 
         #endregion
+
+        public override void Dispose()
+        {
+            EventManager.UnregisterListener<DataManagerEvent>(HandleEvent);
+        }
     }
 }

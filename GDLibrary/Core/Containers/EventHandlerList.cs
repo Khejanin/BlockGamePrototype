@@ -39,5 +39,14 @@ namespace GDLibrary.Containers
         }
 
         #endregion Constructors & Core
+
+        public void Dispose()
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                this[i].Dispose();
+            }
+            Clear();
+        }
     }
 }

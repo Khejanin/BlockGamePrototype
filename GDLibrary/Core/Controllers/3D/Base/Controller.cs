@@ -1,7 +1,6 @@
 ﻿using GDLibrary.Enums;
 using GDLibrary.Interfaces;
 using Microsoft.Xna.Framework;
-using System;
 
 namespace GDLibrary.Controllers
 {
@@ -25,6 +24,10 @@ namespace GDLibrary.Controllers
         public ControllerType GetControllerType()
         {
             return ControllerType;
+        }
+
+        public virtual void Dispose()
+        {
         }
 
         #endregion Properties

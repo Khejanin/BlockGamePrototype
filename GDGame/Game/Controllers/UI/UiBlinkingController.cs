@@ -1,3 +1,4 @@
+using System;
 using GDGame.EventSystem;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
@@ -7,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace GDGame.Controllers
 {
-    public class UiBlinkingController : Controller
+    public class UiBlinkingController : Controller, IDisposable
     {
         #region Private variables
 
@@ -78,5 +79,11 @@ namespace GDGame.Controllers
         }
 
         #endregion
+
+        public override void Dispose()
+        {
+            parent = null;
+            EventManager.UnregisterListener<CoffeeEventInfo>(HandleCoffeeEventInfo);
+        }
     }
 }

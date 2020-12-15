@@ -1,4 +1,5 @@
-﻿using GDGame.Game.Handlers;
+﻿using GDGame.Constants;
+using GDGame.Game.Handlers;
 using GDLibrary.Actors;
 using GDLibrary.Enums;
 using GDLibrary.Parameters;
@@ -43,7 +44,7 @@ namespace GDGame.Managers
                 string text = "You have been dissolved";
                 uiTextObject.ID = "LoseText";
                 uiTextObject.Text = text;
-                uiTextObject.Color = Color.Yellow;
+                uiTextObject.Color = GameConstants.colorGold;
                 uiTextObject.Transform2D.Origin = new Vector2(main.Fonts["Arial"].MeasureString(text).X / 2,
                     main.Fonts["Arial"].MeasureString(text).Y / 2);
                 uiTextObject.Transform2D.Translation = main.ScreenCentre - Vector2.UnitY * 250;
@@ -88,7 +89,7 @@ namespace GDGame.Managers
                 string text = "A winner is you :)";
                 uiTextObject.ID = "WinText";
                 uiTextObject.Text = text;
-                uiTextObject.Color = Color.Yellow;
+                uiTextObject.Color = GameConstants.colorGold;
                 uiTextObject.Transform2D.Origin = new Vector2(main.Fonts["Arial"].MeasureString(text).X / 2,
                     main.Fonts["Arial"].MeasureString(text).Y / 2);
                 uiTextObject.Transform2D.Translation = main.ScreenCentre - Vector2.UnitY * 250;

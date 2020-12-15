@@ -1,4 +1,5 @@
-﻿using GDGame.Actors;
+﻿using System;
+using GDGame.Actors;
 using GDGame.Managers;
 using GDLibrary.Actors;
 using GDLibrary.Controllers;
@@ -42,6 +43,13 @@ namespace GDGame.Controllers
                 else
                     pressSpace.StatusType = StatusType.Update;
             }
+        }
+
+        public override void Dispose()
+        {
+            objectManager = null;
+            playerTile = null;
+            pressSpace = null;
         }
 
         #endregion

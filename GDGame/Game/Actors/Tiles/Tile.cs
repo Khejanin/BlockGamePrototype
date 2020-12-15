@@ -17,7 +17,7 @@ namespace GDGame.Actors
     /// <summary>
     ///     Tile is the BasicTile from which other Tiles inherit.
     /// </summary>
-    public class Tile : OurCollidableObject
+    public class Tile : OurCollidableObject, IDisposable
     {
         #region Enums
 
@@ -172,5 +172,10 @@ namespace GDGame.Actors
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            EventManager.UnregisterListener<TileEventInfo>(HandleTileEvent);
+        }
     }
 }
