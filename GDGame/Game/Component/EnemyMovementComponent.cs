@@ -58,7 +58,7 @@ namespace GDGame.Component
             EventManager.FireEvent(new SoundEventInfo
             {
                 soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.EnemyMove,
-                listenerTransform = parent.Transform3D
+                soundLocation = parent.Transform3D.Translation
             });
         }
 

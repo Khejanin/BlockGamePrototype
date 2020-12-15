@@ -56,8 +56,7 @@ namespace GDGame.Actors
         public override void InitializeTile()
         {
             EventManager.RegisterListener<PlayerEventInfo>(HandlePlayerEvent);
-            EventManager.FireEvent(new SoundEventInfo
-                {soundEventType = SoundEventType.SetListener, listenerTransform = Transform3D});
+            EventManager.FireEvent(new SoundEventInfo {soundEventType = SoundEventType.SetListener, listenerTransform = Transform3D});
             lastCheckpoint = Transform3D.Translation;
             base.InitializeTile();
         }
@@ -98,8 +97,8 @@ namespace GDGame.Actors
             }
 
             IsAttached = true;
-            EventManager.FireEvent(new SoundEventInfo
-                {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach});
+            EventManager.FireEvent(new SoundEventInfo 
+                {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach, soundLocation = Transform3D.Translation});
         }
 
         public new object Clone()
@@ -123,7 +122,7 @@ namespace GDGame.Actors
             IsAttached = false;
             AttachedTiles.Clear();
             EventManager.FireEvent(new SoundEventInfo
-                {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerDetach});
+                {soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerDetach, soundLocation = Transform3D.Translation});
         }
 
         public void SetRotatePoint(Vector3 direction)

@@ -134,8 +134,7 @@ namespace GDGame.Game.Actors
                     EventManager.FireEvent(new CoffeeEventInfo {coffeeEventType = CoffeeEventType.CoffeeStartMoving});
                     EventManager.FireEvent(new SoundEventInfo
                     {
-                        soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.CoffeeStart,
-                        soundVolumeType = SoundVolumeType.Sfx
+                        soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.CoffeeStart
                     });
                     coffeeMovementComponent.Activate();
                     IsMoving = true;

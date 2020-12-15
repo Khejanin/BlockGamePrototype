@@ -23,7 +23,7 @@ namespace GDGame.Managers
         private int currentMusicIndex;
         private List<SoundEffect> currentMusicQueue;
 
-        private float currentMusicVolume = 1f, currentSfxVolume = 1f;
+        private float currentMusicVolume = 1f, currentSfxVolume = .8f;
 
         private AudioEmitter emitter;
 
@@ -187,7 +187,7 @@ namespace GDGame.Managers
             if (sfx != null)
             {
                 SoundEffectInstance sei = sfx.CreateInstance();
-                sei.Volume = currentSfxVolume;
+                float volumeToApply = currentSfxVolume;
                 if (emitterPosition != null)
                 {
                     emitter.Position = (Vector3) emitterPosition;
@@ -195,6 +195,7 @@ namespace GDGame.Managers
                     sei.Apply3D(listener, emitter);
                 }
 
+                sei.Volume = volumeToApply;
                 sei.Play();
                 sfxInstances.Add(sei);
             }
