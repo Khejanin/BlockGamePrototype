@@ -14,28 +14,30 @@ namespace GDGame.Managers
     /// <summary>
     ///     Manager class that plays sounds by responding to events.
     /// </summary>
-    public class SoundManager
+    public class SoundManager : IDisposable
     {
         #region Private variables
 
+        //Music
+        private Dictionary<string, SoundEffect> inGameMusicTracks;
         private SoundEffectInstance currentInGameMusicInstance;
-
         private int currentMusicIndex;
         private List<SoundEffect> currentMusicQueue;
 
-        private float currentMusicVolume = 1f, currentSfxVolume = .8f;
-
-        private AudioEmitter emitter;
-
-        private Dictionary<string, SoundEffect> inGameMusicTracks;
-
-        private bool isPaused, sfxMuted, musicMuted, masterMuted;
-        private AudioListener listener;
-        private Transform3D listenerTransform;
-        private float prevMusicVolume = 1f, prevSfxVolume = 1f, prevMasterVolume = 1f;
+        //SFX
         private List<SoundEffectInstance> sfxInstances;
         private Dictionary<SfxType, SoundEffect> soundEffects;
+
+        //Volume
+        private float currentMusicVolume = 1f, currentSfxVolume = .8f;
+        private float prevMusicVolume = 1f, prevSfxVolume = 1f, prevMasterVolume = 1f;
+        private bool isPaused, sfxMuted, musicMuted, masterMuted;
         private float volumeStep = 0.1f;
+
+        //3D Audio
+        private AudioListener listener;
+        private Transform3D listenerTransform;
+        private AudioEmitter emitter;
 
         #endregion
 
@@ -59,30 +61,32 @@ namespace GDGame.Managers
 
         #region Public Method
 
+        /// <summary>
+        /// Adds a music track to the music queue with the given id
+        /// </summary>
+        /// <param name="id">The key to use in the dictionary</param>
+        /// <param name="track">The music track to add</param>
         public void AddMusic(string id, SoundEffect track)
         {
             if (!inGameMusicTracks.ContainsKey(id) && track != null)
                 inGameMusicTracks.Add(id, track);
         }
 
+        /// <summary>
+        /// Add the sound effect to the SFX Dictionary
+        /// </summary>
+        /// <param name="sfxType">The key to use in the dictionary</param>
+        /// <param name="sfx">The Sound Effect to add</param>
         public void AddSoundEffect(SfxType sfxType, SoundEffect sfx)
         {
             if (!soundEffects.ContainsKey(sfxType) && sfx != null)
                 soundEffects.Add(sfxType, sfx);
         }
 
-        public void Dispose()
-        {
-            inGameMusicTracks.Clear();
-            soundEffects.Clear();
-        }
-
-        public void SetListenerPosition(Transform3D listenerTransform)
-        {
-            if (listenerTransform != null)
-                this.listenerTransform = listenerTransform;
-        }
-
+        /// <summary>
+        /// Starts the music queue (Add a track to queue by using the AddMusic method)
+        /// </summary>
+        /// <param name="startOnRandomTrack">Defines whether to start with the first track or a random track in the queue</param>
         public void StartMusicQueue(bool startOnRandomTrack = true)
         {
             if (currentInGameMusicInstance != null)
@@ -103,8 +107,34 @@ namespace GDGame.Managers
 
         #region Private Method
 
+        private void Resume()
+        {
+            isPaused = false;
+        }
+
+        private void Pause()
+        {
+            isPaused = true;
+        }
+
+        /// <summary>
+        /// Sets the transform used by the listener, when playing 3D sounds
+        /// </summary>
+        /// <param name="listenerTransform">The transform to set the listener to</param>
+        private void SetListenerTransform(Transform3D listenerTransform)
+        {
+            if (listenerTransform != null)
+                this.listenerTransform = listenerTransform;
+        }
+
+        /// <summary>
+        /// Adds the specified value to the volume of the specified type. Add negative value to decrease the volume.
+        /// </summary>
+        /// <param name="volumeType">The type of volume to add the value to (Master, Music or SFX)</param>
+        /// <param name="value">The value to add to the volume</param>
         private void AddToVolume(SoundVolumeType volumeType, float value)
         {
+            //Set the volume
             switch (volumeType)
             {
                 case SoundVolumeType.Master:
@@ -118,16 +148,16 @@ namespace GDGame.Managers
                     break;
             }
 
+            //Apply the volume to the currently playing sounds
             currentInGameMusicInstance.Volume = currentMusicVolume;
             foreach (SoundEffectInstance instance in sfxInstances)
                 instance.Volume = currentSfxVolume;
         }
 
-        private void Pause()
-        {
-            isPaused = true;
-        }
-
+        /// <summary>
+        /// Stops the currently playing music track and plays the track with the given key.
+        /// </summary>
+        /// <param name="id">The key of the music track to play</param>
         private void PlayMusic(string id)
         {
             if (!inGameMusicTracks.ContainsKey(id))
@@ -146,6 +176,10 @@ namespace GDGame.Managers
             }
         }
 
+        /// <summary>
+        /// Stops the currently playing music track and plays the specified one.
+        /// </summary>
+        /// <param name="musicTrack">The music track to play</param>
         private void PlayMusic(SoundEffect musicTrack)
         {
             if (musicTrack == null) return;
@@ -162,6 +196,9 @@ namespace GDGame.Managers
                 (float) musicTrack.Duration.TotalSeconds);
         }
 
+        /// <summary>
+        /// Plays the next song in the queue.
+        /// </summary>
         private void PlayNextMusic()
         {
             if (currentMusicQueue.Count == 0)
@@ -174,6 +211,11 @@ namespace GDGame.Managers
             PlayMusic(nextSong);
         }
 
+        /// <summary>
+        /// Plays the sound effect for the specified SFX type. Can be played in 2D or 3D.
+        /// </summary>
+        /// <param name="sfxType">The type of Sound Effect to play</param>
+        /// <param name="emitterPosition">The location to emit the sound from</param>
         private void PlaySoundEffect(SfxType sfxType, Vector3? emitterPosition = null)
         {
             if (!soundEffects.ContainsKey(sfxType))
@@ -201,11 +243,10 @@ namespace GDGame.Managers
             }
         }
 
-        private void Resume()
-        {
-            isPaused = false;
-        }
-
+        /// <summary>
+        /// Set the playback state of the currently playing music track (Pause, Resume or Stop)
+        /// </summary>
+        /// <param name="state">The state to set</param>
         private void SetMusicPlaybackState(SoundState state)
         {
             if (currentInGameMusicInstance == null)
@@ -228,6 +269,10 @@ namespace GDGame.Managers
             }
         }
 
+        /// <summary>
+        /// Set the playback state of all currently playing sfx instances (Pause, Resume or Stop)
+        /// </summary>
+        /// <param name="state">The state to set</param>
         private void SetSfxPlaybackState(SoundState state)
         {
             foreach (SoundEffectInstance instance in sfxInstances)
@@ -247,6 +292,7 @@ namespace GDGame.Managers
 
         private void ToggleMusicPlaybackState()
         {
+            //Pauses or Resumes the music based on the previous state
             if (currentInGameMusicInstance.State == SoundState.Playing)
                 SetMusicPlaybackState(SoundState.Paused);
             else if (currentInGameMusicInstance.State == SoundState.Paused)
@@ -255,6 +301,8 @@ namespace GDGame.Managers
 
         private void ToggleMuteVolume(SoundVolumeType volumeType)
         {
+            //Mutes or Unmutes volume based on the previous state. 
+
             switch (volumeType)
             {
                 case SoundVolumeType.Master:
@@ -265,9 +313,7 @@ namespace GDGame.Managers
                         SoundEffect.MasterVolume = 0;
                     }
                     else
-                    {
                         SoundEffect.MasterVolume = prevMasterVolume;
-                    }
 
                     break;
                 case SoundVolumeType.Music:
@@ -278,9 +324,7 @@ namespace GDGame.Managers
                         currentSfxVolume = 0;
                     }
                     else
-                    {
                         currentMusicVolume = prevMusicVolume;
-                    }
 
                     break;
                 case SoundVolumeType.Sfx:
@@ -291,9 +335,7 @@ namespace GDGame.Managers
                         currentSfxVolume = 0;
                     }
                     else
-                    {
                         currentSfxVolume = prevSfxVolume;
-                    }
 
                     break;
             }
@@ -303,12 +345,26 @@ namespace GDGame.Managers
                 instance.Volume = currentSfxVolume;
         }
 
+        /// <summary>
+        /// Clear all lists and dictionaries and unsubscribe from events
+        /// </summary>
+        public void Dispose()
+        {
+            inGameMusicTracks.Clear();
+            soundEffects.Clear();
+            currentMusicQueue.Clear();
+            sfxInstances.Clear();
+            EventManager.UnregisterListener<SoundEventInfo>(HandleSoundEvent);
+            EventDispatcher.Unsubscribe(EventCategoryType.Menu, HandleMenuEvent);
+        }
+
         #endregion
 
         #region Events
 
         private void HandleMenuEvent(EventData data)
         {
+            //Handle Menu Events here. Pauses and Resumes the sound manager
             switch (data.EventActionType)
             {
                 case EventActionType.OnPause:
@@ -323,6 +379,7 @@ namespace GDGame.Managers
 
         private void HandleSoundEvent(SoundEventInfo info)
         {
+            //Handle sound events here. Action performed based on SoundEventType
             switch (info.soundEventType)
             {
                 case SoundEventType.PlaySfx:
@@ -351,7 +408,7 @@ namespace GDGame.Managers
                     ToggleMusicPlaybackState();
                     break;
                 case SoundEventType.SetListener:
-                    SetListenerPosition(info.listenerTransform);
+                    SetListenerTransform(info.listenerTransform);
                     break;
                 case SoundEventType.PauseAll:
                     SetMusicPlaybackState(SoundState.Paused);
