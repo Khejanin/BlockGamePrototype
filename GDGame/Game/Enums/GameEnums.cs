@@ -45,7 +45,9 @@ namespace GDGame.Enums
         Won,
         Lost,
         Start,
-        Resume
+        Resume,
+        UIStart,
+        UIPause
     }
 
     public enum PlayerEventType : sbyte
@@ -57,7 +59,8 @@ namespace GDGame.Enums
         SetCheckpointList,
         PickupMug,
         OnMove,
-        OnEnemyMove
+        OnEnemyMove,
+        CheckSouroundings
     }
 
     public enum TileEventType : sbyte

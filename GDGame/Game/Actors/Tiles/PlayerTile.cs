@@ -17,7 +17,7 @@ namespace GDGame.Actors
     /// <summary>
     ///     This Tile represents the player
     /// </summary>
-    public class PlayerTile : AttachableTile, IDisposable
+    public class PlayerTile : AttachableTile
     {
         #region Private variables
 
@@ -100,8 +100,7 @@ namespace GDGame.Actors
             IsAttached = true;
             EventManager.FireEvent(new SoundEventInfo
             {
-                soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach,
-                soundLocation = Transform3D.Translation
+                soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerAttach
             });
         }
 
@@ -127,8 +126,7 @@ namespace GDGame.Actors
             AttachedTiles.Clear();
             EventManager.FireEvent(new SoundEventInfo
             {
-                soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerDetach,
-                soundLocation = Transform3D.Translation
+                soundEventType = SoundEventType.PlaySfx, sfxType = SfxType.PlayerDetach
             });
         }
 
@@ -284,7 +282,9 @@ namespace GDGame.Actors
                     info.movableTile.Respawn();
                     break;
                 case PlayerEventType.PickupMug:
-
+                    break;
+                case PlayerEventType.CheckSouroundings:
+                    CheckAndProcessSurroundings(GetSurroundings(Transform3D.Translation));
                     break;
             }
         }
@@ -300,7 +300,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        public void Dispose()
+        public override void Dispose()
         {
             EventManager.UnregisterListener<PlayerEventInfo>(HandlePlayerEvent);
         }

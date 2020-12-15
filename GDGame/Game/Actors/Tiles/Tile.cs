@@ -173,7 +173,7 @@ namespace GDGame.Actors
 
         #endregion
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             EventManager.UnregisterListener<TileEventInfo>(HandleTileEvent);
         }

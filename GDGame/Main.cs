@@ -65,7 +65,7 @@ namespace GDGame
         public BasicEffect ModelEffect { get; private set; }
         public ContentDictionary<Model> Models { get; private set; }
         public OurObjectManager ObjectManager { get; private set; }
-        public Vector2 ScreenCentre { get; private set; } = Vector2.Zero;
+        public Vector2 ScreenCentre { get; private set; }
         public SoundManager SoundManager { get; private set; }
         public ContentDictionary<Texture2D> Textures { get; private set; }
         public Dictionary<string, DrawnActor2D> UiArchetypes { get; private set; }
@@ -409,7 +409,6 @@ namespace GDGame
         {
             if (game != null)
             {
-                game?.UnRegisterGame();
                 game?.RemoveCamera();
                 List<Actor3D> actor3Ds = ObjectManager.ActorList.FindAll(actor3D => actor3D != null);
                 foreach (Actor3D actor3D in actor3Ds)
@@ -463,7 +462,6 @@ namespace GDGame
                         InitGame();
                         isPlaying = true;
                     }
-
                     break;
                 case GameState.Lost:
                     DestroyGame();
@@ -476,8 +474,6 @@ namespace GDGame
                     MenuManager.SetScene("WinScreen");
                     isPlaying = false;
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 

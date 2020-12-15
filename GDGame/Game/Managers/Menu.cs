@@ -143,6 +143,7 @@ namespace GDGame.Managers
                     new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
                     new Integer2(texture2D.Width, texture2D.Height));
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                uiButtonObject.TextColor = Color.Black;
                 main.MenuManager.Add("GameOptions", uiButtonObject);
             }
 
@@ -160,6 +161,7 @@ namespace GDGame.Managers
                     new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
                     new Integer2(texture2D.Width, texture2D.Height));
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                uiButtonObject.TextColor = Color.Black;
                 main.MenuManager.Add("GameOptions", uiButtonObject);
             }
 
@@ -177,6 +179,7 @@ namespace GDGame.Managers
                     new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
                     new Integer2(texture2D.Width, texture2D.Height));
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                uiButtonObject.TextColor = Color.Black;
                 main.MenuManager.Add("GameOptions", uiButtonObject);
             }
 
@@ -205,29 +208,6 @@ namespace GDGame.Managers
                 uiButtonObject.Text = text;
                 uiButtonObject.Transform2D.Translation = main.ScreenCentre + Vector2.UnitY * 400;
                 main.MenuManager.Add("Info", uiButtonObject);
-            }
-        }
-
-        private void InitInfoUiInGame()
-        {
-            if (((UITextureObject) main.UiArchetypes["texture"]).Clone() is UITextureObject uiTextureObject)
-            {
-                Texture2D texture = main.Textures["Tutorial"];
-                uiTextureObject.ID = "TutorialTexture";
-                uiTextureObject.Texture = texture;
-                uiTextureObject.Transform2D.Origin = new Vector2(texture.Width / 2f, texture.Height / 2f);
-                uiTextureObject.SourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
-                uiTextureObject.Transform2D.Translation = main.ScreenCentre;
-                main.MenuManager.Add("GameInfo", uiTextureObject);
-            }
-
-            if (((UIButtonObject) main.UiArchetypes["button"]).Clone() is UIButtonObject uiButtonObject)
-            {
-                string text = "Back";
-                uiButtonObject.ID = "BackToGameOptions";
-                uiButtonObject.Text = text;
-                uiButtonObject.Transform2D.Translation = main.ScreenCentre + Vector2.UnitY * 400;
-                main.MenuManager.Add("GameInfo", uiButtonObject);
             }
         }
 
@@ -304,6 +284,7 @@ namespace GDGame.Managers
                     new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
                     new Integer2(texture2D.Width, texture2D.Height));
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                uiButtonObject.TextColor = Color.Black;
                 main.MenuManager.Add("Options", uiButtonObject);
             }
 
@@ -323,6 +304,7 @@ namespace GDGame.Managers
                     new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
                     new Integer2(texture2D.Width, texture2D.Height));
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                uiButtonObject.TextColor = Color.Black;
                 main.MenuManager.Add("Options", uiButtonObject);
                 uiButtonObject.EventHandlerList.Add(new UiOptionsEvent(EventCategoryType.Menu, uiButtonObject,
                     texture2D, main.Textures["RedSticker"]));
@@ -343,6 +325,7 @@ namespace GDGame.Managers
                     new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
                     new Integer2(texture2D.Width, texture2D.Height));
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                uiButtonObject.TextColor = Color.Black;
                 main.MenuManager.Add("Options", uiButtonObject);
             }
 
@@ -356,7 +339,6 @@ namespace GDGame.Managers
             InitEndUi();
             InitEndWinUi();
             InitInfoUi();
-            InitInfoUiInGame();
             InitGameOptionsUi();
             main.MenuManager.SetScene("MainMenu");
         }
@@ -393,6 +375,7 @@ namespace GDGame.Managers
                     new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
                     new Integer2(texture2D.Width, texture2D.Height));
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                uiButtonObject.TextColor = Color.Black;
                 main.MenuManager.Add(menu, uiButtonObject);
             }
 
@@ -410,6 +393,7 @@ namespace GDGame.Managers
                     new Vector2(texture2D.Width / 2f, texture2D.Height / 2f),
                     new Integer2(texture2D.Width, texture2D.Height));
                 uiButtonObject.SourceRectangle = new Rectangle(0, 0, texture2D.Width, texture2D.Height);
+                uiButtonObject.TextColor = Color.Black;
                 main.MenuManager.Add(menu, uiButtonObject);
             }
         }

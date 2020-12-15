@@ -29,7 +29,7 @@ namespace GDGame.Managers
         private Dictionary<SfxType, SoundEffect> soundEffects;
 
         //Volume
-        private float currentMusicVolume = 1f, currentSfxVolume = .8f;
+        private float currentMusicVolume = 1f, currentSfxVolume = 1f;
         private float prevMusicVolume = 1f, prevSfxVolume = 1f, prevMasterVolume = 1f;
         private bool isPaused, sfxMuted, musicMuted, masterMuted;
         private float volumeStep = 0.1f;

@@ -5,6 +5,9 @@ using GDLibrary.GameComponents;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using GDGame.Enums;
+using GDGame.EventSystem;
+using GDLibrary.Events;
 
 namespace GDLibrary.Managers
 {
@@ -29,6 +32,25 @@ namespace GDLibrary.Managers
         {
             this.spriteBatch = spriteBatch;
             uiObjectList = new List<DrawnActor2D>(initialDrawSize);
+            EventDispatcher.Subscribe(EventCategoryType.UI, HandleEvent);
+        }
+
+        protected override void HandleEvent(EventData eventData)
+        {
+            switch (eventData.EventCategoryType)
+            {
+                case EventCategoryType.UI:
+                    StatusType = eventData.EventActionType switch
+                    {
+                        EventActionType.OnPause => StatusType.Off,
+                        EventActionType.OnPlay => StatusType.Drawn | StatusType.Update,
+                        _ => StatusType
+                    };
+                    break;
+                case EventCategoryType.Menu:
+                    base.HandleEvent(eventData);
+                    break;
+            }
         }
 
         public void Add(DrawnActor2D actor)

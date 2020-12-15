@@ -189,15 +189,19 @@ namespace GDGame.Managers
 
         private void HandleObjectCategoryEvent(EventData eventData)
         {
-            if (eventData.EventActionType == EventActionType.OnRemoveActor)
+            switch (eventData.EventActionType)
             {
-                OurDrawnActor3D removeObject = eventData.Parameters[0] as OurDrawnActor3D;
-                OpaqueList.Remove(removeObject);
-            }
-            else if (eventData.EventActionType == EventActionType.OnAddActor)
-            {
-                OurModelObject modelObject = eventData.Parameters[0] as OurModelObject;
-                if (modelObject != null) Add(modelObject);
+                case EventActionType.OnRemoveActor:
+                {
+                    OurDrawnActor3D removeObject = eventData.Parameters[0] as OurDrawnActor3D;
+                    OpaqueList.Remove(removeObject);
+                    break;
+                }
+                case EventActionType.OnAddActor:
+                {
+                    if (eventData.Parameters[0] is OurModelObject modelObject) Add(modelObject);
+                    break;
+                }
             }
         }
 

@@ -39,7 +39,7 @@ namespace GDGame.Controllers
 
         public override void Update(GameTime gameTime, IActor actor)
         {
-            if (keyboardManager.IsKeyPressed())
+            if (keyboardManager.IsKeyPressed() || keyboardManager.IsStateChanged())
                 HandleKeyboardInput(actor as PlayerTile);
         }
 

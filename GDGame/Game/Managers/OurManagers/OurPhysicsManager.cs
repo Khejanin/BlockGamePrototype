@@ -2,7 +2,6 @@ using System;
 using GDGame.EventSystem;
 using GDLibrary.Enums;
 using GDLibrary.Managers;
-using JigLibX.Physics;
 
 //Physics - Step 2
 namespace GDGame.Managers
@@ -32,9 +31,9 @@ namespace GDGame.Managers
 
         public new void Dispose()
         {
-            for (int i = 0; i < PhysicsSystem.Bodies.Count; i++)
+            while (PhysicsSystem.Bodies.Count != 0)
             {
-                PhysicsSystem.RemoveBody(PhysicsSystem.Bodies[i]);
+                PhysicsSystem.RemoveBody(PhysicsSystem.Bodies[0]);
             }
         }
     }

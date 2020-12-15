@@ -488,10 +488,6 @@ namespace GDGame.Managers
             main.CameraManager.RemoveFirstIf(camera3D => camera3D.ID == curveCamera.ID);
         }
 
-        public void UnRegisterGame()
-        {
-        }
-
 
         public void Update()
         {
@@ -503,7 +499,11 @@ namespace GDGame.Managers
                 if (curveCamera.ControllerList[0] is Curve3DController sceneCameraController &&
                     sceneCameraController.ElapsedTimeInMs > levelData.cameraMaxTime)
                     if (main.CameraManager.RemoveFirstIf(camera3D => camera3D.ID == curveCamera.ID))
+                    {
                         main.CameraManager.ActiveCameraIndex = 0;
+                        EventDispatcher.Publish(new EventData(EventCategoryType.UI, EventActionType.OnPlay, null));
+                    }
+                        
         }
 
         #endregion
