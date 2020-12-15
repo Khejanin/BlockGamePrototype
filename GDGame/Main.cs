@@ -557,6 +557,7 @@ namespace GDGame
                     isPlaying = false;
                     break;
                 case GameState.Won:
+                    EventManager.FireEvent(new SoundEventInfo(){sfxType = SfxType.Win,soundEventType = SoundEventType.PlaySfx});
                     EventDispatcher.Publish(new EventData(EventCategoryType.Menu, EventActionType.OnPause, null));
                     MenuManager.SetScene("WinScreen");
                     isPlaying = false;

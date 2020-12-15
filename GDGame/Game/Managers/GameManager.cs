@@ -105,7 +105,19 @@ namespace GDGame.Managers
                     if (skin1.Owner.ExternalData is Tile tile)
                     {
                         if (tile.TileType == ETileType.Player)
-                            EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Lost});
+                        {
+                            EventManager.FireEvent(new RemoveActorEvent {body = tile.Body});
+                            EventManager.FireEvent(new SoundEventInfo()
+                            {
+                                category = SoundCategory.UI, sfxType = SfxType.Lose,
+                                soundEventType = SoundEventType.PlaySfx
+                            });
+                            TimeManager.CallFunctionInSeconds("lose",
+                                () =>
+                                {
+                                    EventManager.FireEvent(new GameStateMessageEventInfo {GameState = GameState.Lost});
+                                },2);
+                        }
 
                         if (tile.SpawnPos.Y < ((Coffee) skin0.Owner.ExternalData).Transform3D.Translation.Y)
                         {

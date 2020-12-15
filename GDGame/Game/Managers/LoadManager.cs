@@ -110,6 +110,12 @@ namespace GDGame.Managers
             //Taken from Sonniss.com, the GDC 2018 Free to use Sound archive, this one is part of UberDuo - The Home Barista
             main.SoundManager.AddSoundEffect(SfxType.CoffeeStart,
                 main.Content.Load<SoundEffect>("Assets/Sound/Effects/CoffeePour"));
+            
+            main.SoundManager.AddSoundEffect(SfxType.Lose,
+                main.Content.Load<SoundEffect>("Assets/Sound/lose"));
+            
+            main.SoundManager.AddSoundEffect(SfxType.Win,
+                main.Content.Load<SoundEffect>("Assets/Sound/win"));
 
             main.SoundManager.StartMusicQueue();
         }

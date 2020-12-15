@@ -89,12 +89,6 @@ namespace GDGame.Managers
         /// </summary>
         public void Dispose()
         {
-            inGameMusicTracks.Clear();
-            soundEffects.Clear();
-            currentMusicQueue.Clear();
-            sfxInstances.Clear();
-            EventManager.UnregisterListener<SoundEventInfo>(HandleSoundEvent);
-            EventDispatcher.Unsubscribe(EventCategoryType.Menu, HandleMenuEvent);
         }
 
         /// <summary>
