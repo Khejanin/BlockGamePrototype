@@ -57,7 +57,8 @@ namespace GDGame.Enums
         SetCheckpointList,
         PickupMug,
         OnMove,
-        OnEnemyMove
+        OnEnemyMove,
+        CheckSouroundings
     }
 
     public enum TileEventType : sbyte

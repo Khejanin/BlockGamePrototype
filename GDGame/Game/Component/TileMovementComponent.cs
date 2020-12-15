@@ -1,5 +1,7 @@
 ﻿using System;
 using GDGame.Actors;
+using GDGame.Enums;
+using GDGame.EventSystem;
 using GDGame.Managers;
 using GDGame.Utilities;
 using GDLibrary.Controllers;
@@ -32,6 +34,7 @@ namespace GDGame.Component
         private Quaternion startRotation;
 
         private AttachableTile tile;
+        private bool floored;
 
         #endregion
 
@@ -114,6 +117,7 @@ namespace GDGame.Component
                     tile.Body.Torque = Vector3.UnitY * tile.Body.Torque.Y;
                     tile.Body.AngularVelocity = Vector3.UnitY * tile.Body.AngularVelocity.Y;
                     tile.Transform3D.Translation = tile.Body.Position;
+                    floored = true;
                 }
                 else
                 {
@@ -124,6 +128,11 @@ namespace GDGame.Component
                 {
                     hit = RaycastManager.Instance.Raycast(tile, tile.Transform3D.Translation, Vector3.Down, true, 0.6f);
                     falling = hit == null;
+                    if (floored)
+                    {
+                        EventManager.FireEvent(new PlayerEventInfo{type = PlayerEventType.CheckSouroundings});
+                        floored = false;
+                    }
                 }
             }
         }

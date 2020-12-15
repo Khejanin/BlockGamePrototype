@@ -23,7 +23,7 @@ namespace GDGame.Managers
         private int currentMusicIndex;
         private List<SoundEffect> currentMusicQueue;
 
-        private float currentMusicVolume = 1f, currentSfxVolume = .8f;
+        private float currentMusicVolume = 1f, currentSfxVolume = 1f;
 
         private AudioEmitter emitter;
 
